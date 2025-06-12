@@ -23,7 +23,7 @@ export const PrismaPortfolioRepository = {
   findMany: async (): Promise<PrismaPortfolio[]> => {
     return await prisma.portfolio.findMany();
   },
-  findById: async (id: number): Promise<PrismaPortfolio | null> => {
+  findById: async (id: string): Promise<PrismaPortfolio | null> => {
     return await prisma.portfolio.findUnique({
       where: {
         id,
@@ -49,7 +49,7 @@ export const PrismaPortfolioRepository = {
       },
     });
   },
-  deleteById: async (id: number): Promise<PrismaPortfolio | null> => {
+  deleteById: async (id: string): Promise<PrismaPortfolio | null> => {
     console.log("Aqui 2:", id, "\n");
     try {
       return await prisma.portfolio.delete({

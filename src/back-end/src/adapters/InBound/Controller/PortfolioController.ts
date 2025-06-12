@@ -21,7 +21,7 @@ export const PortfolioController = {
       throw new HttpError(400, "Todos os campos são obrigatórios!");
 
     const portfolio = await portfolioService.register(
-      new Portfolio(-1, name, description, pageLink, authorId)
+      new Portfolio("", name, description, pageLink, authorId)
     );
 
     reply.send(portfolio);
@@ -33,9 +33,9 @@ export const PortfolioController = {
   },
   getById: async (req: FastifyRequest, reply: FastifyReply) => {
     const params = req.params as { id: string };
-    const id = Number(params.id);
-    if (!id || typeof id !== "number")
-      throw new HttpError(400, "Id é obrigatorio");
+    const id = params.id;
+
+    if (!id) throw new HttpError(400, "Id é obrigatorio");
 
     const portfolio = portfolioService.findById(id);
 
@@ -49,7 +49,7 @@ export const PortfolioController = {
       pageLink = null,
       authorId = req.user?.id || null,
     } = req.body as Partial<{
-      id: number;
+      id: string;
       name: string;
       description: string;
       pageLink: string;
@@ -67,10 +67,9 @@ export const PortfolioController = {
   },
   deleteById: async (req: FastifyRequest, reply: FastifyReply) => {
     const params = req.params as { id: string };
-    const id = Number(params.id);
+    const id = params.id;
 
-    if (!id || typeof id !== "number")
-      throw new HttpError(400, "Id do portofolio é obrigatorio!");
+    if (!id) throw new HttpError(400, "Id do portofolio é obrigatorio!");
 
     const portfolio = await portfolioService.deleteById(id);
     reply.send(portfolio);

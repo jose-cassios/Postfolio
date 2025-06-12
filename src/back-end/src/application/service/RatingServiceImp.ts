@@ -16,13 +16,13 @@ class RatingServiceImp implements RatingUseCases {
     return await ratingRepository.findByUserId(userId);
   }
 
-  async findByPortfolioId(portfolioId: number): Promise<Rating[]> {
+  async findByPortfolioId(portfolioId: string): Promise<Rating[]> {
     return await ratingRepository.findByPortfolioId(portfolioId);
   }
 
   async findByUserAndPortfolio(
     userId: string,
-    portfolioId: number
+    portfolioId: string
   ): Promise<Rating | null> {
     return await ratingRepository.findByUserAndPortfolio(userId, portfolioId);
   }
@@ -31,8 +31,8 @@ class RatingServiceImp implements RatingUseCases {
     return await ratingRepository.update(rating);
   }
 
-  async delete(userId: string, portfolioId: number): Promise<Rating> {
-    return await ratingRepository.delete(userId, portfolioId);
+  async delete(id: string): Promise<Rating> {
+    return await ratingRepository.delete(id);
   }
 }
 

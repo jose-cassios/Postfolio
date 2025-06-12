@@ -27,7 +27,7 @@ export const PrismaRatingRepository = {
       throw new HttpError(500, "Não foi possivel buscar todas as Analise!");
     }
   },
-  findByPortfolioId: async (portfolioId: number): Promise<PrismaRating[]> => {
+  findByPortfolioId: async (portfolioId: string): Promise<PrismaRating[]> => {
     try {
       const ratings = await prisma.rating.findMany({
         where: {
@@ -55,15 +55,13 @@ export const PrismaRatingRepository = {
   },
   findByUserAndPortfolio: async (
     userId: string,
-    portfolioId: number
+    portfolioId: string
   ): Promise<PrismaRating | null> => {
     try {
-      const rating = await prisma.rating.findUnique({
+      const rating = await prisma.rating.findFirst({
         where: {
-          userId_portfolioId: {
-            userId,
-            portfolioId,
-          },
+          userId,
+          portfolioId,
         },
       });
 
@@ -76,10 +74,7 @@ export const PrismaRatingRepository = {
     try {
       const rating = await prisma.rating.update({
         where: {
-          userId_portfolioId: {
-            userId: ratingEntity.userId,
-            portfolioId: ratingEntity.portfolioId,
-          },
+          id: ratingEntity.id,
         },
         data: {
           score: ratingEntity.score,
@@ -91,17 +86,11 @@ export const PrismaRatingRepository = {
       throw new HttpError(500, "Erro ao atualizar dados da analise!");
     }
   },
-  delete: async (
-    userId: string,
-    portfolioId: number
-  ): Promise<PrismaRating> => {
+  delete: async (id: string): Promise<PrismaRating> => {
     try {
       const rating = await prisma.rating.delete({
         where: {
-          userId_portfolioId: {
-            userId,
-            portfolioId,
-          },
+          id,
         },
       });
 

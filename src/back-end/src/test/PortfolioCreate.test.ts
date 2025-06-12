@@ -5,9 +5,11 @@ import request from "supertest";
 describe("Portfolio API Tests", () => {
   const api = "http://localhost:8080";
   const userPassWord = "123456789";
-  let portfolioId: number;
+  let portfolioId: string;
   const email = "antonio@gmail.com";
   let userToken: string;
+
+  // test("POST /api/")
 
   test("POST /api/user/login", async () => {
     const response = await request(api).post("/api/user/login").send({

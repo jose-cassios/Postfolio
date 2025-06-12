@@ -22,7 +22,7 @@ class RatingRepositoryImp implements RatingRepository {
     );
   }
 
-  async findByPortfolioId(portfolioId: number): Promise<Rating[]> {
+  async findByPortfolioId(portfolioId: string): Promise<Rating[]> {
     return (await PrismaRatingRepository.findByPortfolioId(portfolioId)).map(
       Mapper.Rating.toDomain
     );
@@ -30,7 +30,7 @@ class RatingRepositoryImp implements RatingRepository {
 
   async findByUserAndPortfolio(
     userId: string,
-    portfolioId: number
+    portfolioId: string
   ): Promise<Rating | null> {
     const rating = await PrismaRatingRepository.findByUserAndPortfolio(
       userId,
@@ -42,13 +42,14 @@ class RatingRepositoryImp implements RatingRepository {
   }
 
   async update(rating: Rating): Promise<Rating> {
-    return Mapper.Rating.toDomain(await PrismaRatingRepository.update(rating));
+    const ratingEntity = Mapper.Rating.toPrisma(rating);
+    return Mapper.Rating.toDomain(
+      await PrismaRatingRepository.update(ratingEntity)
+    );
   }
 
-  async delete(userId: string, portfolioId: number): Promise<Rating> {
-    return Mapper.Rating.toDomain(
-      await PrismaRatingRepository.delete(userId, portfolioId)
-    );
+  async delete(id: string): Promise<Rating> {
+    return Mapper.Rating.toDomain(await PrismaRatingRepository.delete(id));
   }
 }
 

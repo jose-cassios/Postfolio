@@ -7,7 +7,6 @@ export const PrismaUserRepository = {
     try {
       const user = prisma.user.create({
         data: {
-          id: prismaUser.id,
           name: prismaUser.name,
           email: prismaUser.email,
           passWord: prismaUser.passWord,

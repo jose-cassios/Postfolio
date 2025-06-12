@@ -50,6 +50,7 @@ const PortfolioMapper = {
 const RatingMapper = {
   toDomain(prismaRating: PrismaRating): Rating {
     return new Rating(
+      prismaRating.id,
       prismaRating.userId,
       prismaRating.portfolioId,
       prismaRating.score
@@ -57,6 +58,7 @@ const RatingMapper = {
   },
   toPrisma(rating: Rating): PrismaRating {
     return {
+      id: rating.id,
       userId: rating.userId,
       portfolioId: rating.portfolioId,
       score: rating.score,

@@ -1,11 +1,13 @@
 import { HttpError } from "../../../Infrastructure/Error/HttpError";
 
 export default class Rating {
+  id: string;
   userId: string;
-  portfolioId: number;
+  portfolioId: string;
   score: number;
 
-  constructor(userId: string, portfolioId: number, score: number) {
+  constructor(id: string, userId: string, portfolioId: string, score: number) {
+    this.id = id;
     this.userId = userId;
     this.portfolioId = portfolioId;
 

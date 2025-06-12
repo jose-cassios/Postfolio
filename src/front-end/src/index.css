@@ -52,3 +52,11 @@ body:hover::-webkit-scrollbar-thumb {
 .backface-hidden {
   backface-visibility: hidden;
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

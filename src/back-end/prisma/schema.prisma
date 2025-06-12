@@ -9,13 +9,13 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model User {
   @@map("tb_user")
-  id String @id @default(uuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
   name String
   email String @unique
   passWord String
@@ -26,25 +26,26 @@ model User {
 
 model Portfolio {
   @@map("tb_portfolio")
-  id Int @id @default(autoincrement())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
   name String
   description String
   pageLink String
-  authorId String
+  authorId String @db.ObjectId
   author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
   ratings Rating[]
 }
 
 model Rating{
   // id Int @id @default(autoincrement())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
   @@map("tb_rating")
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
+  userId String @db.ObjectId
   portfolio Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
-  portfolioId Int
+  portfolioId String @db.ObjectId
   score Float
 
-  @@id([userId, portfolioId])
+  // @@id([userId, portfolioId])
 }
 
 

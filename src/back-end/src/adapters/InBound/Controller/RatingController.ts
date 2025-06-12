@@ -17,11 +17,11 @@ export const RatingController = {
 
     if (!userId || !portfolioId || !score)
       throw new HttpError(400, "Todos os campos são obrigatórios!");
-    const portfolioIdNumber = Number(portfolioId);
+
     const scoreNumber = Number(score);
 
     await ratingService.register(
-      new Rating(userId, portfolioIdNumber, scoreNumber)
+      new Rating("", userId, portfolioId, scoreNumber)
     );
 
     return reply.send({ msg: "Analise criada com sucesso!" });
@@ -46,10 +46,25 @@ export const RatingController = {
     if (!userId || !portfolioId || !score)
       throw new HttpError(400, "Todos os campos são obrigatórios!");
 
-    const portfolioIdNumber = Number(portfolioId);
-    const scoreNumber = Number(score);
+    const existingRating = await ratingService.findByUserAndPortfolio(
+      userId,
+      portfolioId
+    );
 
-    const rating = new Rating(userId, portfolioIdNumber, scoreNumber);
+    if (!existingRating)
+      throw new HttpError(
+        404,
+        "Avaliação não encontrado para o usuário e portfólio informados."
+      );
+
+    const newScore = Number(score);
+
+    const rating = new Rating(
+      existingRating.portfolioId,
+      userId,
+      portfolioId,
+      newScore
+    );
     await ratingService.update(rating);
 
     reply.send({ msg: "Atualização bem sucedida!", rating: rating });
@@ -59,14 +74,25 @@ export const RatingController = {
     const userId = req.user?.id;
 
     const params = req.params as { portfolioId: string };
-    const portfolioId = Number(params.portfolioId);
+    const portfolioId = params.portfolioId;
 
-    if (!portfolioId || typeof portfolioId !== "number")
+    if (!portfolioId)
       throw new HttpError(400, "Id do portofolio é obrigatorio!");
 
     if (!userId) throw new HttpError(400, "Id do usuario é obrigatorio!");
 
-    const rating = await ratingService.delete(userId, portfolioId);
+    const existingRating = await ratingService.findByUserAndPortfolio(
+      userId,
+      portfolioId
+    );
+
+    if (!existingRating)
+      throw new HttpError(
+        404,
+        "Avaliação não encontrado para o usuário e portfólio informados."
+      );
+
+    const rating = await ratingService.delete(existingRating.id);
 
     reply.send(rating);
   },

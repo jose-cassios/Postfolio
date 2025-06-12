@@ -31,3 +31,22 @@
 
 //   return projects;
 // }
+
+// const projects = [
+//     {
+//       title: "José Cassios",
+//       role: "Desenvolvedor Full Stack",
+//       frontImage: "cassios.png",
+//       backContent: "Desenvolvedor apaixonado por tecnologia, focado em soluções inovadoras e experiência do usuário.",
+//       portfolioLink: "http://localhost:5174/",
+//       emailContact: "josecassios@email.com"
+//     },
+//     {
+//       title: "Mickaela Evely",
+//       role: "Desenvolvedora Frontend e games mobile",
+//       frontImage: "micka.png",
+//       backContent: "Estudante determinada e focada, sempre em busca de novos desafios e dedicada ao aprimoramento contínuo de suas habilidades.",
+//       portfolioLink: "http://localhost:5174/",
+//       emailContact: "micka@email.com"
+//     },
+//   ];

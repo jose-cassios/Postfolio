@@ -16,7 +16,7 @@ class PortfolioRepositoryImp implements PortfolioRepository {
       Mapper.Portfolio.toDomain
     );
   }
-  async findById(id: number): Promise<Portfolio | null> {
+  async findById(id: string): Promise<Portfolio | null> {
     const portfolioEntity = await PrismaPortfolioRepository.findById(id);
 
     if (!portfolioEntity) return null;
@@ -37,7 +37,7 @@ class PortfolioRepositoryImp implements PortfolioRepository {
     return portfolio;
   }
 
-  async deleteById(id: number): Promise<Portfolio | null> {
+  async deleteById(id: string): Promise<Portfolio | null> {
     return await PrismaPortfolioRepository.deleteById(id);
   }
 }

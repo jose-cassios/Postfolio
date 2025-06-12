@@ -16,7 +16,7 @@ class PortfolioServiceImp implements PortfolioUseCases {
     return portfolios;
   }
 
-  async findById(id: number): Promise<Portfolio | null> {
+  async findById(id: string): Promise<Portfolio | null> {
     return await portfolioRepository.findById(id);
   }
 
@@ -28,7 +28,7 @@ class PortfolioServiceImp implements PortfolioUseCases {
     return await portfolioRepository.update(portfolio);
   }
 
-  async deleteById(id: number): Promise<Portfolio | null> {
+  async deleteById(id: string): Promise<Portfolio | null> {
     const portfolio = await portfolioRepository.deleteById(id);
     return portfolio;
   }

@@ -1,12 +1,12 @@
 export default class Portfolio {
-  id: number;
+  id: string;
   name: string;
   description: string;
   pageLink: string;
   authorId: string;
 
   constructor(
-    id: number,
+    id: string,
     name: string,
     description: string,
     pageLink: string,

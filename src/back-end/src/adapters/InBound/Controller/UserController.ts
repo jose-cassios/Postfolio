@@ -2,7 +2,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { HttpError } from "../../../Infrastructure/Error/HttpError";
 import User from "../../../Domain/Entities/User/User";
 import userService from "../../../Application/Service/UserServiceImp";
-import { Uuid } from "../../../Util/Uuid";
+// import { Uuid } from "../../../Util/Uuid";
 
 export const UserController = {
   register: async (req: FastifyRequest, reply: FastifyReply) => {
@@ -21,9 +21,7 @@ export const UserController = {
     if (!name || !email || !passWord || !status)
       throw new HttpError(400, "Todos os campos são obrigatórios!");
 
-    await userService.register(
-      new User(Uuid.generate(), name, email, passWord, status)
-    );
+    await userService.register(new User("", name, email, passWord, status));
 
     return reply.send({ msg: "Usuario criado com sucesso!" });
   },
