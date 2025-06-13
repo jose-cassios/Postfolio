@@ -113,14 +113,14 @@ export default function Home()  {
 
             </div>
           </div>
-          <div className="flex flex-col items-center justify-center space-y-5 order-1 md:order-1">
+          <div className="flex flex-col items-center justify-center space-y-5 order-1 md:order-1 max-w-screen-lg mx-auto px4">
             <h1 className="text-light-white text-[33px] font-bold text-center md:text-left">
               2. Critérios para avaliação
             </h1>
 
-            <div className="flex flex-col sm:flex-row justify-between gap-6 mt-10">
+            <div className="flex flex-col sm:flex-row justify-between gap-6 mt-10 w-full">
               {/* Card 1 */}
-              <div className="bg-dark-blue text-white border-blue-950 border-4   rounded-2xl p-6 shadow-lg flex-1">
+              <div className="bg-dark-blue text-white border-blue-950 border-4 rounded-2xl p-6 shadow-lg flex-1 min-w-[250px] max-w-sm">
                 <h3 className="text-xl font-bold mb-4 text-center">🎨 Design e Estética</h3>
                 <ul className="list-disc list-inside space-y-1 text-sm sm:text-base">
                   <li>Criatividade</li>
@@ -130,7 +130,7 @@ export default function Home()  {
               </div>
 
               {/* Card 2 */}
-              <div className="bg-dark-blue text-white border-blue-950 border-4 rounded-2xl p-6 shadow-lg flex-1">
+              <div className="bg-dark-blue text-white border-blue-950 border-4 rounded-2xl p-6 shadow-lg flex-1 min-w-[250px] max-w-sm">
                 <h3 className="text-xl font-bold mb-4 text-center">⚙️ Funcionalidade e Performance</h3>
                 <ul className="list-disc list-inside space-y-1 text-sm sm:text-base">
                   <li>Adequação ao Propósito</li>
@@ -140,7 +140,7 @@ export default function Home()  {
               </div>
 
               {/* Card 3 */}
-              <div className="bg-dark-blue text-white border-blue-950 border-4 rounded-2xl p-6 shadow-lg flex-1">
+              <div className="bg-dark-blue text-white border-blue-950 border-4 rounded-2xl p-6 shadow-lg flex-1 min-w-[250px] max-w-sm">
                 <h3 className="text-xl font-bold mb-4 text-center">🧭 Usabilidade do Usuário</h3>
                 <ul className="list-disc list-inside space-y-1 text-sm sm:text-base">
                   <li>Navegação Intuitiva</li>
@@ -155,16 +155,12 @@ export default function Home()  {
 
           </div>
 
-
-
-
-
-          <div className="flex flex-col items-center justify-center space-y-5 order-1 md:order-1">
-            <h1 className="text-light-white text-[33px] font-bold text-center md:text-left">
+          <div className="flex flex-col items-center justify-center space-y-5 order-1 md:order-1 w-full px-4 sm:px-10 max-w-screen-lg mx-auto ">
+            <h1 className="text-light-white text-[33px] font-bold text-center w-full">
               3. Conheça os Participantes
             </h1>
-            <div className="w-full flex max-w-4xl justify-center">
-              <div className="relative w-full max-w-full overflow-x-visible">
+            <div className="w-full overflow-x-auto">
+              <div className="relative w-full max-w-full overflow-x-visible flex justify-center">
                 <ProjectCarousel projects={projects} />
               </div>
             </div>
