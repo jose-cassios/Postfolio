@@ -18,7 +18,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   emailContact,
 }) => {
   return (
-    <div className="w-[280px] h-[360px] perspective group cursor-pointer">
+    <div className="w-[350px] h-[380px] origin-center perspective group cursor-pointer">
       <div className="relative w-full h-full transition-transform duration-700 transform-style preserve-3d group-hover:rotate-y-180">
         <div className="group [perspective:1000px] w-80 h-96 relative">
           <div className="relative w-full h-full duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">

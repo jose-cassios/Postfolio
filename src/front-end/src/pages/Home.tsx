@@ -4,57 +4,57 @@ import ProjectCarousel from '../components/projects/ProjectCarousel';
 import ParticleComponent from "../components/ParticleComponent";
 
 const projects = [
-    {
-      title: "José Cassios",
-      role: "Desenvolvedor Full Stack",
-      frontImage: "cassios.png",
-      backContent: "Desenvolvedor apaixonado por tecnologia, focado em soluções inovadoras e experiência do usuário.",
-      portfolioLink: "http://localhost:5174/",
-      emailContact: "josecassios@email.com"
-    },
-    {
-      title: "Mickaela Evely",
-      role: "Desenvolvedora Frontend e games mobile",
-      frontImage: "micka.png",
-      backContent: "Estudante determinada e focada, sempre em busca de novos desafios e dedicada ao aprimoramento contínuo de suas habilidades.",
-      portfolioLink: "http://localhost:5174/",
-      emailContact: "micka@email.com"
-    },
-    {
-      title: "Debriane da Silva",
-      role: "Leitora profissional de livros de romance",
-      frontImage: "debriane.png",
-      backContent: "Leio de tudo, não só romance.",
-      portfolioLink: "http://localhost:5174/",
-      emailContact: "micka@email.com"
-    },
-    {
-      title: "Juan Pablo",
-      role: "Desenvolvedor Backend e DevOps",
-      frontImage: "juan.png",
-      backContent: "Desenvolvo qualquer sistema backend avançado, tenho experiencia em integração, devops, testes e desenvolvimento ágil.",
-      portfolioLink: "http://localhost:5174/",
-      emailContact: "juan@email.com"
-    },
-    {
-      title: "Jonas Davi Nogueira",
-      role: "Contador, e gerente de projetos",
-      frontImage: "jonas.png",
-      backContent: "Se você busca alguém comprometido com resultados, organização e liderança, posso transformar ideias em entregas concretas.",
-      portfolioLink: "http://localhost:5174/",
-      emailContact: "juan@email.com"
-    },
-    {
-      title: "Lara Emanuelly",
-      role: "CEO e Advogada",
-      frontImage: "lara.png",
-      backContent: "Conte com a expertise de Lara Emanuelly, CEO visionária e advogada dedicada, para impulsionar o sucesso do seu negócio. Com liderança estratégica, profundo conhecimento jurídico e foco em resultados.",
-      portfolioLink: "http://localhost:5174/",
-      emailContact: "lara@email.com"
-    },
-  ];
+  {
+    title: "José Cassios",
+    role: "Desenvolvedor Full Stack",
+    frontImage: "cassios.png",
+    backContent: "Desenvolvedor apaixonado por tecnologia, focado em soluções inovadoras e experiência do usuário.",
+    portfolioLink: "http://localhost:5174/",
+    emailContact: "josecassios@email.com"
+  },
+  {
+    title: "Mickaela Evely",
+    role: "Desenvolvedora Frontend e games mobile",
+    frontImage: "micka.png",
+    backContent: "Estudante determinada e focada, sempre em busca de novos desafios e dedicada ao aprimoramento contínuo de suas habilidades.",
+    portfolioLink: "http://localhost:5174/",
+    emailContact: "micka@email.com"
+  },
+  {
+    title: "Debriane da Silva",
+    role: "Leitora profissional de livros de romance",
+    frontImage: "debriane.png",
+    backContent: "Leio de tudo, não só romance.",
+    portfolioLink: "http://localhost:5174/",
+    emailContact: "micka@email.com"
+  },
+  {
+    title: "Juan Pablo",
+    role: "Desenvolvedor Backend e DevOps",
+    frontImage: "juan.png",
+    backContent: "Desenvolvo qualquer sistema backend avançado, tenho experiencia em integração, devops, testes e desenvolvimento ágil.",
+    portfolioLink: "http://localhost:5174/",
+    emailContact: "juan@email.com"
+  },
+  {
+    title: "Jonas Davi Nogueira",
+    role: "Contador, e gerente de projetos",
+    frontImage: "jonas.png",
+    backContent: "Se você busca alguém comprometido com resultados, organização e liderança, posso transformar ideias em entregas concretas.",
+    portfolioLink: "http://localhost:5174/",
+    emailContact: "juan@email.com"
+  },
+  {
+    title: "Lara Emanuelly",
+    role: "CEO e Advogada",
+    frontImage: "lara.png",
+    backContent: "Conte com a expertise de Lara Emanuelly, CEO visionária e advogada dedicada, para impulsionar o sucesso do seu negócio. Com liderança estratégica, profundo conhecimento jurídico e foco em resultados.",
+    portfolioLink: "http://localhost:5174/",
+    emailContact: "lara@email.com"
+  },
+];
 
-export default function Home()  {
+export default function Home() {
   return (
     <div className="bg-pattern bg-no-repeat bg-top bg-cover min-h-screen w-full text-light-white relative">
       <ParticleComponent />
@@ -64,7 +64,11 @@ export default function Home()  {
           {/* Texto - Fica primeiro no mobile, mas mantém a posição no desktop */}
           <div className="flex flex-col items-center md:items-center justify-right space-y-5 max-w-[600px] order-1 md:order-1">
             <h1 className="text-light-white text-[60px] font-bold text-center md:text-left">
-              <span className="">A competição de Portfólios começou!</span>
+              <span className="block text-center text-[30px] sm:text-x1 md:text-2xl lg:text-4xl xl:text-5xl font-bold text-white-700">
+                A competição de Portfólios começou!
+              </span>
+
+
             </h1>
             {/* <h2 className="text-xl font-semibold text-light-blue text-center md:text-left">Design, Frontend e Backend</h2> */}
             <p className="text-justify justify-center leading-relaxed">
@@ -149,7 +153,7 @@ export default function Home()  {
                 </ul>
               </div>
             </div>
-        
+
 
 
 
@@ -159,8 +163,8 @@ export default function Home()  {
             <h1 className="text-light-white text-[33px] font-bold text-center w-full">
               3. Conheça os Participantes
             </h1>
-            <div className="w-full overflow-x-auto">
-              <div className="relative w-full max-w-full overflow-x-visible flex justify-center">
+            <div className="w-[105%] overflow-x-auto">
+              <div className="relative w-full max-w-full overflow-x-visible flex justify-center ">
                 <ProjectCarousel projects={projects} />
               </div>
             </div>

@@ -27,9 +27,10 @@ const ProjectCarousel: React.FC<ProjectCarouselProps> = ({ projects }) => {
       spacing: 12,
       origin: "center",
     },
+    
     breakpoints: {
       "(max-width: 900px)": {
-        slides: { perView: 1.1, spacing: 8, origin: "center" },
+        slides: { perView: 1, spacing: 8, origin: "center" },
       },
       "(min-width: 901px) and (max-width: 1200px)": {
         slides: { perView: 1.2, spacing: 10, origin: "center" },
