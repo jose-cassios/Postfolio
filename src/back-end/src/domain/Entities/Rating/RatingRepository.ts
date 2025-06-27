@@ -1,4 +1,4 @@
-import Rating from "./Rating";
+import Rating from "@domain/entities/rating/Rating";
 
 export default interface RatingRepository {
   insert(rating: Rating): Promise<Rating>;

@@ -16,7 +16,7 @@ interface ProjectCarouselProps {
   projects: Project[];
 }
 
-const CARD_HEIGHT = 500;
+const CARD_HEIGHT = 450;
 
 const ProjectCarousel: React.FC<ProjectCarouselProps> = ({ projects }) => {
   const [sliderRef, slider] = useKeenSlider<HTMLDivElement>({
@@ -67,7 +67,7 @@ const ProjectCarousel: React.FC<ProjectCarouselProps> = ({ projects }) => {
   }, [slider]);
 
   return (
-    <div ref={sliderRef} className="keen-slider w-full py-8 overflow-x-visible">
+    <div ref={sliderRef} className="keen-slider w-full py-1 overflow-x-visible">
       {projects.map((project, idx) => (
         <div
           className="keen-slider__slide flex justify-center items-center"

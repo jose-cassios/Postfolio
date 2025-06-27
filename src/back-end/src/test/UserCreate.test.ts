@@ -23,7 +23,7 @@ describe("User API Tests", () => {
   test("POST /api/user/login", async () => {
     const response = await request(api).post("/api/user/login").send({
       email: "test@example.com",
-      passWord: userPassWord,
+      password: userPassWord,
     });
 
     console.log("Login Response:", response.body);

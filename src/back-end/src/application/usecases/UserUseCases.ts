@@ -1,17 +1,18 @@
-import Portfolio from "../../Domain/Entities/Portfolio/Portfolio";
-import Rating from "../../Domain/Entities/Rating/Rating";
-import User from "../../Domain/Entities/User/User";
+// import Portfolio from "@domain/entities/portfolio/Portfolio";
+// import Rating from "@domain/entities/rating/Rating";
+import User from "@domain/entities/user/User";
+import Email from "@domain/valueObject/Email";
 
 export default interface UserUseCases {
   register(user: User): Promise<void>;
-  login(email: string, passWord: string): Promise<string>;
+  login(email: Email, passWord: string): Promise<string>;
 
   findMany(): Promise<User[]>;
-  findByEmail(email: string): Promise<User | null>;
+  findByEmail(email: Email): Promise<User | null>;
   findById(id: string): Promise<User | null>;
 
-  findPortfolios(authorId: string): Promise<Portfolio[]>;
-  findRatings(authorId: string): Promise<Rating[]>;
+  // findPortfolios(authorId: string): Promise<Portfolio[]>;
+  // findRatings(authorId: string): Promise<Rating[]>;
   // createReting(rating: Rating): Promise<Rating>;
   // findManyRating(id: string): Promise<Rating[]>;
 

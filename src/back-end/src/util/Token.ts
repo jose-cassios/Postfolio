@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { HttpError } from "../Infrastructure/Error/HttpError";
+import { InternalServerError } from "@domain/error/HttpError";
 
 export const Token = {
   generate(id: string, email: string): string {
@@ -11,7 +11,7 @@ export const Token = {
       });
       return token;
     } catch (error) {
-      throw new HttpError(500, "Não é possivel fazer login!");
+      throw new InternalServerError("Não é possivel fazer login!");
     }
   },
 };

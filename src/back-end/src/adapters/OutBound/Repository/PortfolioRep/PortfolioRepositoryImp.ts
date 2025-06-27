@@ -1,30 +1,38 @@
-import { PrismaPortfolioRepository } from "./PrismaPortfolioRepository";
-import PortfolioRepository from "../../../../Domain/Entities/Portfolio/PortfolioRepository";
-import Portfolio from "../../../../Domain/Entities/Portfolio/Portfolio";
-// import { PortfolioMapper } from "../../util/Mapper";
-import Mapper from "../../../../Util/Mapper";
+import prismaPortfolioRepository, {
+  PrismaPortfolioRepository,
+} from "@repository/portfolioRep/PrismaPortfolioRepository";
+import PortfolioRepository from "@domain/entities/portfolio/PortfolioRepository";
+import Portfolio from "@domain/entities/portfolio/Portfolio";
+import Mapper from "@util/Mapper";
 
 class PortfolioRepositoryImp implements PortfolioRepository {
+  constructor(
+    private readonly prismaPortfolioRepository: PrismaPortfolioRepository
+  ) {}
+
   async insert(portfolio: Portfolio): Promise<Portfolio> {
     const portfolioEntity = Mapper.Portfolio.toPrisma(portfolio);
-    portfolio.id = (await PrismaPortfolioRepository.insert(portfolioEntity)).id;
+    portfolio.id = (
+      await this.prismaPortfolioRepository.insert(portfolioEntity)
+    ).id;
     return portfolio;
   }
 
   async findMany(): Promise<Portfolio[]> {
-    return (await PrismaPortfolioRepository.findMany()).map(
+    return (await this.prismaPortfolioRepository.findMany()).map(
       Mapper.Portfolio.toDomain
     );
   }
+
   async findById(id: string): Promise<Portfolio | null> {
-    const portfolioEntity = await PrismaPortfolioRepository.findById(id);
+    const portfolioEntity = await this.prismaPortfolioRepository.findById(id);
 
     if (!portfolioEntity) return null;
 
     return Mapper.Portfolio.toDomain(portfolioEntity);
   }
   async findByAuthor(authorId: string): Promise<Portfolio[]> {
-    const portfolioEntities = await PrismaPortfolioRepository.findByAuthor(
+    const portfolioEntities = await this.prismaPortfolioRepository.findByAuthor(
       authorId
     );
     const portfolios = portfolioEntities.map(Mapper.Portfolio.toDomain);
@@ -33,14 +41,16 @@ class PortfolioRepositoryImp implements PortfolioRepository {
 
   async update(portfolio: Portfolio): Promise<Portfolio> {
     const portfolioEntity = Mapper.Portfolio.toPrisma(portfolio);
-    await PrismaPortfolioRepository.update(portfolioEntity);
+    await this.prismaPortfolioRepository.update(portfolioEntity);
     return portfolio;
   }
 
   async deleteById(id: string): Promise<Portfolio | null> {
-    return await PrismaPortfolioRepository.deleteById(id);
+    return await this.prismaPortfolioRepository.deleteById(id);
   }
 }
 
-const portfolioRepository: PortfolioRepository = new PortfolioRepositoryImp();
+const portfolioRepository: PortfolioRepository = new PortfolioRepositoryImp(
+  prismaPortfolioRepository
+);
 export default portfolioRepository;

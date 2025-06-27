@@ -1,33 +1,26 @@
 import { FastifyInstance } from "fastify";
-import { UserController } from "../Controller/UserController";
-import { UserMiddle } from "../Middleware/UserMiddle";
+import { UserController } from "@controller/UserController";
+import { UserMiddle } from "@middleware/UserMiddle";
+import userServiceImp from "@service/UserServiceImp";
+// import { UserServiceImp } from "@service/UserServiceImp";
+// import UserServiceImp from "@service/UserServiceImp";
 
 export async function UserRoutes(app: FastifyInstance) {
-  app.post("", UserController.register);
-  app.post("/all", UserController.getAll);
-  app.post("/login", UserController.login);
+  const userController = new UserController(userServiceImp);
+
+  app.get("", (req, reply) => userController.hello(req, reply));
+
+  app.post("", (req, reply) => userController.register(req, reply));
+  app.post("/all", (req, reply) => userController.getAll(req, reply));
+  app.post("/login", (req, reply) => userController.login(req, reply));
 
   app.post(
     "/profile",
-    { preHandler: UserMiddle.authenticate },
-    UserController.getProfile
+    { preValidation: UserMiddle.authenticate },
+    (req, reply) => userController.getProfile(req, reply)
   );
 
-  app.post(
-    "/portfolios",
-    { preHandler: UserMiddle.authenticate },
-    UserController.getPortfolios
-  );
-
-  app.post(
-    "/ratings",
-    { preHandler: UserMiddle.authenticate },
-    UserController.getRatings
-  );
-
-  app.delete(
-    "",
-    { preHandler: UserMiddle.authenticate },
-    UserController.deleteById
+  app.delete("", { preValidation: UserMiddle.authenticate }, (req, reply) =>
+    userController.deleteById(req, reply)
   );
 }

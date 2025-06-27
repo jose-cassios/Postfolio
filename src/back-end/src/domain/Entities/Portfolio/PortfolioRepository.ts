@@ -1,4 +1,4 @@
-import Portfolio from "./Portfolio";
+import Portfolio from "@domain/entities/portfolio/Portfolio";
 
 export default interface PortfolioRepository {
   insert(portfolio: Portfolio): Promise<Portfolio>;

@@ -1,4 +1,4 @@
-import { HttpError } from "../../../Infrastructure/Error/HttpError";
+import { BadRequest } from "@domain/error/HttpError";
 
 export default class Rating {
   id: string;
@@ -11,9 +11,8 @@ export default class Rating {
     this.userId = userId;
     this.portfolioId = portfolioId;
 
-    if (score > 100)
-      throw new HttpError(400, "A nota não pode ser maior que 100!");
-    if (score < 0) throw new HttpError(400, "A nota não pode ser negativa!");
+    if (score > 100) throw new BadRequest("A nota não pode ser maior que 100!");
+    if (score < 0) throw new BadRequest("A nota não pode ser negativa!");
     this.score = score;
   }
 }

@@ -1,9 +1,9 @@
-import PrismaUser from "../../Entities/PrismaUser";
-import { prisma } from "../../../../Infrastructure/Config/prisma";
-import { HttpError } from "../../../../Infrastructure/Error/HttpError";
+import PrismaUser from "@models/PrismaUser";
+import { prisma } from "@infrastructure/config/Prisma";
+import { InternalServerError } from "@domain/error/HttpError";
 
-export const PrismaUserRepository = {
-  insert: async (prismaUser: PrismaUser): Promise<PrismaUser> => {
+export class PrismaUserRepository {
+  async insert(prismaUser: PrismaUser): Promise<PrismaUser> {
     try {
       const user = prisma.user.create({
         data: {
@@ -15,19 +15,23 @@ export const PrismaUserRepository = {
       });
       return user;
     } catch (error) {
-      throw new HttpError(500, "Erro ao registrar usuario!");
+      throw new InternalServerError("Erro ao registrar usuario!");
     }
-  },
-  findMany: async (): Promise<PrismaUser[]> => {
+  }
+
+  async findMany(): Promise<PrismaUser[]> {
     return prisma.user.findMany();
-  },
-  findById: async (id: string): Promise<PrismaUser | null> => {
+  }
+
+  async findById(id: string): Promise<PrismaUser | null> {
     return prisma.user.findUnique({ where: { id } });
-  },
-  findByEmail: async (email: string): Promise<PrismaUser | null> => {
+  }
+
+  async findByEmail(email: string): Promise<PrismaUser | null> {
     return prisma.user.findUnique({ where: { email } });
-  },
-  deleteById: async (id: string): Promise<PrismaUser | null> => {
+  }
+
+  async deleteById(id: string): Promise<PrismaUser | null> {
     try {
       const userDelete = await prisma.user.delete({
         where: { id },
@@ -36,7 +40,10 @@ export const PrismaUserRepository = {
     } catch (error) {
       console.log("Id: ", id, "\n");
       // console.log(error);
-      throw new HttpError(500, "Não foi possivel deletar usuario!");
+      throw new InternalServerError("Não foi possivel deletar usuario!");
     }
-  },
-};
+  }
+}
+
+const prismaUserRepository = new PrismaUserRepository();
+export default prismaUserRepository;

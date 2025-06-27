@@ -1,17 +1,23 @@
 import { FastifyInstance } from "fastify";
-import { RatingController } from "../Controller/RatingController";
-import { UserMiddle } from "../Middleware/UserMiddle";
+import RatingController from "@controller/RatingController";
+import { UserMiddle } from "@middleware/UserMiddle";
+import ratingService from "@service/RatingServiceImp";
 
 export async function RatingRoute(app: FastifyInstance) {
-  app.post("", RatingController.register);
+  const ratingController = new RatingController(ratingService);
+  app.post("/all", (req, rep) => ratingController.getAll(req, rep));
 
-  app.post("/all", RatingController.getAll);
+  app.post("", { preValidation: UserMiddle.authenticate }, (req, rep) =>
+    ratingController.register(req, rep)
+  );
 
-  app.put("", { preHandler: UserMiddle.authenticate }, RatingController.update);
+  app.put("", { preValidation: UserMiddle.authenticate }, (req, rep) =>
+    ratingController.update(req, rep)
+  );
 
   app.delete(
     "/:portfolioId",
-    { preHandler: UserMiddle.authenticate },
-    RatingController.delete
+    { preValidation: UserMiddle.authenticate },
+    (req, rep) => ratingController.delete(req, rep)
   );
 }
