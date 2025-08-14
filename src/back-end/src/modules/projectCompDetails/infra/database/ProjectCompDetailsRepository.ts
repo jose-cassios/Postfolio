@@ -54,11 +54,17 @@ export class ProjectCompDetailsRepository
     }
   }
 
-  async delete(id: string): Promise<ProjectCompDetails> {
+  async delete(
+    competitionId: string,
+    projectId: string
+  ): Promise<ProjectCompDetails> {
     try {
       const model = await prisma.projectCompDetails.delete({
         where: {
-          id,
+          competitionId_projectId: {
+            competitionId,
+            projectId,
+          },
         },
       });
 
