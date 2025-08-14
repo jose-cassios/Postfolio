@@ -6,7 +6,7 @@ export interface RatingContracts {
   competitionId: string;
 }
 
-interface RatingDiffContract {
+export interface RatingDiffContract {
   competitionId: string;
   projectId: string;
   scoreDiff: number;
