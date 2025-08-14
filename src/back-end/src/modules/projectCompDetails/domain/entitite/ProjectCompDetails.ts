@@ -17,7 +17,8 @@ export class ProjectCompDetails {
   //     this.totalScore -= rating.score;
   //   }
 
-  public updateTotalScore(oldScore: number, newScore: number) {
-    this.totalScore += newScore - oldScore;
+  public recalculate(scoreDiff: number, ReviewersDiff: number) {
+    this.totalScore += scoreDiff;
+    this.totalReviewers += ReviewersDiff;
   }
 }
