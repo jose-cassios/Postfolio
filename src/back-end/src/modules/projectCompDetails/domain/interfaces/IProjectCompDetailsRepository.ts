@@ -6,4 +6,8 @@ export interface IProjectCompDetailsRepository {
   delete(id: string): Promise<ProjectCompDetails>;
 
   findById(id: string): Promise<ProjectCompDetails | null>;
+  findByCompetitionIdAndPortfolioId(
+    competitionId: string,
+    projectId: string
+  ): Promise<ProjectCompDetails | null>;
 }

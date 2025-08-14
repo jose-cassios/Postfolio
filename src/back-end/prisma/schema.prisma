@@ -117,6 +117,7 @@ model ProjectCompDetails {
   project        Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
   competition    Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
 
+  @@unique([competitionId, projectId])
   @@map("tb_project_comp_details")
 }
 
