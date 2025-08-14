@@ -4,6 +4,15 @@ import {
   InternalServerError,
 } from "@shared/error/HttpError";
 
+type RatingData = {
+  id: string;
+  score: number;
+  userId: string;
+  projectId: string;
+  competitionId: string;
+  projectCompDetailsId: string;
+};
+
 // import { Rating } from '../competition/domain/entities/Rating';
 export class Rating {
   constructor(
@@ -64,6 +73,17 @@ export class Rating {
   private validateScore(score: number) {
     if (score > 5) throw new BadRequest("A nota não pode ser maior que 5!");
     if (score < 0) throw new BadRequest("A nota não pode ser negativa!");
+  }
+
+  public copy(): Rating {
+    return new Rating(
+      this.id,
+      this.score,
+      this.userId,
+      this.projectId,
+      this.competitionId,
+      this.projectCompDetailsId
+    );
   }
 
   public getId(): string {
