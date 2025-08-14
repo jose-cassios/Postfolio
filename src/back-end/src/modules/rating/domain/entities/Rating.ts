@@ -1,4 +1,8 @@
-import { BadRequest } from "@shared/error/HttpError";
+import {
+  BadRequest,
+  Conflict,
+  InternalServerError,
+} from "@shared/error/HttpError";
 
 // import { Rating } from '../competition/domain/entities/Rating';
 export class Rating {
@@ -13,6 +17,43 @@ export class Rating {
     this.validateScore(score);
     this.id = id;
     this.score = score;
+  }
+
+  public static createDiff(newRating: Rating | null, oldRating: Rating | null) {
+    if (!newRating && !oldRating)
+      throw new InternalServerError("Ambos as intancias são nulls!");
+
+    if (newRating?.getCompetitionId() !== oldRating?.getCompetitionId())
+      throw new Conflict("Recursos em conflito em rating!");
+
+    if (newRating && !oldRating) {
+      return {
+        competitionId: newRating.getCompetitionId(),
+        projectId: newRating.getProjectId(),
+        scoreDiff: newRating.getScore(),
+        reviewersDiff: 1,
+      };
+    }
+
+    if (newRating && oldRating) {
+      return {
+        competitionId: newRating.getCompetitionId(),
+        projectId: newRating.getProjectId(),
+        scoreDiff: newRating.getScore() - oldRating.getScore(),
+        reviewersDiff: 0,
+      };
+    }
+
+    if (!newRating && oldRating) {
+      return {
+        competitionId: oldRating.getCompetitionId(),
+        projectId: oldRating.getProjectId(),
+        scoreDiff: -oldRating.getScore(),
+        reviewersDiff: -1,
+      };
+    }
+
+    throw new InternalServerError("Ocorrou um erro inesperado em avaliações!");
   }
 
   public updateScore(score: number) {
