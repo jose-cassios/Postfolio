@@ -68,6 +68,7 @@ model Portfolio {
 model Competition {
   id           String               @id @default(uuid())
   name         String
+  description  String
   createdAt    DateTime             @default(now())
   startsAt     DateTime?
   endsAt       DateTime?

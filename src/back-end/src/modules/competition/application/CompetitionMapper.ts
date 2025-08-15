@@ -2,22 +2,24 @@ import { Competition as CompetitionModel } from "@prisma/client";
 import { Competition } from "@competition/domain/entities/Competition";
 
 export const CompetitionMapper = {
-  toDomain(competitionModel: CompetitionModel): Competition {
+  toDomain(model: CompetitionModel): Competition {
     return new Competition(
-      competitionModel.id,
-      competitionModel.name,
-      competitionModel.createdAt,
-      competitionModel.startsAt,
-      competitionModel.endsAt
+      model.id,
+      model.name,
+      model.description,
+      model.createdAt,
+      model.startsAt,
+      model.endsAt
     );
   },
-  toPrisma(competition: Competition): CompetitionModel {
+  toPrisma(domain: Competition): CompetitionModel {
     return {
-      id: competition.id,
-      name: competition.name,
-      createdAt: competition.createdAt,
-      startsAt: competition.startsAt,
-      endsAt: competition.endsAt,
+      id: domain.id,
+      name: domain.name,
+      description: domain.description,
+      createdAt: domain.createdAt,
+      startsAt: domain.startsAt,
+      endsAt: domain.endsAt,
     };
   },
 };
