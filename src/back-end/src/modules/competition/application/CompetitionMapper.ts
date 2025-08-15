@@ -2,7 +2,7 @@ import { Competition as CompetitionModel } from "@prisma/client";
 import { Competition } from "@competition/domain/entities/Competition";
 
 export const CompetitionMapper = {
-  toDomain(model: CompetitionModel): Competition {
+  fromPrismaToDomain(model: CompetitionModel): Competition {
     return new Competition(
       model.id,
       model.name,
@@ -12,7 +12,7 @@ export const CompetitionMapper = {
       model.endsAt
     );
   },
-  toPrisma(domain: Competition): CompetitionModel {
+  fromDomainToPrisma(domain: Competition): CompetitionModel {
     return {
       id: domain.id,
       name: domain.name,
