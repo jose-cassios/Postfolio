@@ -8,7 +8,7 @@ export const TYPES = {
   ICompetitionRepository: Symbol.for("ICompetitionRepository"),
   IProjectRepository: Symbol.for("IProjectRepository"),
   IProjectCompDetailsRepository: Symbol.for("IProjectCompDetailsRepository"),
-  IMessageRepository: Symbol.for("IMessageRepository"),
+  // IMessageRepository: Symbol.for("IMessageRepository"),
 
   // Portas de Aplicação (Use Cases de alto nível)
   IUserService: Symbol.for("IUserService"),
@@ -17,8 +17,8 @@ export const TYPES = {
   ICompetitionService: Symbol.for("ICompetitionService"),
   IProjectService: Symbol.for("IProjectService"),
   IProjectCompDetailsService: Symbol.for("IProjectCompDetailsService"),
-  IMessageService: Symbol.for("IMessageService"),
-  IUsersConnects: Symbol.for("IUsersConnects"),
+  // IMessageService: Symbol.for("IMessageService"),
+  // IUsersConnects: Symbol.for("IUsersConnects"),
   IEmailService: Symbol.for("IEmailService"),
 
   // Portas de Saída (Adapters entre Domínios)
@@ -45,7 +45,7 @@ export const TYPES = {
   CompetitionController: Symbol.for("CompetitionController"),
   ProjectController: Symbol.for("WorkController"),
   ProjectCompDetailsController: Symbol.for("WorkCompDetailsController"),
-  ChatController: Symbol.for("ChatController"),
+  // ChatController: Symbol.for("ChatController"),
   EmailController: Symbol.for("EmailController"),
 
   // Handlers
