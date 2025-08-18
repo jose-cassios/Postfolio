@@ -13,6 +13,7 @@ import { CompetitionController } from "@competition/api/CompetitionController";
 // import { ChatController } from "@chat/api/ChatController";
 import { EmailController } from "@email/api/EmailController";
 import { RatingController } from "@rating/api/RatingController";
+import { FavorateProjectsController } from "@favorateProjects/api/FavorateProjectsController";
 
 // Rotas
 import { UserRoute } from "@user/api/UserRoute";
@@ -37,6 +38,8 @@ import { emailComposerModuler } from "@email/composition/EmailComposer";
 import { projectComposeModule } from "@project/composition/ProjectComposer";
 import { ratingComposerModule } from "@rating/composition/RatingComposer";
 import { projectCompDetailsComposeModule } from "@projectCompDetails/composition/projectCompDetailsComposer";
+import { favorateProjectsComposer } from "@favorateProjects/composition/FavorateProjectsComposer";
+import { FavorateProjectsRoute } from "@favorateProjects/api/FavorateProjectsRoutes";
 
 const container = new Container();
 
@@ -48,6 +51,7 @@ competitionComposeModule(container);
 emailComposerModuler(container);
 ratingComposerModule(container);
 projectCompDetailsComposeModule(container);
+favorateProjectsComposer(container);
 
 interface IApplicationControllers {
   userController: UserController;
@@ -57,6 +61,7 @@ interface IApplicationControllers {
   // chatController: ChatController;
   emailController: EmailController;
   ratingController: RatingController;
+  favorateProjectsController: FavorateProjectsController;
   // ... outros controladores
 }
 
@@ -86,6 +91,10 @@ export class AppComposer {
     const ratingController = container.get<RatingController>(
       TYPES.RatingController
     );
+    const favorateProjectsController =
+      container.get<FavorateProjectsController>(
+        TYPES.FavorateProjectsController
+      );
 
     return {
       userController,
@@ -95,6 +104,7 @@ export class AppComposer {
       // chatController,
       emailController,
       ratingController,
+      favorateProjectsController,
       // ... retorne outras instâncias de controlador
     };
   }
@@ -108,6 +118,10 @@ export class AppComposer {
     // ChatRoute.register(app, this.controllers.chatController);
     EmailRoute.register(app, this.controllers.emailController);
     RatingRoute.register(app, this.controllers.ratingController);
+    FavorateProjectsRoute.register(
+      app,
+      this.controllers.favorateProjectsController
+    );
   }
 
   public registerHandlers(): void {

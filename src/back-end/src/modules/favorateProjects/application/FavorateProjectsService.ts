@@ -25,10 +25,6 @@ export class FavorateProjectsService implements IFavorateProjectsService {
       this.projectPort.exist(dto.projectId),
     ]);
 
-    // const favorate = await this.repository.findByUserIdAndProjectId(
-    //   dto.userId,
-    //   dto.projectId
-    // );
     if (!project) throw new NotFound("O projeto não existe!");
     if (!favorate) throw new Conflict("O projeto já está salvo!");
 
