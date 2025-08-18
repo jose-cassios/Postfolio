@@ -19,7 +19,7 @@ import { UserRoute } from "@user/api/UserRoute";
 import { PortfolioRoute } from "@portfolio/api/PortfolioRoute";
 import { ProjectRoute } from "@project/api/ProjectRoute";
 import { CompetitionRoute } from "@competition/api/CompetitionRoute";
-import { ChatRoute } from "@chat/api/ChatRoute";
+// import { ChatRoute } from "@chat/api/ChatRoute";
 import { EmailRoute } from "@email/api/EmailRoute";
 import { RatingRoute } from "@rating/api/RatingRoute";
 
@@ -32,7 +32,7 @@ import { EmailUserUpdateHandler } from "@email/handler/EmailUserUpdateHandler";
 import { userComposeModule } from "@user/composition/UserComposer";
 import { portfolioComposeModule } from "@portfolio/composition/PortfolioComposer";
 import { competitionComposeModule } from "@competition/composition/CompetitionComposer";
-import { chatComposerModule } from "@chat/composition/ChatComposer";
+// import { chatComposerModule } from "@chat/composition/ChatComposer";
 import { emailComposerModuler } from "@email/composition/EmailComposer";
 import { projectComposeModule } from "@project/composition/ProjectComposer";
 import { ratingComposerModule } from "@rating/composition/RatingComposer";
@@ -44,7 +44,7 @@ userComposeModule(container);
 portfolioComposeModule(container);
 projectComposeModule(container);
 competitionComposeModule(container);
-chatComposerModule(container);
+// chatComposerModule(container);
 emailComposerModuler(container);
 ratingComposerModule(container);
 projectCompDetailsComposeModule(container);
@@ -54,7 +54,7 @@ interface IApplicationControllers {
   portfolioController: PortfolioController;
   projectController: WorkController;
   competitionController: CompetitionController;
-  chatController: ChatController;
+  // chatController: ChatController;
   emailController: EmailController;
   ratingController: RatingController;
   // ... outros controladores
@@ -79,7 +79,7 @@ export class AppComposer {
     const competitionController = container.get<CompetitionController>(
       TYPES.CompetitionController
     );
-    const chatController = container.get<ChatController>(TYPES.ChatController);
+    // const chatController = container.get<ChatController>(TYPES.ChatController);
     const emailController = container.get<EmailController>(
       TYPES.EmailController
     );
@@ -92,7 +92,7 @@ export class AppComposer {
       portfolioController,
       projectController,
       competitionController,
-      chatController,
+      // chatController,
       emailController,
       ratingController,
       // ... retorne outras instâncias de controlador
@@ -105,7 +105,7 @@ export class AppComposer {
     PortfolioRoute.register(app, this.controllers.portfolioController);
     ProjectRoute.register(app, this.controllers.projectController);
     CompetitionRoute.register(app, this.controllers.competitionController);
-    ChatRoute.register(app, this.controllers.chatController);
+    // ChatRoute.register(app, this.controllers.chatController);
     EmailRoute.register(app, this.controllers.emailController);
     RatingRoute.register(app, this.controllers.ratingController);
   }
