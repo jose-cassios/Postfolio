@@ -3,6 +3,7 @@ import { FavorateProjects } from "@favorateProjects/domain/entities/FavorateProj
 import { IFavorateProjectsRepository } from "@favorateProjects/domain/interfaces/IFavorateProjectsRepository";
 import { prisma } from "@infrastructure/config/Prisma";
 import { Prisma } from "@prisma/client";
+import { FavorateProjectsContract } from "@shared/contracts/FavorateProjectsContract";
 import { InternalServerError } from "@shared/error/HttpError";
 
 export class FavorateProjectsRepository implements IFavorateProjectsRepository {
@@ -45,7 +46,7 @@ export class FavorateProjectsRepository implements IFavorateProjectsRepository {
     }
   }
 
-  async findByUserId(userId: string): Promise<FavorateProjects[]> {
+  async findByUserId(userId: string): Promise<FavorateProjectsContract[]> {
     try {
       const models = await prisma.favorateProjects.findMany({
         where: {
@@ -53,7 +54,7 @@ export class FavorateProjectsRepository implements IFavorateProjectsRepository {
         },
       });
 
-      return models.map(FavorateProjectsMapper.fromPrismaToDomain);
+      return models.map(FavorateProjectsMapper.fromPrismaToContract);
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         throw new InternalServerError(
