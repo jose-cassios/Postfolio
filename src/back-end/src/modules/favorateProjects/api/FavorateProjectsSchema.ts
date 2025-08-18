@@ -28,6 +28,6 @@ const favorateProjectsSchemas = {
 
 export {
   favorateProjectsSchemas,
-  CreateFavorateProjectBodySchema,
-  DeleteFavorateProjectParamsSchema,
+  CreateFavorateProjectRequest,
+  DeleteFavorateProjectRequest,
 };
