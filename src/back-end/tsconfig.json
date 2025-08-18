@@ -38,9 +38,10 @@
       "@project/*" : ["modules/project/*"],
       "@competition/*" : ["modules/competition/*"],
       "@email/*" : ["modules/email/*"],
-      "@chat/*" : ["modules/chat/*"],
+      // "@chat/*" : ["modules/chat/*"],
       "@rating/*" : ["modules/rating/*"],
       "@projectCompDetails/*" : ["modules/projectCompDetails/*"],
+      "@favorateProjects/*" : ["modules/favorateProjects/*"],
 
       "@shared/*" : ["shared/*"],
       "@compositionRoot/*" : ["compositionRoot/*"],
