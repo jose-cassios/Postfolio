@@ -10,7 +10,7 @@ import { UserController } from "@user/api/UserController";
 import { PortfolioController } from "@portfolio/api/PortfolioController";
 import { WorkController } from "@project/api/ProjectController";
 import { CompetitionController } from "@competition/api/CompetitionController";
-import { ChatController } from "@chat/api/ChatController";
+// import { ChatController } from "@chat/api/ChatController";
 import { EmailController } from "@email/api/EmailController";
 import { RatingController } from "@rating/api/RatingController";
 
