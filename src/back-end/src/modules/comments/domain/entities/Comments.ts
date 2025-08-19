@@ -6,11 +6,12 @@ export class Comments {
     private id: string,
     private content: string,
     private userId: string,
-    private projectId: string
+    private projectId: string,
+    private createdAt: Date
   ) {}
 
   static create(dto: CreateCommentDTO): Comments {
-    return new Comments("", dto.content, dto.userId, dto.projectId);
+    return new Comments("", dto.content, dto.userId, dto.projectId, new Date());
   }
 
   public update(dto: UpdateCommentDTO) {
@@ -23,7 +24,7 @@ export class Comments {
     return this.id;
   }
 
-  public getConten(): string {
+  public getContent(): string {
     return this.content;
   }
 
@@ -33,5 +34,9 @@ export class Comments {
 
   public getProjectId(): string {
     return this.projectId;
+  }
+
+  public getCreatedAt(): Date {
+    return this.createdAt;
   }
 }
