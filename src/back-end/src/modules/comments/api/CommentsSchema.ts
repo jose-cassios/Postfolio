@@ -55,5 +55,5 @@ export {
   commentsRouteSchema,
   CreateCommentsRequest,
   UpdateCommentRequest,
-  DeleteCommentsParamsSchema,
+  DeleteCommentsRequest,
 };
