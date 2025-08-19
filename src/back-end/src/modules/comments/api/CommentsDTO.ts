@@ -1,10 +1,10 @@
-export interface CreateUserDTO {
+export interface CreateCommentDTO {
   content: string;
   userId: string;
   projectId: string;
 }
 
-export interface UpdateUserDTO {
+export interface UpdateCommentDTO {
   id: string;
   content: string;
   userId: string;
