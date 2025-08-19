@@ -9,3 +9,8 @@ export interface UpdateCommentDTO {
   content: string;
   userId: string;
 }
+
+export interface DeleteCommentDTO {
+  id: string;
+  userId: string;
+}
