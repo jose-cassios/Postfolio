@@ -42,6 +42,7 @@
       "@rating/*" : ["modules/rating/*"],
       "@projectCompDetails/*" : ["modules/projectCompDetails/*"],
       "@favorateProjects/*" : ["modules/favorateProjects/*"],
+      "@comments/*" : ["modules/comments/*"],
 
       "@shared/*" : ["shared/*"],
       "@compositionRoot/*" : ["compositionRoot/*"],
