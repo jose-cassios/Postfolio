@@ -1,0 +1,94 @@
+import { CommentsMapper } from "@comments/application/CommentsMapper";
+import { Comments } from "@comments/domain/entities/Comments";
+import { ICommentsRepository } from "@comments/domain/interfaces/ICommentsRepository";
+import { prisma } from "@infrastructure/config/Prisma";
+import { Prisma } from "@prisma/client";
+import { InternalServerError } from "@shared/error/HttpError";
+
+export class CommentsRepository implements ICommentsRepository {
+  async create(comment: Comments): Promise<Comments> {
+    try {
+      const model = await prisma.comments.create({
+        data: {
+          ...CommentsMapper.fromDomainToPrisma(comment),
+          id: undefined,
+        },
+      });
+
+      return CommentsMapper.fromPrismaToDomain(model);
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new InternalServerError(
+          `Não foi possivel criar o comentario! Código: ${error.code}`
+        );
+      }
+      throw new InternalServerError("Erro ao criar o comentario!");
+    }
+  }
+
+  async update(comment: Comments): Promise<Comments> {
+    try {
+      const model = await prisma.comments.update({
+        where: {
+          id: comment.getId(),
+        },
+        data: {
+          ...CommentsMapper.fromDomainToPrisma(comment),
+        },
+      });
+
+      return CommentsMapper.fromPrismaToDomain(model);
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new InternalServerError(
+          `Não foi possivel atualizar o comentario! Código: ${error.code}`
+        );
+      }
+      throw new InternalServerError("Erro ao atualizar o comentario!");
+    }
+  }
+
+  async delete(comment: Comments): Promise<Comments> {
+    try {
+      const model = await prisma.comments.delete({
+        where: {
+          id: comment.getId(),
+        },
+      });
+
+      return CommentsMapper.fromPrismaToDomain(model);
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new InternalServerError(
+          `Não foi possivel deletar o comentario! Código: ${error.code}`
+        );
+      }
+      throw new InternalServerError("Erro ao deletar o comentario!");
+    }
+  }
+  async findById(id: string): Promise<Comments | null> {
+    try {
+      const model = await prisma.comments.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      return model ? CommentsMapper.fromPrismaToDomain(model) : null;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new InternalServerError(
+          `Não foi possivel buscar o comentario! Código: ${error.code}`
+        );
+      }
+      throw new InternalServerError("Erro ao buscar o comentario!");
+    }
+  }
+
+  findByUserIdAndProjectId(
+    userId: string,
+    projectId: string
+  ): Promise<Comments | null> {
+    throw new Error("Method not implemented.");
+  }
+}
