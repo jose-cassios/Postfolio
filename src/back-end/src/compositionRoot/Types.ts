@@ -10,6 +10,7 @@ export const TYPES = {
   IProjectCompDetailsRepository: Symbol.for("IProjectCompDetailsRepository"),
   // IMessageRepository: Symbol.for("IMessageRepository"),
   IFavorateProjectsRepository: Symbol.for("IFavorateProjectsRepository"),
+  ICommentsRepository: Symbol.for("ICommentsRepository"),
 
   // Portas de Aplicação (Use Cases de alto nível)
   IUserService: Symbol.for("IUserService"),
@@ -22,13 +23,14 @@ export const TYPES = {
   // IUsersConnects: Symbol.for("IUsersConnects"),
   IEmailService: Symbol.for("IEmailService"),
   IFavorateProjectsService: Symbol.for("IFavorateProjectsService"),
+  ICommentsService: Symbol.for("ICommentsService"),
 
   // Portas de Saída (Adapters entre Domínios)
-  PortfolioPort: Symbol.for("PortfolioPort"), // User Module precisa interagir com Portfolio
-  UserPort: Symbol.for("UserPort"), // Portfolio/Rating Module precisa interagir com User
-  ProjectPort: Symbol.for("ProjectPort"), // WorkCompDetails Module precisa interagir com Work
-  CompetitionPort: Symbol.for("CompetitionPort"), // WorkCompDetails Module precisa interagir com Competition
-  ProjectCompDetailsPort: Symbol.for("IProjectCompDetailsPort"), // Rating Module precisa interagir com WorkCompDetails
+  PortfolioPort: Symbol.for("PortfolioPort"),
+  UserPort: Symbol.for("UserPort"),
+  ProjectPort: Symbol.for("ProjectPort"),
+  CompetitionPort: Symbol.for("CompetitionPort"),
+  ProjectCompDetailsPort: Symbol.for("IProjectCompDetailsPort"),
   RatingPort: Symbol.for("RatingPort"),
   FavorateProjectsPort: Symbol.for("FavorateProjectsPort"),
 
