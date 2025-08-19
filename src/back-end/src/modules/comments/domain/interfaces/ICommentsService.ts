@@ -1,9 +1,14 @@
+import {
+  CreateCommentDTO,
+  DeleteCommentDTO,
+  UpdateCommentDTO,
+} from "@comments/api/CommentsDTO";
 import { Comments } from "@comments/domain/entities/Comments";
 
 export interface ICommentsService {
-  create(comment: Comments): Promise<Comments>;
-  update(comment: Comments): Promise<Comments>;
-  delete(comment: Comments): Promise<Comments>;
+  create(dto: CreateCommentDTO): Promise<Comments>;
+  update(dto: UpdateCommentDTO): Promise<Comments>;
+  delete(dto: DeleteCommentDTO): Promise<Comments>;
 
   findByUserIdAndProjectId(
     userId: string,
