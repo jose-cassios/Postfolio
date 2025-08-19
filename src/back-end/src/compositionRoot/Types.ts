@@ -53,6 +53,7 @@ export const TYPES = {
   // ChatController: Symbol.for("ChatController"),
   EmailController: Symbol.for("EmailController"),
   FavorateProjectsController: Symbol.for("FavorateProjectsController"),
+  CommentsController: Symbol.for("CommentsController"),
 
   // Handlers
   // PortfolioUserCreatedHandler: Symbol.for("PortfolioUserCreatedHandler"),

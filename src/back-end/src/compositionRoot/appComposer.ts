@@ -14,6 +14,7 @@ import { CompetitionController } from "@competition/api/CompetitionController";
 import { EmailController } from "@email/api/EmailController";
 import { RatingController } from "@rating/api/RatingController";
 import { FavorateProjectsController } from "@favorateProjects/api/FavorateProjectsController";
+import { CommentsController } from "@comments/api/CommentsController";
 
 // Rotas
 import { UserRoute } from "@user/api/UserRoute";
@@ -23,6 +24,8 @@ import { CompetitionRoute } from "@competition/api/CompetitionRoute";
 // import { ChatRoute } from "@chat/api/ChatRoute";
 import { EmailRoute } from "@email/api/EmailRoute";
 import { RatingRoute } from "@rating/api/RatingRoute";
+import { FavorateProjectsRoute } from "@favorateProjects/api/FavorateProjectsRoutes";
+import { CommentsRoute } from "@comments/api/CommentsRoutes";
 
 // Handlers
 import { PortfolioUserCreatedHandler } from "@portfolio/handler/PortfolioUserCreatedHandler";
@@ -39,7 +42,7 @@ import { projectComposeModule } from "@project/composition/ProjectComposer";
 import { ratingComposerModule } from "@rating/composition/RatingComposer";
 import { projectCompDetailsComposeModule } from "@projectCompDetails/composition/projectCompDetailsComposer";
 import { favorateProjectsComposer } from "@favorateProjects/composition/FavorateProjectsComposer";
-import { FavorateProjectsRoute } from "@favorateProjects/api/FavorateProjectsRoutes";
+import { commentsComposerModule } from "@comments/composition/CommentsComposer";
 
 const container = new Container();
 
@@ -52,6 +55,7 @@ emailComposerModuler(container);
 ratingComposerModule(container);
 projectCompDetailsComposeModule(container);
 favorateProjectsComposer(container);
+commentsComposerModule(container);
 
 interface IApplicationControllers {
   userController: UserController;
@@ -62,6 +66,7 @@ interface IApplicationControllers {
   emailController: EmailController;
   ratingController: RatingController;
   favorateProjectsController: FavorateProjectsController;
+  commentsController: CommentsController;
   // ... outros controladores
 }
 
@@ -96,6 +101,10 @@ export class AppComposer {
         TYPES.FavorateProjectsController
       );
 
+    const commentsController = container.get<CommentsController>(
+      TYPES.CommentsController
+    );
+
     return {
       userController,
       portfolioController,
@@ -105,6 +114,7 @@ export class AppComposer {
       emailController,
       ratingController,
       favorateProjectsController,
+      commentsController,
       // ... retorne outras instâncias de controlador
     };
   }
@@ -122,6 +132,7 @@ export class AppComposer {
       app,
       this.controllers.favorateProjectsController
     );
+    CommentsRoute.register(app, this.controllers.commentsController);
   }
 
   public registerHandlers(): void {
