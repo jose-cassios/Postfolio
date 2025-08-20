@@ -68,7 +68,7 @@ export class UserService implements IUserService {
 
       if (exist) throw new Conflict("O novo email já está cadastrado.");
     }
-    await user.updateFromDto(dto);
+    await user.update(dto);
 
     return await this.userRepository.updateById(user);
   }

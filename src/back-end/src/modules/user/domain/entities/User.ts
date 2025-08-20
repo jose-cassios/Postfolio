@@ -25,7 +25,7 @@ export default class User {
     return await Crypt.compare(password, this.passwordHash);
   }
 
-  public async updateFromDto(dto: UpdateUserDTO): Promise<void> {
+  public async update(dto: UpdateUserDTO): Promise<void> {
     if (dto.username !== undefined) {
       this.username = dto.username;
     }
