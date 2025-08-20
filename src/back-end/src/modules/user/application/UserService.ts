@@ -1,25 +1,12 @@
 import User from "@user/domain/entities/User";
-import { Crypt } from "@shared/util/Crypto";
-import {
-  BadRequest,
-  Conflict,
-  InternalServerError,
-  NotFound,
-  Unauthorized,
-} from "@shared/error/HttpError";
+import { Conflict, NotFound, Unauthorized } from "@shared/error/HttpError";
 import { Token } from "@shared/util/Token";
 import { IUserRepository } from "@user/domain/interfaces/IUserRepository";
 import Email from "@user/domain/valueObject/Email";
-import {
-  CreateUserDTO,
-  LoginUserDTO,
-  SocialLoginDTO,
-  UpdateUserDTO,
-} from "@user/api/UserDTO";
+import { CreateUserDTO, LoginUserDTO, UpdateUserDTO } from "@user/api/UserDTO";
 import { IUserService } from "@user/domain/interfaces/IUserService";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@compositionRoot/Types";
-import { UserMapper } from "@user/application/UserMapper";
 import { UserCreatedEvent } from "@shared/event/UserCreatedEvent";
 import { EventListener } from "@shared/event/EventListener";
 
@@ -27,42 +14,32 @@ import { EventListener } from "@shared/event/EventListener";
 export class UserService implements IUserService {
   constructor(
     @inject(TYPES.IUserRepository)
-    private userRepository: IUserRepository
+    private repository: IUserRepository
   ) {}
-  async create(userDto: CreateUserDTO): Promise<void> {
-    const hashedPassword = await Crypt.hashPassWord(userDto.password);
-    const userDomain = UserMapper.fromCreateUserDTOtoDomain(
-      userDto,
-      hashedPassword
-    );
+  async create(dto: CreateUserDTO): Promise<void> {
+    const user = await User.create(dto);
+    const exist = await this.repository.findByEmail(user.getEmail());
 
-    const existingUser = await this.userRepository.findByEmail(
-      userDomain.email
-    );
+    if (exist) throw new Conflict("Por favor, use outro email!");
 
-    if (existingUser) throw new Conflict("Por favor, use outro email!");
-
-    const user = await this.userRepository.create(userDomain);
-
-    if (!user)
-      throw new InternalServerError("Não foi possivel salver o usuario");
+    const createdUser = await this.repository.create(user);
 
     const event = new UserCreatedEvent(
-      user.id,
-      user.username,
-      user.email.getValue()
+      createdUser.getId(),
+      createdUser.getUsername(),
+      createdUser.getEmail().getValue()
     );
+
     EventListener.publish(event);
-    console.log("Portfolio criado com sucesso");
   }
 
   async updateById(dto: UpdateUserDTO): Promise<User> {
-    const user = await this.userRepository.findById(dto.id);
+    const user = await this.repository.findById(dto.id);
 
     if (!user) throw new NotFound("Usuario não encontrado");
 
     if (dto.email !== undefined) {
-      const exist = await this.userRepository.findByEmail(
+      const exist = await this.repository.findByEmail(
         new Email(dto.email, false)
       );
 
@@ -70,17 +47,17 @@ export class UserService implements IUserService {
     }
     await user.update(dto);
 
-    return await this.userRepository.updateById(user);
+    return await this.repository.updateById(user);
   }
 
   async deleteById(id: string): Promise<User | null> {
-    return await this.userRepository.deleteById(id);
+    return await this.repository.deleteById(id);
   }
 
   async login(loginDto: LoginUserDTO): Promise<string> {
     const email = new Email(loginDto.email);
 
-    const user = await this.userRepository.findByEmail(email);
+    const user = await this.repository.findByEmail(email);
 
     if (!user) throw new NotFound("Usuário não encontrado!");
 
@@ -88,38 +65,44 @@ export class UserService implements IUserService {
 
     if (!checkPassWord) throw new Unauthorized("Credenciais inválidas");
 
-    return Token.generate(user.id, user.email.getValue());
+    return Token.generate(user.getId(), user.getEmail().getValue());
   }
 
-  async socialLogin(socialLoginDto: SocialLoginDTO): Promise<string> {
-    const email = new Email(socialLoginDto.email);
-    let user = await this.findByEmail(email);
+  async socialLogin(dto: CreateUserDTO): Promise<string> {
+    const user = await User.create(dto);
 
-    if (!user) {
-      user = await this.userRepository.create(
-        UserMapper.fromSocialLoginDTOtoDomain(socialLoginDto)
-      );
-      const event = new UserCreatedEvent(
-        user.id,
-        user.username,
-        user.email.getValue()
-      );
-      await EventListener.publish(event);
+    const exist = await this.findByEmail(user.getEmail());
+
+    if (exist) {
+      return Token.generate(exist.getId(), exist.getEmail().getValue());
     }
 
-    return Token.generate(user.id, user.email.getValue());
+    const createdUser = await this.repository.create(user);
+
+    const event = new UserCreatedEvent(
+      createdUser.getId(),
+      createdUser.getUsername(),
+      createdUser.getEmail().getValue()
+    );
+
+    EventListener.publish(event);
+
+    return Token.generate(
+      createdUser.getId(),
+      createdUser.getEmail().getValue()
+    );
   }
 
   async findMany(): Promise<User[]> {
-    return this.userRepository.findMany();
+    return this.repository.findMany();
   }
 
   async findById(id: string): Promise<User | null> {
-    return await this.userRepository.findById(id);
+    return await this.repository.findById(id);
   }
 
   async findByEmail(email: Email): Promise<User | null> {
-    const user = await this.userRepository.findByEmail(email);
+    const user = await this.repository.findByEmail(email);
     return user;
   }
 }
