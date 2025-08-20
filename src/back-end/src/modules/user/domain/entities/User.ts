@@ -7,37 +7,17 @@ import { EventListener } from "@shared/event/EventListener";
 import { UserUpdateEvent } from "@shared/event/UserUpdateEvent";
 
 export default class User {
-  id: string;
-  username: string;
-  email: Email;
-  private passwordHash: string | null;
-  bio: string;
-  linkedin: string | null;
-  github: string | null;
-  website: string | null;
-  userType: UserType;
-
   constructor(
-    id: string,
-    username: string,
-    email: Email,
-    passwordHash: string | null,
-    bio: string = "default",
-    linkedin: string | null = null,
-    github: string | null = null,
-    website: string | null = null,
-    userType: UserType = UserType.DEVELOPER
-  ) {
-    this.id = id;
-    this.username = username;
-    this.email = email;
-    this.passwordHash = passwordHash;
-    this.bio = bio;
-    this.linkedin = linkedin;
-    this.github = github;
-    this.website = website;
-    this.userType = userType;
-  }
+    private id: string,
+    private username: string,
+    private email: Email,
+    private passwordHash: string | null,
+    private bio: string = "default",
+    private linkedin: string | null = null,
+    private github: string | null = null,
+    private website: string | null = null,
+    private userType: UserType = UserType.DEVELOPER
+  ) {}
 
   public async comparePassword(password: string): Promise<boolean> {
     if (!this.passwordHash) return false;
@@ -89,5 +69,37 @@ export default class User {
 
   public getPassword(): string | null {
     return this.passwordHash;
+  }
+
+  public getId(): string {
+    return this.id;
+  }
+
+  public getUsername(): string {
+    return this.username;
+  }
+
+  public getEmail(): Email {
+    return this.email;
+  }
+
+  public getBio(): string {
+    return this.bio;
+  }
+
+  public getLinkedin(): string | null {
+    return this.linkedin;
+  }
+
+  public getGithub(): string | null {
+    return this.github;
+  }
+
+  public getWebsite(): string | null {
+    return this.website;
+  }
+
+  public getUserType(): UserType {
+    return this.userType;
   }
 }
