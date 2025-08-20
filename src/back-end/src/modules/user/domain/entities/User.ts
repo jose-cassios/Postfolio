@@ -10,7 +10,7 @@ export default class User {
     private id: string,
     private username: string,
     private email: Email,
-    private passwordHash: string | null,
+    private passwordHash: string | null = null,
     private bio: string = "default",
     private linkedin: string | null = null,
     private github: string | null = null,
@@ -19,7 +19,9 @@ export default class User {
   ) {}
 
   public static async create(dto: CreateUserDTO) {
-    const hashedPassword = await Crypt.hashPassWord(dto.password);
+    let hashedPassword: string | null = null;
+
+    if (dto.password) hashedPassword = await Crypt.hashPassWord(dto.password);
 
     return new User(
       "",

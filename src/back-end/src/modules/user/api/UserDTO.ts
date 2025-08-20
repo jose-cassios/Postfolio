@@ -3,7 +3,7 @@ import { UserType } from "@user/domain/enum/UserType";
 interface CreateUserDTO {
   username: string;
   email: string;
-  password: string;
+  password?: string;
   bio?: string;
   linkedin?: string;
   github?: string;
@@ -27,9 +27,4 @@ interface LoginUserDTO {
   password: string;
 }
 
-interface SocialLoginDTO {
-  name: string;
-  email: string;
-}
-
-export { CreateUserDTO, LoginUserDTO, SocialLoginDTO };
+export { CreateUserDTO, LoginUserDTO };

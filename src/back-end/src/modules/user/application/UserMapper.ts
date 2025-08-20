@@ -1,10 +1,6 @@
 import { User as UserModel, UserType as UserTypeModel } from "@prisma/client";
 import { BadRequest } from "@shared/error/HttpError";
-import {
-  CreateUserDTO,
-  SocialLoginDTO,
-  UpdateUserDTO,
-} from "@user/api/UserDTO";
+import { CreateUserDTO, UpdateUserDTO } from "@user/api/UserDTO";
 import User from "@user/domain/entities/User";
 import { UserType } from "@user/domain/enum/UserType";
 import Email from "@user/domain/valueObject/Email";
@@ -53,31 +49,15 @@ export const UserMapper = {
   },
   fromDomaintoPrisma(user: User): UserModel {
     return {
-      id: user.id,
-      username: user.username,
-      email: user.email.getValue(),
+      id: user.getId(),
+      username: user.getUsername(),
+      email: user.getEmail().getValue(),
       password: user.getPassword(),
-      bio: user.bio,
-      linkedin: user.linkedin,
-      github: user.github,
-      website: user.website,
-      userType: UserTypeMapper.fromDomainToPrisma(user.userType),
+      bio: user.getBio(),
+      linkedin: user.getLinkedin(),
+      github: user.getGithub(),
+      website: user.getWebsite(),
+      userType: UserTypeMapper.fromDomainToPrisma(user.getUserType()),
     };
-  },
-  fromCreateUserDTOtoDomain(dto: CreateUserDTO, hashedPassword: string): User {
-    return new User(
-      "",
-      dto.username,
-      new Email(dto.email),
-      hashedPassword,
-      dto.bio,
-      dto.linkedin,
-      dto.github,
-      dto.website,
-      dto.userType
-    );
-  },
-  fromSocialLoginDTOtoDomain(dto: SocialLoginDTO): User {
-    return new User("", dto.name, new Email(dto.email, false), null);
   },
 };
