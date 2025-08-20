@@ -1,8 +1,7 @@
-import { Unauthorized } from "@shared/error/HttpError";
 import { Crypt } from "@shared/util/Crypto";
 import Email from "@user/domain/valueObject/Email";
 import { UserType } from "@user/domain/enum/UserType";
-import { UpdateUserDTO } from "@user/api/UserDTO";
+import { CreateUserDTO, UpdateUserDTO } from "@user/api/UserDTO";
 import { EventListener } from "@shared/event/EventListener";
 import { UserUpdateEvent } from "@shared/event/UserUpdateEvent";
 
@@ -19,10 +18,20 @@ export default class User {
     private userType: UserType = UserType.DEVELOPER
   ) {}
 
-  public async comparePassword(password: string): Promise<boolean> {
-    if (!this.passwordHash) return false;
+  public static async create(dto: CreateUserDTO) {
+    const hashedPassword = await Crypt.hashPassWord(dto.password);
 
-    return await Crypt.compare(password, this.passwordHash);
+    return new User(
+      "",
+      dto.username,
+      new Email(dto.email),
+      hashedPassword,
+      dto.bio,
+      dto.linkedin,
+      dto.github,
+      dto.website,
+      dto.userType
+    );
   }
 
   public async update(dto: UpdateUserDTO): Promise<void> {
@@ -65,6 +74,12 @@ export default class User {
       false
     );
     EventListener.publish(event);
+  }
+
+  public async comparePassword(password: string): Promise<boolean> {
+    if (!this.passwordHash) return false;
+
+    return await Crypt.compare(password, this.passwordHash);
   }
 
   public getPassword(): string | null {
