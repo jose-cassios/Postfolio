@@ -1,11 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { BadRequest, InternalServerError } from "@shared/error/HttpError";
-import {
-  CreateUserDTO,
-  LoginUserDTO,
-  SocialLoginDTO,
-  UpdateUserDTO,
-} from "@user/api/UserDTO";
+import { CreateUserDTO, LoginUserDTO, UpdateUserDTO } from "@user/api/UserDTO";
 import {
   LoginRequest,
   CreateUserRequest,
@@ -17,6 +12,7 @@ import { TYPES } from "@compositionRoot/Types";
 import jwt from "jsonwebtoken";
 import { GoogleUserPayload } from "@infrastructure/types/fastify";
 import { UserTypeMapper } from "@user/application/UserMapper";
+import { UserType } from "@user/domain/enum/UserType";
 
 @injectable()
 export class UserController {
@@ -59,17 +55,17 @@ export class UserController {
       id,
     };
 
-    const response = await this.userService.updateById(dto);
+    const user = await this.userService.updateById(dto);
 
     reply.send({
-      id: response.id,
-      username: response.username,
-      email: response.email.getValue(),
-      bio: response.bio,
-      linkedin: response.linkedin,
-      github: response.github,
-      website: response.website,
-      usertype: response.userType,
+      id: user.getId(),
+      username: user.getUsername(),
+      email: user.getEmail().getValue(),
+      bio: user.getBio(),
+      linkedin: user.getLinkedin(),
+      github: user.getGithub(),
+      website: user.getWebsite(),
+      userType: UserTypeMapper.fromDomainToPrisma(user.getUserType()),
     });
   }
 
@@ -116,14 +112,13 @@ export class UserController {
 
     const userPayload = jwt.decode(id_token) as GoogleUserPayload;
 
-    console.log(userPayload);
-
-    const socialLogin: SocialLoginDTO = {
-      name: userPayload.name,
+    const dto: CreateUserDTO = {
+      username: userPayload.name,
       email: userPayload.email,
+      userType: UserType.DEVELOPER,
     };
 
-    const token = await this.userService.socialLogin(socialLogin);
+    const token = await this.userService.socialLogin(dto);
 
     reply.send({ msg: "Login bem-sucedido!", token });
   }
@@ -136,15 +131,15 @@ export class UserController {
 
     reply.send({
       msg: "Perfil do usuário",
-      user: {
-        id: user.id,
-        username: user.username,
-        email: user.email.getValue(),
-        bio: user.bio,
-        linkedin: user.linkedin,
-        github: user.github,
-        website: user.website,
-        usertype: user.userType,
+      data: {
+        id: user.getId(),
+        username: user.getUsername(),
+        email: user.getEmail().getValue(),
+        bio: user.getBio(),
+        linkedin: user.getLinkedin(),
+        github: user.getGithub(),
+        website: user.getWebsite(),
+        userType: UserTypeMapper.fromDomainToPrisma(user.getUserType()),
       },
     });
   }
