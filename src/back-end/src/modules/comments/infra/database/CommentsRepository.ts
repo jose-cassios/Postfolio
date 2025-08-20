@@ -4,6 +4,7 @@ import { ICommentsRepository } from "@comments/domain/interfaces/ICommentsReposi
 import { prisma } from "@infrastructure/config/Prisma";
 import { Prisma } from "@prisma/client";
 import { InternalServerError } from "@shared/error/HttpError";
+import { Comments as CommentsModel } from "@prisma/client";
 
 export class CommentsRepository implements ICommentsRepository {
   async create(comment: Comments): Promise<Comments> {
@@ -66,6 +67,7 @@ export class CommentsRepository implements ICommentsRepository {
       throw new InternalServerError("Erro ao deletar o comentario!");
     }
   }
+
   async findById(id: string): Promise<Comments | null> {
     try {
       const model = await prisma.comments.findUnique({
@@ -85,10 +87,61 @@ export class CommentsRepository implements ICommentsRepository {
     }
   }
 
-  findByUserIdAndProjectId(
-    userId: string,
-    projectId: string
-  ): Promise<Comments | null> {
-    throw new Error("Method not implemented.");
+  async findProjectIdCursor(
+    projectId: string,
+    limit: number,
+    date: Date | null
+  ): Promise<Comments[]> {
+    try {
+      const models = await this.findProjectIdCursorQuery(
+        projectId,
+        limit,
+        date
+      );
+
+      return models.map(CommentsMapper.fromPrismaToDomain);
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new InternalServerError(
+          `Não foi possivel buscar os comentario! Código: ${error.code}`
+        );
+      }
+      throw new InternalServerError("Erro ao buscar os comentario!");
+    }
+  }
+
+  private async findProjectIdCursorQuery(
+    projectId: string,
+    limit: number,
+    date: Date | null
+  ): Promise<CommentsModel[]> {
+    if (date) {
+      return await prisma.comments.findMany({
+        take: limit,
+        skip: 1,
+        where: {
+          projectId,
+        },
+        cursor: {
+          projectId_created_at: {
+            projectId,
+            created_at: date,
+          },
+        },
+        orderBy: {
+          created_at: "desc",
+        },
+      });
+    }
+
+    return await prisma.comments.findMany({
+      take: limit,
+      where: {
+        projectId,
+      },
+      orderBy: {
+        created_at: "desc",
+      },
+    });
   }
 }

@@ -6,8 +6,9 @@ export interface ICommentsRepository {
   delete(comment: Comments): Promise<Comments>;
 
   findById(id: string): Promise<Comments | null>;
-  findByUserIdAndProjectId(
-    userId: string,
-    projectId: string
-  ): Promise<Comments | null>;
+  findProjectIdCursor(
+    projectId: string,
+    limit: number,
+    date: Date | null
+  ): Promise<Comments[]>;
 }
