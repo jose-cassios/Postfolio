@@ -1,4 +1,5 @@
 import { Comments } from "@comments/domain/entities/Comments";
+import { PaginatedResponse } from "@shared/interfaces/Pagination";
 
 export interface CreateCommentDTO {
   content: string;
@@ -17,12 +18,9 @@ export interface DeleteCommentDTO {
   userId: string;
 }
 
-export interface ResponsePagination<T> {
-  data: T[];
-  pagination: {
-    next_cursor: string | null;
-    has_next_page: boolean;
-  };
+export interface GetCommentsDTO {
+  postId: string;
+  cursor?: string | null;
 }
 
-export type ResponseCommentsPagination = ResponsePagination<Comments>;
+export type PaginatedCommentsResponse = PaginatedResponse<Comments>;

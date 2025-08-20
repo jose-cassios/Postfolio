@@ -4,12 +4,14 @@ import { inject, injectable } from "inversify";
 import {
   CreateCommentsRequest,
   DeleteCommentsRequest,
+  GetCommentsRequest,
   UpdateCommentRequest,
 } from "@comments/api/CommentsSchema";
 import { FastifyReply } from "fastify";
 import {
   CreateCommentDTO,
   DeleteCommentDTO,
+  GetCommentsDTO,
   UpdateCommentDTO,
 } from "@comments/api/CommentsDTO";
 import { Unauthorized } from "@shared/error/HttpError";
@@ -61,6 +63,17 @@ export class CommentsController {
     const dto: DeleteCommentDTO = { id: req.params.commentId, userId: user.id };
 
     const response = await this.service.delete(dto);
+
+    reply.send(response);
+  }
+
+  async getComments(req: GetCommentsRequest, reply: FastifyReply) {
+    const dto: GetCommentsDTO = {
+      postId: req.params.postId,
+      cursor: req.query.cursor,
+    };
+
+    const response = await this.service.getComments(dto);
 
     reply.send(response);
   }

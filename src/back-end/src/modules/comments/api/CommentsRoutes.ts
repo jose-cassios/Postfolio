@@ -5,6 +5,7 @@ import {
   commentsRouteSchema,
   CreateCommentsRequest,
   DeleteCommentsRequest,
+  GetCommentsRequest,
   UpdateCommentRequest,
 } from "@comments/api/CommentsSchema";
 
@@ -37,6 +38,12 @@ function commentsRoutesPlugin(
       preValidation: UserMiddle.authenticate,
     },
     (req, reply) => controller.delete(req as DeleteCommentsRequest, reply)
+  );
+
+  app.post(
+    "/:postId",
+    { schema: commentsRouteSchema.getComments },
+    (req, reply) => controller.getComments(req as GetCommentsRequest, reply)
   );
 }
 

@@ -38,6 +38,19 @@ type DeleteCommentsRequest = FastifyRequest<{
   Params: z.infer<typeof DeleteCommentsParamsSchema>;
 }>;
 
+const GetCommentsParamsSchema = z.object({
+  postId: z.string(),
+});
+
+const GetCommentsQuerySchema = z.object({
+  cursor: z.string().nullable(),
+});
+
+type GetCommentsRequest = FastifyRequest<{
+  Params: z.infer<typeof GetCommentsParamsSchema>;
+  Querystring: z.infer<typeof GetCommentsQuerySchema>;
+}>;
+
 const commentsRouteSchema = {
   create: {
     body: CreateCommentsBodySchema,
@@ -47,7 +60,11 @@ const commentsRouteSchema = {
     body: UpdateCommentsBodySchema,
   },
   delete: {
-    DeleteCommentsParamsSchema,
+    params: DeleteCommentsParamsSchema,
+  },
+  getComments: {
+    params: GetCommentsParamsSchema,
+    querystring: GetCommentsQuerySchema,
   },
 };
 
@@ -56,4 +73,5 @@ export {
   CreateCommentsRequest,
   UpdateCommentRequest,
   DeleteCommentsRequest,
+  GetCommentsRequest,
 };
