@@ -83,34 +83,48 @@ model Competition {
 }
 
 model Project {
-  id                 String               @id @default(uuid())
-  name               String
-  description        String
-  category           ProjectCategory
-  githublink         String?
-  portfolioId        String
-  portfolio          Portfolio            @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
-  Rating             Rating[]
-  ProjectCompDetails ProjectCompDetails[]
-  FavorateProjects   FavorateProjects[]
-  Comments           Comments[]
-  Appreciate         Appreciate[]
-  Feedback           Feedback[]
+  id                       String               @id @default(uuid())
+  name                     String
+  description              String
+  category                 ProjectCategory
+  githublink               String?
+  portfolioId              String
+  portfolio                Portfolio            @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  Rating                   Rating[]
+  ProjectCompDetails       ProjectCompDetails[]
+  FavorateProjects         FavorateProjects[]
+  Comments                 Comments[]
+  Appreciate               Appreciate[]
+  Feedback                 Feedback[]
+  AppreciateProjectDetails PostMetrics?
 
   @@map("tb_project")
 }
 
 model Appreciate {
-  id        String @id @default(uuid())
-  userId    String
-  projectId String
+  id            String @id @default(uuid())
+  userId        String
+  projectId     String
+  postMetricsId String
 
-  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  project  Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  Feedback Feedback[]
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project     Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  postMetrics PostMetrics @relation(fields: [postMetricsId], references: [id])
+  Feedback    Feedback[]
 
   @@unique([userId, projectId])
   @@map("tb_appreciate")
+}
+
+model PostMetrics {
+  id              String @id @default(uuid())
+  cauntAppreciate Int
+  projectId       String @unique()
+
+  project    Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  Appreciate Appreciate[]
+
+  @@map("tb_post_metrics")
 }
 
 model FavorateProjects {
