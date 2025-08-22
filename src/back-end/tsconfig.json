@@ -43,6 +43,7 @@
       "@projectCompDetails/*" : ["modules/projectCompDetails/*"],
       "@favorateProjects/*" : ["modules/favorateProjects/*"],
       "@comments/*" : ["modules/comments/*"],
+      "@postMetrics/*" : ["modules/postMetrics/*"],
 
       "@shared/*" : ["shared/*"],
       "@compositionRoot/*" : ["compositionRoot/*"],
