@@ -118,7 +118,7 @@ model Appreciate {
 
 model PostMetrics {
   id              String @id @default(uuid())
-  cauntAppreciate Int
+  countAppreciate Int
   projectId       String @unique()
 
   project    Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
