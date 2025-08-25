@@ -34,6 +34,7 @@ export const TYPES = {
   ProjectCompDetailsPort: Symbol.for("IProjectCompDetailsPort"),
   RatingPort: Symbol.for("RatingPort"),
   FavorateProjectsPort: Symbol.for("FavorateProjectsPort"),
+  PostMetricsPort: Symbol.for("PostMetricsPort"),
 
   // Services (implementações concretas dos Use Cases de alto nível)
   UserService: Symbol.for("UserService"),
