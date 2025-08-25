@@ -11,6 +11,7 @@ export const TYPES = {
   // IMessageRepository: Symbol.for("IMessageRepository"),
   IFavorateProjectsRepository: Symbol.for("IFavorateProjectsRepository"),
   ICommentsRepository: Symbol.for("ICommentsRepository"),
+  IPostMetricsRepository: Symbol.for("IPostMetricsRepository"),
 
   // Portas de Aplicação (Use Cases de alto nível)
   IUserService: Symbol.for("IUserService"),
