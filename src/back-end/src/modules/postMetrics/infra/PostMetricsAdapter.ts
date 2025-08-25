@@ -39,4 +39,12 @@ export class PostMetricsAdapter implements PostMetricsPort {
     await this.repository.update(metrics);
     return metrics.getId();
   }
+
+  async getTotalAppreciates(projectId: string): Promise<number> {
+    const metrics = await this.repository.findByProjectId(projectId);
+
+    if (!metrics) throw new NotFound("Recurro não encontrado!");
+
+    return metrics.getCauntAppreciate();
+  }
 }
