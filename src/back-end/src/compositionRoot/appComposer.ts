@@ -43,6 +43,7 @@ import { ratingComposerModule } from "@rating/composition/RatingComposer";
 import { projectCompDetailsComposeModule } from "@projectCompDetails/composition/projectCompDetailsComposer";
 import { favorateProjectsComposer } from "@favorateProjects/composition/FavorateProjectsComposer";
 import { commentsComposerModule } from "@comments/composition/CommentsComposer";
+import { postMetricsComposeModule } from "@postMetrics/composition/PostMetricsComposer";
 
 const container = new Container();
 
@@ -56,6 +57,7 @@ ratingComposerModule(container);
 projectCompDetailsComposeModule(container);
 favorateProjectsComposer(container);
 commentsComposerModule(container);
+postMetricsComposeModule(container);
 
 interface IApplicationControllers {
   userController: UserController;

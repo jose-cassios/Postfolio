@@ -5,7 +5,7 @@ import { PostMetricsRepository } from "@postMetrics/infra/database/PostMetricsRe
 import { PostMetricsAdapter } from "@postMetrics/infra/PostMetricsAdapter";
 import { Container } from "inversify";
 
-export function PostMetricsComposeModule(container: Container) {
+export function postMetricsComposeModule(container: Container) {
   container
     .bind<IPostMetricsRepository>(TYPES.IPostMetricsRepository)
     .to(PostMetricsRepository)
