@@ -1,9 +1,9 @@
-import { Project } from "@work/domain/entities/Project";
-import { CreateWorkDTO, UpdateWorkDTO } from "@work/api/WorkDTO";
+import { Project } from "@project/domain/entities/Project";
+import { CreateProjectDTO, UpdateProjectDTO } from "@project/api/ProjectDTO";
 
 export interface IProjectService {
-  create(createWorkDto: CreateWorkDTO): Promise<Project>;
-  update(updateWorkDto: UpdateWorkDTO): Promise<Project>;
+  create(createWorkDto: CreateProjectDTO): Promise<Project>;
+  update(updateWorkDto: UpdateProjectDTO): Promise<Project>;
   delete(id: string): Promise<Project | null>;
 
   findMany(): Promise<Project[]>;
