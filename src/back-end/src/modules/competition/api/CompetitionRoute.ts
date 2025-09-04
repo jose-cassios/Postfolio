@@ -1,19 +1,24 @@
 import { FastifyInstance } from "fastify";
 import { UserMiddle } from "@infrastructure/middleware/UserMiddle";
 import { CompetitionController } from "@competition/api/CompetitionController";
+import {
+  CreateCompetitionRequest,
+  UpdateCompetitionRequest,
+} from "@competition/api/CompetitionSchema";
 
 function competitionRoutesPlugin(
   app: FastifyInstance,
   competitionController: CompetitionController
 ) {
   app.post("", { preValidation: UserMiddle.authenticate }, (req, rep) =>
-    competitionController.create(req, rep)
+    competitionController.create(req as CreateCompetitionRequest, rep)
   );
 
   app.put(
     "/:competitionId",
     { preValidation: UserMiddle.authenticate },
-    (req, rep) => competitionController.update(req, rep)
+    (req, rep) =>
+      competitionController.update(req as UpdateCompetitionRequest, rep)
   );
 
   app.delete(

@@ -9,6 +9,11 @@ import {
 } from "@shared/error/HttpError";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { inject, injectable } from "inversify";
+import {
+  CreateCompetitionRequest,
+  UpdateCompetitionRequest,
+} from "@competition/api/CompetitionSchema";
+import { CreateCompetitionDTO } from "@competition/api/CompetitionDTO";
 
 @injectable()
 export class CompetitionController {
@@ -17,16 +22,10 @@ export class CompetitionController {
     private competitionService: ICompetitionService
   ) {}
 
-  async create(req: FastifyRequest, reply: FastifyReply) {
-    const { name = null } = req.body as Partial<{
-      name: string;
-    }>;
+  async create(req: CreateCompetitionRequest, reply: FastifyReply) {
+    const dto: CreateCompetitionDTO = { ...req.body };
 
-    if (!name) throw new BadRequest("O campo nome é obrigarotio");
-
-    const competition = new Competition("", name, new Date());
-
-    const response = await this.competitionService.create(competition);
+    const response = await this.competitionService.create(dto);
 
     reply.send({
       msg: "Competição criada com sucesso",
@@ -34,13 +33,8 @@ export class CompetitionController {
     });
   }
 
-  async update(req: FastifyRequest, reply: FastifyReply) {
-    const { competitionId } = req.params as { competitionId: string | null };
-    const {
-      name = null,
-      startsAt = null,
-      endsAt = null,
-    } = req.body as Partial<{ name: string; startsAt: string; endsAt: string }>;
+  async update(req: UpdateCompetitionRequest, reply: FastifyReply) {
+    // const dto: = {}
 
     // criar um dto para isso
     throw new InternalServerError("Not Implemented");
@@ -70,7 +64,7 @@ export class CompetitionController {
       workId
     );
 
-    reply.send(response);
+    reply.send({ msg: "Projeto inscrito com sucesso." });
   }
 
   async unsubscribeWork(req: FastifyRequest, reply: FastifyReply) {

@@ -4,7 +4,7 @@ import { UpsertRatingDTO } from "@rating/api/RatingDTO";
 import { Rating } from "@rating/domain/entities/Rating";
 import { IRatingRepository } from "@rating/domain/interfaces/IRatingRepository";
 import { IRatingService } from "@rating/domain/interfaces/IRatingService";
-import { NotFound } from "@shared/error/HttpError";
+import { InternalServerError, NotFound } from "@shared/error/HttpError";
 import { UserPort } from "@user/domain/interfaces/UserPort";
 import { ProjectPort } from "@project/domain/interfaces/ProjectPort";
 import { inject, injectable } from "inversify";
@@ -27,33 +27,57 @@ export class RatingService implements IRatingService {
   ) {}
 
   async upsert(dto: UpsertRatingDTO): Promise<Rating> {
-    const [user, competition, project, details, existRating] =
-      await Promise.all([
-        this.userPort.exist(dto.userId),
-        this.competitionPort.exist(dto.competitionId),
-        this.projectPort.exist(dto.projectId),
-        this.projectCompDetailsPort.exist(dto.competitionId, dto.projectId),
-        this.ratingRepsotory.findByUserCompetitionProject(
-          dto.userId,
-          dto.competitionId,
-          dto.projectId
-        ),
-      ]);
+    const [user, competition, project, details, rating] = await Promise.all([
+      this.userPort.exist(dto.userId),
+      this.competitionPort.exist(dto.competitionId),
+      this.projectPort.exist(dto.projectId),
+      this.projectCompDetailsPort.exist(dto.competitionId, dto.projectId),
+      this.ratingRepsotory.findByUserCompetitionProject(
+        dto.userId,
+        dto.competitionId,
+        dto.projectId
+      ),
+    ]);
 
     if (!user || !competition || !project || !details)
       throw new NotFound("Dados não encontrados");
 
-    if (!existRating) {
-      const rating = RatingMapper.fromUpsertRatingDTOtoDomain(dto, details);
-      return await this.ratingRepsotory.create(rating);
+    if (!details.id)
+      throw new InternalServerError("Não foi possivel realizar a avalição!");
+
+    if (!rating) {
+      const newRating = RatingMapper.fromUpsertRatingDTOtoDomain(
+        dto,
+        details.id
+      );
+
+      this.projectCompDetailsPort.recalculate(
+        Rating.createDiff(newRating, null)
+      );
+
+      return await this.ratingRepsotory.create(newRating);
     }
 
-    existRating.updateScore(dto.score);
-    return this.ratingRepsotory.update(existRating);
+    const oldRating = rating.copy();
+
+    rating.updateScore(dto.score);
+
+    this.projectCompDetailsPort.recalculate(
+      Rating.createDiff(rating, oldRating)
+    );
+
+    rating.updateScore(dto.score);
+    return this.ratingRepsotory.update(rating);
   }
 
   async delete(id: string): Promise<Rating | null> {
-    return this.ratingRepsotory.delete(id);
+    const rating = await this.ratingRepsotory.delete(id);
+
+    if (!rating) return null;
+
+    this.projectCompDetailsPort.recalculate(Rating.createDiff(null, rating));
+
+    return rating;
   }
 
   async findById(id: string): Promise<Rating | null> {

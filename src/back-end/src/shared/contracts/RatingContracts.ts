@@ -5,3 +5,10 @@ export interface RatingContracts {
   portfolioId: string;
   competitionId: string;
 }
+
+export interface RatingDiffContract {
+  competitionId: string;
+  projectId: string;
+  scoreDiff: number;
+  reviewersDiff: number;
+}

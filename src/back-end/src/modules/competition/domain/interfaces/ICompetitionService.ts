@@ -8,7 +8,7 @@ export interface ICompetitionService {
   update(competition: Competition): Promise<Competition>;
   delete(id: string): Promise<Competition | null>;
 
-  subscribeProject(competitionId: string, projectId: string): Promise<boolean>;
+  subscribeProject(competitionId: string, projectId: string): Promise<void>;
   unsubscribeProject(competitionId: string, projectId: string): Promise<void>;
 
   findMany(): Promise<Competition[]>;

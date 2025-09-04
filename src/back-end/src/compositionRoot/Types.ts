@@ -8,7 +8,10 @@ export const TYPES = {
   ICompetitionRepository: Symbol.for("ICompetitionRepository"),
   IProjectRepository: Symbol.for("IProjectRepository"),
   IProjectCompDetailsRepository: Symbol.for("IProjectCompDetailsRepository"),
-  IMessageRepository: Symbol.for("IMessageRepository"),
+  // IMessageRepository: Symbol.for("IMessageRepository"),
+  IFavorateProjectsRepository: Symbol.for("IFavorateProjectsRepository"),
+  ICommentsRepository: Symbol.for("ICommentsRepository"),
+  IPostMetricsRepository: Symbol.for("IPostMetricsRepository"),
 
   // Portas de Aplicação (Use Cases de alto nível)
   IUserService: Symbol.for("IUserService"),
@@ -17,17 +20,21 @@ export const TYPES = {
   ICompetitionService: Symbol.for("ICompetitionService"),
   IProjectService: Symbol.for("IProjectService"),
   IProjectCompDetailsService: Symbol.for("IProjectCompDetailsService"),
-  IMessageService: Symbol.for("IMessageService"),
-  IUsersConnects: Symbol.for("IUsersConnects"),
+  // IMessageService: Symbol.for("IMessageService"),
+  // IUsersConnects: Symbol.for("IUsersConnects"),
   IEmailService: Symbol.for("IEmailService"),
+  IFavorateProjectsService: Symbol.for("IFavorateProjectsService"),
+  ICommentsService: Symbol.for("ICommentsService"),
 
   // Portas de Saída (Adapters entre Domínios)
-  PortfolioPort: Symbol.for("PortfolioPort"), // User Module precisa interagir com Portfolio
-  UserPort: Symbol.for("UserPort"), // Portfolio/Rating Module precisa interagir com User
-  ProjectPort: Symbol.for("ProjectPort"), // WorkCompDetails Module precisa interagir com Work
-  CompetitionPort: Symbol.for("CompetitionPort"), // WorkCompDetails Module precisa interagir com Competition
-  ProjectCompDetailsPort: Symbol.for("IProjectCompDetailsPort"), // Rating Module precisa interagir com WorkCompDetails
+  PortfolioPort: Symbol.for("PortfolioPort"),
+  UserPort: Symbol.for("UserPort"),
+  ProjectPort: Symbol.for("ProjectPort"),
+  CompetitionPort: Symbol.for("CompetitionPort"),
+  ProjectCompDetailsPort: Symbol.for("IProjectCompDetailsPort"),
   RatingPort: Symbol.for("RatingPort"),
+  FavorateProjectsPort: Symbol.for("FavorateProjectsPort"),
+  PostMetricsPort: Symbol.for("PostMetricsPort"),
 
   // Services (implementações concretas dos Use Cases de alto nível)
   UserService: Symbol.for("UserService"),
@@ -45,8 +52,10 @@ export const TYPES = {
   CompetitionController: Symbol.for("CompetitionController"),
   ProjectController: Symbol.for("WorkController"),
   ProjectCompDetailsController: Symbol.for("WorkCompDetailsController"),
-  ChatController: Symbol.for("ChatController"),
+  // ChatController: Symbol.for("ChatController"),
   EmailController: Symbol.for("EmailController"),
+  FavorateProjectsController: Symbol.for("FavorateProjectsController"),
+  CommentsController: Symbol.for("CommentsController"),
 
   // Handlers
   // PortfolioUserCreatedHandler: Symbol.for("PortfolioUserCreatedHandler"),
