@@ -4,11 +4,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "heroku-postbuild": "yarn build",
     "docs": "typedoc --options typedoc.json",
     "build": "tsc && npx tsc-alias",
     "dev": "ts-node-dev --respawn --require tsconfig-paths/register --env-file .env src/app.ts",
-    "start": "node dist/app.js"
+    "start": "node dist/app.js",
+    "vercel-build": "npm run build"
   },
   "keywords": [],
   "author": "",
