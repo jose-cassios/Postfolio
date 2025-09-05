@@ -8,7 +8,7 @@ import {
 } from "fastify-type-provider-zod";
 import { AppComposer } from "compositionRoot/appComposer";
 import { configureProvaders } from "@infrastructure/fastify/Provaders";
-import websocketPlugin from "@fastify/websocket";
+// import websocketPlugin from "@fastify/websocket";
 // import { DataCache } from "@infrastructure/config/Redis";
 
 const app = Fastify({
@@ -33,7 +33,7 @@ app.register(fastifyCors, {
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
 });
-app.register(websocketPlugin);
+// app.register(websocketPlugin);
 
 const appCompose = new AppComposer();
 appCompose.registerRoutes(app);
