@@ -1,4 +1,4 @@
-import Fastify from "fastify";
+import Fastify, { FastifyInstance } from "fastify";
 import fastifyCors from "@fastify/cors";
 import "@infrastructure/types/fastify";
 import {
@@ -8,53 +8,54 @@ import {
 } from "fastify-type-provider-zod";
 import { AppComposer } from "compositionRoot/appComposer";
 import { configureProvaders } from "@infrastructure/fastify/Provaders";
-import websocketPlugin from "@fastify/websocket";
-// import { DataCache } from "@infrastructure/config/Redis";
 
-const app = Fastify({
-  logger: {
-    level: "error",
-    transport: {
-      target: "pino-pretty",
-      options: {
-        colorize: true,
-        ignore: "pid,hostname,reqId,req,res",
+export function createApp(): FastifyInstance {
+  const app = Fastify({
+    logger: {
+      level: "error",
+      transport: {
+        target: "pino-pretty",
+        options: {
+          colorize: true,
+          ignore: "pid,hostname,reqId,req,res",
+        },
       },
     },
-  },
-}).withTypeProvider<ZodTypeProvider>();
-const PORT = 8080;
+  }).withTypeProvider<ZodTypeProvider>();
 
-app.setValidatorCompiler(validatorCompiler);
-app.setSerializerCompiler(serializerCompiler);
+  app.setValidatorCompiler(validatorCompiler);
+  app.setSerializerCompiler(serializerCompiler);
 
-app.register(fastifyCors, {
-  origin: true,
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-});
-app.register(websocketPlugin);
+  app.register(fastifyCors, {
+    origin: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  });
+  // app.register(websocketPlugin);
 
-const appCompose = new AppComposer();
-appCompose.registerRoutes(app);
-appCompose.configureFastify(app);
-appCompose.registerHandlers();
+  const appCompose = new AppComposer();
+  appCompose.registerRoutes(app);
+  appCompose.configureFastify(app);
+  appCompose.registerHandlers();
 
-configureProvaders(app);
+  configureProvaders(app);
 
-const start = async () => {
-  // const dataCache = DataCache.getInstance();
-  // dataCache.connect();
+  return app;
+}
 
-  // const redis = dataCache.getClient();
+export const app = createApp();
 
-  try {
-    await app.listen({ port: PORT, host: "0.0.0.0" });
-    console.log(`Servidor rodando em http://localhost:${PORT}`);
-  } catch (err) {
-    app.log.error(err);
-    process.exit(1);
-  }
-};
+if (process.env.NODE_ENV !== "production" || process.env.VERCEL !== "1") {
+  const PORT = 8080;
+  const start = async () => {
+    try {
+      await app.listen({ port: PORT, host: "0.0.0.0" });
+      console.log(`Servidor rodando em http://localhost:${PORT}`);
+    } catch (err) {
+      app.log.error(err);
+      process.exit(1);
+    }
+  };
 
-start();
+  start();
+}
