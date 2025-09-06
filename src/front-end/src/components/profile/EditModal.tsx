@@ -1,7 +1,7 @@
 import React from 'react';
 import { FiX, FiSave, FiPlus, FiTrash2 } from 'react-icons/fi';
-import { UserProfileData, FreelancerProfileData, EmployerProfileData, Technology, ContactLink, Project } from '../../types/profileTypes';
-
+import { FreelancerProfileData, EmployerProfileData, ContactLink, Project } from '../../types/profileTypes';
+//UserProfileData, Technology,
 interface ModalBaseProps {
   title: string;
   children: React.ReactNode;
@@ -44,7 +44,7 @@ interface EditModalProps {
   editingSection: string | null;
   tempProfileData: FreelancerProfileData | EmployerProfileData | null;
   newTechnology: { name: string; iconUrl: string };
-  setNewTechnology: React.Dispatch<React.SetStateAction<{ name: string; iconUrl: string }>>;
+  setNewTechnology: React.Dispatch<React.SetStateAction<{ id:string; name: string; iconUrl: string }>>;
   newContactLink: ContactLink;
   setNewContactLink: React.Dispatch<React.SetStateAction<ContactLink>>;
   newProject: Project;

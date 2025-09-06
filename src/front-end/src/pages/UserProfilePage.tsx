@@ -1,14 +1,16 @@
 /* eslint-disable no-irregular-whitespace */
 import React, { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
+import { useProfile } from '../components/profile/ProfileContext';
 import UserProfileLayout from '../layouts/UserProfileLayout';
 import { UserProfileData, FreelancerProfileData, EmployerProfileData, ContactLink, Project, Technology } from '../types/profileTypes';
 
-// Mock de dados do usuário logado (substituir por contexto de autenticação real)
-const MOCK_LOGGED_IN_USER_ID = "jose-cassios"; // Simula o ID do usuário logado
 
 export default function UserProfilePage() {
+
   const { userId: routeUserId } = useParams<{ userId: string }>();
+  const {getProfile, updateProfile, isLoggedInUser} = useProfile();
+
   const [profileData, setProfileData] = useState<UserProfileData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isOwner, setIsOwner] = useState(false);
@@ -20,70 +22,27 @@ export default function UserProfilePage() {
   const [newProject, setNewProject] = useState<Project>({ id: '', title: '', imageUrl: '', description: '', projectUrl: '' });
 
   useEffect(() => {
+    if(!routeUserId){
+      setIsLoading(false);
+      return;
+    }
     setIsLoading(true);
+    
+    //aplica um delay no carregamento
     setTimeout(() => {
-      let fetchedData: UserProfileData | null = null;
-      let profileIdToLoad = routeUserId;
-      if (!profileIdToLoad) {
-        profileIdToLoad = MOCK_LOGGED_IN_USER_ID;
-      }
-      if (profileIdToLoad === "jose-cassios") {
-        fetchedData = {
-          userId: "jose-cassios",
-          userType: 'freelancer',
-          username: "jose-cassios",
-          fullName: "José Cássios",
-          profilePictureUrl: "/cassios.png",
-          coverImageUrl: "/master-sword.jpg",
-          bio: "Desenvolvedor Full Stack pronto para criar soluções inovadoras e eficientes com React, Node.js. Sempre em busca de novos desafios e aprendizados no universo da tecnologia.",
-          title: "Engenheiro de Software Full Stack",
-          location: "Caxias, Brasil",
-          availableForWork: true,
-          technologies: [
-            { id: "1", name: "React", iconUrl: "https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" },
-            { id: "2", name: "Node.js", iconUrl: "https://upload.wikimedia.org/wikipedia/commons/d/d9/Node.js_logo.svg" },
-            { id: "3", name: "TypeScript" },
-            { id: "4", name: "Python", iconUrl: "https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg"},
-            { id: "5", name: "Figma", iconUrl: "https://www.vectorlogo.zone/logos/figma/figma-icon.svg" },
-          ],
-          contactLinks: [
-            { type: 'email', value: 'cassios.torres.010@gmail.com' },
-            { type: 'linkedin', value: 'linkedin.com/in/cassios-torres' },
-            { type: 'github', value: 'github.com/cassios-torres' },
-            { type: 'portfolio', value: 'cassios-torres.dev', label: 'Meu Portfólio' },
-          ],
-          projects: [
-            { id: "p1", title: "Plataforma de E-learning Interativa", imageUrl: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=400&q=80", description: "Plataforma completa com cursos, quizzes e acompanhamento de progresso." },
-            { id: "p2", title: "API Segura para Mobile Banking", imageUrl: "https://images.unsplash.com/photo-1518770660439-463061962052?auto=format&fit=crop&w=400&q=80", description: "Backend robusto para aplicativo financeiro." },
-            { id: "p3", title: "Dashboard Analítico de Vendas", imageUrl: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=400&q=80", description: "Visualização de dados para tomada de decisão." },
-          ],
-        };
-      } else if (profileIdToLoad === "contratante456") {
-        fetchedData = {
-          userId: "contratante456",
-          userType: 'employer',
-          username: "techcorp",
-          fullName: "TechCorp Solutions",
-          profilePictureUrl: "/cup.png",
-          coverImageUrl: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1200&q=80",
-          location: "Curitiba, Brasil",
-          companyName: "TechCorp Solutions Ltda.",
-          companyWebsite: "techcorp.example.com",
-          aboutCompany: "Somos uma empresa líder em soluções de TI, buscando talentos para projetos inovadores. Valorizamos a criatividade e o trabalho em equipe.",
-        };
-      } else {
-        console.warn(`Nenhum dado mockado encontrado para o perfil ID: ${profileIdToLoad}. Exibindo 'Perfil não encontrado'.`);
-      }
+      const fetchedData = getProfile(routeUserId);
+
       if (fetchedData) {
         setProfileData(fetchedData);
-        setIsOwner(fetchedData.userId === MOCK_LOGGED_IN_USER_ID);
-      } else {
+        setIsOwner(isLoggedInUser(fetchedData.userId));
+      }else{
         setProfileData(null);
         setIsOwner(false);
       }
+
       setIsLoading(false);
-    }, 500);
-  }, [routeUserId]);
+    }, 300);
+  }, [routeUserId, getProfile, isLoggedInUser]);
 
   const openEditModal = (section: string) => {
     setTempProfileData(JSON.parse(JSON.stringify(profileData)));
@@ -101,7 +60,7 @@ export default function UserProfilePage() {
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     if (!tempProfileData) return;
     const { name, value } = e.target;
-    setTempProfileData((prev: unknown) => {
+    setTempProfileData((prev: FreelancerProfileData | EmployerProfileData | null) => {
       if (!prev) return prev;
       return { ...prev, [name]: value };
     });
@@ -109,16 +68,22 @@ export default function UserProfilePage() {
 
   const handleAddTechnology = () => {
     if (!tempProfileData || tempProfileData.userType !== 'freelancer') return;
-    if (!newTechnology.name) return; // Certifique-se que o nome da tecnologia não está vazio
-    setTempProfileData((prev: { userType: string; technologies: unknown; }) => {
+    if (!newTechnology.name.trim()) return; // Certifique-se que o nome da tecnologia não está vazio
+
+    setTempProfileData((prev) => {
         if (!prev || prev.userType !== 'freelancer') return prev;
+
         // Garanta que `technologies` seja um array antes de adicionar
-        const currentTechnologies = Array.isArray(prev.technologies) ? prev.technologies : [];
+        const freelancerPrev = prev as FreelancerProfileData;
+        const currentTechnologies = freelancerPrev.technologies || [];
         return {
-            ...prev,
+            ...freelancerPrev,
             technologies: [
                 ...currentTechnologies,
-                { ...newTechnology, id: Date.now().toString() } // Adiciona ID único
+                { ...newTechnology, 
+                  id: Date.now().toString(),
+                  name: newTechnology.name.trim() // remove espaços extras
+                 } // Adiciona ID único
             ]
         };
     });
@@ -128,11 +93,16 @@ export default function UserProfilePage() {
 
   const handleRemoveTechnology = (id: string) => {
     if (!tempProfileData || tempProfileData.userType !== 'freelancer') return;
-    setTempProfileData((prev: { userType: string; technologies: unknown[]; }) => {
+    
+    setTempProfileData((prev) => {
       if (!prev || prev.userType !== 'freelancer') return prev;
+      
+      const freelancerPrev = prev as FreelancerProfileData;
+      const currentTechnologies = freelancerPrev.technologies || [];
+
       return {
-        ...prev,
-        technologies: prev.technologies.filter((t: { id: string; }) => t.id !== id)
+        ...freelancerPrev,
+        technologies: currentTechnologies.filter((t) => t.id !== id)
       };
     });
   };
@@ -140,7 +110,7 @@ export default function UserProfilePage() {
   const handleAddContactLink = () => {
     if (!tempProfileData || tempProfileData.userType !== 'freelancer') return;
     if (!newContactLink.value) return;
-    setTempProfileData((prev: { userType: string; contactLinks: unknown; }) => {
+    setTempProfileData((prev: FreelancerProfileData | EmployerProfileData | null) => {
       if (!prev || prev.userType !== 'freelancer') return prev;
       const currentContactLinks = Array.isArray(prev.contactLinks) ? prev.contactLinks : [];
       return {
@@ -156,11 +126,11 @@ export default function UserProfilePage() {
 
   const handleRemoveContactLink = (index: number) => {
     if (!tempProfileData || tempProfileData.userType !== 'freelancer') return;
-    setTempProfileData((prev: { userType: string; contactLinks: unknown[]; }) => {
+    setTempProfileData((prev: FreelancerProfileData | EmployerProfileData | null) => {
       if (!prev || prev.userType !== 'freelancer') return prev;
       return {
         ...prev,
-        contactLinks: prev.contactLinks.filter((_: any, i: number) => i !== index)
+        contactLinks: prev.contactLinks.filter((_: unknown, i: number) => i !== index)
       };
     });
   };
@@ -168,7 +138,7 @@ export default function UserProfilePage() {
   const handleAddProject = () => {
     if (!tempProfileData || tempProfileData.userType !== 'freelancer') return;
     if (!newProject.title) return;
-    setTempProfileData((prev: { userType: string; projects: unknown; }) => {
+    setTempProfileData((prev: FreelancerProfileData | EmployerProfileData | null) => {
       if (!prev || prev.userType !== 'freelancer') return prev;
       const currentProjects = Array.isArray(prev.projects) ? prev.projects : [];
       return {
@@ -184,7 +154,7 @@ export default function UserProfilePage() {
 
   const handleRemoveProject = (id: string) => {
     if (!tempProfileData || tempProfileData.userType !== 'freelancer') return;
-    setTempProfileData((prev: { userType: string; projects: unknown; }) => {
+    setTempProfileData((prev: FreelancerProfileData | EmployerProfileData | null) => {
       if (!prev || prev.userType !== 'freelancer') return prev;
       return {
         ...prev,
@@ -211,8 +181,10 @@ export default function UserProfilePage() {
 
   const handleSave = (section: string) => {
     if (tempProfileData) {
+      //atualiza o contexto
+      updateProfile(tempProfileData);
+
       setProfileData(tempProfileData);
-      setIsOwner(tempProfileData.userId === MOCK_LOGGED_IN_USER_ID);
     }
     closeEditModal();
     alert(`${section.charAt(0).toUpperCase() + section.slice(1)} atualizado com sucesso! (Simulação)`);
