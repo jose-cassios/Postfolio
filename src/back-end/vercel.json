@@ -1,9 +1,0 @@
-{
-  "version": 2,
-  "builds": [
-    { "src": "src/back-end/dist/index.js", "use": "@vercel/node" }
-  ],
-  "routes": [
-    { "src": "/(.*)", "dest": "src/back-end/dist/index.js" }
-  ]
-}

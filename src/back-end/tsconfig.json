@@ -40,6 +40,7 @@
     "emitDecoratorMetadata": true,                    /* Emit design-type metadata for decorated declarations in source files. */
   },
   "include": [
+    "./api/**/*.ts",
     "./src/**/*.ts",
     "./src/infrastructure/types/**/*.d.ts"
   ]
