@@ -1,6 +1,6 @@
 // import PrismaUser from "@models/PrismaUser";
 import User from "@user/domain/entities/User";
-import { prisma } from "@infrastructure/config/Prisma";
+import { prisma } from "@infrastructure/config/prisma";
 import { InternalServerError } from "@shared/error/HttpError";
 import { Prisma } from "@prisma/client";
 import { UserMapper } from "@user/application/UserMapper";

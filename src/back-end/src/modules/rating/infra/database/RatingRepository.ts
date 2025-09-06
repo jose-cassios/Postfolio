@@ -1,4 +1,4 @@
-import { prisma } from "@infrastructure/config/Prisma";
+import { prisma } from "@infrastructure/config/prisma";
 import { Prisma } from "@prisma/client";
 import { RatingMapper } from "@rating/application/RatingMapper";
 import { Rating } from "@rating/domain/entities/Rating";

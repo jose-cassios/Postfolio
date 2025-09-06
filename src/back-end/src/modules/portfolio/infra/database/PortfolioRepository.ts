@@ -1,4 +1,4 @@
-import { prisma } from "@infrastructure/config/Prisma";
+import { prisma } from "@infrastructure/config/prisma";
 import { InternalServerError } from "@shared/error/HttpError";
 import { Portfolio } from "@portfolio/domain/entities/Portfolio";
 import { IPortfolioRepository } from "@portfolio/domain/interfaces/IPortfolioRepository";
