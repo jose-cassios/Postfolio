@@ -6,6 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "docs": "typedoc --options typedoc.json",
     "build": "prisma generate && tsc && tsc-alias -p tsconfig.json",
+    "build:dev": "tsup",
     "dev": "tsx watch src/app.ts",
     "start-dev": "node dist/app.js",
     "start": "node dist/api/index.js"

@@ -2,7 +2,7 @@ import { defineConfig } from "tsup";
 
 export default defineConfig({
   entryPoints: ["src/serverless.ts"],
-  format: ["cjs"],
+  format: ["esm"],
   clean: true,
   sourcemap: true,
   minify: false,
