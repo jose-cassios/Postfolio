@@ -1,4 +1,4 @@
-import { prisma } from "@infrastructure/config/prisma";
+import { prisma } from "@infrastructure/config/Prisma";
 import { Prisma } from "@prisma/client";
 import { ProjectCompDetailsMapper } from "@projectCompDetails/application/ProjectCompDetailsMapper";
 import { ProjectCompDetails } from "@projectCompDetails/domain/entitite/ProjectCompDetails";

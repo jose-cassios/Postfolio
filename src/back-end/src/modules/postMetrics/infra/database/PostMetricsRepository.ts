@@ -1,4 +1,4 @@
-import { prisma } from "@infrastructure/config/prisma";
+import { prisma } from "@infrastructure/config/Prisma";
 import { PostMetricsMapper } from "@postMetrics/application/PostMetricsMapper";
 import { PostMetrics } from "@postMetrics/domain/entities/PostMetrics";
 import { IPostMetricsRepository } from "@postMetrics/domain/interfaces/IPostMetricsRepository";

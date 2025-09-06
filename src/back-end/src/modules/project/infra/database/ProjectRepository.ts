@@ -1,5 +1,5 @@
 import { InternalServerError } from "@shared/error/HttpError";
-import { prisma } from "@infrastructure/config/prisma";
+import { prisma } from "@infrastructure/config/Prisma";
 import { Prisma } from "@prisma/client";
 import { Project } from "@project/domain/entities/Project";
 import { ProjectMapper } from "@project/application/ProjectMapper";

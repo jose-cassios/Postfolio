@@ -1,7 +1,7 @@
 import { FavorateProjectsMapper } from "@favorateProjects/application/FavorateProjectsMapper";
 import { FavorateProjects } from "@favorateProjects/domain/entities/FavorateProjects";
 import { IFavorateProjectsRepository } from "@favorateProjects/domain/interfaces/IFavorateProjectsRepository";
-import { prisma } from "@infrastructure/config/prisma";
+import { prisma } from "@infrastructure/config/Prisma";
 import { Prisma } from "@prisma/client";
 import { FavorateProjectsContract } from "@shared/contracts/FavorateProjectsContract";
 import { InternalServerError } from "@shared/error/HttpError";
