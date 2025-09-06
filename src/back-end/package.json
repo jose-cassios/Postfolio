@@ -8,8 +8,7 @@
     "build": "tsc && npx tsc-alias",
     "dev": "ts-node-dev --respawn --require tsconfig-paths/register --env-file .env src/app.ts",
     "start-dev": "node dist/app.js",
-    "start": "node dist/index.js",
-    "vercel-build": "npm run build"
+    "start": "node dist/index.js"
   },
   "keywords": [],
   "author": "",
