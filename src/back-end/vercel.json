@@ -1,7 +1,7 @@
 {
   "version": 2,
   "functions": {
-    "dist/index.js": {
+    "api/index.js": {
       "maxDuration": 30,
       "memory": 1024
     }
@@ -9,7 +9,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "dist/index.js"
+      "dest": "api/index.js"
     }
   ]
 }
