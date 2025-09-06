@@ -18,11 +18,10 @@ import { app } from "./app";
 //   return reply.status(200).send({ msg: "Deu certo" });
 // });
 
-async function handler(req: any, res: any) {
+export default async function handler(req: any, res: any) {
   await app.ready();
   app.server.emit("request", req, res);
 }
-export default handler;
 // export default app;
 
 // export default async (req: FastifyRequest, res: FastifyReply) => {

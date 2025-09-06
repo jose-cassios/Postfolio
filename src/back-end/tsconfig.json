@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "typeRoots": ["./node_modules/@types"],
-    "target": "esnext",
-    "module": "nodenext",
-    "moduleResolution": "nodenext", // or "node16"
+    "target": "es2020",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "baseUrl": "./src",
     "paths": {
       "@user/*": ["modules/user/*"],
