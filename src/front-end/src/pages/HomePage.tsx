@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../layouts/HeaderLayout";
+import CustomSelect from "../components/CustomSelect";
 
 const allProjects = [
   {
@@ -153,24 +154,16 @@ export default function Home() {
             onChange={e => setSearch(e.target.value)}
             className="flex-1 px-4 py-2 rounded-lg bg-indigo-900/80 border border-indigo-700 text-blue-100 placeholder:text-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
           />
-          <select
+          <CustomSelect
             value={filter}
-            onChange={e => setFilter(e.target.value)}
-            className="px-4 py-2 rounded-lg bg-indigo-900/80 border border-indigo-700 text-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
-          >
-            {filters.map(f => (
-              <option key={f.value} value={f.value}>{f.label}</option>
-            ))}
-          </select>
-          <select
+            onChange={setFilter}
+            options={filters}  
+          />
+          <CustomSelect
             value={order}
-            onChange={e => setOrder(e.target.value)}
-            className="px-4 py-2 rounded-lg bg-indigo-900/80 border border-indigo-700 text-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
-          >
-            {orders.map(o => (
-              <option key={o.value} value={o.value}>{o.label}</option>
-            ))}
-          </select>
+            onChange={setOrder}
+            options={orders}
+            />
         </div>
 
         {/* Grid de projetos */}

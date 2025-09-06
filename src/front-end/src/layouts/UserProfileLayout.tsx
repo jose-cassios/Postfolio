@@ -4,9 +4,10 @@ import UserProfileHeader from '../components/profile/UserProfileHeader';
 import UserInfoSidebar from '../components/profile/UserInfoSidebar';
 import ProjectsSection from '../components/profile/ProjectsSection';
 import EditModal from '../components/profile/EditModal';
-import { UserProfileData, FreelancerProfileData, EmployerProfileData, ContactLink, Project, Technology } from '../types/profileTypes';
-import { FiBriefcase, FiEdit2 } from 'react-icons/fi';
-
+import { UserProfileData, FreelancerProfileData, EmployerProfileData, ContactLink, Project } from '../types/profileTypes';
+import { FiEdit2 } from 'react-icons/fi';
+//, Technology
+//FiBriefcase,
 interface UserProfileLayoutProps {
   profileData: UserProfileData | null;
   isLoading: boolean;
@@ -14,7 +15,7 @@ interface UserProfileLayoutProps {
   editingSection: string | null;
   tempProfileData: FreelancerProfileData | EmployerProfileData | null;
   newTechnology: { name: string; iconUrl: string };
-  setNewTechnology: React.Dispatch<React.SetStateAction<{ name: string; iconUrl: string }>>;
+  setNewTechnology: React.Dispatch<React.SetStateAction<{ id:string; name: string; iconUrl: string }>>;
   newContactLink: ContactLink;
   setNewContactLink: React.Dispatch<React.SetStateAction<ContactLink>>;
   newProject: Project;
