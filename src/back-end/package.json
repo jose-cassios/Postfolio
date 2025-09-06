@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "docs": "typedoc --options typedoc.json",
-    "build": "prisma generate && tsc && tsc-alias -p tsconfig.json",
+    "build": "prisma generate && tsup",
     "build:dev": "tsup",
     "dev": "tsx watch src/app.ts",
     "start-dev": "node dist/app.js",
