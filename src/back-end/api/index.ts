@@ -1,28 +1,13 @@
 import Fastify, { FastifyReply, FastifyRequest } from "fastify";
+import { app } from "../src/app";
 
-// export default async function handler(req: any, res: any) => {
-//   try {
-//     await app.ready();
-//     app.server.emit("request", req, res);
-//   } catch (error) {
-//     console.error("Não foi possivel emitir a requisição. err: ", error);
-//     res.status(500).send("Não foi possivel emitir a requisição.");
-//   }
-// };
+// const app = Fastify({
+//   logger: true,
+// });
 
-const app = Fastify({
-  logger: true,
-});
-
-app.get("/", async (req, reply) => {
-  return reply.status(200).send({ msg: "Deu certo" });
-});
-
-// export default async function handler(req: any, res: any) {
-//   await app.ready();
-//   app.server.emit("request", req, res);
-// }
-// export default app;
+// app.get("/", async (req, reply) => {
+//   return reply.status(200).send({ msg: "Deu certo" });
+// });
 
 export default async (req: FastifyRequest, res: FastifyReply) => {
   try {
