@@ -1,6 +1,14 @@
-import { app } from "./app";
+import Fastify from "fastify";
 
-export default async function handler(req: any, res: any) {
+const app = Fastify({
+  logger: true,
+});
+
+app.get("/", async (req, reply) => {
+  return reply.status(200).send({ msg: "Deu certo" });
+});
+
+export default async function handler(req: any, reply: any) {
   await app.ready();
-  app.server.emit("request", req, res);
+  app.server.emit("request", req, reply);
 }
