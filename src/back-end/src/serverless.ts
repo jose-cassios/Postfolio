@@ -1,14 +1,14 @@
-// import { app } from "./app";
+import { app } from "./app";
 
-import Fastify from "fastify";
+// import Fastify from "fastify";
 
-const app = Fastify({
-  logger: true,
-});
+// const app = Fastify({
+//   logger: true,
+// });
 
-app.get("/", async (req, reply) => {
-  return reply.status(200).send({ msg: "Deu certo" });
-});
+// app.get("/", async (req, reply) => {
+//   return reply.status(200).send({ msg: "Deu certo" });
+// });
 
 export default async function handler(req: any, reply: any) {
   await app.ready();

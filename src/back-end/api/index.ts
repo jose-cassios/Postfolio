@@ -1,4 +1,4 @@
-import { app } from "../src/app";
+import Fastify, { FastifyReply, FastifyRequest } from "fastify";
 
 // export default async function handler(req: any, res: any) => {
 //   try {
@@ -10,26 +10,26 @@ import { app } from "../src/app";
 //   }
 // };
 
-// const app = Fastify({
-//   logger: true,
-// });
+const app = Fastify({
+  logger: true,
+});
 
-// app.get("/", async (req, reply) => {
-//   return reply.status(200).send({ msg: "Deu certo" });
-// });
+app.get("/", async (req, reply) => {
+  return reply.status(200).send({ msg: "Deu certo" });
+});
 
-export default async function handler(req: any, res: any) {
-  await app.ready();
-  app.server.emit("request", req, res);
-}
+// export default async function handler(req: any, res: any) {
+//   await app.ready();
+//   app.server.emit("request", req, res);
+// }
 // export default app;
 
-// export default async (req: FastifyRequest, res: FastifyReply) => {
-//   try {
-//     await app.ready();
-//     app.server.emit("request", req, res);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send({ error: "Internal Server Error" });
-//   }
-// };
+export default async (req: FastifyRequest, res: FastifyReply) => {
+  try {
+    await app.ready();
+    app.server.emit("request", req, res);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: "Internal Server Error" });
+  }
+};
