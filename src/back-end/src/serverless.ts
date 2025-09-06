@@ -1,4 +1,4 @@
-import Fastify from "fastify";
+import Fastify, { FastifyReply, FastifyRequest } from "fastify";
 
 const app = Fastify({
   logger: true,
@@ -8,7 +8,12 @@ app.get("/", async (req, reply) => {
   return reply.status(200).send({ msg: "Deu certo" });
 });
 
-export default async function handler(req: any, reply: any) {
-  await app.ready();
-  app.server.emit("request", req, reply);
-}
+export default async (req: FastifyRequest, res: FastifyReply) => {
+  try {
+    await app.ready();
+    app.server.emit("request", req, res);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: "Internal Server Error" });
+  }
+};
