@@ -1,6 +1,6 @@
 import { app } from "./app";
 
-module.exports = async (req: any, res: any) => {
+export default async (req: any, res: any) => {
   try {
     await app.ready();
     res.status(200).json({
