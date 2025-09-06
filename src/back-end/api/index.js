@@ -8,9 +8,7 @@ app.get('/', async (req, reply) => {
     return reply.status(200).send({ msg: "Deu certo" })
 })
 
-async function handler(req, reply) {
+export default async function handler(req, reply) {
     await app.ready()
     app.server.emit('request', req, reply)
 }
-
-export default handler;
