@@ -1,14 +1,14 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "serverless.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "docs": "typedoc --options typedoc.json",
-    "build": "prisma generate && tsc && tsc-alias -p tsconfig.json",
+    "build": "prisma generate && tsup",
     "dev": "ts-node-dev --respawn --require tsconfig-paths/register --env-file .env src/app.ts",
-    "start-dev": "node dist/app.js",
-    "start": "node dist/index.js"
+    "start-dev": "node dist/serverless.js",
+    "start": "node dist/serverless.js"
   },
   "keywords": [],
   "author": "",
@@ -34,6 +34,7 @@
     "@fastify/oauth2": "^8.1.2",
     "@fastify/swagger": "^9.5.1",
     "@prisma/client": "^6.4.1",
+    "bcrypt": "^6.0.0",
     "bcryptjs": "^2.4.3",
     "fastify": "^5.2.1",
     "fastify-type-provider-zod": "^5.0.3",
@@ -46,6 +47,7 @@
     "reflect-metadata": "^0.2.2",
     "supertest": "^7.0.0",
     "tsc-alias": "^1.8.16",
+    "tsup": "^8.5.0",
     "uuid": "^11.1.0",
     "validator": "^13.12.0",
     "zod": "^4.0.15"

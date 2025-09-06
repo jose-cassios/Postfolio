@@ -1,12 +1,13 @@
 import Fastify, { FastifyReply, FastifyRequest } from "fastify";
+import { app } from "app";
 
-const app = Fastify({
-  logger: true,
-});
+// const app = Fastify({
+//   logger: true,
+// });
 
-app.get("/", async (req, reply) => {
-  return reply.status(200).send({ msg: "Deu certo" });
-});
+// app.get("/", async (req, reply) => {
+//   return reply.status(200).send({ msg: "Deu certo" });
+// });
 
 export default async function handler(req: any, res: any) {
   await app.ready();
