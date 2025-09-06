@@ -40,6 +40,10 @@ export function createApp(): FastifyInstance {
 
   configureProvaders(app);
 
+  app.get("/", async (request, reply) => {
+    return { message: "Bem-vindo ao Postfolio API" };
+  });
+
   return app;
 }
 
