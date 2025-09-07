@@ -9,7 +9,7 @@ import { app } from "../src/app";
 //   return reply.status(200).send({ msg: "Deu certo" });
 // });
 
-export default async (req: FastifyRequest, res: FastifyReply) => {
+export default async function handler(req: FastifyRequest, res: FastifyReply) {
   try {
     await app.ready();
     app.server.emit("request", req, res);
@@ -17,4 +17,4 @@ export default async (req: FastifyRequest, res: FastifyReply) => {
     console.error(error);
     res.status(500).send({ error: "Internal Server Error" });
   }
-};
+}
