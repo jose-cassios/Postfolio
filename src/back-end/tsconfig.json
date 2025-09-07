@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "typeRoots": ["./node_modules/@types"],
+    // "typeRoots": ["./node_modules/@types"],
     "target": "es2024",
     "module": "es2022",
     "moduleResolution": "bundler",
