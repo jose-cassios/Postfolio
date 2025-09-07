@@ -1,26 +1,27 @@
 {
   "compilerOptions": {
     // "typeRoots": ["./node_modules/@types"],
+    // "types": ["node"],
     "target": "es2024",
     "module": "es2022",
     "moduleResolution": "bundler",
-    "baseUrl": "./src",
-    // "rootDir": "./",
+    "baseUrl": ".",
+    "rootDir": "./src",
     "paths": {
-      "@user/*": ["modules/user/*"],
-      "@portfolio/*": ["modules/portfolio/*"],
-      "@project/*": ["modules/project/*"],
-      "@competition/*": ["modules/competition/*"],
-      "@email/*": ["modules/email/*"],
-      "@chat/*": ["modules/chat/*"],
-      "@rating/*": ["modules/rating/*"],
-      "@projectCompDetails/*": ["modules/projectCompDetails/*"],
-      "@favorateProjects/*": ["modules/favorateProjects/*"],
-      "@comments/*": ["modules/comments/*"],
-      "@postMetrics/*": ["modules/postMetrics/*"],
-      "@shared/*": ["shared/*"],
-      "@compositionRoot/*": ["compositionRoot/*"],
-      "@infrastructure/*": ["infrastructure/*"]
+      "@user/*": ["src/modules/user/*"],
+      "@portfolio/*": ["src/modules/portfolio/*"],
+      "@project/*": ["src/modules/project/*"],
+      "@competition/*": ["src/modules/competition/*"],
+      "@email/*": ["src/modules/email/*"],
+      "@chat/*": ["src/modules/chat/*"],
+      "@rating/*": ["src/modules/rating/*"],
+      "@projectCompDetails/*": ["src/modules/projectCompDetails/*"],
+      "@favorateProjects/*": ["src/modules/favorateProjects/*"],
+      "@comments/*": ["src/modules/comments/*"],
+      "@postMetrics/*": ["src/modules/postMetrics/*"],
+      "@shared/*": ["src/shared/*"],
+      "@compositionRoot/*": ["src/compositionRoot/*"],
+      "@infrastructure/*": ["src/infrastructure/*"]
     },
     "outDir": "./dist",
     "esModuleInterop": true,
@@ -28,13 +29,16 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
-    // "experimentalDecorators": true,
-    // "emitDecoratorMetadata": true
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "include": [
-    "./api/**/*.ts",
+    "../api/**/*.ts",
     "./src/**/*.ts",
     "./src/infrastructure/types/**/*.d.ts"
+  ],
+  "exclude": [
+    "./src/**/*.test.ts"
   ],
   "tsc-alias": {
     "verbose": true,

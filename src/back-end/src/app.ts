@@ -1,3 +1,4 @@
+// import "tsconfig-paths/register.js";
 import Fastify, { FastifyInstance } from "fastify";
 import fastifyCors from "@fastify/cors";
 import "@infrastructure/types/fastify";
@@ -6,7 +7,7 @@ import {
   validatorCompiler,
   ZodTypeProvider,
 } from "fastify-type-provider-zod";
-import { AppComposer } from "compositionRoot/appComposer";
+import { AppComposer } from "@compositionRoot/appComposer";
 import { configureProvaders } from "@infrastructure/fastify/Providers";
 
 export function createApp(): FastifyInstance {
