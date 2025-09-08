@@ -1,13 +1,15 @@
 {
   "version": 2,
-  "builds": [
+   "builds": [
     {
-      "src": "dist/api/*/.js",
+      "src": "dist/src/index.js",
       "use": "@vercel/node"
     }
   ],
-  "buildCommand": "npm install && npm run build",
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/dist/api/$1.js" }
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "dist/src/index.js"
+    }
   ]
 }
