@@ -28,7 +28,7 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({ profileData, isOw
       {isOwner && profileData.userType === 'freelancer' && (
         <button
           onClick={() => openEditModal('profilePicture')}
-          className="absolute bottom-0 left-20 sm:left-28 p-2 bg-indigo-600 hover:bg-indigo-500 rounded-full text-white shadow-md"
+          className="absolute bottom-7 left-28 sm:left-32 p-2 bg-indigo-600 hover:bg-indigo-500 rounded-full text-white shadow-md"
           aria-label="Editar foto de perfil"
         >
           <FiEdit2 size={16} />
