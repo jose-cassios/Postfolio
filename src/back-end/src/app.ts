@@ -6,32 +6,22 @@ import {
   validatorCompiler,
   ZodTypeProvider,
 } from "fastify-type-provider-zod";
-import { AppComposer } from "compositionRoot/appComposer";
+import { AppComposer } from "@compositionRoot/appComposer";
 import { configureProvaders } from "@infrastructure/fastify/Providers";
 
-export function createApp(): FastifyInstance {
+function createApp(): FastifyInstance {
   const app = Fastify({
-    logger: {
-      level: "error",
-      transport: {
-        target: "pino-pretty",
-        options: {
-          colorize: true,
-          ignore: "pid,hostname,reqId,req,res",
-        },
-      },
-    },
+    logger: false,
   }).withTypeProvider<ZodTypeProvider>();
 
   app.setValidatorCompiler(validatorCompiler);
   app.setSerializerCompiler(serializerCompiler);
 
   app.register(fastifyCors, {
-    origin: true,
+    origin: "https://postfolio.com.br",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   });
-  // app.register(websocketPlugin);
 
   const appCompose = new AppComposer();
   appCompose.registerRoutes(app);
@@ -40,26 +30,29 @@ export function createApp(): FastifyInstance {
 
   configureProvaders(app);
 
-  app.get("/", async (request, reply) => {
+  app.get("/", async () => {
     return { message: "Bem-vindo ao Postfolio API" };
   });
 
   return app;
 }
 
-export const app = createApp();
+const app = createApp();
 
-if (process.env.NODE_ENV !== "production" || process.env.VERCEL !== "1") {
+export default async function handler(req: any, res: any) {
+  try {
+    await app.ready();
+    app.server.emit("request", req, res);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: "Internal Server Error" });
+  }
+}
+
+// Rodar localmente fora da Vercel
+if (process.env.NODE_ENV === "development") {
   const PORT = 8080;
-  const start = async () => {
-    try {
-      await app.listen({ port: PORT, host: "0.0.0.0" });
-      console.log(`Servidor rodando em http://localhost:${PORT}`);
-    } catch (err) {
-      app.log.error(err);
-      process.exit(1);
-    }
-  };
-
-  start();
+  app.listen({ port: PORT, host: "0.0.0.0" }).then(() => {
+    console.log(`Servidor rodando em http://localhost:${PORT}`);
+  });
 }
