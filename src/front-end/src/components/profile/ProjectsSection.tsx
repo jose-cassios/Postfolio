@@ -12,6 +12,10 @@ interface ProjectsSectionProps {
 const ProjectsSection: React.FC<ProjectsSectionProps> = ({ freelancerData, isOwner, openEditModal, renderEditButton }) => {
   if (!freelancerData) return null;
 
+const handleEditProject = (_projectId: string) => {
+  openEditModal('projects');
+};
+
   return (
     <section className="md:col-span-3">
       <div className="flex justify-between items-center mb-6">
@@ -22,8 +26,9 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ freelancerData, isOwn
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
           {freelancerData.projects.map((project) => (
             <div
+              onClick={()=>handleEditProject(project.id)}
               key={project.id}
-              className="bg-indigo-900/50 border border-indigo-800 rounded-xl shadow-lg p-4 transition-all duration-300 hover:scale-105 hover:shadow-indigo-500/30"
+              className="bg-indigo-900/50 border border-indigo-800 rounded-xl shadow-lg p-4 transition-all duration-300 hover:scale-105 hover:shadow-indigo-500/30 cursor-pointer"
             >
               <img
                 src={project.imageUrl || 'https://via.placeholder.com/400x220?text=Projeto'}
@@ -38,6 +43,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ freelancerData, isOwn
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-indigo-400 hover:text-indigo-200 hover:underline inline-flex items-center gap-1"
+                  onClick={(e) => e.stopPropagation()} //previne abrir modal a clickar no link
                 >
                   Ver Projeto <FiExternalLink size={12} />
                 </a>
