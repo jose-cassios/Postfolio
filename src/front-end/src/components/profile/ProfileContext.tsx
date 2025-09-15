@@ -77,7 +77,7 @@ interface ProfileProviderProps{
 
 export function ProfileProvider({children}: ProfileProviderProps){
     // Estado para controlar qual usuário está "logado" (editável)
-    const [loggedInUserId, setLoggedInUserId] = useState<string>("jose-cassios");
+    const [loggedInUserId, setLoggedInUserId] = useState<string>("");
 
     const getProfile = (profileId: string): UserProfileData | null =>{
         return MOCK_PROFILES.find(profile => profile.userId === profileId) || null;
@@ -89,7 +89,7 @@ export function ProfileProvider({children}: ProfileProviderProps){
         }
     };
     const isLoggedInUser = (profileId: string): boolean =>{
-        const editableUsers = ["jose-cassios", "jonasdavi"];
+        const editableUsers = ["jonasdavi"];
         return editableUsers.includes(profileId)
     };
 
