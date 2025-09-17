@@ -13,7 +13,10 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ freelancerData, isOwn
   if (!freelancerData) return null;
 
 const handleEditProject = (_projectId: string) => {
-  openEditModal('projects');
+  if(isOwner){
+    openEditModal('projects');
+  };
+  
 };
 
   return (
