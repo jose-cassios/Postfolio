@@ -43,7 +43,7 @@ export class UserService implements IUserService {
         new Email(dto.email, false)
       );
 
-      if (exist) throw new Conflict("O novo email já está cadastrado.");
+      if (exist) throw new Conflict("O email já está cadastrado.");
     }
     await user.update(dto);
 
