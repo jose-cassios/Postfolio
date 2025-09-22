@@ -1,4 +1,4 @@
-import Fastify from "fastify";
+import Fastify, { FastifyInstance } from "fastify";
 import fastifyCors from "@fastify/cors";
 import "@infrastructure/types/fastify";
 import {
@@ -6,55 +6,53 @@ import {
   validatorCompiler,
   ZodTypeProvider,
 } from "fastify-type-provider-zod";
-import { AppComposer } from "compositionRoot/appComposer";
-import { configureProvaders } from "@infrastructure/fastify/Provaders";
-import websocketPlugin from "@fastify/websocket";
-// import { DataCache } from "@infrastructure/config/Redis";
+import { AppComposer } from "@compositionRoot/appComposer";
+import { configureProvaders } from "@infrastructure/fastify/Providers";
 
-const app = Fastify({
-  logger: {
-    level: "error",
-    transport: {
-      target: "pino-pretty",
-      options: {
-        colorize: true,
-        ignore: "pid,hostname,reqId,req,res",
-      },
-    },
-  },
-}).withTypeProvider<ZodTypeProvider>();
-const PORT = 8080;
+function createApp(): FastifyInstance {
+  const app = Fastify({
+    logger: false,
+  }).withTypeProvider<ZodTypeProvider>();
 
-app.setValidatorCompiler(validatorCompiler);
-app.setSerializerCompiler(serializerCompiler);
+  app.setValidatorCompiler(validatorCompiler);
+  app.setSerializerCompiler(serializerCompiler);
 
-app.register(fastifyCors, {
-  origin: true,
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-});
-app.register(websocketPlugin);
+  app.register(fastifyCors, {
+    origin: "https://postfolio.com.br",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  });
 
-const appCompose = new AppComposer();
-appCompose.registerRoutes(app);
-appCompose.configureFastify(app);
-appCompose.registerHandlers();
+  const appCompose = new AppComposer();
+  appCompose.registerRoutes(app);
+  appCompose.configureFastify(app);
+  appCompose.registerHandlers();
 
-configureProvaders(app);
+  configureProvaders(app);
 
-const start = async () => {
-  // const dataCache = DataCache.getInstance();
-  // dataCache.connect();
+  app.get("/", async () => {
+    return { message: "Bem-vindo ao Postfolio API" };
+  });
 
-  // const redis = dataCache.getClient();
+  return app;
+}
 
+const app = createApp();
+
+export default async function handler(req: any, res: any) {
   try {
-    await app.listen({ port: PORT, host: "0.0.0.0" });
-    console.log(`Servidor rodando em http://localhost:${PORT}`);
-  } catch (err) {
-    app.log.error(err);
-    process.exit(1);
+    await app.ready();
+    app.server.emit("request", req, res);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: "Internal Server Error" });
   }
-};
+}
 
-start();
+// Rodar localmente fora da Vercel
+if (process.env.NODE_ENV === "development") {
+  const PORT = 8080;
+  app.listen({ port: PORT, host: "0.0.0.0" }).then(() => {
+    console.log(`Servidor rodando em http://localhost:${PORT}`);
+  });
+}

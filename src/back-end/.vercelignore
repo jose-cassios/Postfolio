@@ -1,0 +1,12 @@
+# Ignorar arquivos desnecessários no deploy
+*.md
+*.log
+.env
+.env.local
+test/
+coverage/
+
+/README.md
+/src/back-end/docs/*
+/src/back-end/src/modules/user/test/*
+/src/back-end/src/test/*
