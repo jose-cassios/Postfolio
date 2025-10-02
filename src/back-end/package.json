@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "docs": "typedoc --options typedoc.json",
-    "dev": "tsx watch --env-file=.env src/index.ts",
+    "dev": "tsx watch --env-file=.env src/app.ts",
     "build": "prisma generate && tsc && tsc-alias -p tsconfig.json",
     "build:dev": "tsc && tsc-alias -p tsconfig.json",
     "postinstall": "prisma generate"
