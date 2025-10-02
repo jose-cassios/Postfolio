@@ -10,14 +10,15 @@ O módulo `USER` é o coração da gestão de usuários em nossa aplicação. El
 
 ## 1. Como consumir
 
-A seguir, estudaremos cada end-point, seus cabeçalhos, corpos e respostas. Para mais detalhes leia diretamente no arquivo fonte: [UserRoutes.ts](../../src/modules/user/inBound/UserRoute.ts).
+A seguir, estudaremos cada end-point, seus cabeçalhos, corpos e respostas. Para mais detalhes leia diretamente no arquivo fonte: [UserRoutes.ts](../../src/modules/user/api/UserRoute.ts).
 Segiu o local onde todos os end-poins estão sendo registrados pelo *app*
 
 ```shell
-📦 module/
+📦 modules/
 ├── 📁 user/
-│   └── 📁 inBound/
+│   └── 📁 api/
 │       ├── UserController.ts
+│       ├── UserDTO.ts
 │       ├── UserRoute.ts
 │       └── UserSchema.ts
 ....
@@ -33,10 +34,14 @@ Content-Type: application/json.
 request:
 ```json
 {
-    "name": "test", // nome do user.
+    "username": "test", // nome do user.
     "email": "test@gmail.com", // email valido e único.
     "password": "12345678", // senha de pelo menos 8 digitos
-    "status": "None" // Ainda não disponivel na atual verção.
+    "bio": "minha bio", // bio do usuário, possui caráter opicional
+    "linkedin": "meu linkedin", // linkedin do usuário, possui caráter opicional
+    "github": "meu github", // github do usuário, possui caráter opicional
+    "website": "website", //website, possui caráter opicional
+    "usertype": "tipo de usuário" //nível de permissão do usuário
 }
 ```
 response (`201`):
@@ -47,10 +52,10 @@ response (`201`):
 ```
 | Código HTTP   | Resposta (JSON) | 
 |:-------------:|:--------------------------------------------------:|
-| 400           | {"message": "Todos os campos são obrigatórios!"}   | 
-| 400           | {"message": "Senha muito fraca!"}                  |
-| 400           | {"message": "Email inválido!"}                     |
-| 400           | {"message": "Por favor, use outro email!"}         |
+| 400          | {"message": "o servidor não conseguiu processar a requisição"}   | 
+| 500           | {"message": "Erro no servidor!"}                   |
+| 404           | {"message": "Página não encontrada"}               |
+| 409           | {"message": "Por favor, use outro email!"}         |
 
 **- POST /api/user/profile**
 
@@ -110,10 +115,10 @@ response (`200`):
 | Código HTTP | Resposta (JSON) | 
 |:-------------:|:-----------------:|
 | 400         | {"message": "O email é obrigatório!"} | 
-| 400         | {"message": "A senha é obrigatória!"} |
-| 400         | {"message": "Email inválido!"} |
-| 404         | {"message": "Usuário não encontrado!"} |
 | 401         | {"message": "Senha incorreta!"} |
+| 404         | {"message": "Usuário não encontrado!"} |
+
+
 
 **- GET /auth/google**
 
