@@ -8,6 +8,7 @@ import {
 } from "fastify-type-provider-zod";
 import { AppComposer } from "@compositionRoot/appComposer";
 import { configureProvaders } from "@infrastructure/fastify/Providers";
+import dotenv from "dotenv";
 
 function createApp(): FastifyInstance {
   const app = Fastify({
@@ -30,6 +31,8 @@ function createApp(): FastifyInstance {
 
   configureProvaders(app);
 
+  dotenv.config();
+
   app.get("/", async () => {
     return { message: "Bem-vindo ao Postfolio API" };
   });
@@ -49,9 +52,19 @@ export default async function handler(req: any, res: any) {
   }
 }
 
+// Descomentar quando for para o docker
+// const PORT = 8080;
+// console.log("Executando...");
+// app.listen({ port: PORT, host: "0.0.0.0" }).then(() => {
+//   console.log(`Servidor rodando em http://localhost:${PORT}`);
+// });
+
+console.log("NODE_ENV debug:", JSON.stringify(process.env.NODE_ENV));
+
 // Rodar localmente fora da Vercel
 if (process.env.NODE_ENV === "development") {
   const PORT = 8080;
+  console.log("Executando...");
   app.listen({ port: PORT, host: "0.0.0.0" }).then(() => {
     console.log(`Servidor rodando em http://localhost:${PORT}`);
   });

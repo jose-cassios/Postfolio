@@ -1,6 +1,6 @@
 import { InternalServerError } from "@shared/error/HttpError";
 import { prisma } from "@infrastructure/config/Prisma";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "@PrismaGen/client";
 import { Competition } from "@competition/domain/entities/Competition";
 import { CompetitionMapper } from "@competition/application/CompetitionMapper";
 import { ICompetitionRepository } from "@competition/domain/interfaces/ICompetitionRepository";

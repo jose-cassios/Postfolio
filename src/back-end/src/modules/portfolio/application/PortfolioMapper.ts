@@ -1,6 +1,6 @@
 import { CreatePortfolioDTO } from "@portfolio/api/PortfolioDTO";
 import { Portfolio } from "@portfolio/domain/entities/Portfolio";
-import { Portfolio as PortfolioModel } from "@prisma/client";
+import { Portfolio as PortfolioModel } from "@PrismaGen/client";
 
 export const PortfolioMapper = {
   fromPrismaToDomain(model: PortfolioModel): Portfolio {

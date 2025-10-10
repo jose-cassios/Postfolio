@@ -1,5 +1,5 @@
 import { Comments } from "@comments/domain/entities/Comments";
-import { Comments as CommentsModel } from "@prisma/client";
+import { Comments as CommentsModel } from "@PrismaGen/client";
 
 export const CommentsMapper = {
   fromDomainToPrisma(comment: Comments): CommentsModel {
