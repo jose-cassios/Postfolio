@@ -2,9 +2,9 @@ import { CommentsMapper } from "@comments/application/CommentsMapper";
 import { Comments } from "@comments/domain/entities/Comments";
 import { ICommentsRepository } from "@comments/domain/interfaces/ICommentsRepository";
 import { prisma } from "@infrastructure/config/Prisma";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "@PrismaGen/client";
 import { InternalServerError } from "@shared/error/HttpError";
-import { Comments as CommentsModel } from "@prisma/client";
+import { Comments as CommentsModel } from "@PrismaGen/client";
 
 export class CommentsRepository implements ICommentsRepository {
   async create(comment: Comments): Promise<Comments> {

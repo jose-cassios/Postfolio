@@ -1,6 +1,8 @@
-import { User as UserModel, UserType as UserTypeModel } from "@prisma/client";
+import {
+  User as UserModel,
+  UserType as UserTypeModel,
+} from "@PrismaGen/client";
 import { BadRequest } from "@shared/error/HttpError";
-import { CreateUserDTO, UpdateUserDTO } from "@user/api/UserDTO";
 import User from "@user/domain/entities/User";
 import { UserType } from "@user/domain/enum/UserType";
 import Email from "@user/domain/valueObject/Email";

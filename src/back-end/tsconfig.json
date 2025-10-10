@@ -8,7 +8,7 @@
     // "baseUrl": ".",
     "rootDir": ".",
     "paths": {
-      "@PrismaGen": ["./src/prisma/generated/*"],
+      "@PrismaGen/*": ["./src/prisma/generated/*"],
       "@user/*": ["./src/modules/user/*"],
       "@portfolio/*": ["./src/modules/portfolio/*"],
       "@project/*": ["./src/modules/project/*"],

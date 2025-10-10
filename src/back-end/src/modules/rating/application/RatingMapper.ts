@@ -1,4 +1,4 @@
-import { Rating as RatingModel } from "@prisma/client";
+import { Rating as RatingModel } from "@PrismaGen/client";
 import { Rating } from "@rating/domain/entities/Rating";
 import { UpsertRatingDTO } from "@rating/api/RatingDTO";
 

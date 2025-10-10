@@ -1,5 +1,5 @@
 import { PostMetrics } from "@postMetrics/domain/entities/PostMetrics";
-import { PostMetrics as PostMetricsModel } from "@prisma/client";
+import { PostMetrics as PostMetricsModel } from "@PrismaGen/client";
 
 export const PostMetricsMapper = {
   fromDomainToPrisma(domain: PostMetrics): PostMetricsModel {

@@ -1,5 +1,5 @@
 import { ProjectCompDetails } from "@projectCompDetails/domain/entitite/ProjectCompDetails";
-import { ProjectCompDetails as ProjectCompDetailsModel } from "@prisma/client";
+import { ProjectCompDetails as ProjectCompDetailsModel } from "@PrismaGen/client";
 import { ProjectCompDetailsContract } from "@shared/contracts/ProjectCompDetailsContract";
 
 export const ProjectCompDetailsMapper = {

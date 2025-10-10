@@ -1,6 +1,6 @@
 import { InternalServerError } from "@shared/error/HttpError";
 import { prisma } from "@infrastructure/config/Prisma";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "@PrismaGen/client";
 import { Project } from "@project/domain/entities/Project";
 import { ProjectMapper } from "@project/application/ProjectMapper";
 import { IProjectRepository } from "@project/domain/interfaces/IProjectRepository";
