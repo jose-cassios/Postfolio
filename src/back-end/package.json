@@ -5,10 +5,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "docs": "typedoc --options typedoc.json",
+    "start": "node dist/src/app.js",
     "dev": "tsx watch --env-file=.env src/app.ts",
     "build": "prisma generate && tsc && tsc-alias -p tsconfig.json",
-    "build:dev": "tsc && tsc-alias -p tsconfig.json",
-    "postinstall": "prisma generate"
+    "build:dev": "tsc && tsc-alias -p tsconfig.json"
   },
   "keywords": [],
   "author": "",
