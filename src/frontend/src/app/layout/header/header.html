@@ -1,0 +1,50 @@
+<header class="header">
+  <div class="header-container">
+
+    <a routerLink="/" class="logo">
+      postfolio
+    </a>
+
+    <!-- Navegação -->
+    <nav class="nav">
+      <a routerLink="/explorar" routerLinkActive="active">Explorar</a>
+      <a routerLink="/competicoes" routerLinkActive="active">Competições</a>
+      <a routerLink="/sobre" routerLinkActive="active">Sobre</a>
+
+      @if (isLogged() && user()?.role === 'admin') {
+        <a routerLink="/admin" routerLinkActive="active">Admin</a>
+      }
+    </nav>
+
+    <!-- Ações -->
+    <div class="actions">
+
+      <!-- Não logado -->
+      @if (!isLogged()) {
+        <button class="btn ghost" (click)="login()">Entrar</button>
+        <a routerLink="/registro" class="btn primary">Criar Conta</a>
+      }
+
+      <!-- Logado -->
+      @if (isLogged()) {
+        <button class="btn primary create-post">
+          <span class="plus">+</span>
+          Criar Post
+        </button>
+
+        <div class="user">
+          <div class="avatar">
+            {{ user()?.avatarInitial }}
+          </div>
+
+          <span class="username">
+            {{ user()?.name }}
+          </span>
+
+          <button class="logout" (click)="logout()">→</button>
+        </div>
+      }
+
+    </div>
+  </div>
+</header>
