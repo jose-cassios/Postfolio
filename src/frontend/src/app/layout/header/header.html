@@ -41,7 +41,10 @@
             {{ user()?.name }}
           </span>
 
-          <button class="logout" (click)="logout()">→</button>
+          <button mat-icon-button (click)="logout()">
+            <mat-icon>logout</mat-icon>
+          </button>
+
         </div>
       }
 
