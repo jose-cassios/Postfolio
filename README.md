@@ -2,7 +2,7 @@
   <img width="225px" src="assets/postfolio-logo.png" alt="Postfólio Logo">
 </p>
 
-<h1 align="center">Postfólio</h1>
+<h1 align="center">Postfolio</h1>
 
 Bem-vindo(a) ao Postfólio, nossa plataforma colaborativa para desenvolvedores, designers e profissionais de tecnologia apresentarem seus trabalhos de forma competitiva e interativa.
 
