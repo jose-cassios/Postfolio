@@ -1,0 +1,21 @@
+<div class="slider-wrapper">
+    <button class="nav-btn prev" (click)="scrollLeft()">
+        <mat-icon>chevron_left</mat-icon>
+    </button>
+
+    <div class="categories-container" #categorySlider>
+        @for (cat of categories; track $index) {
+        <div class="category-card">
+            <div class="icon-box">
+                <mat-icon>{{ cat.icon }}</mat-icon>
+            </div>
+            <span>{{ cat.name }}</span>
+        </div>
+        }
+
+    </div>
+
+    <button class="nav-btn next" (click)="scrollRight()">
+        <mat-icon>chevron_right</mat-icon>
+    </button>
+</div>
