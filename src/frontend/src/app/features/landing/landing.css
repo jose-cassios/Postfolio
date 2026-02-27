@@ -1,16 +1,69 @@
 .features-intro {
-  padding: 100px 2rem;
-  text-align: center;
-  background: white;
+    padding: 60px 20px;
+    text-align: center;
+    background-color: var(--color-bg-surface);
 }
 
-.features-intro h2 {
-  font-size: 2.2rem;
-  color: #1a1a1a;
-  margin-bottom: 1rem;
+.section-header h2 {
+    font-size: 2.4rem;
+    color: var(--color-text-primary);
+    font-weight: 700;
+    margin-bottom: 20px;
 }
 
-.features-intro p {
-  color: #666;
-  font-size: 1.1rem;
+.section-header p {
+    color: var(--color-text-secondary);
+    font-size: 1.1rem;
+    margin-bottom: 50px;
+}
+
+.features-grid {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.feature-card {
+    flex: 1;
+    min-width: 250px;
+    max-width: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.feature-card h3 {
+    font-size: 1.25rem;
+    color: var(--color-text-primary);
+    margin: 15px 0 10px 0;
+    font-weight: 600;
+}
+
+.feature-card p {
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.purple-icon {
+    color: #8b5cf6; /* O tom de roxo da imagem */
+    font-size: 32px; /* Ajuste o tamanho conforme necessário */
+    height: 32px;
+    width: 32px;
+}
+
+.icon-wrapper {
+    background-color: #f3e8ff; /* Fundo roxo clarinho */
+    padding: 15px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.feature-card:hover .icon-wrapper {
+    transform: translateY(-5px);
 }
