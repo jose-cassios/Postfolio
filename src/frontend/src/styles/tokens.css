@@ -1,0 +1,28 @@
+:root {
+
+  /* 🎨 Brand */
+  --color-primary-500: #7b2ff7;
+  --color-primary-600: #a100ff;
+
+  /* 🎨 Backgrounds */
+  --color-bg-default: #f3f3f3;
+  --color-bg-surface: #ffffff;
+
+  /* 🎨 Text */
+  --color-text-primary: #2f3a4c;
+  --color-text-secondary: #6b7280;
+
+  /* 🎨 Borders */
+  --color-border-default: #e4e4e4;
+
+  /* 🎨 States */
+  --color-success: #22c55e;
+  --color-danger: #ef4444;
+
+  /* 🎨 Gradients */
+  --gradient-primary: linear-gradient(
+    135deg,
+    var(--color-primary-500),
+    var(--color-primary-600)
+  );
+}

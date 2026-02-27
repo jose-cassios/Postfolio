@@ -1,0 +1,136 @@
+.header {
+  width: 100%;
+  background: var(--color-bg-default);
+  padding: 0 2rem;
+}
+
+.header-container {
+  max-width: 1300px;
+  margin: 0 auto;
+  height: 72px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo */
+
+.logo {
+  background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-600));
+  color: var(--color-bg-surface);
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 10px 18px;
+  border-radius: 12px;
+  text-decoration: none;
+  letter-spacing: 0.5px;
+}
+
+/* Navegação */
+
+.nav {
+  display: flex;
+  gap: 2.5rem;
+}
+
+.nav a {
+  text-decoration: none;
+  color: var(--color-text-primary);
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.nav a:hover {
+  opacity: 0.7;
+}
+
+.nav a.active {
+  font-weight: 600;
+}
+
+/* Ações */
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Botões */
+
+.btn {
+  border: none;
+  padding: 9px 18px;
+  border-radius: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 0.9rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn.ghost {
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border-default);
+}
+
+.btn.ghost:hover {
+    background: transparent;
+}
+
+.btn.primary {
+  background: linear-gradient(135deg, #7b2ff7, #a100ff);
+  color: white;
+}
+
+.btn.primary:hover {
+  opacity: 0.9;
+}
+
+/* Criar Post */
+
+.create-post .plus {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* Usuário */
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #a100ff;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.username {
+  font-weight: 500;
+  color: #2f3a4c;
+}
+
+.logout {
+  background: transparent;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.logout:hover {
+  opacity: 1;
+}
