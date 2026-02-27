@@ -1,0 +1,16 @@
+.features-intro {
+  padding: 100px 2rem;
+  text-align: center;
+  background: white;
+}
+
+.features-intro h2 {
+  font-size: 2.2rem;
+  color: #1a1a1a;
+  margin-bottom: 1rem;
+}
+
+.features-intro p {
+  color: #666;
+  font-size: 1.1rem;
+}
