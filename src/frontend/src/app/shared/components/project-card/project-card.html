@@ -1,0 +1,19 @@
+<div class="card">
+
+  <div class="image-container">
+    <img [src]="project().imageUrl" [alt]="project().title" loading="lazy">
+  </div>
+  
+  <div class="card-content">
+
+    <h3 class="card-title">{{ project().title }}</h3>
+    
+    <div class="card-stats">
+      <span>{{ project().likes }} likes</span>
+      <span class="dot">•</span>
+      <span>{{ project().views }} visualizações</span>
+    </div>
+
+  </div>
+
+</div>

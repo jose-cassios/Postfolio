@@ -1,15 +1,17 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { Hero } from "./components/hero/hero";
 import { MatIconModule } from '@angular/material/icon';
 import { CategorySlider } from "./components/category-slider/category-slider";
+import { ProjectCard } from "../../shared/components/project-card/project-card";
+import { FEATURED_PROJECTS } from '../../shared/data/mock-projects';
 
 @Component({
   selector: 'app-landing',
   standalone: true,
-  imports: [Hero, MatIconModule, CategorySlider],
+  imports: [Hero, MatIconModule, CategorySlider, ProjectCard],
   templateUrl: './landing.html',
   styleUrl: './landing.css',
 })
 export class Landing {
-
+  projects = FEATURED_PROJECTS.slice(0, 6);
 }

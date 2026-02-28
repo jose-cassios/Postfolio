@@ -51,3 +51,26 @@
     </div>
 
 </section>
+
+<section class="showcase-projects">
+  <div class="container">
+
+    <header class="showcase-header">
+      <div class="showcase-title-group">
+        <h2>Projetos em Destaque</h2>
+        <p>Descubra os trabalhos mais populares da comunidade</p>
+      </div>
+
+      <button class="btn-view-all">
+        Ver Todos <mat-icon>view_module</mat-icon>
+      </button>
+    </header>
+
+    <div class="projects-grid">
+      @for (project of projects; track project.id) {
+        <app-project-card [project]="project" />
+      }
+    </div>
+
+  </div>
+</section>
