@@ -8,10 +8,12 @@
   /* Backgrounds */
   --color-bg-default: #f3f3f3;
   --color-bg-surface: #ffffff;
+  --color-bg-secondary: #0f172a;
 
   /* Text */
   --color-text-primary: #2f3a4c;
   --color-text-secondary: #6b7280;
+  --color-text-tertiary: #cbd5e1;
 
   /* Borders */
   --color-border-default: #e4e4e4;
