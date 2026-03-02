@@ -25,7 +25,6 @@ export class Header {
 
   isLogged = computed(() => this._isLogged());
 
-  // Simulação de login
   login() {
     this._isLogged.set(true);
     this.user.set({

@@ -4,11 +4,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { CategorySlider } from "./components/category-slider/category-slider";
 import { ProjectCard } from "../../shared/components/project-card/project-card";
 import { FEATURED_PROJECTS } from '../../shared/data/mock-projects';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-landing',
   standalone: true,
-  imports: [Hero, MatIconModule, CategorySlider, ProjectCard],
+  imports: [Hero, MatIconModule, CategorySlider, ProjectCard, RouterLink],
   templateUrl: './landing.html',
   styleUrl: './landing.css',
 })
