@@ -1,18 +1,67 @@
-<div class="card">
+<div class="card" [class.detailed]="mode() === ProjectCardMode.DETAILED">
 
   <div class="image-container">
     <img [src]="project().imageUrl" [alt]="project().title" loading="lazy">
   </div>
-  
+
   <div class="card-content">
 
     <h3 class="card-title">{{ project().title }}</h3>
-    
+
+    @if (mode() === ProjectCardMode.COMPACT){
     <div class="card-stats">
       <span>{{ project().likes }} likes</span>
       <span class="dot">•</span>
       <span>{{ project().views }} visualizações</span>
     </div>
+    }
+
+    @if (mode() === ProjectCardMode.DETAILED) {
+
+      @if (project().author) {
+      <div class="card-author">
+        <img class="author-avatar" [src]="project().author?.avatar" [alt]="project().author?.name">
+        <span class="author-name">
+          {{ project().author?.name }}
+        </span>
+      </div>
+      }
+
+      <div class="card-stats detailed-stats">
+
+        <div class="stat">
+          <mat-icon>favorite</mat-icon>
+          <span>{{ project().likes }}</span>
+        </div>
+
+        <div class="stat">
+          <mat-icon>chat_bubble</mat-icon>
+          <span>{{ project().commentsCount }}</span>
+        </div>
+
+        <div class="stat">
+          <mat-icon>visibility</mat-icon>
+          <span>{{ project().views }}</span>
+        </div>
+
+      </div>
+
+      @if (project().technologies?.length) {
+      <div class="card-tags">
+
+        @for (tech of project().technologies!.slice(0, 3); track $index) {
+        <span class="tag">{{ tech }}</span>
+        }
+
+        @if (project().technologies!.length > 3) {
+        <span class="tag more">
+          +{{ project().technologies!.length - 3 }}
+        </span>
+        }
+
+      </div>
+      }
+    }
 
   </div>
 

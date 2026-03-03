@@ -4,17 +4,17 @@ export const FEATURED_PROJECTS: Project[] = [
 
   {
     id: '1',
-    title: 'Dashboard de Analytics Moderno',
+    title: 'Dashboard de Analytics Moderno Atualizado Com as melhores práticas do mercado texto exageradamente grande',
     slug: 'dashboard-analytics-moderno',
     imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=900&q=80',
-    likes: 245,
-    views: 1820,
+    likes: 2245,
+    views: 10000,
     category: 'web-design',
-    technologies: ['Angular', 'Chart.js', 'Figma'],
-    commentsCount: 18,
+    technologies: ['Angular', 'Chart.js', 'Figma', 'React', 'JavaScript', 'Python', 'tag desnecessária', 'Só mais uma'],
+    commentsCount: 1088,
     author: {
-      name: 'Marcos Silva',
-      username: 'marcosdev',
+      name: 'José Cássios',
+      username: 'jose-cassios',
       avatar: 'https://i.pravatar.cc/150?img=11'
     }
   },
@@ -30,8 +30,8 @@ export const FEATURED_PROJECTS: Project[] = [
     technologies: ['Next.js', 'Stripe'],
     commentsCount: 12,
     author: {
-      name: 'Juliana Rocha',
-      username: 'juux',
+      name: 'Debriane Silva',
+      username: 'jujuba',
       avatar: 'https://i.pravatar.cc/150?img=32'
     }
   },
@@ -47,8 +47,8 @@ export const FEATURED_PROJECTS: Project[] = [
     technologies: ['Procreate', 'Photoshop'],
     commentsCount: 34,
     author: {
-      name: 'Rafael Lima',
-      username: 'rafart',
+      name: 'Lara Manuelly',
+      username: 'laranja',
       avatar: 'https://i.pravatar.cc/150?img=45'
     }
   },
@@ -64,8 +64,8 @@ export const FEATURED_PROJECTS: Project[] = [
     technologies: ['Illustrator', 'Figma'],
     commentsCount: 6,
     author: {
-      name: 'Camila Duarte',
-      username: 'camidesign',
+      name: 'Ávila conceica',
+      username: 'Havilah',
       avatar: 'https://i.pravatar.cc/150?img=21'
     }
   },
@@ -81,8 +81,8 @@ export const FEATURED_PROJECTS: Project[] = [
     technologies: ['Flutter', 'Firebase'],
     commentsCount: 22,
     author: {
-      name: 'Lucas Andrade',
-      username: 'lucode',
+      name: 'Antonio Wills',
+      username: 'aws',
       avatar: 'https://i.pravatar.cc/150?img=9'
     }
   },
@@ -98,8 +98,8 @@ export const FEATURED_PROJECTS: Project[] = [
     technologies: ['Figma'],
     commentsCount: 15,
     author: {
-      name: 'Ana Beatriz',
-      username: 'anaux',
+      name: 'Loyse Kelly',
+      username: 'morena',
       avatar: 'https://i.pravatar.cc/150?img=48'
     }
   },
@@ -115,8 +115,8 @@ export const FEATURED_PROJECTS: Project[] = [
     technologies: ['Lightroom'],
     commentsCount: 19,
     author: {
-      name: 'Pedro Mendes',
-      username: 'pmfoto',
+      name: 'Jonas nogueira',
+      username: 'davi',
       avatar: 'https://i.pravatar.cc/150?img=14'
     }
   },
@@ -132,8 +132,8 @@ export const FEATURED_PROJECTS: Project[] = [
     technologies: ['AutoCAD', 'SketchUp'],
     commentsCount: 11,
     author: {
-      name: 'Fernanda Costa',
-      username: 'ferarq',
+      name: 'Mickaela',
+      username: 'micka',
       avatar: 'https://i.pravatar.cc/150?img=5'
     }
   },
@@ -149,8 +149,8 @@ export const FEATURED_PROJECTS: Project[] = [
     technologies: ['Unity', 'C#'],
     commentsCount: 41,
     author: {
-      name: 'Thiago Nunes',
-      username: 'thigames',
+      name: 'Wilma',
+      username: 'wilma',
       avatar: 'https://i.pravatar.cc/150?img=19'
     }
   },
@@ -166,7 +166,7 @@ export const FEATURED_PROJECTS: Project[] = [
     technologies: ['After Effects'],
     commentsCount: 8,
     author: {
-      name: 'Bruno Oliveira',
+      name: 'Lucas Eduardo',
       username: 'brunomotion',
       avatar: 'https://i.pravatar.cc/150?img=27'
     }

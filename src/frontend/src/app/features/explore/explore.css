@@ -2,35 +2,125 @@
   padding: 4rem 0 2rem;
 }
 
-.explore-filters {
-  margin-top: 1.5rem;
+/* ========================= */
+/* HEADER TEXT */
+/* ========================= */
+
+.header-text h1 {
+  font-size: 2.2rem;
+  margin-bottom: 6px;
+}
+
+.header-text p {
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* ========================= */
+/* SEARCH BAR */
+/* ========================= */
+
+.search-bar {
+  margin-top: 2rem;
+  background: #f8f9fb;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 16px;
   display: flex;
-  gap: 1rem;
+  gap: 12px;
   align-items: center;
   flex-wrap: wrap;
 }
 
-.explore-filters input {
-  padding: 0.8rem 1rem;
-  border-radius: 8px;
-  border: 1px solid var(--color-border);
-  min-width: 280px;
-}
-
-.active-category {
-  background: var(--color-primary-100);
-  color: var(--color-primary-600);
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
+.search-input {
+  flex: 1;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 0 12px;
 }
 
-.active-category button {
-  background: none;
+.search-input input {
   border: none;
+  outline: none;
+  padding: 12px;
+  flex: 1;
+  font-size: 0.95rem;
+}
+
+.search-icon {
+  opacity: 0.5;
+}
+
+.sort-select {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  background: white;
   cursor: pointer;
+}
+
+.filter-button {
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--color-primary-500);
+  background: white;
+  color: var(--color-primary-600);
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.filter-button:hover {
+  background: var(--color-primary-100);
+}
+
+/* ========================= */
+/* FILTER PANEL */
+/* ========================= */
+
+.filters-panel {
+  margin-top: 16px;
+  background: #f8f9fb;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.filter-group + .filter-group {
+  margin-top: 20px;
+}
+
+.filter-title {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chip {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: none;
+  background: #e9ecf2;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: 0.2s ease;
+}
+
+.chip:hover {
+  background: #dde2ea;
+}
+
+.chip.active {
+  background: var(--color-primary-500);
+  color: white;
 }
 
 .explore-projects {
@@ -40,11 +130,6 @@
 .projects-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
-}
-
-.empty-state {
-  grid-column: 1 / -1;
-  text-align: center;
-  opacity: 0.6;
+  gap: 40px 24px;
+  margin: 48px;
 }

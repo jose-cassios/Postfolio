@@ -68,7 +68,10 @@
 
     <div class="projects-grid">
       @for (project of projects; track project.id) {
-        <app-project-card [project]="project" />
+        <app-project-card 
+          [project]="project"
+          [mode]="mode.COMPACT"
+        />
       }
     </div>
 

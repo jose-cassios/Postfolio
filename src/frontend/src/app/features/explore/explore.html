@@ -1,25 +1,70 @@
 <section class="explore-header">
   <div class="container">
 
-    <h1>Explorar Projetos</h1>
+    <div class="header-text">
+      <h1>Explorar Projetos</h1>
+      <p>Descubra trabalhos incríveis da comunidade</p>
+    </div>
 
-    <div class="explore-filters">
+    <div class="search-bar">
 
-      <input
-        type="text"
-        placeholder="Buscar projetos..."
-        [(ngModel)]="searchTerm"
-        (input)="applyFilters()"
-      />
+      <div class="search-input">
+        <span class="search-icon">🔍</span>
+        <input
+          type="text"
+          placeholder="Buscar projetos, tags..."
+          [(ngModel)]="searchTerm"
+          (input)="applyFilters()"
+        />
+      </div>
 
-      @if (selectedCategoryName) {
-        <div class="active-category">
-          Categoria: <strong>{{ selectedCategoryName }}</strong>
-          <button (click)="clearCategory()">✕</button>
-        </div>
-      }
+      <select class="sort-select">
+        <option>Mais Recentes</option>
+        <option>Mais Curtidos</option>
+        <option>Mais Visualizados</option>
+      </select>
+
+      <button class="filter-button" (click)="showFilters = !showFilters">
+        ☰ Filtros
+      </button>
 
     </div>
+
+    @if (showFilters) {
+      <div class="filters-panel">
+
+        <div class="filter-group">
+          <span class="filter-title">Categoria</span>
+
+          <div class="filter-chips">
+            @for (category of categories; track category.slug) {
+              <button
+                class="chip"
+                [class.active]="selectedCategory === category.slug"
+                (click)="selectCategory(category.slug)"
+              >
+                {{ category.name }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <span class="filter-title">Ferramentas</span>
+
+          <div class="filter-chips">
+            <button class="chip">Figma</button>
+            <button class="chip">React</button>
+            <button class="chip">Vue</button>
+            <button class="chip">Next.js</button>
+            <button class="chip">TypeScript</button>
+            <button class="chip">Node.js</button>
+          </div>
+        </div>
+
+      </div>
+    }
+
   </div>
 </section>
 
@@ -28,7 +73,10 @@
 
     <div class="projects-grid">
       @for (project of filteredProjects; track project.id) {
-        <app-project-card [project]="project" />
+        <app-project-card 
+          [project]="project" 
+          [mode]="mode.DETAILED" 
+        />
       }
 
       @if (filteredProjects.length === 0) {

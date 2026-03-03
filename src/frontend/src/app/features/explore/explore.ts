@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CATEGORIES } from '../../shared/data/categories';
 import { ProjectCard } from '../../shared/components/project-card/project-card';
 import { FEATURED_PROJECTS } from '../../shared/data/mock-projects'
+import { ProjectCardMode } from '../../shared/components/project-card/project-card';
 
 @Component({
   selector: 'app-explore',
@@ -13,8 +14,10 @@ import { FEATURED_PROJECTS } from '../../shared/data/mock-projects'
   styleUrl: './explore.css',
 })
 export class Explore implements OnInit {
-
+  showFilters = false;
+  categories = CATEGORIES;
   projects = FEATURED_PROJECTS;
+  mode = ProjectCardMode;
   filteredProjects = this.projects;
 
   selectedCategory: string | null = null;
@@ -59,6 +62,13 @@ export class Explore implements OnInit {
         .includes(this.searchTerm.toLowerCase());
 
       return matchesCategory && matchesSearch;
+    });
+  }
+
+  selectCategory(slug: string) {
+    this.router.navigate([], {
+      queryParams: { categoria: slug },
+      queryParamsHandling: 'merge'
     });
   }
 
