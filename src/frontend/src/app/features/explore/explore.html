@@ -20,10 +20,14 @@
         </div>
   
         <div class="sort-wrapper">
-          <select class="sort-select">
-            <option>Mais Recentes</option>
-            <option>Mais Curtidos</option>
-            <option>Mais Visualizados</option>
+          <select 
+            class="sort-select"
+            [(ngModel)]="selectedSort"
+            (change)="applyFilters()"
+          >
+          <option value="recent">Mais Recentes</option>
+          <option value="likes">Mais Curtidos</option>
+          <option value="views">Mais Visualizados</option>
           </select>
         </div>
   
@@ -74,7 +78,18 @@
   
   <section class="explore-projects">
     <div class="container">
-  
+      
+      <div class="explore-meta">
+        <div class="projects-count">
+          {{ filteredProjects.length }} projetos encontrados
+        </div>
+
+        <div class="sort-info">
+          <mat-icon>sort</mat-icon>
+          Ordenado por {{ getSortLabel() }}
+        </div>
+      </div>
+
       <div class="projects-grid">
         @for (project of filteredProjects; track project.id) {
           <app-project-card

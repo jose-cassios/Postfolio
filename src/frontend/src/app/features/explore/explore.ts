@@ -23,6 +23,7 @@ export class Explore implements OnInit {
 
   selectedCategory: string | null = null;
   selectedCategoryName: string | null = null;
+  selectedSort: 'recent' | 'likes' | 'views' = 'recent';
   searchTerm = '';
 
   constructor(
@@ -52,7 +53,7 @@ export class Explore implements OnInit {
   }
 
   applyFilters() {
-    this.filteredProjects = this.projects.filter(project => {
+    let results = this.projects.filter(project => {
 
       const matchesCategory = this.selectedCategory
         ? project.category === this.selectedCategory
@@ -64,6 +65,30 @@ export class Explore implements OnInit {
 
       return matchesCategory && matchesSearch;
     });
+
+    if (this.selectedSort === 'likes') {
+      results = results.sort((a, b) => b.likes - a.likes);
+    }
+
+    if (this.selectedSort === 'views') {
+      results = results.sort((a, b) => b.views - a.views);
+    }
+
+    if (this.selectedSort === 'recent') {
+      results = results.sort((a, b) =>
+        new Date(b.id).getTime() - new Date(a.id).getTime() // posteriormente trocar para data
+      );
+    }
+
+    this.filteredProjects = results;
+  }
+
+  getSortLabel(): string {
+    switch (this.selectedSort) {
+      case 'likes': return 'mais curtidos';
+      case 'views': return 'mais visualizados';
+      default: return 'mais recentes';
+    }
   }
 
   selectCategory(slug: string) {
