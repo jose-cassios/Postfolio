@@ -5,7 +5,7 @@
 
     <div class="categories-container" #categorySlider>
         @for (cat of categories; track $index) {
-        <div class="category-card">
+        <div class="category-card" (click)="goToCategory(cat.slug)">
             <div class="icon-box">
                 <mat-icon>{{ cat.icon }}</mat-icon>
             </div>

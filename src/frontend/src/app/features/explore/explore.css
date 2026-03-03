@@ -1,0 +1,50 @@
+.explore-header {
+  padding: 4rem 0 2rem;
+}
+
+.explore-filters {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.explore-filters input {
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  min-width: 280px;
+}
+
+.active-category {
+  background: var(--color-primary-100);
+  color: var(--color-primary-600);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.active-category button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.explore-projects {
+  padding: 2rem 0 4rem;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  opacity: 0.6;
+}

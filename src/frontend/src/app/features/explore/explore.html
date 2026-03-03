@@ -1,1 +1,40 @@
-<p>explore works!</p>
+<section class="explore-header">
+  <div class="container">
+
+    <h1>Explorar Projetos</h1>
+
+    <div class="explore-filters">
+
+      <input
+        type="text"
+        placeholder="Buscar projetos..."
+        [(ngModel)]="searchTerm"
+        (input)="applyFilters()"
+      />
+
+      @if (selectedCategoryName) {
+        <div class="active-category">
+          Categoria: <strong>{{ selectedCategoryName }}</strong>
+          <button (click)="clearCategory()">✕</button>
+        </div>
+      }
+
+    </div>
+  </div>
+</section>
+
+<section class="explore-projects">
+  <div class="container">
+
+    <div class="projects-grid">
+      @for (project of filteredProjects; track project.id) {
+        <app-project-card [project]="project" />
+      }
+
+      @if (filteredProjects.length === 0) {
+        <p class="empty-state">Nenhum projeto encontrado.</p>
+      }
+    </div>
+
+  </div>
+</section>
