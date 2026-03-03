@@ -5,11 +5,12 @@ import { CATEGORIES } from '../../shared/data/categories';
 import { ProjectCard } from '../../shared/components/project-card/project-card';
 import { FEATURED_PROJECTS } from '../../shared/data/mock-projects'
 import { ProjectCardMode } from '../../shared/components/project-card/project-card';
+import { MatIconModule } from "@angular/material/icon";
 
 @Component({
   selector: 'app-explore',
   standalone: true,
-  imports: [FormsModule, ProjectCard],
+  imports: [FormsModule, ProjectCard, MatIconModule],
   templateUrl: './explore.html',
   styleUrl: './explore.css',
 })
