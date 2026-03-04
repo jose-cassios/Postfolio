@@ -54,7 +54,12 @@ export const routes: Routes = [
     import('./features/auth/register/register')
     .then(m => m.Register),
   },
-
+  {
+    path: 'projetos/:slug',
+    loadComponent: () =>
+      import('./features/project/project')
+        .then(m => m.Project)
+  },
   {
     path: '**',
     redirectTo: ''

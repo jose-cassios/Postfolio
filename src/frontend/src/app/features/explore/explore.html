@@ -93,6 +93,7 @@
       <div class="projects-grid">
         @for (project of filteredProjects; track project.id) {
           <app-project-card
+            routerLink="/projetos/{{project.slug}}"
             [project]="project"
             [mode]="mode.DETAILED"
           />

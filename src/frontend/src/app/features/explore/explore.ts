@@ -6,11 +6,12 @@ import { ProjectCard } from '../../shared/components/project-card/project-card';
 import { FEATURED_PROJECTS } from '../../shared/data/mock-projects'
 import { ProjectCardMode } from '../../shared/components/project-card/project-card';
 import { MatIconModule } from "@angular/material/icon";
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-explore',
   standalone: true,
-  imports: [FormsModule, ProjectCard, MatIconModule],
+  imports: [FormsModule, ProjectCard, MatIconModule, RouterLink],
   templateUrl: './explore.html',
   styleUrl: './explore.css',
 })
