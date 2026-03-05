@@ -170,6 +170,7 @@ hr {
 .back {
   display: flex;
   align-items: center;
+  width: fit-content;
   gap: 6px;
 
   font-size: 0.9rem;

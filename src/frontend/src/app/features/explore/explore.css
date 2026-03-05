@@ -9,7 +9,7 @@
 }
 
 .explore-meta {
-  margin: 32px 0 16px;
+  margin-bottom: 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -161,8 +161,9 @@
   color: white;
 }
 
+
 .explore-projects {
-  padding: 2rem 0 4rem;
+  padding-bottom: 4rem;
 }
 
 .projects-grid {
