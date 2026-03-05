@@ -21,7 +21,9 @@
 
       <!-- Não logado -->
       @if (!isLogged()) {
-        <button class="btn ghost" (click)="login()">Entrar</button>
+        <!-- <button class="btn ghost" (click)="login()">Entrar</button> -->
+
+        <a routerLink="/login" class="btn ghost">Entrar</a>
         <a routerLink="/registro" class="btn primary">Criar Conta</a>
       }
 
