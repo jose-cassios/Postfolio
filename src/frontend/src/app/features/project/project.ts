@@ -2,12 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ProjectDetails } from '../../shared/models/project-details';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FEATURED_PROJECTS } from '../../shared/data/mock-projects';
 
 @Component({
   selector: 'app-project',
-  imports: [CommonModule, MatIconModule],
+  imports: [CommonModule, MatIconModule, RouterLink],
   templateUrl: './project.html',
   styleUrl: './project.css',
 })
