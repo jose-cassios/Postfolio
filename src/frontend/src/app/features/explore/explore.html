@@ -1,0 +1,109 @@
+<section class="main">
+  <section class="explore-header">
+    <div class="container">
+  
+      <div class="header-text">
+        <h1>Explorar Projetos</h1>
+        <p>Descubra trabalhos incríveis da comunidade</p>
+      </div>
+  
+      <div class="search-bar">
+  
+        <div class="search-input">
+          <mat-icon class="search-icon">search</mat-icon>
+          <input
+            type="text"
+            placeholder="Buscar projetos, tags..."
+            [(ngModel)]="searchTerm"
+            (input)="applyFilters()"
+          />
+        </div>
+  
+        <div class="sort-wrapper">
+          <select 
+            class="sort-select"
+            [(ngModel)]="selectedSort"
+            (change)="applyFilters()"
+          >
+          <option value="recent">Mais Recentes</option>
+          <option value="likes">Mais Curtidos</option>
+          <option value="views">Mais Visualizados</option>
+          </select>
+        </div>
+  
+        <button class="filter-button" (click)="showFilters = !showFilters">
+          <mat-icon>tune</mat-icon>
+          <span>Filtros</span>
+        </button>
+  
+      </div>
+  
+      @if (showFilters) {
+        <div class="filters-panel">
+  
+          <div class="filter-group">
+            <span class="filter-title">Categoria</span>
+  
+            <div class="filter-chips">
+              @for (category of categories; track category.slug) {
+                <button
+                  class="chip"
+                  [class.active]="selectedCategory === category.slug"
+                  (click)="selectCategory(category.slug)"
+                >
+                  {{ category.name }}
+                </button>
+              }
+            </div>
+          </div>
+  
+          <div class="filter-group">
+            <span class="filter-title">Ferramentas</span>
+  
+            <div class="filter-chips">
+              <button class="chip">Figma</button>
+              <button class="chip">React</button>
+              <button class="chip">Vue</button>
+              <button class="chip">Next.js</button>
+              <button class="chip">TypeScript</button>
+              <button class="chip">Node.js</button>
+            </div>
+          </div>
+  
+        </div>
+      }
+  
+    </div>
+  </section>
+  
+  <section class="explore-projects">
+    <div class="container">
+      
+      <div class="explore-meta">
+        <div class="projects-count">
+          {{ filteredProjects.length }} projetos encontrados
+        </div>
+
+        <div class="sort-info">
+          <mat-icon>sort</mat-icon>
+          Ordenado por {{ getSortLabel() }}
+        </div>
+      </div>
+
+      <div class="projects-grid">
+        @for (project of filteredProjects; track project.id) {
+          <app-project-card
+            routerLink="/projetos/{{project.slug}}"
+            [project]="project"
+            [mode]="mode.DETAILED"
+          />
+        }
+  
+        @if (filteredProjects.length === 0) {
+          <p class="empty-state">Nenhum projeto encontrado.</p>
+        }
+      </div>
+  
+    </div>
+  </section>
+</section>

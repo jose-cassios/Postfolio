@@ -1,0 +1,73 @@
+<section class="auth-page">
+
+  <div class="auth-container">
+
+    <a routerLink="/" class="back">
+      <mat-icon>arrow_back</mat-icon>
+      Voltar
+    </a>
+
+    <div class="auth-card">
+
+      <div class="logo">
+        postfolio
+      </div>
+
+      <h1>Bem-vindo de volta</h1>
+      <p class="subtitle">Entre para continuar explorando</p>
+
+      <div class="social-login">
+        <button class="social-btn">
+          <mat-icon>public</mat-icon>
+          Continuar com Google
+        </button>
+
+        <button class="social-btn">
+          <mat-icon>code</mat-icon>
+          Continuar com GitHub
+        </button>
+      </div>
+
+      <div class="divider">
+        <span>ou continue com email</span>
+      </div>
+
+      <form (submit)="login()">
+
+        <label>Email</label>
+        <div class="input">
+          <mat-icon>mail</mat-icon>
+          <input type="email" placeholder="seu@email.com" [(ngModel)]="email" name="email">
+        </div>
+
+        <label>Senha</label>
+        <div class="input">
+          <mat-icon>lock</mat-icon>
+          <input type="password" placeholder="********" [(ngModel)]="password" name="password">
+        </div>
+
+        <div class="options">
+          <label class="remember">
+            <input type="checkbox" [(ngModel)]="remember" name="remember">
+            Lembrar-me
+          </label>
+
+          <a class="link">Esqueceu a senha?</a>
+        </div>
+
+        <button class="primary-btn">
+          Entrar
+        </button>
+
+      </form>
+
+      <p class="bottom-text">
+        Não tem uma conta?
+        <a routerLink="/register">Criar conta grátis</a>
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
