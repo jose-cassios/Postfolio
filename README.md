@@ -20,7 +20,7 @@ O projeto ainda está em desenvolvimento e aberto para colaboração. Contribui�
 
 ## 🧠 Tecnologias Usadas
 
-- **Frontend:** Reestruturando...
+- **Frontend:** Angular
 - **Backend:** Node.js + Fastify + Prisma + PostgreSQL
 - **ORM:** Prisma
 - **Controle de Versão:** Git + GitHub
