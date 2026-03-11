@@ -14,10 +14,10 @@ interface User {
   selector: 'app-header',
   standalone: true,
   imports: [CommonModule, RouterModule, MatIconModule, MatButtonModule],
-  templateUrl: './header.html',
-  styleUrl: './header.css',
+  templateUrl: './header.component.html',
+  styleUrl: './header.component.css',
 })
-export class Header {
+export class HeaderComponent {
   // (substituir por AuthService depois)
   private _isLogged = signal(false);
 

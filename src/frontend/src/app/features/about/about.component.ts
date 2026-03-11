@@ -5,10 +5,10 @@ import { Location } from '@angular/common';
 @Component({
   selector: 'app-about',
   imports: [MatIconModule],
-  templateUrl: './about.html',
-  styleUrl: './about.css',
+  templateUrl: './about.component.html',
+  styleUrl: './about.component.css',
 })
-export class About {
+export class AboutComponent {
     constructor(private location: Location) {}
 
     goBack() {

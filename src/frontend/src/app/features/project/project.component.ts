@@ -8,10 +8,10 @@ import { FEATURED_PROJECTS } from '../../shared/data/mock-projects';
 @Component({
   selector: 'app-project',
   imports: [CommonModule, MatIconModule, RouterLink],
-  templateUrl: './project.html',
-  styleUrl: './project.css',
+  templateUrl: './project.component.html',
+  styleUrl: './project.component.css',
 })
-export class Project {
+export class ProjectComponent {
   private route = inject(ActivatedRoute);
 
   project = signal<ProjectDetails | null>(null);

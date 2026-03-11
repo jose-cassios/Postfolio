@@ -12,10 +12,10 @@ export enum ProjectCardMode {
   selector: 'app-project-card',
   standalone: true,
   imports: [CommonModule, MatIconModule],
-  templateUrl: './project-card.html',
-  styleUrl: './project-card.css',
+  templateUrl: './project-card.component.html',
+  styleUrl: './project-card.component.css',
 })
-export class ProjectCard {
+export class ProjectCardComponent {
   project = input.required<Project>();
   
   mode = input<ProjectCardMode>(ProjectCardMode.COMPACT);

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Wave } from './wave';
+import { WaveComponent } from './wave.component';
 
-describe('Wave', () => {
-  let component: Wave;
-  let fixture: ComponentFixture<Wave>;
+describe('WaveComponent', () => {
+  let component: WaveComponent;
+  let fixture: ComponentFixture<WaveComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Wave]
+      imports: [WaveComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Wave);
+    fixture = TestBed.createComponent(WaveComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

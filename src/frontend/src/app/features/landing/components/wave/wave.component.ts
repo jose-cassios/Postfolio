@@ -4,9 +4,9 @@ import { Component } from '@angular/core';
   selector: 'app-wave',
   standalone: true,
   imports: [],
-  templateUrl: './wave.html',
-  styleUrl: './wave.css',
+  templateUrl: './wave.component.html',
+  styleUrl: './wave.component.css',
 })
-export class Wave {
+export class WaveComponent {
 
 }

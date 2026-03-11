@@ -7,10 +7,10 @@ import { Router } from '@angular/router';
   selector: 'app-category-slider',
   standalone: true,
   imports: [MatIconModule],
-  templateUrl: './category-slider.html',
-  styleUrl: './category-slider.css',
+  templateUrl: './category-slider.component.html',
+  styleUrl: './category-slider.component.css',
 })
-export class CategorySlider {
+export class CategorySliderComponent {
   
   @ViewChild('categorySlider') slider!: ElementRef;
 

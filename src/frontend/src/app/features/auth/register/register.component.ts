@@ -7,10 +7,10 @@ import { MatIconModule } from '@angular/material/icon';
   selector: 'app-register',
   standalone: true,
   imports: [RouterLink, FormsModule, MatIconModule],
-  templateUrl: './register.html',
-  styleUrl: './register.css',
+  templateUrl: './register.component.html',
+  styleUrl: './register.component.css',
 })
-export class Register {
+export class RegisterComponent {
   name = '';
   email = '';
   password = '';
