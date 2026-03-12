@@ -7,7 +7,7 @@ import { RouterModule } from "@angular/router";
   selector: 'app-hero',
   imports: [WaveComponent, MatIcon, RouterModule],
   templateUrl: './hero.component.html',
-  styleUrl: './hero.component.css',
+  styleUrl: './hero.component.scss',
 })
 export class HeroComponent {
 

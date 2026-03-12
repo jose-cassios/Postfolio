@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [MatIconModule],
   templateUrl: './category-slider.component.html',
-  styleUrl: './category-slider.component.css',
+  styleUrl: './category-slider.component.scss',
 })
 export class CategorySliderComponent {
   

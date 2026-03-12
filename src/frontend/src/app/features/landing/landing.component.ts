@@ -12,7 +12,7 @@ import { ProjectCardMode } from '../../shared/components/project-card/project-ca
   standalone: true,
   imports: [HeroComponent, MatIconModule, CategorySliderComponent, ProjectCardComponent, RouterLink],
   templateUrl: './landing.component.html',
-  styleUrl: './landing.component.css',
+  styleUrl: './landing.component.scss',
 })
 export class LandingComponent {
   projects = FEATURED_PROJECTS.slice(0, 6);

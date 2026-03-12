@@ -13,7 +13,7 @@ export enum ProjectCardMode {
   standalone: true,
   imports: [CommonModule, MatIconModule],
   templateUrl: './project-card.component.html',
-  styleUrl: './project-card.component.css',
+  styleUrl: './project-card.component.scss',
 })
 export class ProjectCardComponent {
   project = input.required<Project>();

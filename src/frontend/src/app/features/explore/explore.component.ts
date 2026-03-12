@@ -13,7 +13,7 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [FormsModule, ProjectCardComponent, MatIconModule, RouterLink],
   templateUrl: './explore.component.html',
-  styleUrl: './explore.component.css',
+  styleUrl: './explore.component.scss',
 })
 export class ExploreComponent implements OnInit {
   showFilters = false;

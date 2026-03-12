@@ -9,7 +9,7 @@ import { FEATURED_PROJECTS } from '../../shared/data/mock-projects';
   selector: 'app-project',
   imports: [CommonModule, MatIconModule, RouterLink],
   templateUrl: './project.component.html',
-  styleUrl: './project.component.css',
+  styleUrl: './project.component.scss',
 })
 export class ProjectComponent {
   private route = inject(ActivatedRoute);

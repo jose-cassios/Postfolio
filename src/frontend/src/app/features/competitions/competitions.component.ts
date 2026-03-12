@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-competitions',
   imports: [],
   templateUrl: './competitions.component.html',
-  styleUrl: './competitions.component.css',
+  styleUrl: './competitions.component.scss',
 })
 export class CompetitionsComponent {
 

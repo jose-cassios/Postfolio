@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './wave.component.html',
-  styleUrl: './wave.component.css',
+  styleUrl: './wave.component.scss',
 })
 export class WaveComponent {
 

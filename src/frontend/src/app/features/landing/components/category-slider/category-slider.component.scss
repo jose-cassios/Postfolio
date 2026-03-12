@@ -1,3 +1,5 @@
+@use 'tokens' as *;
+
 .slider-wrapper {
   display: flex;
   align-items: center;
@@ -7,71 +9,102 @@
 .categories-container {
   display: flex;
   gap: 20px;
+
   overflow-x: auto;
   scroll-behavior: smooth;
-  padding: 10px 5px;
-  scrollbar-width: none;
-}
 
-.categories-container::-webkit-scrollbar {
-  display: none;
+  padding: 10px 5px;
+
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .category-card {
   min-width: 180px;
-  background: var(--color-bg-surface);
-  border: 1px solid var(--color-border-default);
+
+  background: $color-bg-surface;
+  border: 1px solid $color-border-default;
   border-radius: 16px;
+
   padding: 24px;
+
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-}
 
-.category-card:hover {
-  border-color: var(--color-primary-500);
-  transform: translateY(-5px);
-  box-shadow: 0 10px 15px -3px rgba(124, 58, 237, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  cursor: pointer;
+
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+
+  span {
+    font-weight: 600;
+    color: $color-text-primary;
+    font-size: 0.95rem;
+  }
+
+  &:hover {
+    border-color: $color-primary-500;
+    transform: translateY(-5px);
+
+    box-shadow: 0 10px 15px -3px rgba(124, 58, 237, 0.1);
+
+    span {
+      color: $color-primary-500;
+    }
+  }
 }
 
 .icon-box {
   width: 50px;
   height: 50px;
+
   border-radius: 12px;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 12px;
-  color: var(--color-primary-500);
-}
 
-.category-card span {
-  font-weight: 600;
-  color: var(--color-text-primary);
-  font-size: 0.95rem;
-}
-.category-card:hover span {
-  color: var(--color-primary-500);
+  margin-bottom: 12px;
+
+  color: $color-primary-500;
 }
 
 .nav-btn {
-  background: var(--color-bg-surface);
-  border: 1px solid var(--color-border-default);
+  background: $color-bg-surface;
+
+  border: 1px solid $color-border-default;
+
   border-radius: 50%;
+
   width: 40px;
   height: 40px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   cursor: pointer;
+
   position: absolute;
   z-index: 10;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
 
-.nav-btn:hover { background: var(--color-bg-default); color: var(--color-primary-500); }
-.prev { left: -20px; }
-.next { right: -20px; }
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+  &:hover {
+    background: $color-bg-default;
+    color: $color-primary-500;
+  }
+
+  &.prev {
+    left: -20px;
+  }
+
+  &.next {
+    right: -20px;
+  }
+}

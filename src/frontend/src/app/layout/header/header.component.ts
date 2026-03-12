@@ -15,7 +15,7 @@ interface User {
   standalone: true,
   imports: [CommonModule, RouterModule, MatIconModule, MatButtonModule],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.css',
+  styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
   // (substituir por AuthService depois)

@@ -8,7 +8,7 @@ import { Router, NavigationEnd, RouterOutlet } from '@angular/router';
   selector: 'app-root',
   imports: [HeaderComponent, FooterComponent, RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.scss'
 })
 export class AppComponent {
   protected readonly title = signal('frontend');

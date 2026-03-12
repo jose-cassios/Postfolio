@@ -1,8 +1,13 @@
+@use 'tokens' as *;
+
 .auth-page {
   display: flex;
   justify-content: center;
+
   padding: 60px 24px;
-  background: var(--color-bg-surface);
+
+  background: $color-bg-surface;
+
   min-height: 100vh;
 }
 
@@ -15,25 +20,37 @@
   display: flex;
   align-items: center;
   gap: 6px;
+
   margin-bottom: 20px;
-  color: var(--color-text-secondary);
+
+  color: $color-text-secondary;
+
   cursor: pointer;
 }
 
 .auth-card {
-  background: var(--color-bg-default);
+  background: $color-bg-default;
+
   border-radius: 16px;
+
   padding: 36px;
+
   box-shadow: 0 6px 24px rgba(0,0,0,0.06);
 }
 
 .logo {
-  background: linear-gradient(90deg,#7c3aed,#9333ea);
+  background: linear-gradient(90deg, #7c3aed, #9333ea);
+
   color: white;
+
   font-weight: 600;
+
   padding: 8px 16px;
+
   border-radius: 10px;
+
   width: fit-content;
+
   margin-bottom: 18px;
 }
 
@@ -42,7 +59,7 @@ h1 {
 }
 
 .subtitle {
-  color: var(--color-text-secondary);
+  color: $color-text-secondary;
   margin-bottom: 24px;
 }
 
@@ -53,35 +70,45 @@ h1 {
 }
 
 .social-btn {
-  border: 1px solid var(--color-border-default);
+  border: 1px solid $color-border-default;
+
   padding: 10px;
+
   border-radius: 8px;
-  background: white;
+
+  background: $color-bg-surface;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   gap: 6px;
+
   cursor: pointer;
 }
 
 .divider {
   display: flex;
   align-items: center;
+
   margin: 22px 0;
-}
 
-.divider::before,
-.divider::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: var(--color-border-default);
-}
+  &::before,
+  &::after {
+    content: "";
+    flex: 1;
+    height: 1px;
 
-.divider span {
-  padding: 0 10px;
-  font-size: 0.85rem;
-  color: var(--color-text-secondary);
+    background: $color-border-default;
+  }
+
+  span {
+    padding: 0 10px;
+
+    font-size: 0.85rem;
+
+    color: $color-text-secondary;
+  }
 }
 
 form {
@@ -98,41 +125,52 @@ label {
   display: flex;
   align-items: center;
   gap: 8px;
-  border: 1px solid var(--color-border-default);
-  border-radius: 8px;
-  padding: 10px;
-  margin-bottom: 16px;
-}
 
-.input input {
-  border: none;
-  outline: none;
-  flex: 1;
+  border: 1px solid $color-border-default;
+
+  border-radius: 8px;
+
+  padding: 10px;
+
+  margin-bottom: 16px;
+
+  input {
+    border: none;
+    outline: none;
+
+    flex: 1;
+  }
 }
 
 .options {
   display: flex;
   justify-content: space-between;
+
   margin-bottom: 16px;
 }
 
 .primary-btn {
-  background: linear-gradient(90deg,#7c3aed,#9333ea);
+  background: linear-gradient(90deg, #7c3aed, #9333ea);
+
   border: none;
+
   color: white;
+
   padding: 12px;
+
   border-radius: 8px;
+
   cursor: pointer;
 }
 
 .bottom-text {
   margin-top: 20px;
   text-align: center;
-}
 
-.bottom-text a {
-  color: var(--color-primary-500);
-  cursor: pointer;
+  a {
+    color: $color-primary-500;
+    cursor: pointer;
+  }
 }
 
 .terms {

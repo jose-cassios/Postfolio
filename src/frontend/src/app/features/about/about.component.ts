@@ -6,7 +6,7 @@ import { Location } from '@angular/common';
   selector: 'app-about',
   imports: [MatIconModule],
   templateUrl: './about.component.html',
-  styleUrl: './about.component.css',
+  styleUrl: './about.component.scss',
 })
 export class AboutComponent {
     constructor(private location: Location) {}
