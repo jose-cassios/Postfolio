@@ -2,7 +2,7 @@ import { prisma } from "@infrastructure/config/Prisma";
 import { PostMetricsMapper } from "@postMetrics/application/PostMetricsMapper";
 import { PostMetrics } from "@postMetrics/domain/entities/PostMetrics";
 import { IPostMetricsRepository } from "@postMetrics/domain/interfaces/IPostMetricsRepository";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "@PrismaGen/client";
 import { InternalServerError } from "@shared/error/HttpError";
 
 export class PostMetricsRepository implements IPostMetricsRepository {

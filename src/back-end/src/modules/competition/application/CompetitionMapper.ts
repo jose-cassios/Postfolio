@@ -1,4 +1,4 @@
-import { Competition as CompetitionModel } from "@prisma/client";
+import { Competition as CompetitionModel } from "@PrismaGen/client";
 import { Competition } from "@competition/domain/entities/Competition";
 
 export const CompetitionMapper = {

@@ -1,6 +1,6 @@
 import { CreateFavorateProjectDTO } from "@favorateProjects/api/FavorateProjectsDTO";
 import { FavorateProjects } from "@favorateProjects/domain/entities/FavorateProjects";
-import { FavorateProjects as FavorateProjectsModel } from "@prisma/client";
+import { FavorateProjects as FavorateProjectsModel } from "@PrismaGen/client";
 import { FavorateProjectsContract } from "@shared/contracts/FavorateProjectsContract";
 
 export const FavorateProjectsMapper = {

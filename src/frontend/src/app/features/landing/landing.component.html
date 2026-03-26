@@ -1,0 +1,106 @@
+<app-hero></app-hero>
+
+<section class="features-intro">
+    <div class="container">
+
+        <header class="section-header">
+            <h2>Tudo que você precisa em um só lugar</h2>
+            <p>Portfólio, comunidade e oportunidades profissionais em uma experiência unificada.</p>
+        </header>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="icon-wrapper">
+                    <mat-icon class="purple-icon">auto_awesome</mat-icon>
+                </div>
+                <h3>Mostre seu Trabalho</h3>
+                <p>Crie um portfólio visual impressionante e compartilhe seus projetos com o mundo.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="icon-wrapper">
+                    <mat-icon class="purple-icon">workspace_premium</mat-icon>
+                </div>
+                <h3>Participe de Competições</h3>
+                <p>Desafie-se em competições mensais e ganhe reconhecimento da comunidade.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="icon-wrapper">
+                    <mat-icon class="purple-icon">business_center</mat-icon>
+                </div>
+                <h3>Seja Contratado</h3>
+                <p>Receba oportunidades de trabalho e conecte-se diretamente com clientes.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="categories-section">
+
+    <div class="bg-overlay"></div>
+
+    <div class="container">
+        <header class="section-header">
+            <h2>Explore por Categoria</h2>
+            <p>Descubra trabalhos incríveis em diversas áreas</p>
+        </header>
+
+        <app-category-slider></app-category-slider>
+
+    </div>
+
+</section>
+
+<section class="showcase-projects">
+  <div class="container">
+
+    <header class="showcase-header">
+      <div class="showcase-title-group">
+        <h2>Projetos em Destaque</h2>
+        <p>Descubra os trabalhos mais populares da comunidade</p>
+      </div>
+
+      <button class="btn-view-all" routerLink="explorar">
+        Ver Todos <mat-icon>view_module</mat-icon>
+      </button>
+    </header>
+
+    <div class="projects-grid">
+      @for (project of projects; track project.id) {
+        <app-project-card
+          routerLink="/projetos/{{project.slug}}"
+          [project]="project"
+          [mode]="mode.COMPACT"
+        />
+      }
+    </div>
+
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="cta-container">
+
+    <h2 class="cta-title">
+      Pronto para mostrar seu <span>talento</span>?
+    </h2>
+
+    <p class="cta-subtitle">
+      Junte-se a milhares de criativos e comece hoje mesmo a construir
+      um portfólio que conecta você a novas oportunidades.
+    </p>
+
+    <div class="cta-actions">
+      <button routerLink="registro" class="btn-primary">
+        Começar Agora
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+
+      <button routerLink="explorar" class="btn-secondary">
+        Explorar Projetos
+      </button>
+    </div>
+
+  </div>
+</section>

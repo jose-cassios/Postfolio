@@ -53,6 +53,7 @@ export class CompetitionService implements ICompetitionService {
       throw new Conflict("O tralho já está cadastrado na competição");
 
     await this.projectCompDetailsPort.create({
+      id: "",
       totalReviewers: 0,
       totalScore: 0,
       competitionId: competition.id,

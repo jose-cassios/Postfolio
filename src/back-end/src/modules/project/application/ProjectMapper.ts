@@ -1,7 +1,7 @@
 import {
   ProjectCategory as ProjectCategoryModel,
   Project as ProjectModel,
-} from "@prisma/client";
+} from "@PrismaGen/client";
 import { Project } from "@project/domain/entities/Project";
 import { CreateProjectDTO, UpdateProjectDTO } from "@project/api/ProjectDTO";
 import { ProjectContract } from "@shared/contracts/ProjectContracts";

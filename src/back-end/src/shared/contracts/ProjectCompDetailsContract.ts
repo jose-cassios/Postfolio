@@ -1,5 +1,5 @@
 export interface ProjectCompDetailsContract {
-  id?: string;
+  id: string; //Tornar id obrigatória
   totalReviewers: number;
   totalScore: number;
   competitionId: string;
