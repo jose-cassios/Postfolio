@@ -1,0 +1,165 @@
+@use '../../../../../styles/tokens.scss' as *;
+
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+
+  padding: 2rem;
+  background: $color-bg-default;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 420px;
+
+  padding: 2.5rem;
+  border-radius: 24px;
+
+  background: $color-bg-surface;
+
+  border: 1px solid $color-border-default;
+
+  box-shadow:
+    0 10px 30px rgba(15, 23, 42, 0.08),
+    0 4px 12px rgba(123, 47, 247, 0.06);
+}
+
+.login-header {
+  margin-bottom: 2rem;
+  text-align: center;
+
+  h1 {
+    margin-bottom: 0.5rem;
+
+    font-size: 2rem;
+    font-weight: 700;
+
+    color: $color-text-primary;
+  }
+
+  p {
+    color: $color-text-secondary;
+    font-size: 0.95rem;
+  }
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: $color-text-primary;
+  }
+
+  input {
+    width: 100%;
+
+    padding: 0.9rem 1rem;
+
+    border-radius: 14px;
+    border: 1px solid $color-border-default;
+
+    background: $color-bg-surface;
+
+    font-size: 1rem;
+
+    color: $color-text-primary;
+
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      transform 0.2s ease;
+
+    &:focus {
+      outline: none;
+
+      border-color: $color-primary-500;
+
+      box-shadow: 0 0 0 4px rgba(123, 47, 247, 0.12);
+    }
+
+    &::placeholder {
+      color: $color-text-secondary;
+    }
+  }
+}
+
+.error-message {
+  font-size: 0.9rem;
+  color: $color-danger;
+}
+
+.login-button {
+  width: 100%;
+
+  padding: 0.95rem 1rem;
+
+  border: none;
+  border-radius: 14px;
+
+  background: $gradient-primary;
+
+  color: white;
+
+  font-size: 1rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
+
+  box-shadow:
+    0 8px 20px rgba(123, 47, 247, 0.24);
+
+  &:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+      0 12px 28px rgba(123, 47, 247, 0.3);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.register-link {
+  margin-top: 1.5rem;
+
+  text-align: center;
+
+  font-size: 0.95rem;
+
+  color: $color-text-secondary;
+
+  a {
+    color: $color-primary-500;
+    text-decoration: none;
+    font-weight: 600;
+
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
