@@ -1,0 +1,62 @@
+<div class="login-container">
+  <header class="login-header">
+    <h1>Entrar</h1>
+    <p>Acesse sua conta no Postfolio</p>
+  </header>
+
+  <form
+    class="login-form"
+    [formGroup]="form"
+    (ngSubmit)="submit()"
+    novalidate
+  >
+    <div class="input-group">
+      <label for="email">Email</label>
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        placeholder="Digite seu email"
+        [class.invalid]="form.get('email')?.invalid && form.get('email')?.touched"
+      />
+      
+      @if (form.get('email')?.errors?.['email'] && form.get('email')?.touched) {
+        <small class="helper-text">Por favor, insira um e-mail válido.</small>
+      }
+    </div>
+
+    <div class="input-group">
+      <label for="password">Senha</label>
+      <input
+        id="password"
+        type="password"
+        formControlName="password"
+        placeholder="Digite sua senha"
+      />
+    </div>
+
+    @if (error()) {
+      <div class="error-message" role="alert">
+        {{ error() }}
+      </div>
+    }
+
+    <button
+      class="login-button"
+      type="submit"
+      [disabled]="form.invalid || isLoading()"
+    >
+      @if (isLoading()) {
+        <span class="spinner" aria-hidden="true"></span>
+        Entrando...
+      } @else {
+        Entrar
+      }
+    </button>
+  </form>
+
+  <footer class="register-link">
+    <span>Não possui conta?</span>
+    <a routerLink="/auth/registro">Criar conta</a>
+  </footer>
+</div>
