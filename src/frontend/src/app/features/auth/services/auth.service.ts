@@ -10,19 +10,18 @@ export class AuthService {
   constructor(private api: ApiService) {}
 
   login(email: string, password: string) {
-    return this.api.get<any[]>('users', { email })
+    const payload = {
+      email,
+      password,
+    };
+
+    return this.api.post<any>('user/login', payload)
       .pipe(
-        map(users => {
-          const user = users.find(u => u.email === email && u.password === password);
+        map(response => {
+          localStorage.setItem('token', response.token);
+          console.log('Login bem-sucedido:', response);
 
-          if (!user) {
-            throw new Error('INVALID_CREDENTIALS');
-          }
-
-          localStorage.setItem('token', user.token);
-          localStorage.setItem('user', JSON.stringify(user));
-          console.log('Login bem-sucedido:', user);
-          return user;
+          return response;
         })
       );
   }
