@@ -1,0 +1,81 @@
+<form
+  class="register-form"
+  [formGroup]="form"
+  (ngSubmit)="submit()"
+  novalidate
+>
+  <app-form-input
+    label="Nome Completo"
+    type="text"
+    placeholder="Digite seu nome completo"
+    [control]="$any(form.get('username'))"
+  />
+
+  <app-form-input
+    label="Email"
+    type="email"
+    placeholder="Digite seu email"
+    [control]="$any(form.get('email'))"
+  />
+
+  <app-form-input
+    label="Senha"
+    type="password"
+    placeholder="Crie uma senha (mínimo 6 caracteres)"
+    [control]="$any(form.get('password'))"
+  />
+
+  <app-form-input
+    label="Confirmar Senha"
+    type="password"
+    placeholder="Confirme sua senha"
+    [control]="$any(form.get('confirmPassword'))"
+  />
+
+  <div class="user-type-switch">
+    <span>Tipo de conta</span>
+    <div class="buttons">
+      <button
+        type="button"
+        class="option"
+        [class.active]="form.get('usertype')?.value === 'DEVELOPER'"
+        (click)="form.get('usertype')?.setValue('DEVELOPER')"
+      >
+        DEVELOPER
+      </button>
+      <button
+        type="button"
+        class="option"
+        [class.active]="form.get('usertype')?.value === 'EMPLOYER'"
+        (click)="form.get('usertype')?.setValue('EMPLOYER')"
+      >
+        EMPLOYER
+      </button>
+    </div>
+  </div>
+
+  @if (passwordMismatch) {
+    <div class="error-message" role="alert">
+      As senhas não correspondem
+    </div>
+  }
+
+  @if (error()) {
+    <div class="error-message" role="alert">
+      {{ error() }}
+    </div>
+  }
+
+  <button
+    class="register-button"
+    type="submit"
+    [disabled]="form.invalid || isLoading()"
+  >
+    @if (isLoading()) {
+      <span class="spinner" aria-hidden="true"></span>
+      Criando conta...
+    } @else {
+      Criar Conta
+    }
+  </button>
+</form>

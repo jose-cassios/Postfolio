@@ -19,7 +19,7 @@ function createApp(): FastifyInstance {
   app.setSerializerCompiler(serializerCompiler);
 
   app.register(fastifyCors, {
-    origin: "https://postfolio.com.br",
+    origin: ["https://postfolio.com.br", "http://localhost:4200"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   });

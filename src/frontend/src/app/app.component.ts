@@ -16,6 +16,6 @@ export class AppComponent {
   private router = inject(Router);
 
   isAuthRoute = computed(() =>
-    this.router.url.startsWith('/login')
+    this.router.url.startsWith('/auth')
   );
 }
