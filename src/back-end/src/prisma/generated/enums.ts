@@ -10,8 +10,9 @@
 */
 
 export const UserType = {
-  DEVELOPER: 'DEVELOPER',
-  EMPLOYER: 'EMPLOYER'
+  USER: 'USER',
+  MODERATOR: 'MODERATOR',
+  ADMIN: 'ADMIN'
 } as const
 
 export type UserType = (typeof UserType)[keyof typeof UserType]

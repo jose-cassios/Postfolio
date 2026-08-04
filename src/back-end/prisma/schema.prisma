@@ -17,7 +17,7 @@ model User {
   linkedin      String?
   github        String?
   website       String?
-  userType      UserType
+  userType      UserType?
   ProviderOAuth ProviderOAuth[]
   portfolios    Portfolio?
   ratings       Rating[]
@@ -200,8 +200,9 @@ model ProjectCompDetails {
 }
 
 enum UserType {
-  DEVELOPER
-  EMPLOYER
+  USER
+  MODERATOR
+  ADMIN
 }
 
 enum FeedbackType {

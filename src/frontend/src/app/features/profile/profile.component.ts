@@ -32,7 +32,7 @@ export class ProfileComponent {
     linkedin: [''],
     github: [''],
     website: [''],
-    usertype: [this.user()?.usertype || 'DEVELOPER', [Validators.required]],
+    usertype: [this.user()?.usertype || 'USER', [Validators.required]],
     password: ['', [Validators.minLength(6)]],
   });
 
@@ -74,7 +74,7 @@ export class ProfileComponent {
       linkedin: user.linkedin || '',
       github: user.github || '',
       website: user.website || '',
-      usertype: user.usertype || 'DEVELOPER',
+      usertype: user.usertype || 'USER',
       password: '',
     });
 
