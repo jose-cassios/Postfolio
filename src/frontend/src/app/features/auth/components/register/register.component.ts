@@ -14,6 +14,7 @@ export class RegisterComponent {
 
   onRegisterSuccess(user: any): void {
     console.log('Usuário registrado com sucesso:', user);
-    this.router.navigateByUrl('/');
+    const username = user.username || 'perfil';
+    this.router.navigate(['/perfil', username], { queryParams: { edit: true } });
   }
 }

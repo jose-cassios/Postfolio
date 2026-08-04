@@ -38,18 +38,18 @@
       <button
         type="button"
         class="option"
-        [class.active]="form.get('usertype')?.value === 'DEVELOPER'"
-        (click)="form.get('usertype')?.setValue('DEVELOPER')"
+        [class.active]="form.get('usertype')?.value === 'USER'"
+        (click)="form.get('usertype')?.setValue('USER')"
       >
         DEVELOPER
       </button>
       <button
         type="button"
         class="option"
-        [class.active]="form.get('usertype')?.value === 'EMPLOYER'"
-        (click)="form.get('usertype')?.setValue('EMPLOYER')"
+        [class.active]="form.get('usertype')?.value === 'MODERATOR'"
+        (click)="form.get('usertype')?.setValue('MODERATOR')"
       >
-        EMPLOYER
+        MODERATOR
       </button>
     </div>
   </div>

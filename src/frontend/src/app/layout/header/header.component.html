@@ -11,7 +11,7 @@
       <!-- <a routerLink="/competicoes" routerLinkActive="active">Competições</a> -->
       <a routerLink="/sobre" routerLinkActive="active">Sobre</a>
 
-      @if (isLogged() && user()?.role === 'admin') {
+      @if (isLogged() && user()?.usertype === 'ADMIN') {
         <a routerLink="/admin" routerLinkActive="active">Admin</a>
       }
     </nav>
@@ -29,24 +29,22 @@
 
       <!-- Logado -->
       @if (isLogged()) {
-        <button class="btn primary create-post">
+        <button class="btn primary create-post" (click)="goToAddProject()">
           <span class="plus">+</span>
-          Criar Post
         </button>
 
-        <div class="user">
+        <div class="user" (click)="goToProfile()">
           <div class="avatar">
-            {{ user()?.avatarInitial }}
+            {{ user()?.username?.charAt(0) }}
           </div>
 
           <span class="username">
-            {{ user()?.name }}
+            {{ user()?.username }}
           </span>
 
           <button mat-icon-button class="logout-btn" (click)="logout()">
             <mat-icon>logout</mat-icon>
           </button>
-
         </div>
       }
 

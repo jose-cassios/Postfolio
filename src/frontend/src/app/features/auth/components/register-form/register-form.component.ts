@@ -27,7 +27,7 @@ export class RegisterFormComponent {
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
     confirmPassword: ['', [Validators.required]],
-    usertype: ['DEVELOPER', [Validators.required]],
+    usertype: ['USER' as 'USER' | 'MODERATOR' | 'ADMIN', [Validators.required]],
   }, {
     validators: this.passwordMatchValidator,
   });
@@ -48,7 +48,9 @@ export class RegisterFormComponent {
     this.error.set(null);
     this.isLoading.set(true);
 
-    const { username, email, password, usertype } = this.form.getRawValue();
+    const rawValues = this.form.getRawValue();
+    const { username, email, password } = rawValues;
+    const usertype = rawValues.usertype as 'USER' | 'MODERATOR' | 'ADMIN';
 
     this.auth.register({ username, email, password, usertype })
       .pipe(

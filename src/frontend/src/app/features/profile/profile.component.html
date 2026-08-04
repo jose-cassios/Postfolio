@@ -1,1 +1,108 @@
-<p>profile works!</p>
+<section class="profile-page">
+  @if (user()) {
+    <header class="profile-hero">
+      <div>
+        <span class="badge">{{ user()?.usertype }}</span>
+        <h1>{{ user()?.username }}</h1>
+        <p>{{ user()?.bio || 'Complete seu perfil com uma bio e links.' }}</p>
+      </div>
+
+      <div class="profile-actions">
+        <button class="btn ghost" type="button" (click)="openEditModal()">Editar Perfil</button>
+        <button class="btn primary" type="button" (click)="openProjectModal()">+ Adicionar Projeto</button>
+      </div>
+    </header>
+
+    <div class="profile-grid">
+      <div class="profile-card">
+        <h2>Informações</h2>
+        <dl>
+          <dt>Username</dt>
+          <dd>{{ user()?.username }}</dd>
+
+          <dt>Email</dt>
+          <dd>{{ user()?.email }}</dd>
+
+          <dt>Tipo</dt>
+          <dd>{{ user()?.usertype }}</dd>
+
+          <dt>Bio</dt>
+          <dd>{{ user()?.bio || 'Não preenchido' }}</dd>
+
+          <dt>LinkedIn</dt>
+          <dd>
+            @if (user()?.linkedin) {
+              <a href="{{ user()?.linkedin }}" target="_blank">{{ user()?.linkedin }}</a>
+            } @else {
+              Não preenchido
+            }
+          </dd>
+
+          <dt>Github</dt>
+          <dd>
+            @if (user()?.github) {
+              <a href="{{ user()?.github }}" target="_blank">{{ user()?.github }}</a>
+            } @else {
+              Não preenchido
+            }
+          </dd>
+
+          <dt>Website</dt>
+          <dd>
+            @if (user()?.website) {
+              <a href="{{ user()?.website }}" target="_blank">{{ user()?.website }}</a>
+            } @else {
+              Não preenchido
+            }
+          </dd>
+        </dl>
+      </div>
+    </div>
+  } @else {
+    <div class="empty-state">
+      <p>Carregando perfil ou usuário não autenticado...</p>
+    </div>
+  }
+
+  @if (showEditModal()) {
+    <div class="modal-backdrop" (click)="closeEditModal()"></div>
+    <div class="modal-panel" role="dialog" aria-modal="true">
+      <h2>Editar Perfil</h2>
+      <form [formGroup]="profileForm" (ngSubmit)="submitProfile()" novalidate>
+        <app-form-input label="Nome" type="text" placeholder="Nome completo" [control]="$any(profileForm.get('username'))"></app-form-input>
+        <app-form-input label="Email" type="email" placeholder="Email" [control]="$any(profileForm.get('email'))"></app-form-input>
+        <app-form-input label="Bio" type="text" placeholder="Biografia" [control]="$any(profileForm.get('bio'))"></app-form-input>
+        <app-form-input label="LinkedIn" type="text" placeholder="https://linkedin.com/..." [control]="$any(profileForm.get('linkedin'))"></app-form-input>
+        <app-form-input label="Github" type="text" placeholder="https://github.com/..." [control]="$any(profileForm.get('github'))"></app-form-input>
+        <app-form-input label="Website" type="text" placeholder="https://seusite.com" [control]="$any(profileForm.get('website'))"></app-form-input>
+        <app-form-input label="Senha" type="password" placeholder="Nova senha (opcional)" [control]="$any(profileForm.get('password'))"></app-form-input>
+
+        <div class="row">
+          <button type="submit" class="btn primary">Salvar alterações</button>
+          <button type="button" class="btn ghost" (click)="closeEditModal()">Cancelar</button>
+        </div>
+      </form>
+      @if (feedback()) {
+        <div class="feedback">{{ feedback() }}</div>
+      }
+    </div>
+  }
+
+  @if (showProjectModal()) {
+    <div class="modal-backdrop" (click)="showProjectModal.set(false)"></div>
+    <div class="modal-panel" role="dialog" aria-modal="true">
+      <h2>Adicionar Projeto</h2>
+      <form [formGroup]="projectForm" (ngSubmit)="submitProject()" novalidate>
+        <app-form-input label="Nome do Projeto" type="text" placeholder="Nome do projeto" [control]="$any(projectForm.get('name'))"></app-form-input>
+        <app-form-input label="Descrição" type="text" placeholder="Descrição do projeto" [control]="$any(projectForm.get('description'))"></app-form-input>
+        <app-form-input label="Link do Github" type="text" placeholder="https://github.com/..." [control]="$any(projectForm.get('githublink'))"></app-form-input>
+
+        <div class="row">
+          <button type="submit" class="btn primary">Adicionar</button>
+          <button type="button" class="btn ghost" (click)="showProjectModal.set(false)">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  }
+</section>
+
