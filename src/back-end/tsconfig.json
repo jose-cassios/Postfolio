@@ -36,8 +36,8 @@
   "include": [
     "./api/**/*.ts",
     "./src/**/*.ts",
-    "./src/infrastructure/types/**/*.d.ts"
-  ],
+    "./src/infrastructure/types/**/*.d.ts", 
+    "prisma.config.ts"  ],
   "exclude": [
     "./src/**/*.test.ts"
   ],
