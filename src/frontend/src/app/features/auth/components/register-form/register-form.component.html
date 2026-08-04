@@ -32,28 +32,6 @@
     [control]="$any(form.get('confirmPassword'))"
   />
 
-  <div class="user-type-switch">
-    <span>Tipo de conta</span>
-    <div class="buttons">
-      <button
-        type="button"
-        class="option"
-        [class.active]="form.get('usertype')?.value === 'USER'"
-        (click)="form.get('usertype')?.setValue('USER')"
-      >
-        DEVELOPER
-      </button>
-      <button
-        type="button"
-        class="option"
-        [class.active]="form.get('usertype')?.value === 'MODERATOR'"
-        (click)="form.get('usertype')?.setValue('MODERATOR')"
-      >
-        MODERATOR
-      </button>
-    </div>
-  </div>
-
   @if (passwordMismatch) {
     <div class="error-message" role="alert">
       As senhas não correspondem
