@@ -11,19 +11,19 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  get<T>(endpoint: string, params?: any) {
-    return this.http.get<T>(`${this.baseUrl}/${endpoint}`, { params });
+  get<T>(endpoint: string, params?: any, options?: { headers?: Record<string, string> }) {
+    return this.http.get<T>(`${this.baseUrl}/${endpoint}`, { params, ...options });
   }
 
-  post<T>(endpoint: string, body: any) {
-    return this.http.post<T>(`${this.baseUrl}/${endpoint}`, body);
+  post<T>(endpoint: string, body: any, options?: { headers?: Record<string, string> }) {
+    return this.http.post<T>(`${this.baseUrl}/${endpoint}`, body, options);
   }
 
-  put<T>(endpoint: string, body: any) {
-    return this.http.put<T>(`${this.baseUrl}/${endpoint}`, body);
+  put<T>(endpoint: string, body: any, options?: { headers?: Record<string, string> }) {
+    return this.http.put<T>(`${this.baseUrl}/${endpoint}`, body, options);
   }
 
-  delete<T>(endpoint: string) {
-    return this.http.delete<T>(`${this.baseUrl}/${endpoint}`);
+  delete<T>(endpoint: string, options?: { headers?: Record<string, string> }) {
+    return this.http.delete<T>(`${this.baseUrl}/${endpoint}`, options);
   }
 }

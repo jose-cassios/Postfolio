@@ -57,6 +57,11 @@ export class UserController {
 
     const user = await this.userService.updateById(dto);
 
+  const type =
+    userType !== undefined
+      ? UserTypeMapper.fromDomainToPrisma(userType)
+      : null;
+
     reply.send({
       id: user.getId(),
       username: user.getUsername(),
@@ -65,7 +70,7 @@ export class UserController {
       linkedin: user.getLinkedin(),
       github: user.getGithub(),
       website: user.getWebsite(),
-      userType: UserTypeMapper.fromDomainToPrisma(user.getUserType()),
+      userType: type,
     });
   }
 
@@ -115,7 +120,7 @@ export class UserController {
     const dto: CreateUserDTO = {
       username: userPayload.name,
       email: userPayload.email,
-      userType: UserType.DEVELOPER,
+      userType: UserType.USER,
     };
 
     const token = await this.userService.socialLogin(dto);
@@ -129,6 +134,8 @@ export class UserController {
 
     if (!user) throw new BadRequest("Id do usuario não existe");
 
+    const userType = user.getUserType();
+
     reply.send({
       msg: "Perfil do usuário",
       data: {
@@ -139,7 +146,7 @@ export class UserController {
         linkedin: user.getLinkedin(),
         github: user.getGithub(),
         website: user.getWebsite(),
-        userType: UserTypeMapper.fromDomainToPrisma(user.getUserType()),
+        userType: userType ? UserTypeMapper.fromDomainToPrisma(userType) : null,
       },
     });
   }

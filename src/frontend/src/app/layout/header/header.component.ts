@@ -1,14 +1,9 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-
-interface User {
-  name: string;
-  avatarInitial: string;
-  role?: 'admin' | 'user';
-}
+import { AuthService } from '../../features/auth/services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -18,24 +13,33 @@ interface User {
   styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
-  // (substituir por AuthService depois)
-  private _isLogged = signal(false);
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
 
-  user = signal<User | null>(null);
+  readonly user = computed(() => this.auth.user());
+  readonly isLogged = computed(() => this.auth.isAuthenticated());
 
-  isLogged = computed(() => this._isLogged());
-
-  login() {
-    this._isLogged.set(true);
-    this.user.set({
-      name: 'Ana Silva',
-      avatarInitial: 'A',
-      role: 'admin'
-    });
+  constructor() {
+    console.log('Usuário atual no HeaderComponent:', this.user());
   }
 
-  logout() {
-    this._isLogged.set(false);
-    this.user.set(null);
+  goToProfile(): void {
+    const username = this.user()?.username;
+    console.log('Navegando para o perfil de:', username);
+    if (username) {
+      this.router.navigate(['/perfil', username]);
+    }
+  }
+
+  goToAddProject(): void {
+    const username = this.user()?.username;
+    if (username) {
+      this.router.navigate(['/perfil', username], { queryParams: { addProject: true } });
+    }
+  }
+
+  logout(): void {
+    this.auth.logout();
+    this.router.navigate(['/auth/login']);
   }
 }

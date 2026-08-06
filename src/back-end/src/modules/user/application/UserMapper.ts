@@ -8,28 +8,38 @@ import { UserType } from "@user/domain/enum/UserType";
 import Email from "@user/domain/valueObject/Email";
 
 export const UserTypeMapper = {
-  fromPrismaToDomain(userType: UserTypeModel): UserType {
+  fromPrismaToDomain(userType: UserTypeModel | null): UserType {
     switch (userType) {
-      case UserTypeModel.DEVELOPER:
-        return UserType.DEVELOPER;
-      case UserTypeModel.EMPLOYER:
-        return UserType.EMPLOYER;
+      case UserTypeModel.USER:
+        return UserType.USER;
+      case UserTypeModel.MODERATOR:
+        return UserType.MODERATOR;
+      case UserTypeModel.ADMIN:
+        return UserType.ADMIN;
+      default:
+        throw new BadRequest("O tipo de user não existe!");
     }
   },
-  fromDomainToPrisma(userType: UserType): UserTypeModel {
+  fromDomainToPrisma(userType: UserType | null): UserTypeModel {
     switch (userType) {
-      case UserType.DEVELOPER:
-        return UserTypeModel.DEVELOPER;
-      case UserType.EMPLOYER:
-        return UserTypeModel.EMPLOYER;
+      case UserType.USER:
+        return UserTypeModel.USER;
+      case UserType.MODERATOR:
+        return UserTypeModel.MODERATOR;
+      case UserType.ADMIN:
+        return UserTypeModel.ADMIN;
+      default:
+        throw new BadRequest("O tipo de user não existe!");
     }
   },
   fromSchemaToDto(userType: string): UserType {
     switch (userType) {
-      case "DEVELOPER":
-        return UserType.DEVELOPER;
-      case "EMPLOYER":
-        return UserType.EMPLOYER;
+      case "USER":
+        return UserType.USER;
+      case "MODERATOR":
+        return UserType.MODERATOR;
+      case "ADMIN":
+        return UserType.ADMIN;
     }
     throw new BadRequest("O tipo de user não existe!");
   },

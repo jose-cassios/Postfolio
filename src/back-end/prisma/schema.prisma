@@ -6,7 +6,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -18,7 +17,7 @@ model User {
   linkedin      String?
   github        String?
   website       String?
-  userType      UserType
+  userType      UserType?
   ProviderOAuth ProviderOAuth[]
   portfolios    Portfolio?
   ratings       Rating[]
@@ -201,8 +200,9 @@ model ProjectCompDetails {
 }
 
 enum UserType {
-  DEVELOPER
-  EMPLOYER
+  USER
+  MODERATOR
+  ADMIN
 }
 
 enum FeedbackType {

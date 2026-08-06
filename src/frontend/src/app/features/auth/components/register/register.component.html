@@ -1,1 +1,13 @@
-<p>register works!</p>
+<div class="register-container">
+  <header class="register-header">
+    <h1>Criar Conta</h1>
+    <p>Junte-se à comunidade Postfolio</p>
+  </header>
+
+  <app-register-form (registerSuccess)="onRegisterSuccess($event)" />
+
+  <footer class="login-link">
+    <span>Já possui conta?</span>
+    <a routerLink="/auth/login">Entrar</a>
+  </footer>
+</div>

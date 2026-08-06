@@ -1,0 +1,52 @@
+@use '../../../../../styles/tokens.scss' as *;
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: $color-text-primary;
+  }
+
+  input {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    border-radius: 14px;
+    border: 1px solid $color-border-default;
+    background: $color-bg-surface;
+    font-size: 1rem;
+    color: $color-text-primary;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      background-color 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: $color-primary-500;
+      box-shadow: 0 0 0 4px rgba(123, 47, 247, 0.12);
+    }
+
+    &::placeholder {
+      color: $color-text-secondary;
+    }
+
+    &.invalid {
+      border-color: $color-danger;
+      background-color: rgba(239, 68, 68, 0.05);
+
+      &:focus {
+        box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
+      }
+    }
+  }
+
+  .helper-text {
+    font-size: 0.85rem;
+    color: $color-danger;
+    margin-top: 0.25rem;
+  }
+}

@@ -14,7 +14,7 @@ describe("User API Test", () => {
       username: "Test User",
       email,
       password,
-      usertype: "DEVELOPER",
+      usertype: "USER",
     });
 
     // console.log("Register Response:", JSON.stringify(response.body, null, 2));

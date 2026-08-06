@@ -15,7 +15,7 @@ export default class User {
     private linkedin: string | null = null,
     private github: string | null = null,
     private website: string | null = null,
-    private userType: UserType = UserType.DEVELOPER
+    private userType: UserType | null = UserType.USER, 
   ) {}
 
   public static async create(dto: CreateUserDTO) {
@@ -116,7 +116,7 @@ export default class User {
     return this.website;
   }
 
-  public getUserType(): UserType {
+  public getUserType(): UserType | null {
     return this.userType;
   }
 }

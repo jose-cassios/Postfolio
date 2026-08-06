@@ -1,0 +1,13 @@
+<div class="input-group">
+  <label [for]="label">{{ label }}</label>
+  <input
+    [id]="label"
+    [type]="type"
+    [formControl]="control"
+    [placeholder]="placeholder"
+    [class.invalid]="hasError"
+  />
+  @if (hasError) {
+    <small class="helper-text">{{ errorMessage }}</small>
+  }
+</div>

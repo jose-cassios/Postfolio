@@ -24,7 +24,7 @@ const CreateUserBodySchema = z.object({
     .string()
     .url({ message: "O website deve ser uma url válida", protocol: /^https?$/ })
     .optional(),
-  usertype: z.enum(["DEVELOPER", "EMPLOYER"]),
+  usertype: z.enum(["USER", "MODERATOR", "ADMIN"]),
 });
 
 type CreateUserRequest = FastifyRequest<{
