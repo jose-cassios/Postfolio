@@ -7,12 +7,19 @@ RUN apt-get update -y && \
     rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
+COPY tsconfig*.json ./
 COPY prisma ./prisma
 
-RUN npm install
+RUN npm ci
+
+COPY . .
 
 RUN npx prisma generate
 
-EXPOSE 8080
+RUN npm run build
 
-CMD ["npm", "run", "dev"]
+ENV NODE_ENV=production
+
+EXPOSE 10000
+
+CMD ["sh", "-c", "npx prisma migrate deploy && npm run start"]
