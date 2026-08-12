@@ -4,7 +4,7 @@ interface CreateProjectDTO {
   name: string;
   description: string;
   category: ProjectCategory;
-  githublink?: string;
+  githublink?: string | null;
   portfolioId: string;
 }
 
@@ -13,7 +13,7 @@ interface UpdateProjectDTO {
   name?: string;
   description?: string;
   category?: ProjectCategory;
-  githublink?: string;
+  githublink?: string | null;
 }
 
 export { CreateProjectDTO, UpdateProjectDTO };

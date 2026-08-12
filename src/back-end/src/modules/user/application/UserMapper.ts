@@ -9,6 +9,8 @@ import Email from "@user/domain/valueObject/Email";
 
 export const UserTypeMapper = {
   fromPrismaToDomain(userType: UserTypeModel | null): UserType {
+    if (!userType) return UserType.USER;
+
     switch (userType) {
       case UserTypeModel.USER:
         return UserType.USER;
@@ -21,6 +23,8 @@ export const UserTypeMapper = {
     }
   },
   fromDomainToPrisma(userType: UserType | null): UserTypeModel {
+    if (!userType) return UserTypeModel.USER;
+
     switch (userType) {
       case UserType.USER:
         return UserTypeModel.USER;

@@ -2,6 +2,7 @@ import { Injectable, signal, computed, inject, PLATFORM_ID } from '@angular/core
 import { isPlatformBrowser } from '@angular/common';
 import { ApiService } from '../../../core/services/api.service';
 import { map, of, tap, throwError, switchMap } from 'rxjs';
+import { UserType } from '../../profile/profile.models';
 
 export interface User {
   id?: string;
@@ -12,7 +13,7 @@ export interface User {
   linkedin?: string;
   github?: string;
   website?: string;
-  usertype: 'USER' | 'MODERATOR' | 'ADMIN';
+  usertype: UserType;
   profilePhoto?: string;
   coverPhoto?: string;
   token?: string;
@@ -41,15 +42,11 @@ export class AuthService {
   readonly user = computed(() => this.currentUser());
 
   constructor(private api: ApiService) {
-    const storedUser = this.currentUser();
-    if (
-      isPlatformBrowser(this.platformId) &&
-      storedUser?.token &&
-      !storedUser.username
-    ) {
+    if (isPlatformBrowser(this.platformId) && this.getToken()) {
       this.fetchProfile().subscribe({
         error: (error) => {
           console.error('Falha ao carregar perfil a partir do token:', error);
+          this.logout();
         },
       });
     }
@@ -128,7 +125,7 @@ export class AuthService {
     };
 
     return this.api.post<{ msg: string; userDto: User }>('user', newUser).pipe(
-      map(response => response.userDto)
+      switchMap(() => this.login(newUser.email, newUser.password!))
     );
   }
 
@@ -157,8 +154,17 @@ export class AuthService {
       ? { Authorization: `Bearer ${token}` }
       : undefined;
 
-    return this.api.put<User>(`user/${userId}`, updatedUser, { headers }).pipe(
-      tap(user => this.setCurrentUser(user))
+    const payload = {
+      username: userData.username,
+      email: userData.email,
+      bio: userData.bio,
+      linkedin: userData.linkedin || null,
+      github: userData.github || null,
+      website: userData.website || null,
+    };
+
+    return this.api.put<User>(`user/${userId}`, payload, { headers }).pipe(
+      tap(user => this.setCurrentUser({ ...updatedUser, ...user }))
     );
   }
 
@@ -172,7 +178,14 @@ export class AuthService {
   }
 
   isAuthenticated() {
-    return !!this.currentUser();
+    return !!this.getToken();
+  }
+
+  authOptions(): { headers: Record<string, string> } {
+    const token = this.getToken();
+    return {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    };
   }
 
   private loadUserFromStorage(): User | null {
@@ -187,7 +200,11 @@ export class AuthService {
     }
 
     try {
-      return JSON.parse(stored) as User;
+      const user = JSON.parse(stored) as User & { userType?: UserType };
+      return {
+        ...user,
+        usertype: user.usertype ?? user.userType ?? 'USER',
+      };
     } catch {
       return null;
     }

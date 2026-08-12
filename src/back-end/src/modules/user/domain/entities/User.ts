@@ -37,20 +37,15 @@ export default class User {
   }
 
   public async update(dto: UpdateUserDTO): Promise<void> {
+    let emailChanged = false;
+
     if (dto.username !== undefined) {
       this.username = dto.username;
     }
 
     if (dto.email !== undefined) {
+      emailChanged = dto.email !== this.email.getValue();
       this.email = new Email(dto.email);
-      const event = new UserUpdateEvent(
-        this.id,
-        this.username,
-        this.email.getValue(),
-        true
-      );
-      EventListener.publish(event);
-      return;
     }
 
     if (dto.bio !== undefined) {
@@ -73,7 +68,7 @@ export default class User {
       this.id,
       this.username,
       this.email.getValue(),
-      false
+      emailChanged
     );
     EventListener.publish(event);
   }

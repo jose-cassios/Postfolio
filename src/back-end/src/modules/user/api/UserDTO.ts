@@ -16,10 +16,9 @@ export interface UpdateUserDTO {
   username?: string;
   email?: string;
   bio?: string;
-  linkedin?: string;
-  github?: string;
-  website?: string;
-  userType?: UserType;
+  linkedin?: string | null;
+  github?: string | null;
+  website?: string | null;
 }
 
 interface LoginUserDTO {

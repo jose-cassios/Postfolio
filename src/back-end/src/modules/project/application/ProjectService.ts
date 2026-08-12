@@ -1,6 +1,5 @@
-// import PortfolioRepository from "@domain/entities/por folio/PortfolioRepository";
 import { Project } from "@project/domain/entities/Project";
-import { BadRequest } from "@shared/error/HttpError";
+import { Forbidden, NotFound } from "@shared/error/HttpError";
 import { CreateProjectDTO, UpdateProjectDTO } from "@project/api/ProjectDTO";
 import { ProjectMapper } from "@project/application/ProjectMapper";
 import { IProjectService } from "@project/domain/interfaces/IProjectService";
@@ -18,27 +17,42 @@ export class ProjectService implements IProjectService {
     private portfolioPort: IPortfolioPort
   ) {}
 
-  async create(createProjectDto: CreateProjectDTO): Promise<Project> {
-    if (!this.portfolioPort.exist(createProjectDto.portfolioId))
-      throw new BadRequest("O portfolio não existe");
+  async create(
+    createProjectDto: Omit<CreateProjectDTO, "portfolioId">,
+    userId: string
+  ): Promise<Project> {
+    const portfolioId = await this.portfolioPort.getOrCreateIdByAuthor(userId);
 
-    const workDomain =
-      ProjectMapper.fromCreateProjectDtoToDomain(createProjectDto);
-
-    return await this.repository.create(workDomain);
+    const project = ProjectMapper.fromCreateProjectDtoToDomain({
+      ...createProjectDto,
+      portfolioId,
+    });
+    return await this.repository.create(project);
   }
 
-  async update(updateProjectDto: UpdateProjectDTO): Promise<Project> {
+  async update(
+    updateProjectDto: UpdateProjectDTO,
+    userId: string
+  ): Promise<Project> {
     const project = await this.repository.findById(updateProjectDto.id);
+    if (!project) throw new NotFound("O projeto nao existe");
 
-    if (!project) throw new BadRequest("O trabalho não existe");
+    if (!(await this.portfolioPort.isOwnedBy(project.getPortfolioId(), userId))) {
+      throw new Forbidden("Voce so pode editar os proprios projetos.");
+    }
 
     project.update(updateProjectDto);
-
     return await this.repository.update(project);
   }
 
-  async delete(id: string): Promise<Project | null> {
+  async delete(id: string, userId: string): Promise<Project | null> {
+    const project = await this.repository.findById(id);
+    if (!project) throw new NotFound("O projeto nao existe");
+
+    if (!(await this.portfolioPort.isOwnedBy(project.getPortfolioId(), userId))) {
+      throw new Forbidden("Voce so pode remover os proprios projetos.");
+    }
+
     return await this.repository.delete(id);
   }
 

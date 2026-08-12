@@ -60,4 +60,16 @@ export class UserRepository implements IUserRepository {
     });
     return userModel ? UserMapper.fromPrismaToDomain(userModel) : null;
   }
+
+  async findByUsername(username: string): Promise<User | null> {
+    const userModel = await prisma.user.findFirst({
+      where: {
+        username: {
+          equals: username,
+          mode: "insensitive",
+        },
+      },
+    });
+    return userModel ? UserMapper.fromPrismaToDomain(userModel) : null;
+  }
 }

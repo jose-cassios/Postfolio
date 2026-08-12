@@ -66,4 +66,8 @@ export class PortfolioService implements IPortfolioService {
   async findByAuthor(authorId: string): Promise<Portfolio | null> {
     return await this.repository.findByAuthor(authorId);
   }
+
+  async findByUsername(username: string): Promise<Portfolio | null> {
+    return await this.repository.findByUsername(username);
+  }
 }

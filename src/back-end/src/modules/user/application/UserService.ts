@@ -22,6 +22,11 @@ export class UserService implements IUserService {
 
     if (exist) throw new Conflict("Por favor, use outro email!");
 
+    const usernameInUse = await this.repository.findByUsername(
+      user.getUsername()
+    );
+    if (usernameInUse) throw new Conflict("Este nome de usuario ja esta em uso.");
+
     const createdUser = await this.repository.create(user);
 
     const event = new UserCreatedEvent(
@@ -38,13 +43,24 @@ export class UserService implements IUserService {
 
     if (!user) throw new NotFound("Usuario não encontrado");
 
-    if (dto.email !== undefined) {
+    if (
+      dto.email !== undefined &&
+      dto.email.toLowerCase() !== user.getEmail().getValue().toLowerCase()
+    ) {
       const exist = await this.repository.findByEmail(
         new Email(dto.email, false)
       );
 
       if (exist) throw new Conflict("O email já está cadastrado.");
     }
+    if (
+      dto.username !== undefined &&
+      dto.username.toLowerCase() !== user.getUsername().toLowerCase()
+    ) {
+      const exist = await this.repository.findByUsername(dto.username);
+      if (exist) throw new Conflict("Este nome de usuario ja esta em uso.");
+    }
+
     await user.update(dto);
 
     return await this.repository.updateById(user);
@@ -104,5 +120,9 @@ export class UserService implements IUserService {
   async findByEmail(email: Email): Promise<User | null> {
     const user = await this.repository.findByEmail(email);
     return user;
+  }
+
+  async findByUsername(username: string): Promise<User | null> {
+    return await this.repository.findByUsername(username);
   }
 }

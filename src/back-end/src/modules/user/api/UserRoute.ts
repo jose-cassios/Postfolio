@@ -6,6 +6,7 @@ import {
   CreateUserRequest,
   userRouteSchema,
   UpdateUserRequest,
+  PublicProfileRequest,
 } from "@user/api/UserSchema";
 
 function userRoutesPlugin(
@@ -49,6 +50,13 @@ function userRoutesPlugin(
     "/profile",
     { preValidation: UserMiddle.authenticate },
     (req, reply) => userController.getProfile(req, reply)
+  );
+
+  app.get(
+    "/profile/:username",
+    { schema: userRouteSchema.publicProfile },
+    (req, reply) =>
+      userController.getPublicProfile(req as PublicProfileRequest, reply)
   );
 }
 

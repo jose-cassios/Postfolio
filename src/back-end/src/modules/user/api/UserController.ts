@@ -1,10 +1,16 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { BadRequest, InternalServerError } from "@shared/error/HttpError";
+import {
+  BadRequest,
+  Forbidden,
+  InternalServerError,
+  NotFound,
+} from "@shared/error/HttpError";
 import { CreateUserDTO, LoginUserDTO, UpdateUserDTO } from "@user/api/UserDTO";
 import {
   LoginRequest,
   CreateUserRequest,
   UpdateUserRequest,
+  PublicProfileRequest,
 } from "@user/api/UserSchema";
 import { IUserService } from "@user/domain/interfaces/IUserService";
 import { inject, injectable } from "inversify";
@@ -27,13 +33,23 @@ export class UserController {
 
   async getAll(req: FastifyRequest, reply: FastifyReply) {
     const allUsers = await this.userService.findMany();
-    reply.send(allUsers);
+    reply.send(
+      allUsers.map((user) => ({
+        id: user.getId(),
+        username: user.getUsername(),
+        bio: user.getBio(),
+        linkedin: user.getLinkedin(),
+        github: user.getGithub(),
+        website: user.getWebsite(),
+        usertype: UserTypeMapper.fromDomainToPrisma(user.getUserType()),
+      }))
+    );
   }
 
   async create(req: CreateUserRequest, reply: FastifyReply) {
     const userDto: CreateUserDTO = {
       ...req.body,
-      userType: UserTypeMapper.fromSchemaToDto(req.body.usertype),
+      userType: UserType.USER,
     };
 
     await this.userService.create(userDto);
@@ -45,21 +61,20 @@ export class UserController {
 
   async updateById(req: UpdateUserRequest, reply: FastifyReply) {
     const id = req.params.id;
-    const userType = req.body.usertype
-      ? UserTypeMapper.fromSchemaToDto(req.body.usertype)
-      : undefined;
+
+    if (req.user?.id !== id) {
+      throw new Forbidden("Voce so pode editar o proprio perfil.");
+    }
 
     const dto: UpdateUserDTO = {
       ...req.body,
-      userType: userType,
       id,
     };
 
     const user = await this.userService.updateById(dto);
 
-  const type =
-    userType !== undefined
-      ? UserTypeMapper.fromDomainToPrisma(userType)
+    const type = user.getUserType()
+      ? UserTypeMapper.fromDomainToPrisma(user.getUserType())
       : null;
 
     reply.send({
@@ -70,7 +85,7 @@ export class UserController {
       linkedin: user.getLinkedin(),
       github: user.getGithub(),
       website: user.getWebsite(),
-      userType: type,
+      usertype: type,
     });
   }
 
@@ -146,7 +161,26 @@ export class UserController {
         linkedin: user.getLinkedin(),
         github: user.getGithub(),
         website: user.getWebsite(),
-        userType: userType ? UserTypeMapper.fromDomainToPrisma(userType) : null,
+        usertype: userType ? UserTypeMapper.fromDomainToPrisma(userType) : null,
+      },
+    });
+  }
+
+  async getPublicProfile(req: PublicProfileRequest, reply: FastifyReply) {
+    const user = await this.userService.findByUsername(req.params.username);
+
+    if (!user) throw new NotFound("Perfil nao encontrado.");
+
+    const userType = user.getUserType();
+    reply.send({
+      data: {
+        id: user.getId(),
+        username: user.getUsername(),
+        bio: user.getBio(),
+        linkedin: user.getLinkedin(),
+        github: user.getGithub(),
+        website: user.getWebsite(),
+        usertype: userType ? UserTypeMapper.fromDomainToPrisma(userType) : null,
       },
     });
   }

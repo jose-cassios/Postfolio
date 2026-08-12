@@ -34,11 +34,10 @@ function projectRoutesPlugin(app: FastifyInstance, controller: WorkController) {
 
   app.post(
     "/:projectId",
-    { preValidation: UserMiddle.authenticate },
     (req, rep) => controller.getById(req, rep)
   );
 
-  app.post("/all", { preValidation: UserMiddle.authenticate }, (req, rep) =>
+  app.post("/all", (req, rep) =>
     controller.getAll(req, rep)
   );
 }

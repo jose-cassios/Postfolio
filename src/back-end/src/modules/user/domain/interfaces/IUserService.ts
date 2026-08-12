@@ -13,4 +13,5 @@ export interface IUserService {
   findMany(): Promise<User[]>;
   findByEmail(email: Email): Promise<User | null>;
   findById(id: string): Promise<User | null>;
+  findByUsername(username: string): Promise<User | null>;
 }

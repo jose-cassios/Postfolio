@@ -7,8 +7,10 @@ import { PortfolioMapper } from "@portfolio/application/PortfolioMapper";
 export class PrismaPortfolioRepository implements IPortfolioRepository {
   async create(portfolio: Portfolio): Promise<Portfolio> {
     try {
-      const model = await prisma.portfolio.create({
-        data: {
+      const model = await prisma.portfolio.upsert({
+        where: { authorId: portfolio.getAuthorId() },
+        update: {},
+        create: {
           ...PortfolioMapper.fromDomaintoPrisma(portfolio),
           id: undefined,
         },
@@ -72,6 +74,23 @@ export class PrismaPortfolioRepository implements IPortfolioRepository {
   async findByAuthor(authorId: string): Promise<Portfolio | null> {
     const portfolioModel = await prisma.portfolio.findUnique({
       where: { authorId },
+    });
+
+    return portfolioModel
+      ? PortfolioMapper.fromPrismaToDomain(portfolioModel)
+      : null;
+  }
+
+  async findByUsername(username: string): Promise<Portfolio | null> {
+    const portfolioModel = await prisma.portfolio.findFirst({
+      where: {
+        author: {
+          username: {
+            equals: username,
+            mode: "insensitive",
+          },
+        },
+      },
     });
 
     return portfolioModel

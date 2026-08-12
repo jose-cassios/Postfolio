@@ -16,8 +16,7 @@ const CreateProjectBodySchema = z.object({
     "DATA_ANALYSIS",
     "OTHER",
   ]),
-  githublink: z.string().optional(),
-  portfolio: z.string(),
+  githublink: z.string().url("O GitHub deve ser uma URL valida").nullable().optional(),
 });
 
 type CreateProjectRequest = FastifyRequest<{
@@ -28,9 +27,7 @@ const UpdateProjectParamsSchema = z.object({
   projectId: z.string().uuid("ID do trabalho é obrigatorio"),
 });
 
-const UpdateProjectBodySchema = CreateProjectBodySchema.omit({
-  portfolio: true,
-}).partial();
+const UpdateProjectBodySchema = CreateProjectBodySchema.partial();
 
 // const UpdateProjectBodySchema = z.object({
 //   name: z
