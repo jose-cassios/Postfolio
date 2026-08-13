@@ -24,6 +24,8 @@ const CreateUserBodySchema = z.object({
     .string()
     .url({ message: "O website deve ser uma url válida", protocol: /^https?$/ })
     .optional(),
+  contactEmail: z.string().email("O email de contato deve ser valido").optional(),
+  availableForHire: z.boolean().optional(),
   usertype: z.literal("USER"),
 });
 
@@ -50,6 +52,8 @@ const UpdateUserBodySchema = CreateUserBodySchema.omit({
     linkedin: z.string().url("O LinkedIn deve ser uma URL valida").nullable(),
     github: z.string().url("O GitHub deve ser uma URL valida").nullable(),
     website: z.string().url("O website deve ser uma URL valida").nullable(),
+    contactEmail: z.string().email("O email de contato deve ser valido").nullable(),
+    availableForHire: z.boolean(),
   })
   .partial();
 

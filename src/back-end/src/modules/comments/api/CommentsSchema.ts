@@ -43,7 +43,7 @@ const GetCommentsParamsSchema = z.object({
 });
 
 const GetCommentsQuerySchema = z.object({
-  cursor: z.string().nullable(),
+  cursor: z.string().nullable().optional(),
 });
 
 type GetCommentsRequest = FastifyRequest<{

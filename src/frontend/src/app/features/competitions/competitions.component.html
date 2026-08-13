@@ -1,1 +1,50 @@
-<p>competitions works!</p>
+<main class="competitions-page">
+  <header><span class="eyebrow">Comunidade Postfolio</span><h1>Competições</h1><p>Participe com um projeto e vote nos destaques da comunidade.</p></header>
+  @if (notice()) { <p class="notice" role="status">{{ notice() }}</p> }
+  @if (loading()) { <p class="state">Carregando competições...</p> }
+  @else if (error()) { <p class="state">{{ error() }} <button (click)="load()">Tentar novamente</button></p> }
+  @else if (!competitions().length) { <p class="state">Nenhuma competição programada.</p> }
+  @else {
+    <div class="events">
+      @for (competition of competitions(); track competition.id) {
+        <article class="event-card">
+          <div class="event-heading">
+            <div><span class="status" [attr.data-status]="competition.status">{{ statusLabel(competition.status) }}</span><h2>{{ competition.name }}</h2></div>
+            <span class="category">{{ competition.category }}</span>
+          </div>
+          <p>{{ competition.description }}</p>
+          <div class="timeline">
+            <span>Inscrições até {{ competition.registrationEndsAt | date:'dd/MM/yyyy HH:mm' }}</span>
+            <span>Votação: {{ competition.votingStartsAt | date:'dd/MM' }}–{{ competition.votingEndsAt | date:'dd/MM' }}</span>
+          </div>
+
+          @if (competition.status === 'REGISTRATION') {
+            <div class="subscribe-box">
+              <select [(ngModel)]="selectedProjects[competition.id]">
+                <option value="">Selecione um projeto seu</option>
+                @for (project of myProjects(); track project.id) { <option [value]="project.id">{{ project.name }}</option> }
+              </select>
+              <button [disabled]="pending() || !selectedProjects[competition.id]" (click)="subscribe(competition)">Inscrever projeto</button>
+            </div>
+          }
+
+          <div class="submissions">
+            @for (project of competition.submissions; track project.id) {
+              <article class="submission" [class.winner]="project.rank">
+                @if (project.coverImageUrl) { <img [src]="project.coverImageUrl" [alt]="project.name" loading="lazy"> }
+                <div><span class="rank">{{ project.rank ? project.rank + 'º lugar' : '' }}</span><h3><a [routerLink]="['/projetos', project.id]">{{ project.name }}</a></h3><small>por {{ project.author.username }}</small></div>
+                @if (competition.status === 'VOTING') {
+                  <button [disabled]="pending() || isMyProject(project)" (click)="vote(competition, project.id)">Votar</button>
+                }
+                @if (competition.status === 'REGISTRATION' && isMyProject(project)) {
+                  <button class="ghost" (click)="unsubscribe(competition, project.id)">Remover</button>
+                }
+                @if (competition.status === 'RESULTS') { <strong>{{ project.votes || 0 }} votos</strong> }
+              </article>
+            } @empty { <p>Nenhum projeto inscrito ainda.</p> }
+          </div>
+        </article>
+      }
+    </div>
+  }
+</main>

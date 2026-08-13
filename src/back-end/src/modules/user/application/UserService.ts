@@ -76,6 +76,7 @@ export class UserService implements IUserService {
     const user = await this.repository.findByEmail(email);
 
     if (!user) throw new NotFound("Usuário não encontrado!");
+    if (!user.isActive()) throw new Unauthorized("Esta conta esta suspensa.");
 
     const checkPassWord = await user.comparePassword(loginDto.password);
 
@@ -90,6 +91,7 @@ export class UserService implements IUserService {
     const exist = await this.findByEmail(user.getEmail());
 
     if (exist) {
+      if (!exist.isActive()) throw new Unauthorized("Esta conta esta suspensa.");
       return Token.generate(exist.getId(), exist.getEmail().getValue());
     }
 
@@ -124,5 +126,16 @@ export class UserService implements IUserService {
 
   async findByUsername(username: string): Promise<User | null> {
     return await this.repository.findByUsername(username);
+  }
+
+  async setActive(id: string, active: boolean): Promise<User> {
+    const user = await this.repository.findById(id);
+    if (!user) throw new NotFound("Usuario nao encontrado.");
+    user.setActive(active);
+    return await this.repository.updateById(user);
+  }
+
+  async findAchievements(userId: string) {
+    return await this.repository.findAchievements(userId);
   }
 }

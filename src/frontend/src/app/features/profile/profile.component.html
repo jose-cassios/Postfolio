@@ -28,6 +28,16 @@
           <span class="badge">{{ user.usertype }}</span>
           <h1>{{ user.username }}</h1>
           <p>{{ user.bio || 'Este usuário ainda não adicionou uma bio.' }}</p>
+          @if (user.availableForHire) {
+            <span class="badge hire-badge">Disponível para contratação</span>
+          }
+          @if (user.achievements?.length) {
+            <div class="achievements" aria-label="Conquistas em competições">
+              @for (achievement of user.achievements; track achievement.competitionId) {
+                <span title="{{ achievement.competitionName }}">🏆 {{ achievement.rank }}º · {{ achievement.competitionName }}</span>
+              }
+            </div>
+          }
 
           <div class="social-links">
             @if (user.linkedin) {
@@ -77,9 +87,13 @@
         <div class="projects-grid">
           @for (project of projects(); track project.id) {
             <article class="project-card">
-              <div class="project-cover" [attr.data-category]="project.category">
-                <span>{{ categoryLabel(project.category) }}</span>
-              </div>
+              <a [routerLink]="['/projetos', project.id]" class="project-cover" [attr.data-category]="project.category">
+                @if (project.coverImageUrl) {
+                  <img [src]="project.coverImageUrl" [alt]="project.name" loading="lazy" />
+                } @else {
+                  <span>{{ categoryLabel(project.category) }}</span>
+                }
+              </a>
               <div class="project-content">
                 <div class="project-title-row">
                   <h3>{{ project.name }}</h3>
@@ -98,6 +112,11 @@
                   }
                 </div>
                 <p>{{ project.description }}</p>
+                @if (project.tools.length) {
+                  <div class="project-tools">
+                    @for (tool of project.tools.slice(0, 4); track tool) { <span>{{ tool }}</span> }
+                  </div>
+                }
                 <footer>
                   <span class="category-chip">{{ categoryLabel(project.category) }}</span>
                   @if (project.githubLink) {
@@ -178,6 +197,14 @@
             <span>Website</span>
             <input type="url" formControlName="website" placeholder="https://seusite.com" />
           </label>
+          <label>
+            <span>Email para contato profissional</span>
+            <input type="email" formControlName="contactEmail" placeholder="contato@exemplo.com" />
+          </label>
+          <label class="checkbox-field">
+            <input type="checkbox" formControlName="availableForHire" />
+            <span>Estou disponível para contratação</span>
+          </label>
         </div>
 
         <div class="modal-actions">
@@ -237,6 +264,26 @@
             @if (projectForm.controls.githublink.touched && projectForm.controls.githublink.invalid) {
               <small>Informe uma URL completa, começando com http:// ou https://.</small>
             }
+          </label>
+          <label>
+            <span>Link do projeto ou vídeo</span>
+            <input type="url" formControlName="externalLink" placeholder="https://..." />
+          </label>
+          <label class="full-width">
+            <span>URL da imagem de capa</span>
+            <input type="url" formControlName="coverImageUrl" placeholder="https://.../capa.jpg" />
+          </label>
+          <label class="full-width">
+            <span>Imagens de amostra (até 3 URLs, uma por linha)</span>
+            <textarea formControlName="galleryUrls" rows="3"></textarea>
+          </label>
+          <label>
+            <span>Ferramentas (separadas por vírgula)</span>
+            <input type="text" formControlName="tools" placeholder="Angular, Figma, Node.js" />
+          </label>
+          <label>
+            <span>Tags (separadas por vírgula)</span>
+            <input type="text" formControlName="tags" placeholder="acessibilidade, dashboard" />
           </label>
         </div>
 

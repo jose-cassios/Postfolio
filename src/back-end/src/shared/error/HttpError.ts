@@ -40,6 +40,12 @@ export class Conflict extends GenericHttpError {
   }
 }
 
+export class TooManyRequests extends GenericHttpError {
+  constructor(message: string) {
+    super(429, "Too Many Requests", message);
+  }
+}
+
 export class InternalServerError extends GenericHttpError {
   constructor(message: string) {
     super(500, "Internal Server Error", message);

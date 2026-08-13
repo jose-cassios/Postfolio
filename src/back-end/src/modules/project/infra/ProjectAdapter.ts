@@ -21,4 +21,8 @@ export class ProjectAdapter implements ProjectPort {
   ): Promise<ProjectContract[]> {
     return await this.projectRepository.findByPortfolio(portfolioId);
   }
+
+  async isOwnedBy(projectId: string, userId: string): Promise<boolean> {
+    return await this.projectRepository.isOwnedBy(projectId, userId);
+  }
 }

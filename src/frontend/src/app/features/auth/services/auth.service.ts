@@ -13,6 +13,9 @@ export interface User {
   linkedin?: string;
   github?: string;
   website?: string;
+  contactEmail?: string;
+  availableForHire?: boolean;
+  achievements?: Array<{ competitionId: string; competitionName: string; rank: number }>;
   usertype: UserType;
   profilePhoto?: string;
   coverPhoto?: string;
@@ -122,6 +125,8 @@ export class AuthService {
       linkedin: userData.linkedin,
       github: userData.github,
       website: userData.website,
+      contactEmail: userData.contactEmail,
+      availableForHire: userData.availableForHire,
     };
 
     return this.api.post<{ msg: string; userDto: User }>('user', newUser).pipe(
@@ -161,6 +166,8 @@ export class AuthService {
       linkedin: userData.linkedin || null,
       github: userData.github || null,
       website: userData.website || null,
+      contactEmail: userData.contactEmail || null,
+      availableForHire: userData.availableForHire ?? false,
     };
 
     return this.api.put<User>(`user/${userId}`, payload, { headers }).pipe(

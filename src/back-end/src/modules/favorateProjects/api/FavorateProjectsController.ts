@@ -1,6 +1,6 @@
 import { TYPES } from "@compositionRoot/Types";
 import { IFavorateProjectsService } from "@favorateProjects/domain/interfaces/IFavorateProjectsService";
-import { FastifyReply } from "fastify";
+import { FastifyReply, FastifyRequest } from "fastify";
 import { inject, injectable } from "inversify";
 import {
   CreateFavorateProjectRequest,
@@ -49,5 +49,11 @@ export class FavorateProjectsController {
     await this.service.delete(dto);
 
     reply.send({ msg: "Projeto removido do favoritos com sucesso." });
+  }
+
+  async getAll(req: FastifyRequest, reply: FastifyReply) {
+    const user = req.user;
+    if (!user) throw new Unauthorized("O usuario precisa estar logado!");
+    reply.send(await this.service.findByUserId(user.id));
   }
 }

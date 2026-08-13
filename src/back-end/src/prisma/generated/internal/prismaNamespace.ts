@@ -407,6 +407,7 @@ export const ModelName = {
   PostMetrics: 'PostMetrics',
   FavorateProjects: 'FavorateProjects',
   Comments: 'Comments',
+  Like: 'Like',
   Feedback: 'Feedback',
   Rating: 'Rating',
   ProjectCompDetails: 'ProjectCompDetails'
@@ -425,7 +426,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "providerOAuth" | "message" | "portfolio" | "competition" | "project" | "appreciate" | "postMetrics" | "favorateProjects" | "comments" | "feedback" | "rating" | "projectCompDetails"
+    modelProps: "user" | "providerOAuth" | "message" | "portfolio" | "competition" | "project" | "appreciate" | "postMetrics" | "favorateProjects" | "comments" | "like" | "feedback" | "rating" | "projectCompDetails"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1169,6 +1170,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Like: {
+      payload: Prisma.$LikePayload<ExtArgs>
+      fields: Prisma.LikeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LikeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LikeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikePayload>
+        }
+        findFirst: {
+          args: Prisma.LikeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LikeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikePayload>
+        }
+        findMany: {
+          args: Prisma.LikeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikePayload>[]
+        }
+        create: {
+          args: Prisma.LikeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikePayload>
+        }
+        createMany: {
+          args: Prisma.LikeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LikeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikePayload>[]
+        }
+        delete: {
+          args: Prisma.LikeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikePayload>
+        }
+        update: {
+          args: Prisma.LikeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikePayload>
+        }
+        deleteMany: {
+          args: Prisma.LikeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LikeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LikeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikePayload>[]
+        }
+        upsert: {
+          args: Prisma.LikeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LikePayload>
+        }
+        aggregate: {
+          args: Prisma.LikeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLike>
+        }
+        groupBy: {
+          args: Prisma.LikeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LikeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LikeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LikeCountAggregateOutputType> | number
+        }
+      }
+    }
     Feedback: {
       payload: Prisma.$FeedbackPayload<ExtArgs>
       fields: Prisma.FeedbackFieldRefs
@@ -1439,6 +1514,9 @@ export const UserScalarFieldEnum = {
   linkedin: 'linkedin',
   github: 'github',
   website: 'website',
+  contactEmail: 'contactEmail',
+  availableForHire: 'availableForHire',
+  active: 'active',
   userType: 'userType'
 } as const
 
@@ -1486,7 +1564,13 @@ export const CompetitionScalarFieldEnum = {
   description: 'description',
   createdAt: 'createdAt',
   startsAt: 'startsAt',
-  endsAt: 'endsAt'
+  endsAt: 'endsAt',
+  category: 'category',
+  registrationStartsAt: 'registrationStartsAt',
+  registrationEndsAt: 'registrationEndsAt',
+  votingStartsAt: 'votingStartsAt',
+  votingEndsAt: 'votingEndsAt',
+  resultsAt: 'resultsAt'
 } as const
 
 export type CompetitionScalarFieldEnum = (typeof CompetitionScalarFieldEnum)[keyof typeof CompetitionScalarFieldEnum]
@@ -1498,6 +1582,13 @@ export const ProjectScalarFieldEnum = {
   description: 'description',
   category: 'category',
   githublink: 'githublink',
+  externalLink: 'externalLink',
+  coverImageUrl: 'coverImageUrl',
+  galleryUrls: 'galleryUrls',
+  tools: 'tools',
+  tags: 'tags',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
   portfolioId: 'portfolioId'
 } as const
 
@@ -1541,6 +1632,16 @@ export const CommentsScalarFieldEnum = {
 } as const
 
 export type CommentsScalarFieldEnum = (typeof CommentsScalarFieldEnum)[keyof typeof CommentsScalarFieldEnum]
+
+
+export const LikeScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  projectId: 'projectId',
+  createdAt: 'createdAt'
+} as const
+
+export type LikeScalarFieldEnum = (typeof LikeScalarFieldEnum)[keyof typeof LikeScalarFieldEnum]
 
 
 export const FeedbackScalarFieldEnum = {
@@ -1619,6 +1720,13 @@ export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 
  * Reference to a field of type 'String[]'
  */
 export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -1894,6 +2002,7 @@ export type GlobalOmitConfig = {
   postMetrics?: Prisma.PostMetricsOmit
   favorateProjects?: Prisma.FavorateProjectsOmit
   comments?: Prisma.CommentsOmit
+  like?: Prisma.LikeOmit
   feedback?: Prisma.FeedbackOmit
   rating?: Prisma.RatingOmit
   projectCompDetails?: Prisma.ProjectCompDetailsOmit

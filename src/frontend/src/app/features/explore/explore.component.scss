@@ -215,3 +215,23 @@
 
   gap: 40px 24px;
 }
+
+.empty-state, .pagination {
+  padding: 32px 0;
+  text-align: center;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+
+  button {
+    padding: 8px 14px;
+    border: 1px solid $color-border-default;
+    border-radius: 8px;
+    background: $color-bg-default;
+    cursor: pointer;
+  }
+}

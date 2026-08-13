@@ -23,9 +23,9 @@ function commentsRoutesPlugin(
   );
 
   app.put(
-    ":commentId",
+    "/:commentId",
     {
-      schema: commentsRouteSchema.update,
+      schema: commentsRouteSchema.delete,
       preValidation: UserMiddle.authenticate,
     },
     (req, reply) => controller.update(req as UpdateCommentRequest, reply)
@@ -40,7 +40,7 @@ function commentsRoutesPlugin(
     (req, reply) => controller.delete(req as DeleteCommentsRequest, reply)
   );
 
-  app.post(
+  app.get(
     "/:postId",
     { schema: commentsRouteSchema.getComments },
     (req, reply) => controller.getComments(req as GetCommentsRequest, reply)

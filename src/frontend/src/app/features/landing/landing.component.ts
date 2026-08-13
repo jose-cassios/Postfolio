@@ -3,9 +3,10 @@ import { HeroComponent } from "./components/hero/hero.component";
 import { MatIconModule } from '@angular/material/icon';
 import { CategorySliderComponent } from "./components/category-slider/category-slider.component";
 import { ProjectCardComponent } from "../../shared/components/project-card/project-card.component";
-import { FEATURED_PROJECTS } from '../../shared/data/mock-projects';
 import { RouterLink } from "@angular/router";
 import { ProjectCardMode } from '../../shared/components/project-card/project-card.component';
+import { Project } from '../../shared/models/project';
+import { ProjectService } from '../../shared/services/project.service';
 
 @Component({
   selector: 'app-landing',
@@ -15,6 +16,12 @@ import { ProjectCardMode } from '../../shared/components/project-card/project-ca
   styleUrl: './landing.component.scss',
 })
 export class LandingComponent {
-  projects = FEATURED_PROJECTS.slice(0, 6);
+  projects: Project[] = [];
   mode = ProjectCardMode;
+
+  constructor(private projectService: ProjectService) {
+    this.projectService.list({ sort: 'appreciates', limit: 6 }).subscribe({
+      next: (response) => this.projects = response.data,
+    });
+  }
 }

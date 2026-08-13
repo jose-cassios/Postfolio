@@ -68,6 +68,11 @@ export type FavorateProjects = Prisma.FavorateProjectsModel
  */
 export type Comments = Prisma.CommentsModel
 /**
+ * Model Like
+ * 
+ */
+export type Like = Prisma.LikeModel
+/**
  * Model Feedback
  * 
  */

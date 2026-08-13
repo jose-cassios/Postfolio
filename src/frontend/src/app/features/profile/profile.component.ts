@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { catchError, finalize, forkJoin, of, Subscription } from 'rxjs';
 import { AuthService, User } from '../auth/services/auth.service';
 import {
@@ -31,7 +31,7 @@ const URL_PATTERN = /^https?:\/\/\S+$/i;
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
 })
@@ -99,6 +99,8 @@ export class ProfileComponent {
     linkedin: ['', [Validators.pattern(URL_PATTERN)]],
     github: ['', [Validators.pattern(URL_PATTERN)]],
     website: ['', [Validators.pattern(URL_PATTERN)]],
+    contactEmail: ['', [Validators.email]],
+    availableForHire: [false],
   });
 
   readonly projectForm = this.fb.nonNullable.group({
@@ -106,6 +108,11 @@ export class ProfileComponent {
     description: ['', [Validators.required, Validators.maxLength(500)]],
     category: ['OTHER' as ProjectCategory, [Validators.required]],
     githublink: ['', [Validators.pattern(URL_PATTERN)]],
+    externalLink: ['', [Validators.pattern(URL_PATTERN)]],
+    coverImageUrl: ['', [Validators.pattern(URL_PATTERN)]],
+    galleryUrls: [''],
+    tools: [''],
+    tags: [''],
   });
 
   constructor() {
@@ -182,6 +189,8 @@ export class ProfileComponent {
       linkedin: user.linkedin ?? '',
       github: user.github ?? '',
       website: user.website ?? '',
+      contactEmail: user.contactEmail ?? '',
+      availableForHire: user.availableForHire ?? false,
     });
     this.feedback.set(null);
     this.showEditModal.set(true);
@@ -242,6 +251,11 @@ export class ProfileComponent {
       description: '',
       category: 'OTHER',
       githublink: '',
+      externalLink: '',
+      coverImageUrl: '',
+      galleryUrls: '',
+      tools: '',
+      tags: '',
     });
     this.feedback.set(null);
     this.showProjectModal.set(true);
@@ -255,6 +269,11 @@ export class ProfileComponent {
       description: project.description,
       category: project.category,
       githublink: project.githubLink ?? '',
+      externalLink: project.externalLink ?? '',
+      coverImageUrl: project.coverImageUrl ?? '',
+      galleryUrls: project.galleryUrls.join('\n'),
+      tools: project.tools.join(', '),
+      tags: project.tags.join(', '),
     });
     this.feedback.set(null);
     this.showProjectModal.set(true);
@@ -275,8 +294,15 @@ export class ProfileComponent {
 
     const values = this.projectForm.getRawValue();
     const payload: ProjectPayload = {
-      ...values,
+      name: values.name,
+      description: values.description,
+      category: values.category,
       githublink: values.githublink || null,
+      externalLink: values.externalLink || null,
+      coverImageUrl: values.coverImageUrl || null,
+      galleryUrls: this.splitValues(values.galleryUrls, /[\n,]+/).slice(0, 3),
+      tools: this.splitValues(values.tools),
+      tags: this.splitValues(values.tags),
     };
     const editingId = this.editingProjectId();
     const request = editingId
@@ -370,5 +396,9 @@ export class ProfileComponent {
       return error.error?.message || fallback;
     }
     return fallback;
+  }
+
+  private splitValues(value: string, separator: RegExp = /[,]+/): string[] {
+    return value.split(separator).map((item) => item.trim()).filter(Boolean);
   }
 }

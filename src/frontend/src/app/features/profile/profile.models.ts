@@ -8,6 +8,9 @@ export interface ProfileUser {
   linkedin?: string;
   github?: string;
   website?: string;
+  contactEmail?: string;
+  availableForHire?: boolean;
+  achievements?: Array<{ competitionId: string; competitionName: string; rank: number }>;
   usertype: UserType;
 }
 
@@ -34,6 +37,13 @@ export interface ProfileProject {
   description: string;
   category: ProjectCategory;
   githubLink: string | null;
+  externalLink: string | null;
+  coverImageUrl: string | null;
+  galleryUrls: string[];
+  tools: string[];
+  tags: string[];
+  createdAt: string;
+  updatedAt: string;
   portfolioId: string;
 }
 
@@ -42,4 +52,9 @@ export interface ProjectPayload {
   description: string;
   category: ProjectCategory;
   githublink: string | null;
+  externalLink: string | null;
+  coverImageUrl: string | null;
+  galleryUrls: string[];
+  tools: string[];
+  tags: string[];
 }

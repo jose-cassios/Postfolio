@@ -1,7 +1,11 @@
 <div class="card" [class.detailed]="mode() === ProjectCardMode.DETAILED">
 
   <div class="image-container">
-    <img [src]="project().imageUrl" [alt]="project().title" loading="lazy">
+    @if (project().imageUrl) {
+      <img [src]="project().imageUrl" [alt]="project().title" loading="lazy">
+    } @else {
+      <div class="image-placeholder" aria-hidden="true"></div>
+    }
   </div>
 
   <div class="card-content">
@@ -20,7 +24,11 @@
 
       @if (project().author) {
       <div class="card-author">
-        <img class="author-avatar" [src]="project().author?.avatar" [alt]="project().author?.name">
+        @if (project().author?.avatar) {
+          <img class="author-avatar" [src]="project().author?.avatar" [alt]="project().author?.name">
+        } @else {
+          <span class="author-avatar">{{ project().author?.name?.charAt(0)?.toUpperCase() }}</span>
+        }
         <span class="author-name">
           {{ project().author?.name }}
         </span>
@@ -40,8 +48,8 @@
         </div>
 
         <div class="stat">
-          <mat-icon>visibility</mat-icon>
-          <span>{{ project().views }}</span>
+          <mat-icon>thumb_up</mat-icon>
+          <span>{{ project().appreciates || 0 }}</span>
         </div>
 
       </div>

@@ -1,0 +1,11 @@
+@use 'tokens' as *;
+.admin-page { max-width: 980px; margin: 0 auto; padding: 64px 24px 96px; }
+header { margin-bottom: 30px; span { color: $color-primary-500; font-weight: 700; } h1 { margin: 8px 0; } p { color: $color-text-secondary; } }
+.panel, .state, .notice { margin-bottom: 24px; padding: 26px; border: 1px solid $color-border-default; border-radius: 18px; background: white; }
+.notice { background: $color-primary-100; }
+form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; label { display: grid; gap: 7px; } span { font-size: .85rem; font-weight: 650; } .wide { grid-column: 1 / -1; } }
+input, textarea, select { box-sizing: border-box; width: 100%; padding: 11px; border: 1px solid $color-border-default; border-radius: 8px; }
+button { padding: 12px; border: 0; border-radius: 9px; background: $color-primary-500; color: white; font-weight: 700; cursor: pointer; }
+.event-list { display: grid; gap: 10px; a { display: flex; justify-content: space-between; padding: 14px; border: 1px solid $color-border-default; border-radius: 10px; color: inherit; text-decoration: none; } span { color: $color-text-secondary; } }
+.user-list { display: grid; gap: 10px; article { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 14px; border: 1px solid $color-border-default; border-radius: 10px; } div { display: grid; gap: 4px; } span { color: $color-text-secondary; font-size: .82rem; } .reactivate { background: #16845b; } }
+@media (max-width: 650px) { form { grid-template-columns: 1fr; label, .wide { grid-column: 1; } } }

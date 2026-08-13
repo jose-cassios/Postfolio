@@ -1,1 +1,33 @@
-<p>admin works!</p>
+<main class="admin-page">
+  <header><span>Painel administrativo</span><h1>Gestão do Postfolio</h1><p>Crie os eventos mensais e acompanhe as fases da comunidade.</p></header>
+  @if (!canModerate()) {
+    <section class="state"><h2>Acesso restrito</h2><p>Esta área exige uma conta de administrador.</p><a routerLink="/">Voltar ao início</a></section>
+  } @else {
+    @if (notice()) { <p class="notice" role="status">{{ notice() }}</p> }
+    @if (isAdmin()) {
+    <section class="panel">
+      <h2>Nova competição</h2>
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <label class="wide"><span>Nome</span><input formControlName="name" /></label>
+        <label class="wide"><span>Descrição</span><textarea rows="4" formControlName="description"></textarea></label>
+        <label><span>Categoria</span><select formControlName="category">@for (category of categories; track category) { <option [value]="category">{{ category }}</option> }</select></label>
+        <label><span>Início das inscrições</span><input type="datetime-local" formControlName="registrationStartsAt" /></label>
+        <label><span>Fim das inscrições</span><input type="datetime-local" formControlName="registrationEndsAt" /></label>
+        <label><span>Início da votação</span><input type="datetime-local" formControlName="votingStartsAt" /></label>
+        <label><span>Fim da votação</span><input type="datetime-local" formControlName="votingEndsAt" /></label>
+        <label><span>Divulgação dos resultados</span><input type="datetime-local" formControlName="resultsAt" /></label>
+        <button class="wide" type="submit" [disabled]="saving()">{{ saving() ? 'Criando...' : 'Criar competição' }}</button>
+      </form>
+    </section>
+    <section class="panel"><h2>Eventos cadastrados</h2><div class="event-list">
+      @for (competition of competitions(); track competition.id) { <a routerLink="/competicoes"><strong>{{ competition.name }}</strong><span>{{ competition.status }} · {{ competition.submissions.length }} projetos</span></a> }
+      @empty { <p>Nenhum evento cadastrado.</p> }
+    </div></section>
+    }
+    <section class="panel"><h2>Moderação de usuários</h2><div class="user-list">
+      @for (user of users(); track user.id) {
+        <article><div><strong>{{ user.username }}</strong><span>{{ user.email }} · {{ user.usertype }}</span></div><button [class.reactivate]="!user.active" [disabled]="user.id === auth.user()?.id" (click)="toggleUser(user)">{{ user.active ? 'Suspender' : 'Reativar' }}</button></article>
+      } @empty { <p>Nenhum usuário encontrado.</p> }
+    </div></section>
+  }
+</main>

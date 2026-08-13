@@ -34,7 +34,7 @@ export class ProjectCompDetailsAdapter implements ProjectCompDetailsPort {
   }
 
   async delete(competitionId: string, projectId: string): Promise<void> {
-    await this.delete(competitionId, projectId);
+    await this.repository.delete(competitionId, projectId);
   }
 
   async exist(

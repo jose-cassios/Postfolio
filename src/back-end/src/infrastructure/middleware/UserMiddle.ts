@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import jwt from "jsonwebtoken";
+import { prisma } from "@infrastructure/config/Prisma";
 
 export const UserMiddle = {
   authenticate: async (req: FastifyRequest, resply: FastifyReply) => {
@@ -19,6 +20,13 @@ export const UserMiddle = {
         id: string;
         email: string;
       };
+      const user = await prisma.user.findUnique({
+        where: { id: decoded.id },
+        select: { active: true },
+      });
+      if (!user?.active) {
+        return resply.status(403).send({ msg: "Conta suspensa" });
+      }
       req.user = { id: decoded.id, email: decoded.email };
     } catch (error) {
       return resply.status(401).send({ msg: "Token inválido ou expirado" });

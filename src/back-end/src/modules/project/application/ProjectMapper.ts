@@ -77,7 +77,14 @@ export const ProjectMapper = {
       projectModel.description,
       ProjectCategoryMapper.fromPrismaToDomain(projectModel.category),
       projectModel.portfolioId,
-      projectModel.githublink
+      projectModel.githublink,
+      projectModel.externalLink,
+      projectModel.coverImageUrl,
+      projectModel.galleryUrls,
+      projectModel.tools,
+      projectModel.tags,
+      projectModel.createdAt,
+      projectModel.updatedAt
     );
   },
   fromPrismaToContracts(projectModel: ProjectModel): ProjectContract {
@@ -87,6 +94,13 @@ export const ProjectMapper = {
       description: projectModel.description,
       category: ProjectCategoryMapper.fromPrismaToDomain(projectModel.category),
       githubLink: projectModel.githublink,
+      externalLink: projectModel.externalLink,
+      coverImageUrl: projectModel.coverImageUrl,
+      galleryUrls: projectModel.galleryUrls,
+      tools: projectModel.tools,
+      tags: projectModel.tags,
+      createdAt: projectModel.createdAt,
+      updatedAt: projectModel.updatedAt,
       portfolioId: projectModel.portfolioId,
     };
   },
@@ -97,6 +111,13 @@ export const ProjectMapper = {
       description: project.getDescription(),
       category: ProjectCategoryMapper.fromDomainToPrisma(project.getCategory()),
       githublink: project.getGithubLink(),
+      externalLink: project.getExternalLink(),
+      coverImageUrl: project.getCoverImageUrl(),
+      galleryUrls: project.getGalleryUrls(),
+      tools: project.getTools(),
+      tags: project.getTags(),
+      createdAt: project.getCreatedAt(),
+      updatedAt: project.getUpdatedAt(),
       portfolioId: project.getPortfolioId(),
     };
   },
@@ -107,7 +128,12 @@ export const ProjectMapper = {
       dto.description,
       dto.category,
       dto.portfolioId,
-      dto.githublink
+      dto.githublink,
+      dto.externalLink,
+      dto.coverImageUrl,
+      dto.galleryUrls,
+      dto.tools,
+      dto.tags
     );
   },
   // fromUpdateProjectDtoToDomain(dto: UpdateProjectDTO): Project {

@@ -25,9 +25,9 @@
             [(ngModel)]="selectedSort"
             (change)="applyFilters()"
           >
-          <option value="recent">Mais Recentes</option>
+          <option value="newest">Mais Recentes</option>
           <option value="likes">Mais Curtidos</option>
-          <option value="views">Mais Visualizados</option>
+          <option value="appreciates">Mais Apreciados</option>
           </select>
         </div>
   
@@ -61,12 +61,12 @@
             <span class="filter-title">Ferramentas</span>
   
             <div class="filter-chips">
-              <button class="chip">Figma</button>
-              <button class="chip">React</button>
-              <button class="chip">Vue</button>
-              <button class="chip">Next.js</button>
-              <button class="chip">TypeScript</button>
-              <button class="chip">Node.js</button>
+              <button class="chip" [class.active]="!selectedTool" (click)="selectTool(null)">Todas</button>
+              @for (tool of tools; track tool) {
+                <button class="chip" [class.active]="selectedTool === tool" (click)="selectTool(tool)">
+                  {{ tool }}
+                </button>
+              }
             </div>
           </div>
   
@@ -81,7 +81,7 @@
       
       <div class="explore-meta">
         <div class="projects-count">
-          {{ filteredProjects.length }} projetos encontrados
+          {{ totalProjects }} projetos encontrados
         </div>
 
         <div class="sort-info">
@@ -90,10 +90,15 @@
         </div>
       </div>
 
+      @if (errorMessage) {
+        <p class="empty-state">{{ errorMessage }} <button (click)="loadProjects(currentPage)">Tentar novamente</button></p>
+      } @else if (isLoading) {
+        <p class="empty-state">Carregando projetos...</p>
+      } @else {
       <div class="projects-grid">
         @for (project of filteredProjects; track project.id) {
           <app-project-card
-            routerLink="/projetos/{{project.slug}}"
+            [routerLink]="['/projetos', project.id]"
             [project]="project"
             [mode]="mode.DETAILED"
           />
@@ -103,6 +108,14 @@
           <p class="empty-state">Nenhum projeto encontrado.</p>
         }
       </div>
+      @if (totalPages > 1) {
+        <nav class="pagination" aria-label="Paginação dos projetos">
+          <button [disabled]="currentPage === 1" (click)="loadProjects(currentPage - 1)">Anterior</button>
+          <span>Página {{ currentPage }} de {{ totalPages }}</span>
+          <button [disabled]="currentPage === totalPages" (click)="loadProjects(currentPage + 1)">Próxima</button>
+        </nav>
+      }
+      }
   
     </div>
   </section>

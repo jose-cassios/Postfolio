@@ -26,7 +26,7 @@ export class FavorateProjectsService implements IFavorateProjectsService {
     ]);
 
     if (!project) throw new NotFound("O projeto não existe!");
-    if (!favorate) throw new Conflict("O projeto já está salvo!");
+    if (favorate) throw new Conflict("O projeto ja esta salvo!");
 
     await this.repository.create(
       FavorateProjectsMapper.fromCreateFavorateProjectDTO(dto)
@@ -41,5 +41,9 @@ export class FavorateProjectsService implements IFavorateProjectsService {
     if (!favorate) return;
 
     await this.repository.delete(favorate);
+  }
+
+  async findByUserId(userId: string) {
+    return await this.repository.findByUserId(userId);
   }
 }

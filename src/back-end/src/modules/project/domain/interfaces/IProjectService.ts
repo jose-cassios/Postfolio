@@ -1,5 +1,6 @@
 import { Project } from "@project/domain/entities/Project";
-import { CreateProjectDTO, UpdateProjectDTO } from "@project/api/ProjectDTO";
+import { CreateProjectDTO, ProjectListQuery, UpdateProjectDTO } from "@project/api/ProjectDTO";
+import { PaginatedProjectsContract, ProjectContactContract, ProjectContract, ProjectFeedbackContract, ProjectInteractionContract } from "@shared/contracts/ProjectContracts";
 
 export interface IProjectService {
   create(createWorkDto: Omit<CreateProjectDTO, "portfolioId">, userId: string): Promise<Project>;
@@ -8,4 +9,16 @@ export interface IProjectService {
 
   findMany(): Promise<Project[]>;
   findById(id: string): Promise<Project | null>;
+  findPublicMany(query: ProjectListQuery): Promise<PaginatedProjectsContract>;
+  findPublicById(id: string): Promise<ProjectContract | null>;
+  findOwnerContact(id: string): Promise<ProjectContactContract>;
+  setLike(id: string, userId: string, liked: boolean): Promise<ProjectInteractionContract>;
+  setAppreciation(
+    id: string,
+    userId: string,
+    appreciated: boolean,
+    feedback?: { content: string; type: "PUBLIC" | "PRIVATE" }
+  ): Promise<ProjectInteractionContract>;
+  getInteraction(id: string, userId: string): Promise<ProjectInteractionContract>;
+  findPrivateFeedback(id: string, userId: string): Promise<ProjectFeedbackContract[]>;
 }
