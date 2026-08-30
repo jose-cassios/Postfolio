@@ -25,11 +25,13 @@
           {{ user.username.charAt(0).toUpperCase() }}
         </div>
         <div>
-          <span class="badge">{{ user.usertype }}</span>
+          @if (user.usertype !== 'USER') {
+            <span class="badge">{{ user.usertype === 'ADMIN' ? 'Administrador' : 'Moderador' }}</span>
+          }
           <h1>{{ user.username }}</h1>
           <p>{{ user.bio || 'Este usuário ainda não adicionou uma bio.' }}</p>
           @if (user.availableForHire) {
-            <span class="badge hire-badge">Disponível para contratação</span>
+            <span class="availability-status"><span aria-hidden="true"></span>Disponível para contratação</span>
           }
           @if (user.achievements?.length) {
             <div class="achievements" aria-label="Conquistas em competições">
@@ -188,6 +190,9 @@
           <label>
             <span>LinkedIn</span>
             <input type="url" formControlName="linkedin" placeholder="https://linkedin.com/in/..." />
+            @if (profileForm.controls.linkedin.touched && profileForm.controls.linkedin.invalid) {
+              <small>Informe um link válido, como linkedin.com/in/seu-perfil.</small>
+            }
           </label>
           <label>
             <span>GitHub</span>
@@ -196,10 +201,6 @@
           <label class="full-width">
             <span>Website</span>
             <input type="url" formControlName="website" placeholder="https://seusite.com" />
-          </label>
-          <label>
-            <span>Email para contato profissional</span>
-            <input type="email" formControlName="contactEmail" placeholder="contato@exemplo.com" />
           </label>
           <label class="checkbox-field">
             <input type="checkbox" formControlName="availableForHire" />

@@ -241,7 +241,6 @@ export class ProjectRepository implements IProjectRepository {
               select: {
                 username: true,
                 email: true,
-                contactEmail: true,
                 linkedin: true,
                 github: true,
                 website: true,
@@ -255,7 +254,7 @@ export class ProjectRepository implements IProjectRepository {
     const author = project.portfolio.author;
     return {
       username: author.username,
-      contactEmail: author.contactEmail ?? author.email,
+      email: author.email,
       linkedin: author.linkedin,
       github: author.github,
       website: author.website,

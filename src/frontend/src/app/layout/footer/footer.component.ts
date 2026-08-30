@@ -16,7 +16,6 @@ export class FooterComponent {
   subscribe() {
     if (!this.email) return;
 
-    console.log('Email cadastrado:', this.email);
     this.email = '';
   }
 }

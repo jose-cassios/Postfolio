@@ -1,6 +1,30 @@
 import { FastifyRequest } from "fastify";
 import { z } from "zod";
 
+const normalizeHttpUrl = (value: unknown): unknown => {
+  if (typeof value !== "string") return value;
+
+  const trimmedValue = value.trim();
+  if (!trimmedValue) return null;
+
+  return /^https?:\/\//i.test(trimmedValue)
+    ? trimmedValue
+    : `https://${trimmedValue}`;
+};
+
+const optionalHttpUrl = (fieldName: string) =>
+  z.preprocess(
+    normalizeHttpUrl,
+    z
+      .string()
+      .url({
+        message: `O link de ${fieldName} deve ser uma URL valida`,
+        protocol: /^https?$/,
+      })
+      .nullable()
+      .optional(),
+  );
+
 const CreateUserBodySchema = z.object({
   username: z
     .string({ message: "O nome é obrigatorio" })
@@ -12,19 +36,9 @@ const CreateUserBodySchema = z.object({
     .min(8, "Senha muito curta")
     .max(100, "Senha muito longa"),
   bio: z.string().max(200).optional(),
-  linkedin: z
-    .string()
-    .url({ message: "O likedin deve ser uma url válida", protocol: /^https?$/ })
-    .optional(),
-  github: z
-    .string()
-    .url({ message: "O github deve ser uma url válida", protocol: /^https?$/ })
-    .optional(),
-  website: z
-    .string()
-    .url({ message: "O website deve ser uma url válida", protocol: /^https?$/ })
-    .optional(),
-  contactEmail: z.string().email("O email de contato deve ser valido").optional(),
+  linkedin: optionalHttpUrl("LinkedIn"),
+  github: optionalHttpUrl("GitHub"),
+  website: optionalHttpUrl("website"),
   availableForHire: z.boolean().optional(),
   usertype: z.literal("USER"),
 });
@@ -49,10 +63,9 @@ const UpdateUserBodySchema = CreateUserBodySchema.omit({
   usertype: true,
 })
   .extend({
-    linkedin: z.string().url("O LinkedIn deve ser uma URL valida").nullable(),
-    github: z.string().url("O GitHub deve ser uma URL valida").nullable(),
-    website: z.string().url("O website deve ser uma URL valida").nullable(),
-    contactEmail: z.string().email("O email de contato deve ser valido").nullable(),
+    linkedin: optionalHttpUrl("LinkedIn"),
+    github: optionalHttpUrl("GitHub"),
+    website: optionalHttpUrl("website"),
     availableForHire: z.boolean(),
   })
   .partial();

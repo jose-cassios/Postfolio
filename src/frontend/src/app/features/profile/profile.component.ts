@@ -27,6 +27,7 @@ interface Feedback {
 }
 
 const URL_PATTERN = /^https?:\/\/\S+$/i;
+const PROFILE_URL_PATTERN = /^(https?:\/\/)?\S+$/i;
 
 @Component({
   selector: 'app-profile',
@@ -96,10 +97,9 @@ export class ProfileComponent {
     username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
     email: ['', [Validators.required, Validators.email]],
     bio: ['', [Validators.maxLength(200)]],
-    linkedin: ['', [Validators.pattern(URL_PATTERN)]],
-    github: ['', [Validators.pattern(URL_PATTERN)]],
-    website: ['', [Validators.pattern(URL_PATTERN)]],
-    contactEmail: ['', [Validators.email]],
+    linkedin: ['', [Validators.pattern(PROFILE_URL_PATTERN)]],
+    github: ['', [Validators.pattern(PROFILE_URL_PATTERN)]],
+    website: ['', [Validators.pattern(PROFILE_URL_PATTERN)]],
     availableForHire: [false],
   });
 
@@ -189,7 +189,6 @@ export class ProfileComponent {
       linkedin: user.linkedin ?? '',
       github: user.github ?? '',
       website: user.website ?? '',
-      contactEmail: user.contactEmail ?? '',
       availableForHire: user.availableForHire ?? false,
     });
     this.feedback.set(null);
@@ -208,11 +207,17 @@ export class ProfileComponent {
 
     const previousUsername = this.currentUser()?.username;
     const values = this.profileForm.getRawValue();
+    const payload: Partial<User> = {
+      ...values,
+      linkedin: this.normalizeOptionalUrl(values.linkedin),
+      github: this.normalizeOptionalUrl(values.github),
+      website: this.normalizeOptionalUrl(values.website),
+    };
     this.isSavingProfile.set(true);
     this.feedback.set(null);
 
     this.auth
-      .updateProfile(values as Partial<User>)
+      .updateProfile(payload)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => this.isSavingProfile.set(false)),
@@ -393,12 +398,22 @@ export class ProfileComponent {
 
   private errorMessage(error: unknown, fallback: string): string {
     if (error instanceof HttpErrorResponse) {
-      return error.error?.message || fallback;
+      const validationMessage = error.error?.details?.issues?.[0]?.message;
+      return validationMessage || error.error?.message || fallback;
     }
     return fallback;
   }
 
   private splitValues(value: string, separator: RegExp = /[,]+/): string[] {
     return value.split(separator).map((item) => item.trim()).filter(Boolean);
+  }
+
+  private normalizeOptionalUrl(value: string): string | null {
+    const trimmedValue = value.trim();
+    if (!trimmedValue) return null;
+
+    return /^https?:\/\//i.test(trimmedValue)
+      ? trimmedValue
+      : `https://${trimmedValue}`;
   }
 }

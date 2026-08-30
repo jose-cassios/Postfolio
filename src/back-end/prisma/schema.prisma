@@ -17,7 +17,6 @@ model User {
   linkedin      String?
   github        String?
   website       String?
-  contactEmail  String?
   availableForHire Boolean @default(false)
   active        Boolean         @default(true)
   userType      UserType?

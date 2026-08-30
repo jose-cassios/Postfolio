@@ -5,10 +5,9 @@ export interface ProfileUser {
   username: string;
   email?: string;
   bio?: string;
-  linkedin?: string;
-  github?: string;
-  website?: string;
-  contactEmail?: string;
+  linkedin?: string | null;
+  github?: string | null;
+  website?: string | null;
   availableForHire?: boolean;
   achievements?: Array<{ competitionId: string; competitionName: string; rank: number }>;
   usertype: UserType;

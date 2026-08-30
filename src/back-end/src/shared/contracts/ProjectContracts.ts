@@ -38,7 +38,7 @@ export interface PaginatedProjectsContract {
 
 export interface ProjectContactContract {
   username: string;
-  contactEmail: string;
+  email: string;
   linkedin: string | null;
   github: string | null;
   website: string | null;

@@ -116,7 +116,6 @@ export class UserController {
       linkedin: user.getLinkedin(),
       github: user.getGithub(),
       website: user.getWebsite(),
-      contactEmail: user.getContactEmail(),
       availableForHire: user.isAvailableForHire(),
       usertype: type,
     });
@@ -194,7 +193,6 @@ export class UserController {
         linkedin: user.getLinkedin(),
         github: user.getGithub(),
         website: user.getWebsite(),
-        contactEmail: user.getContactEmail(),
         availableForHire: user.isAvailableForHire(),
         usertype: userType ? UserTypeMapper.fromDomainToPrisma(userType) : null,
         achievements: await this.userService.findAchievements(user.getId()),

@@ -130,7 +130,7 @@ export class ProjectComponent {
     this.projects.getContact(project.id).subscribe({
       next: (contact) => {
         if (isPlatformBrowser(this.platformId)) {
-          window.location.href = `mailto:${encodeURIComponent(contact.contactEmail)}?subject=${encodeURIComponent(`Contato pelo Postfolio — ${project.title}`)}`;
+          window.location.href = `mailto:${encodeURIComponent(contact.email)}?subject=${encodeURIComponent(`Contato pelo Postfolio — ${project.title}`)}`;
         }
       },
       error: () => this.notice.set('Este autor não está disponível para contratação no momento.'),

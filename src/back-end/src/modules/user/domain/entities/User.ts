@@ -16,7 +16,6 @@ export default class User {
     private github: string | null = null,
     private website: string | null = null,
     private userType: UserType | null = UserType.USER,
-    private contactEmail: string | null = null,
     private availableForHire: boolean = false,
     private active: boolean = true,
   ) {}
@@ -36,7 +35,6 @@ export default class User {
       dto.github,
       dto.website,
       dto.userType,
-      dto.contactEmail,
       dto.availableForHire
     );
   }
@@ -67,10 +65,6 @@ export default class User {
 
     if (dto.website !== undefined) {
       this.website = dto.website;
-    }
-
-    if (dto.contactEmail !== undefined) {
-      this.contactEmail = dto.contactEmail;
     }
 
     if (dto.availableForHire !== undefined) {
@@ -126,10 +120,6 @@ export default class User {
 
   public getUserType(): UserType | null {
     return this.userType;
-  }
-
-  public getContactEmail(): string | null {
-    return this.contactEmail;
   }
 
   public isAvailableForHire(): boolean {

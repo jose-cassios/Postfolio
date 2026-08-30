@@ -10,10 +10,9 @@ export interface User {
   email: string;
   password?: string;
   bio?: string;
-  linkedin?: string;
-  github?: string;
-  website?: string;
-  contactEmail?: string;
+  linkedin?: string | null;
+  github?: string | null;
+  website?: string | null;
   availableForHire?: boolean;
   achievements?: Array<{ competitionId: string; competitionName: string; rank: number }>;
   usertype: UserType;
@@ -47,8 +46,7 @@ export class AuthService {
   constructor(private api: ApiService) {
     if (isPlatformBrowser(this.platformId) && this.getToken()) {
       this.fetchProfile().subscribe({
-        error: (error) => {
-          console.error('Falha ao carregar perfil a partir do token:', error);
+        error: () => {
           this.logout();
         },
       });
@@ -63,10 +61,7 @@ export class AuthService {
 
     return this.api.post<LoginResponse>('user/login', payload).pipe(
       tap(response => this.setToken(response.token)),
-      switchMap(() => this.fetchProfile()),
-      tap(user => {
-        console.log('Login bem-sucedido:', user);
-      })
+      switchMap(() => this.fetchProfile())
     );
   }
 
@@ -125,7 +120,6 @@ export class AuthService {
       linkedin: userData.linkedin,
       github: userData.github,
       website: userData.website,
-      contactEmail: userData.contactEmail,
       availableForHire: userData.availableForHire,
     };
 
@@ -166,7 +160,6 @@ export class AuthService {
       linkedin: userData.linkedin || null,
       github: userData.github || null,
       website: userData.website || null,
-      contactEmail: userData.contactEmail || null,
       availableForHire: userData.availableForHire ?? false,
     };
 

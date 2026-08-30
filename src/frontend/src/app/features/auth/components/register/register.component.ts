@@ -13,7 +13,6 @@ export class RegisterComponent {
   private readonly router = inject(Router);
 
   onRegisterSuccess(user: any): void {
-    console.log('Usuário registrado com sucesso:', user);
     const username = user.username || 'perfil';
     this.router.navigate(['/perfil', username], { queryParams: { edit: true } });
   }

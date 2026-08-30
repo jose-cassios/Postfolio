@@ -248,7 +248,23 @@
   }
 }
 
-.hire-badge { margin-top: .75rem; }
+.availability-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.75rem;
+  color: #15803d;
+  font-size: 0.9rem;
+  font-weight: 650;
+
+  span {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.14);
+  }
+}
 
 .achievements {
   display: flex;

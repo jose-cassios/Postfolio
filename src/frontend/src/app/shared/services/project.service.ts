@@ -59,7 +59,7 @@ export interface ProjectInteraction {
 
 export interface ProjectContact {
   username: string;
-  contactEmail: string;
+  email: string;
   linkedin: string | null;
   github: string | null;
   website: string | null;
