@@ -1,14 +1,12 @@
+import { CompetitionContract, CreateCompetitionDTO } from "@competition/api/CompetitionDTO";
 import { Competition } from "@competition/domain/entities/Competition";
 import { ICompetitionRepository } from "@competition/domain/interfaces/ICompetitionRepository";
 import { ICompetitionService } from "@competition/domain/interfaces/ICompetitionService";
 import { TYPES } from "@compositionRoot/Types";
-import { Conflict, NotFound } from "@shared/error/HttpError";
-import { UserPort } from "@user/domain/interfaces/UserPort";
 import { ProjectPort } from "@project/domain/interfaces/ProjectPort";
+import { Conflict, Forbidden, NotFound } from "@shared/error/HttpError";
+import { UserPort } from "@user/domain/interfaces/UserPort";
 import { inject, injectable } from "inversify";
-import { ProjectCompDetailsPort } from "@projectCompDetails/domain/interfaces/ProjectCompDetailsPort";
-import { ProjectContract } from "@shared/contracts/ProjectContracts";
-import { CreateCompetitionDTO } from "@competition/api/CompetitionDTO";
 
 @injectable()
 export class CompetitionService implements ICompetitionService {
@@ -18,14 +16,14 @@ export class CompetitionService implements ICompetitionService {
     @inject(TYPES.ProjectPort)
     private projectPort: ProjectPort,
     @inject(TYPES.UserPort)
-    private userPort: UserPort,
-    @inject(TYPES.ProjectCompDetailsPort)
-    private projectCompDetailsPort: ProjectCompDetailsPort
+    private userPort: UserPort
   ) {}
 
-  async create(dto: CreateCompetitionDTO): Promise<Competition> {
-    const competition = Competition.create(dto);
-    return await this.competitionRepository.create(competition);
+  async create(dto: CreateCompetitionDTO, userId: string): Promise<Competition> {
+    if (!(await this.userPort.isAdmin(userId))) {
+      throw new Forbidden("Apenas administradores podem criar competicoes.");
+    }
+    return await this.competitionRepository.create(Competition.create(dto));
   }
 
   async update(competition: Competition): Promise<Competition> {
@@ -36,67 +34,61 @@ export class CompetitionService implements ICompetitionService {
     return await this.competitionRepository.deleteById(id);
   }
 
-  async subscribeProject(
-    competitionId: string,
-    projectId: string
-  ): Promise<void> {
-    const [competition, project, details] = await Promise.all([
-      this.competitionRepository.findById(competitionId),
-      this.projectPort.exist(projectId),
-      this.projectCompDetailsPort.exist(competitionId, projectId),
-    ]);
-
-    if (!competition) throw new NotFound("A competição não foi encontrada");
-    if (!project) throw new NotFound("O trabalho não pode ser encontrado");
-
-    if (details)
-      throw new Conflict("O tralho já está cadastrado na competição");
-
-    await this.projectCompDetailsPort.create({
-      id: "",
-      totalReviewers: 0,
-      totalScore: 0,
-      competitionId: competition.id,
-      projectId: project,
-      checked: true,
-    });
+  async subscribeProject(competitionId: string, projectId: string, userId: string) {
+    const competition = await this.findContractById(competitionId);
+    if (competition.status !== "REGISTRATION") {
+      throw new Conflict("As inscricoes nao estao abertas.");
+    }
+    if (!(await this.projectPort.isOwnedBy(projectId, userId))) {
+      throw new Forbidden("Voce so pode inscrever os proprios projetos.");
+    }
+    if (competition.submissions.some((project) => project.id === projectId)) {
+      throw new Conflict("O projeto ja esta inscrito.");
+    }
+    await this.competitionRepository.subscribeProject(competitionId, projectId);
   }
 
-  async unsubscribeProject(
-    competitionId: string,
-    projectId: string
-  ): Promise<void> {
-    const details = await this.projectCompDetailsPort.exist(
-      competitionId,
-      projectId
-    );
-
-    if (!details)
-      throw new NotFound(
-        "Inscrição não encontrada para esta competição e projeto"
-      );
-
-    const response = await this.projectCompDetailsPort.delete(
-      competitionId,
-      projectId
-    );
+  async unsubscribeProject(competitionId: string, projectId: string, userId: string) {
+    const competition = await this.findContractById(competitionId);
+    if (competition.status !== "REGISTRATION") {
+      throw new Conflict("As inscricoes nao estao abertas.");
+    }
+    if (!(await this.projectPort.isOwnedBy(projectId, userId))) {
+      throw new Forbidden("Voce so pode remover os proprios projetos.");
+    }
+    await this.competitionRepository.unsubscribeProject(competitionId, projectId);
   }
 
-  async findMany(): Promise<Competition[]> {
-    return await this.competitionRepository.findMany();
+  async vote(competitionId: string, projectId: string, userId: string) {
+    const competition = await this.findContractById(competitionId);
+    if (competition.status !== "VOTING") {
+      throw new Conflict("A votacao nao esta aberta.");
+    }
+    if (!competition.submissions.some((project) => project.id === projectId)) {
+      throw new NotFound("O projeto nao participa desta competicao.");
+    }
+    if (competition.submissions.some((project) => project.author.id === userId)) {
+      throw new Forbidden("Participantes desta competicao nao podem votar.");
+    }
+    await this.competitionRepository.vote(competitionId, projectId, userId);
   }
 
-  async findById(id: string): Promise<Competition | null> {
-    return await this.competitionRepository.findById(id);
+  findMany(): Promise<Competition[]> {
+    return this.competitionRepository.findMany();
   }
 
-  findSubscribedProjects(competitionId: string): Promise<ProjectContract[]> {
-    throw new Error("Method not implemented.");
+  findById(id: string): Promise<Competition | null> {
+    return this.competitionRepository.findById(id);
   }
-  findProjecWithDetails(
-    competitionId: string,
-    projectId: string
-  ): Promise<ProjectContract | null> {
-    throw new Error("Method not implemented.");
+
+  findContracts(): Promise<CompetitionContract[]> {
+    return this.competitionRepository.findContracts();
   }
+
+  async findContractById(id: string): Promise<CompetitionContract> {
+    const competition = await this.competitionRepository.findContractById(id);
+    if (!competition) throw new NotFound("A competicao nao foi encontrada.");
+    return competition;
+  }
+
 }

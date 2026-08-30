@@ -11,6 +11,12 @@ function favorateProjectsRoutesPlugin(
   app: FastifyInstance,
   controller: FavorateProjectsController
 ) {
+  app.get(
+    "",
+    { preValidation: UserMiddle.authenticate },
+    (req, reply) => controller.getAll(req, reply)
+  );
+
   app.post(
     "",
     {
@@ -22,7 +28,7 @@ function favorateProjectsRoutesPlugin(
   );
 
   app.delete(
-    "",
+    "/:projectId",
     {
       schema: favorateProjectsSchemas.delete,
       preValidation: UserMiddle.authenticate,

@@ -8,6 +8,8 @@ interface CreateUserDTO {
   linkedin?: string;
   github?: string;
   website?: string;
+  contactEmail?: string;
+  availableForHire?: boolean;
   userType: UserType;
 }
 
@@ -16,10 +18,11 @@ export interface UpdateUserDTO {
   username?: string;
   email?: string;
   bio?: string;
-  linkedin?: string;
-  github?: string;
-  website?: string;
-  userType?: UserType;
+  linkedin?: string | null;
+  github?: string | null;
+  website?: string | null;
+  contactEmail?: string | null;
+  availableForHire?: boolean;
 }
 
 interface LoginUserDTO {

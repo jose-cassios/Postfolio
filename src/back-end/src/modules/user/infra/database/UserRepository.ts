@@ -6,6 +6,7 @@ import { Prisma } from "@PrismaGen/client";
 import { UserMapper } from "@user/application/UserMapper";
 import { IUserRepository } from "@user/domain/interfaces/IUserRepository";
 import Email from "@user/domain/valueObject/Email";
+import { UserAchievementContract } from "@shared/contracts/UserContracts";
 
 export class UserRepository implements IUserRepository {
   async create(user: User): Promise<User> {
@@ -59,5 +60,48 @@ export class UserRepository implements IUserRepository {
       where: { email: email.getValue() },
     });
     return userModel ? UserMapper.fromPrismaToDomain(userModel) : null;
+  }
+
+  async findByUsername(username: string): Promise<User | null> {
+    const userModel = await prisma.user.findFirst({
+      where: {
+        username: {
+          equals: username,
+          mode: "insensitive",
+        },
+      },
+    });
+    return userModel ? UserMapper.fromPrismaToDomain(userModel) : null;
+  }
+
+  async findAchievements(userId: string): Promise<UserAchievementContract[]> {
+    const competitions = await prisma.competition.findMany({
+      where: { resultsAt: { lte: new Date() } },
+      select: {
+        id: true,
+        name: true,
+        worksDetails: {
+          orderBy: { totalReviewers: "desc" },
+          select: {
+            totalReviewers: true,
+            project: { select: { portfolio: { select: { authorId: true } } } },
+          },
+        },
+      },
+    });
+
+    return competitions.flatMap((competition) => {
+      let previousVotes: number | null = null;
+      let rank = 0;
+      return competition.worksDetails.flatMap((details, index) => {
+        if (details.totalReviewers !== previousVotes) rank = index + 1;
+        previousVotes = details.totalReviewers;
+        return details.project.portfolio.authorId === userId &&
+          details.totalReviewers > 0 &&
+          rank <= 3
+          ? [{ competitionId: competition.id, competitionName: competition.name, rank }]
+          : [];
+      });
+    });
   }
 }

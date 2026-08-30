@@ -1,79 +1,120 @@
-@if (project(); as p) {
-
 <section class="project-page">
-
   <div class="page-container">
-    
-    <a routerLink="/explorar" class="back">
-      <mat-icon>arrow_back</mat-icon>
-      Voltar
-    </a>
+    <a routerLink="/explorar" class="back"><mat-icon>arrow_back</mat-icon> Voltar</a>
 
-    <div class="project-label">
-  
-      <div class="cover">
-        <img [src]="p.coverImageUrl" [alt]="p.title">
-      </div>
-  
-      <div class="project-container">
-        <h1 class="project-title">{{ p.title }}</h1>
-        <div class="author-row">
-          <img class="avatar" [src]="p.author!.avatar" />
-          <div>
-            <strong>{{ p.author!.name }}</strong>
-            <p>{{ p.author!.bio }}</p>
-          </div>
-        </div>
-        <div class="actions">
-          <button><mat-icon>favorite_border</mat-icon> Curtir ({{ p.likes }})</button>
-          <button><mat-icon>thumb_up</mat-icon> Appreciate ({{ p.appreciates }})</button>
-          <button><mat-icon>bookmark_border</mat-icon> Salvar</button>
-          <button class="primary"><mat-icon>mail</mat-icon> Contratar</button>
-          <button><mat-icon>share</mat-icon> Compartilhar</button>
-        </div>
-        <div class="meta">
-          <span><mat-icon>visibility</mat-icon> {{ p.views }} visualizações</span>
-          <span>Publicado em {{ p.publishedAt | date }}</span>
-        </div>
-        <hr />
-        <div class="section">
-          <h3>Sobre o projeto</h3>
-          <p>{{ p.description }}</p>
-        </div>
-        <div class="section">
-          <h3>Ferramentas utilizadas</h3>
-          <div class="chips">
-            @for (tech of p.technologies; track tech) {
-              <span class="chip">{{ tech }}</span>
+    @if (isLoading()) {
+      <div class="page-state">Carregando projeto...</div>
+    } @else if (errorMessage()) {
+      <div class="page-state error">{{ errorMessage() }}</div>
+    } @else if (project(); as p) {
+      <article class="project-label">
+        @if (p.coverImageUrl) {
+          <div class="cover"><img [src]="p.coverImageUrl" [alt]="p.title"></div>
+        }
+
+        <div class="project-container">
+          @if (notice()) { <p class="notice" role="status">{{ notice() }}</p> }
+          <span class="category">{{ p.category }}</span>
+          <h1 class="project-title">{{ p.title }}</h1>
+
+          @if (p.author) {
+            <a class="author-row" [routerLink]="['/perfil', p.author.username]">
+              <span class="avatar">{{ p.author.name.charAt(0).toUpperCase() }}</span>
+              <div><strong>{{ p.author.name }}</strong><p>{{ p.author.bio }}</p></div>
+            </a>
+          }
+
+          <div class="actions">
+            <button [class.active]="interaction().liked" [disabled]="actionPending()" (click)="toggleLike()">
+              <mat-icon>{{ interaction().liked ? 'favorite' : 'favorite_border' }}</mat-icon>
+              Curtir ({{ interaction().likes }})
+            </button>
+            <button [class.active]="interaction().appreciated" [disabled]="actionPending()" (click)="toggleAppreciation()">
+              <mat-icon>thumb_up</mat-icon> Apreciar ({{ interaction().appreciates }})
+            </button>
+            <button [class.active]="interaction().saved" [disabled]="actionPending()" (click)="toggleSaved()">
+              <mat-icon>{{ interaction().saved ? 'bookmark' : 'bookmark_border' }}</mat-icon> Salvar
+            </button>
+            @if (p.author?.availableForHire) {
+              <button class="primary" (click)="hire()"><mat-icon>mail</mat-icon> Contratar</button>
             }
+            <button (click)="share()"><mat-icon>share</mat-icon> Compartilhar</button>
           </div>
+
+          <div class="meta"><span>Publicado em {{ p.publishedAt | date:'dd/MM/yyyy' }}</span></div>
+          <hr />
+
+          <section class="section"><h2>Sobre o projeto</h2><p>{{ p.description }}</p></section>
+
+          @if (p.githubLink || p.externalLink) {
+            <section class="section links">
+              <h2>Links</h2>
+              @if (p.externalLink) { <a [href]="p.externalLink" target="_blank" rel="noopener noreferrer">Abrir projeto</a> }
+              @if (p.githubLink) { <a [href]="p.githubLink" target="_blank" rel="noopener noreferrer">Ver repositório</a> }
+            </section>
+          }
+
+          @if (p.technologies?.length) {
+            <section class="section"><h2>Ferramentas utilizadas</h2><div class="chips">
+              @for (tech of p.technologies; track tech) { <span class="chip">{{ tech }}</span> }
+            </div></section>
+          }
+
+          @if (p.tags.length) {
+            <section class="section"><h2>Tags</h2><div class="chips muted">
+              @for (tag of p.tags; track tag) { <span class="chip muted">#{{ tag }}</span> }
+            </div></section>
+          }
+
+          @if (p.gallery.length) {
+            <section class="section"><h2>Mais imagens</h2><div class="gallery">
+              @for (img of p.gallery; track img) { <img [src]="img" alt="Imagem complementar do projeto" loading="lazy" /> }
+            </div></section>
+          }
+
+          <section class="section feedback-box">
+            <h2>Aprecie com feedback</h2>
+            <p>Um feedback é opcional e pode ser público ou visível apenas para o autor.</p>
+            <textarea [(ngModel)]="feedbackText" maxlength="500" rows="3" placeholder="O que chamou sua atenção?"></textarea>
+            <label><input type="checkbox" [(ngModel)]="feedbackPrivate"> Feedback privado</label>
+            <button class="primary-action" [disabled]="!feedbackText.trim() || actionPending()" (click)="toggleAppreciation(true)">
+              Enviar apreciação
+            </button>
+          </section>
+
+          @if (p.publicFeedback?.length) {
+            <section class="section public-feedback">
+              <h2>Feedbacks da comunidade</h2>
+              @for (feedback of p.publicFeedback ?? []; track feedback.id) {
+                <blockquote><p>{{ feedback.content }}</p><footer>— {{ feedback.username }}</footer></blockquote>
+              }
+            </section>
+          }
+
+          @if (privateFeedback().length) {
+            <section class="section public-feedback private-feedback">
+              <h2>Feedbacks privados para você</h2>
+              @for (feedback of privateFeedback(); track feedback.id) {
+                <blockquote><p>{{ feedback.content }}</p><footer>— {{ feedback.username }}</footer></blockquote>
+              }
+            </section>
+          }
+
+          <section class="section comments">
+            <h2>Comentários</h2>
+            <form (ngSubmit)="addComment()">
+              <textarea name="comment" [(ngModel)]="commentText" maxlength="500" rows="3" placeholder="Deixe um comentário"></textarea>
+              <button class="primary-action" type="submit" [disabled]="!commentText.trim()">Comentar</button>
+            </form>
+            @for (comment of comments(); track comment.id) {
+              <article class="comment"><p>{{ comment.content }}</p><small>{{ comment.createdAt | date:'dd/MM/yyyy HH:mm' }}</small></article>
+            }
+            @if (hasMoreComments()) {
+              <button class="load-more" (click)="loadComments(nextCommentsCursor())">Carregar mais</button>
+            }
+          </section>
         </div>
-        @if (p.tags.length) {
-          <div class="section">
-            <h3>Tags</h3>
-            <div class="chips muted">
-              @for (tag of p.tags; track tag) {
-                <span class="chip muted">#{{ tag }}</span>
-              }
-            </div>
-          </div>
-        }
-        @if (p.gallery.length) {
-          <div class="section">
-            <h3>Mais imagens</h3>
-            <div class="gallery">
-              @for (img of p.gallery; track img) {
-                <img [src]="img" />
-              }
-            </div>
-          </div>
-        }
-      </div>
-  
-    </div>
+      </article>
+    }
   </div>
-
-
 </section>
-
-}

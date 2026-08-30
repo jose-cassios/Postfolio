@@ -1,108 +1,299 @@
 <section class="profile-page">
-  @if (user()) {
+  @if (feedback(); as notice) {
+    <div class="feedback" [class.error]="notice.type === 'error'" role="status">
+      {{ notice.message }}
+    </div>
+  }
+
+  @if (isLoading()) {
+    <div class="loading-state" aria-live="polite">
+      <div class="skeleton hero-skeleton"></div>
+      <div class="skeleton content-skeleton"></div>
+    </div>
+  } @else if (loadError(); as error) {
+    <div class="empty-state error-state">
+      <h1>Não foi possível abrir o perfil</h1>
+      <p>{{ error }}</p>
+      <button class="btn ghost" type="button" (click)="loadProfile(requestedUsername())">
+        Tentar novamente
+      </button>
+    </div>
+  } @else if (displayedProfile(); as user) {
     <header class="profile-hero">
-      <div>
-        <span class="badge">{{ user()?.usertype }}</span>
-        <h1>{{ user()?.username }}</h1>
-        <p>{{ user()?.bio || 'Complete seu perfil com uma bio e links.' }}</p>
+      <div class="profile-identity">
+        <div class="profile-avatar" aria-hidden="true">
+          {{ user.username.charAt(0).toUpperCase() }}
+        </div>
+        <div>
+          <span class="badge">{{ user.usertype }}</span>
+          <h1>{{ user.username }}</h1>
+          <p>{{ user.bio || 'Este usuário ainda não adicionou uma bio.' }}</p>
+          @if (user.availableForHire) {
+            <span class="badge hire-badge">Disponível para contratação</span>
+          }
+          @if (user.achievements?.length) {
+            <div class="achievements" aria-label="Conquistas em competições">
+              @for (achievement of user.achievements; track achievement.competitionId) {
+                <span title="{{ achievement.competitionName }}">🏆 {{ achievement.rank }}º · {{ achievement.competitionName }}</span>
+              }
+            </div>
+          }
+
+          <div class="social-links">
+            @if (user.linkedin) {
+              <a [href]="user.linkedin" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            }
+            @if (user.github) {
+              <a [href]="user.github" target="_blank" rel="noopener noreferrer">GitHub</a>
+            }
+            @if (user.website) {
+              <a [href]="user.website" target="_blank" rel="noopener noreferrer">Website</a>
+            }
+          </div>
+        </div>
       </div>
 
-      <div class="profile-actions">
-        <button class="btn ghost" type="button" (click)="openEditModal()">Editar Perfil</button>
-        <button class="btn primary" type="button" (click)="openProjectModal()">+ Adicionar Projeto</button>
-      </div>
+      @if (isOwnProfile()) {
+        <div class="profile-actions">
+          <button class="btn ghost" type="button" (click)="openEditModal()">
+            Editar perfil
+          </button>
+          <button class="btn primary" type="button" (click)="openCreateProjectModal()">
+            + Adicionar projeto
+          </button>
+        </div>
+      }
     </header>
 
-    <div class="profile-grid">
-      <div class="profile-card">
-        <h2>Informações</h2>
-        <dl>
-          <dt>Username</dt>
-          <dd>{{ user()?.username }}</dd>
-
-          <dt>Email</dt>
-          <dd>{{ user()?.email }}</dd>
-
-          <dt>Tipo</dt>
-          <dd>{{ user()?.usertype }}</dd>
-
-          <dt>Bio</dt>
-          <dd>{{ user()?.bio || 'Não preenchido' }}</dd>
-
-          <dt>LinkedIn</dt>
-          <dd>
-            @if (user()?.linkedin) {
-              <a href="{{ user()?.linkedin }}" target="_blank">{{ user()?.linkedin }}</a>
-            } @else {
-              Não preenchido
+    <section class="projects-section" aria-labelledby="projects-title">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">Portfólio</span>
+          <h2 id="projects-title">Projetos publicados</h2>
+          @if (portfolio(); as currentPortfolio) {
+            @if (currentPortfolio.description && currentPortfolio.description !== 'not found') {
+              <p>{{ currentPortfolio.description }}</p>
             }
-          </dd>
-
-          <dt>Github</dt>
-          <dd>
-            @if (user()?.github) {
-              <a href="{{ user()?.github }}" target="_blank">{{ user()?.github }}</a>
-            } @else {
-              Não preenchido
-            }
-          </dd>
-
-          <dt>Website</dt>
-          <dd>
-            @if (user()?.website) {
-              <a href="{{ user()?.website }}" target="_blank">{{ user()?.website }}</a>
-            } @else {
-              Não preenchido
-            }
-          </dd>
-        </dl>
+          }
+        </div>
+        <span class="project-count">{{ projects().length }}</span>
       </div>
-    </div>
-  } @else {
-    <div class="empty-state">
-      <p>Carregando perfil ou usuário não autenticado...</p>
-    </div>
+
+      @if (projectsError(); as error) {
+        <div class="inline-error" role="alert">{{ error }}</div>
+      }
+
+      @if (projects().length) {
+        <div class="projects-grid">
+          @for (project of projects(); track project.id) {
+            <article class="project-card">
+              <a [routerLink]="['/projetos', project.id]" class="project-cover" [attr.data-category]="project.category">
+                @if (project.coverImageUrl) {
+                  <img [src]="project.coverImageUrl" [alt]="project.name" loading="lazy" />
+                } @else {
+                  <span>{{ categoryLabel(project.category) }}</span>
+                }
+              </a>
+              <div class="project-content">
+                <div class="project-title-row">
+                  <h3>{{ project.name }}</h3>
+                  @if (isOwnProfile()) {
+                    <div class="project-actions">
+                      <button type="button" (click)="openEditProjectModal(project)">Editar</button>
+                      <button
+                        type="button"
+                        class="danger"
+                        [disabled]="deletingProjectId() === project.id"
+                        (click)="deleteProject(project)"
+                      >
+                        {{ deletingProjectId() === project.id ? 'Removendo…' : 'Remover' }}
+                      </button>
+                    </div>
+                  }
+                </div>
+                <p>{{ project.description }}</p>
+                @if (project.tools.length) {
+                  <div class="project-tools">
+                    @for (tool of project.tools.slice(0, 4); track tool) { <span>{{ tool }}</span> }
+                  </div>
+                }
+                <footer>
+                  <span class="category-chip">{{ categoryLabel(project.category) }}</span>
+                  @if (project.githubLink) {
+                    <a [href]="project.githubLink" target="_blank" rel="noopener noreferrer">
+                      Ver repositório
+                    </a>
+                  }
+                </footer>
+              </div>
+            </article>
+          }
+        </div>
+      } @else {
+        <div class="empty-state">
+          <h3>Nenhum projeto publicado ainda</h3>
+          <p>
+            {{ isOwnProfile()
+              ? 'Publique seu primeiro trabalho para começar a construir seu portfólio.'
+              : 'Este usuário ainda não publicou projetos.' }}
+          </p>
+          @if (isOwnProfile()) {
+            <button class="btn primary" type="button" (click)="openCreateProjectModal()">
+              Criar primeiro projeto
+            </button>
+          }
+        </div>
+      }
+    </section>
   }
 
   @if (showEditModal()) {
     <div class="modal-backdrop" (click)="closeEditModal()"></div>
-    <div class="modal-panel" role="dialog" aria-modal="true">
-      <h2>Editar Perfil</h2>
-      <form [formGroup]="profileForm" (ngSubmit)="submitProfile()" novalidate>
-        <app-form-input label="Nome" type="text" placeholder="Nome completo" [control]="$any(profileForm.get('username'))"></app-form-input>
-        <app-form-input label="Email" type="email" placeholder="Email" [control]="$any(profileForm.get('email'))"></app-form-input>
-        <app-form-input label="Bio" type="text" placeholder="Biografia" [control]="$any(profileForm.get('bio'))"></app-form-input>
-        <app-form-input label="LinkedIn" type="text" placeholder="https://linkedin.com/..." [control]="$any(profileForm.get('linkedin'))"></app-form-input>
-        <app-form-input label="Github" type="text" placeholder="https://github.com/..." [control]="$any(profileForm.get('github'))"></app-form-input>
-        <app-form-input label="Website" type="text" placeholder="https://seusite.com" [control]="$any(profileForm.get('website'))"></app-form-input>
-        <app-form-input label="Senha" type="password" placeholder="Nova senha (opcional)" [control]="$any(profileForm.get('password'))"></app-form-input>
+    <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="edit-title">
+      <div class="modal-heading">
+        <div>
+          <span class="eyebrow">Informações pessoais</span>
+          <h2 id="edit-title">Editar perfil</h2>
+        </div>
+        <button class="close-button" type="button" aria-label="Fechar" (click)="closeEditModal()">×</button>
+      </div>
 
-        <div class="row">
-          <button type="submit" class="btn primary">Salvar alterações</button>
+      @if (feedback(); as notice) {
+        <div class="feedback" [class.error]="notice.type === 'error'" role="status">
+          {{ notice.message }}
+        </div>
+      }
+
+      <form [formGroup]="profileForm" (ngSubmit)="submitProfile()" novalidate>
+        <div class="form-grid">
+          <label>
+            <span>Nome de usuário</span>
+            <input type="text" formControlName="username" autocomplete="username" />
+            @if (profileForm.controls.username.touched && profileForm.controls.username.invalid) {
+              <small>Use entre 3 e 100 caracteres.</small>
+            }
+          </label>
+          <label>
+            <span>Email</span>
+            <input type="email" formControlName="email" autocomplete="email" />
+            @if (profileForm.controls.email.touched && profileForm.controls.email.invalid) {
+              <small>Informe um email válido.</small>
+            }
+          </label>
+          <label class="full-width">
+            <span>Bio</span>
+            <textarea formControlName="bio" rows="4" maxlength="200"></textarea>
+            <small class="counter">{{ profileForm.controls.bio.value.length }}/200</small>
+          </label>
+          <label>
+            <span>LinkedIn</span>
+            <input type="url" formControlName="linkedin" placeholder="https://linkedin.com/in/..." />
+          </label>
+          <label>
+            <span>GitHub</span>
+            <input type="url" formControlName="github" placeholder="https://github.com/..." />
+          </label>
+          <label class="full-width">
+            <span>Website</span>
+            <input type="url" formControlName="website" placeholder="https://seusite.com" />
+          </label>
+          <label>
+            <span>Email para contato profissional</span>
+            <input type="email" formControlName="contactEmail" placeholder="contato@exemplo.com" />
+          </label>
+          <label class="checkbox-field">
+            <input type="checkbox" formControlName="availableForHire" />
+            <span>Estou disponível para contratação</span>
+          </label>
+        </div>
+
+        <div class="modal-actions">
           <button type="button" class="btn ghost" (click)="closeEditModal()">Cancelar</button>
+          <button type="submit" class="btn primary" [disabled]="isSavingProfile()">
+            {{ isSavingProfile() ? 'Salvando…' : 'Salvar alterações' }}
+          </button>
         </div>
       </form>
-      @if (feedback()) {
-        <div class="feedback">{{ feedback() }}</div>
-      }
-    </div>
+    </section>
   }
 
   @if (showProjectModal()) {
-    <div class="modal-backdrop" (click)="showProjectModal.set(false)"></div>
-    <div class="modal-panel" role="dialog" aria-modal="true">
-      <h2>Adicionar Projeto</h2>
-      <form [formGroup]="projectForm" (ngSubmit)="submitProject()" novalidate>
-        <app-form-input label="Nome do Projeto" type="text" placeholder="Nome do projeto" [control]="$any(projectForm.get('name'))"></app-form-input>
-        <app-form-input label="Descrição" type="text" placeholder="Descrição do projeto" [control]="$any(projectForm.get('description'))"></app-form-input>
-        <app-form-input label="Link do Github" type="text" placeholder="https://github.com/..." [control]="$any(projectForm.get('githublink'))"></app-form-input>
+    <div class="modal-backdrop" (click)="closeProjectModal()"></div>
+    <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="project-title">
+      <div class="modal-heading">
+        <div>
+          <span class="eyebrow">Seu trabalho</span>
+          <h2 id="project-title">{{ projectModalTitle() }}</h2>
+        </div>
+        <button class="close-button" type="button" aria-label="Fechar" (click)="closeProjectModal()">×</button>
+      </div>
 
-        <div class="row">
-          <button type="submit" class="btn primary">Adicionar</button>
-          <button type="button" class="btn ghost" (click)="showProjectModal.set(false)">Cancelar</button>
+      @if (feedback(); as notice) {
+        <div class="feedback" [class.error]="notice.type === 'error'" role="status">
+          {{ notice.message }}
+        </div>
+      }
+
+      <form [formGroup]="projectForm" (ngSubmit)="submitProject()" novalidate>
+        <div class="form-grid">
+          <label class="full-width">
+            <span>Nome do projeto</span>
+            <input type="text" formControlName="name" />
+            @if (projectForm.controls.name.touched && projectForm.controls.name.invalid) {
+              <small>Use entre 3 e 100 caracteres.</small>
+            }
+          </label>
+          <label class="full-width">
+            <span>Descrição</span>
+            <textarea formControlName="description" rows="5" maxlength="500"></textarea>
+            @if (projectForm.controls.description.touched && projectForm.controls.description.invalid) {
+              <small>Descreva o projeto em até 500 caracteres.</small>
+            }
+          </label>
+          <label>
+            <span>Categoria</span>
+            <select formControlName="category">
+              @for (category of categories; track category.value) {
+                <option [value]="category.value">{{ category.label }}</option>
+              }
+            </select>
+          </label>
+          <label>
+            <span>Repositório GitHub</span>
+            <input type="url" formControlName="githublink" placeholder="https://github.com/..." />
+            @if (projectForm.controls.githublink.touched && projectForm.controls.githublink.invalid) {
+              <small>Informe uma URL completa, começando com http:// ou https://.</small>
+            }
+          </label>
+          <label>
+            <span>Link do projeto ou vídeo</span>
+            <input type="url" formControlName="externalLink" placeholder="https://..." />
+          </label>
+          <label class="full-width">
+            <span>URL da imagem de capa</span>
+            <input type="url" formControlName="coverImageUrl" placeholder="https://.../capa.jpg" />
+          </label>
+          <label class="full-width">
+            <span>Imagens de amostra (até 3 URLs, uma por linha)</span>
+            <textarea formControlName="galleryUrls" rows="3"></textarea>
+          </label>
+          <label>
+            <span>Ferramentas (separadas por vírgula)</span>
+            <input type="text" formControlName="tools" placeholder="Angular, Figma, Node.js" />
+          </label>
+          <label>
+            <span>Tags (separadas por vírgula)</span>
+            <input type="text" formControlName="tags" placeholder="acessibilidade, dashboard" />
+          </label>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn ghost" (click)="closeProjectModal()">Cancelar</button>
+          <button type="submit" class="btn primary" [disabled]="isSavingProject()">
+            {{ isSavingProject() ? 'Salvando…' : editingProjectId() ? 'Salvar projeto' : 'Publicar projeto' }}
+          </button>
         </div>
       </form>
-    </div>
+    </section>
   }
 </section>
-

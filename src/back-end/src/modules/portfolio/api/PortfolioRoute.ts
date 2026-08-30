@@ -27,9 +27,16 @@ function portfolioRoutesPlugin(
     portfolioController.findByUser(req, rep)
   );
 
+  app.get("/user/:username", (req, rep) =>
+    portfolioController.findByUsername(req, rep)
+  );
+
+  app.get("/user/:username/projects", (req, rep) =>
+    portfolioController.getProjectsByUsername(req, rep)
+  );
+
   app.post(
     "/:id/projects",
-    { preValidation: UserMiddle.authenticate },
     (req, rep) => portfolioController.getProjects(req, rep)
   );
 

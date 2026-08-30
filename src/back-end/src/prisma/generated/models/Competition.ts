@@ -31,6 +31,12 @@ export type CompetitionMinAggregateOutputType = {
   createdAt: Date | null
   startsAt: Date | null
   endsAt: Date | null
+  category: $Enums.ProjectCategory | null
+  registrationStartsAt: Date | null
+  registrationEndsAt: Date | null
+  votingStartsAt: Date | null
+  votingEndsAt: Date | null
+  resultsAt: Date | null
 }
 
 export type CompetitionMaxAggregateOutputType = {
@@ -40,6 +46,12 @@ export type CompetitionMaxAggregateOutputType = {
   createdAt: Date | null
   startsAt: Date | null
   endsAt: Date | null
+  category: $Enums.ProjectCategory | null
+  registrationStartsAt: Date | null
+  registrationEndsAt: Date | null
+  votingStartsAt: Date | null
+  votingEndsAt: Date | null
+  resultsAt: Date | null
 }
 
 export type CompetitionCountAggregateOutputType = {
@@ -49,6 +61,12 @@ export type CompetitionCountAggregateOutputType = {
   createdAt: number
   startsAt: number
   endsAt: number
+  category: number
+  registrationStartsAt: number
+  registrationEndsAt: number
+  votingStartsAt: number
+  votingEndsAt: number
+  resultsAt: number
   _all: number
 }
 
@@ -60,6 +78,12 @@ export type CompetitionMinAggregateInputType = {
   createdAt?: true
   startsAt?: true
   endsAt?: true
+  category?: true
+  registrationStartsAt?: true
+  registrationEndsAt?: true
+  votingStartsAt?: true
+  votingEndsAt?: true
+  resultsAt?: true
 }
 
 export type CompetitionMaxAggregateInputType = {
@@ -69,6 +93,12 @@ export type CompetitionMaxAggregateInputType = {
   createdAt?: true
   startsAt?: true
   endsAt?: true
+  category?: true
+  registrationStartsAt?: true
+  registrationEndsAt?: true
+  votingStartsAt?: true
+  votingEndsAt?: true
+  resultsAt?: true
 }
 
 export type CompetitionCountAggregateInputType = {
@@ -78,6 +108,12 @@ export type CompetitionCountAggregateInputType = {
   createdAt?: true
   startsAt?: true
   endsAt?: true
+  category?: true
+  registrationStartsAt?: true
+  registrationEndsAt?: true
+  votingStartsAt?: true
+  votingEndsAt?: true
+  resultsAt?: true
   _all?: true
 }
 
@@ -160,6 +196,12 @@ export type CompetitionGroupByOutputType = {
   createdAt: Date
   startsAt: Date | null
   endsAt: Date | null
+  category: $Enums.ProjectCategory
+  registrationStartsAt: Date | null
+  registrationEndsAt: Date | null
+  votingStartsAt: Date | null
+  votingEndsAt: Date | null
+  resultsAt: Date | null
   _count: CompetitionCountAggregateOutputType | null
   _min: CompetitionMinAggregateOutputType | null
   _max: CompetitionMaxAggregateOutputType | null
@@ -190,6 +232,12 @@ export type CompetitionWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Competition"> | Date | string
   startsAt?: Prisma.DateTimeNullableFilter<"Competition"> | Date | string | null
   endsAt?: Prisma.DateTimeNullableFilter<"Competition"> | Date | string | null
+  category?: Prisma.EnumProjectCategoryFilter<"Competition"> | $Enums.ProjectCategory
+  registrationStartsAt?: Prisma.DateTimeNullableFilter<"Competition"> | Date | string | null
+  registrationEndsAt?: Prisma.DateTimeNullableFilter<"Competition"> | Date | string | null
+  votingStartsAt?: Prisma.DateTimeNullableFilter<"Competition"> | Date | string | null
+  votingEndsAt?: Prisma.DateTimeNullableFilter<"Competition"> | Date | string | null
+  resultsAt?: Prisma.DateTimeNullableFilter<"Competition"> | Date | string | null
   worksDetails?: Prisma.ProjectCompDetailsListRelationFilter
   Rating?: Prisma.RatingListRelationFilter
 }
@@ -201,6 +249,12 @@ export type CompetitionOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   startsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   endsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  category?: Prisma.SortOrder
+  registrationStartsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  registrationEndsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  votingStartsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  votingEndsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  resultsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   worksDetails?: Prisma.ProjectCompDetailsOrderByRelationAggregateInput
   Rating?: Prisma.RatingOrderByRelationAggregateInput
 }
@@ -215,6 +269,12 @@ export type CompetitionWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Competition"> | Date | string
   startsAt?: Prisma.DateTimeNullableFilter<"Competition"> | Date | string | null
   endsAt?: Prisma.DateTimeNullableFilter<"Competition"> | Date | string | null
+  category?: Prisma.EnumProjectCategoryFilter<"Competition"> | $Enums.ProjectCategory
+  registrationStartsAt?: Prisma.DateTimeNullableFilter<"Competition"> | Date | string | null
+  registrationEndsAt?: Prisma.DateTimeNullableFilter<"Competition"> | Date | string | null
+  votingStartsAt?: Prisma.DateTimeNullableFilter<"Competition"> | Date | string | null
+  votingEndsAt?: Prisma.DateTimeNullableFilter<"Competition"> | Date | string | null
+  resultsAt?: Prisma.DateTimeNullableFilter<"Competition"> | Date | string | null
   worksDetails?: Prisma.ProjectCompDetailsListRelationFilter
   Rating?: Prisma.RatingListRelationFilter
 }, "id">
@@ -226,6 +286,12 @@ export type CompetitionOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   startsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   endsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  category?: Prisma.SortOrder
+  registrationStartsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  registrationEndsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  votingStartsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  votingEndsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  resultsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.CompetitionCountOrderByAggregateInput
   _max?: Prisma.CompetitionMaxOrderByAggregateInput
   _min?: Prisma.CompetitionMinOrderByAggregateInput
@@ -241,6 +307,12 @@ export type CompetitionScalarWhereWithAggregatesInput = {
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Competition"> | Date | string
   startsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Competition"> | Date | string | null
   endsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Competition"> | Date | string | null
+  category?: Prisma.EnumProjectCategoryWithAggregatesFilter<"Competition"> | $Enums.ProjectCategory
+  registrationStartsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Competition"> | Date | string | null
+  registrationEndsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Competition"> | Date | string | null
+  votingStartsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Competition"> | Date | string | null
+  votingEndsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Competition"> | Date | string | null
+  resultsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Competition"> | Date | string | null
 }
 
 export type CompetitionCreateInput = {
@@ -250,6 +322,12 @@ export type CompetitionCreateInput = {
   createdAt?: Date | string
   startsAt?: Date | string | null
   endsAt?: Date | string | null
+  category?: $Enums.ProjectCategory
+  registrationStartsAt?: Date | string | null
+  registrationEndsAt?: Date | string | null
+  votingStartsAt?: Date | string | null
+  votingEndsAt?: Date | string | null
+  resultsAt?: Date | string | null
   worksDetails?: Prisma.ProjectCompDetailsCreateNestedManyWithoutCompetitionInput
   Rating?: Prisma.RatingCreateNestedManyWithoutCompetitionInput
 }
@@ -261,6 +339,12 @@ export type CompetitionUncheckedCreateInput = {
   createdAt?: Date | string
   startsAt?: Date | string | null
   endsAt?: Date | string | null
+  category?: $Enums.ProjectCategory
+  registrationStartsAt?: Date | string | null
+  registrationEndsAt?: Date | string | null
+  votingStartsAt?: Date | string | null
+  votingEndsAt?: Date | string | null
+  resultsAt?: Date | string | null
   worksDetails?: Prisma.ProjectCompDetailsUncheckedCreateNestedManyWithoutCompetitionInput
   Rating?: Prisma.RatingUncheckedCreateNestedManyWithoutCompetitionInput
 }
@@ -272,6 +356,12 @@ export type CompetitionUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
+  registrationStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   worksDetails?: Prisma.ProjectCompDetailsUpdateManyWithoutCompetitionNestedInput
   Rating?: Prisma.RatingUpdateManyWithoutCompetitionNestedInput
 }
@@ -283,6 +373,12 @@ export type CompetitionUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
+  registrationStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   worksDetails?: Prisma.ProjectCompDetailsUncheckedUpdateManyWithoutCompetitionNestedInput
   Rating?: Prisma.RatingUncheckedUpdateManyWithoutCompetitionNestedInput
 }
@@ -294,6 +390,12 @@ export type CompetitionCreateManyInput = {
   createdAt?: Date | string
   startsAt?: Date | string | null
   endsAt?: Date | string | null
+  category?: $Enums.ProjectCategory
+  registrationStartsAt?: Date | string | null
+  registrationEndsAt?: Date | string | null
+  votingStartsAt?: Date | string | null
+  votingEndsAt?: Date | string | null
+  resultsAt?: Date | string | null
 }
 
 export type CompetitionUpdateManyMutationInput = {
@@ -303,6 +405,12 @@ export type CompetitionUpdateManyMutationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
+  registrationStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type CompetitionUncheckedUpdateManyInput = {
@@ -312,6 +420,12 @@ export type CompetitionUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
+  registrationStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type CompetitionCountOrderByAggregateInput = {
@@ -321,6 +435,12 @@ export type CompetitionCountOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  registrationStartsAt?: Prisma.SortOrder
+  registrationEndsAt?: Prisma.SortOrder
+  votingStartsAt?: Prisma.SortOrder
+  votingEndsAt?: Prisma.SortOrder
+  resultsAt?: Prisma.SortOrder
 }
 
 export type CompetitionMaxOrderByAggregateInput = {
@@ -330,6 +450,12 @@ export type CompetitionMaxOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  registrationStartsAt?: Prisma.SortOrder
+  registrationEndsAt?: Prisma.SortOrder
+  votingStartsAt?: Prisma.SortOrder
+  votingEndsAt?: Prisma.SortOrder
+  resultsAt?: Prisma.SortOrder
 }
 
 export type CompetitionMinOrderByAggregateInput = {
@@ -339,6 +465,12 @@ export type CompetitionMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  registrationStartsAt?: Prisma.SortOrder
+  registrationEndsAt?: Prisma.SortOrder
+  votingStartsAt?: Prisma.SortOrder
+  votingEndsAt?: Prisma.SortOrder
+  resultsAt?: Prisma.SortOrder
 }
 
 export type CompetitionScalarRelationFilter = {
@@ -348,6 +480,10 @@ export type CompetitionScalarRelationFilter = {
 
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
+}
+
+export type EnumProjectCategoryFieldUpdateOperationsInput = {
+  set?: $Enums.ProjectCategory
 }
 
 export type CompetitionCreateNestedOneWithoutRatingInput = {
@@ -385,6 +521,12 @@ export type CompetitionCreateWithoutRatingInput = {
   createdAt?: Date | string
   startsAt?: Date | string | null
   endsAt?: Date | string | null
+  category?: $Enums.ProjectCategory
+  registrationStartsAt?: Date | string | null
+  registrationEndsAt?: Date | string | null
+  votingStartsAt?: Date | string | null
+  votingEndsAt?: Date | string | null
+  resultsAt?: Date | string | null
   worksDetails?: Prisma.ProjectCompDetailsCreateNestedManyWithoutCompetitionInput
 }
 
@@ -395,6 +537,12 @@ export type CompetitionUncheckedCreateWithoutRatingInput = {
   createdAt?: Date | string
   startsAt?: Date | string | null
   endsAt?: Date | string | null
+  category?: $Enums.ProjectCategory
+  registrationStartsAt?: Date | string | null
+  registrationEndsAt?: Date | string | null
+  votingStartsAt?: Date | string | null
+  votingEndsAt?: Date | string | null
+  resultsAt?: Date | string | null
   worksDetails?: Prisma.ProjectCompDetailsUncheckedCreateNestedManyWithoutCompetitionInput
 }
 
@@ -421,6 +569,12 @@ export type CompetitionUpdateWithoutRatingInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
+  registrationStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   worksDetails?: Prisma.ProjectCompDetailsUpdateManyWithoutCompetitionNestedInput
 }
 
@@ -431,6 +585,12 @@ export type CompetitionUncheckedUpdateWithoutRatingInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
+  registrationStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   worksDetails?: Prisma.ProjectCompDetailsUncheckedUpdateManyWithoutCompetitionNestedInput
 }
 
@@ -441,6 +601,12 @@ export type CompetitionCreateWithoutWorksDetailsInput = {
   createdAt?: Date | string
   startsAt?: Date | string | null
   endsAt?: Date | string | null
+  category?: $Enums.ProjectCategory
+  registrationStartsAt?: Date | string | null
+  registrationEndsAt?: Date | string | null
+  votingStartsAt?: Date | string | null
+  votingEndsAt?: Date | string | null
+  resultsAt?: Date | string | null
   Rating?: Prisma.RatingCreateNestedManyWithoutCompetitionInput
 }
 
@@ -451,6 +617,12 @@ export type CompetitionUncheckedCreateWithoutWorksDetailsInput = {
   createdAt?: Date | string
   startsAt?: Date | string | null
   endsAt?: Date | string | null
+  category?: $Enums.ProjectCategory
+  registrationStartsAt?: Date | string | null
+  registrationEndsAt?: Date | string | null
+  votingStartsAt?: Date | string | null
+  votingEndsAt?: Date | string | null
+  resultsAt?: Date | string | null
   Rating?: Prisma.RatingUncheckedCreateNestedManyWithoutCompetitionInput
 }
 
@@ -477,6 +649,12 @@ export type CompetitionUpdateWithoutWorksDetailsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
+  registrationStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   Rating?: Prisma.RatingUpdateManyWithoutCompetitionNestedInput
 }
 
@@ -487,6 +665,12 @@ export type CompetitionUncheckedUpdateWithoutWorksDetailsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
+  registrationStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   Rating?: Prisma.RatingUncheckedUpdateManyWithoutCompetitionNestedInput
 }
 
@@ -537,6 +721,12 @@ export type CompetitionSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   createdAt?: boolean
   startsAt?: boolean
   endsAt?: boolean
+  category?: boolean
+  registrationStartsAt?: boolean
+  registrationEndsAt?: boolean
+  votingStartsAt?: boolean
+  votingEndsAt?: boolean
+  resultsAt?: boolean
   worksDetails?: boolean | Prisma.Competition$worksDetailsArgs<ExtArgs>
   Rating?: boolean | Prisma.Competition$RatingArgs<ExtArgs>
   _count?: boolean | Prisma.CompetitionCountOutputTypeDefaultArgs<ExtArgs>
@@ -549,6 +739,12 @@ export type CompetitionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   createdAt?: boolean
   startsAt?: boolean
   endsAt?: boolean
+  category?: boolean
+  registrationStartsAt?: boolean
+  registrationEndsAt?: boolean
+  votingStartsAt?: boolean
+  votingEndsAt?: boolean
+  resultsAt?: boolean
 }, ExtArgs["result"]["competition"]>
 
 export type CompetitionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -558,6 +754,12 @@ export type CompetitionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   createdAt?: boolean
   startsAt?: boolean
   endsAt?: boolean
+  category?: boolean
+  registrationStartsAt?: boolean
+  registrationEndsAt?: boolean
+  votingStartsAt?: boolean
+  votingEndsAt?: boolean
+  resultsAt?: boolean
 }, ExtArgs["result"]["competition"]>
 
 export type CompetitionSelectScalar = {
@@ -567,9 +769,15 @@ export type CompetitionSelectScalar = {
   createdAt?: boolean
   startsAt?: boolean
   endsAt?: boolean
+  category?: boolean
+  registrationStartsAt?: boolean
+  registrationEndsAt?: boolean
+  votingStartsAt?: boolean
+  votingEndsAt?: boolean
+  resultsAt?: boolean
 }
 
-export type CompetitionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "createdAt" | "startsAt" | "endsAt", ExtArgs["result"]["competition"]>
+export type CompetitionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "createdAt" | "startsAt" | "endsAt" | "category" | "registrationStartsAt" | "registrationEndsAt" | "votingStartsAt" | "votingEndsAt" | "resultsAt", ExtArgs["result"]["competition"]>
 export type CompetitionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   worksDetails?: boolean | Prisma.Competition$worksDetailsArgs<ExtArgs>
   Rating?: boolean | Prisma.Competition$RatingArgs<ExtArgs>
@@ -591,6 +799,12 @@ export type $CompetitionPayload<ExtArgs extends runtime.Types.Extensions.Interna
     createdAt: Date
     startsAt: Date | null
     endsAt: Date | null
+    category: $Enums.ProjectCategory
+    registrationStartsAt: Date | null
+    registrationEndsAt: Date | null
+    votingStartsAt: Date | null
+    votingEndsAt: Date | null
+    resultsAt: Date | null
   }, ExtArgs["result"]["competition"]>
   composites: {}
 }
@@ -1022,6 +1236,12 @@ export interface CompetitionFieldRefs {
   readonly createdAt: Prisma.FieldRef<"Competition", 'DateTime'>
   readonly startsAt: Prisma.FieldRef<"Competition", 'DateTime'>
   readonly endsAt: Prisma.FieldRef<"Competition", 'DateTime'>
+  readonly category: Prisma.FieldRef<"Competition", 'ProjectCategory'>
+  readonly registrationStartsAt: Prisma.FieldRef<"Competition", 'DateTime'>
+  readonly registrationEndsAt: Prisma.FieldRef<"Competition", 'DateTime'>
+  readonly votingStartsAt: Prisma.FieldRef<"Competition", 'DateTime'>
+  readonly votingEndsAt: Prisma.FieldRef<"Competition", 'DateTime'>
+  readonly resultsAt: Prisma.FieldRef<"Competition", 'DateTime'>
 }
     
 

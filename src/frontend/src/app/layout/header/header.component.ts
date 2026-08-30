@@ -19,13 +19,8 @@ export class HeaderComponent {
   readonly user = computed(() => this.auth.user());
   readonly isLogged = computed(() => this.auth.isAuthenticated());
 
-  constructor() {
-    console.log('Usuário atual no HeaderComponent:', this.user());
-  }
-
   goToProfile(): void {
     const username = this.user()?.username;
-    console.log('Navegando para o perfil de:', username);
     if (username) {
       this.router.navigate(['/perfil', username]);
     }

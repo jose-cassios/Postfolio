@@ -24,7 +24,9 @@ const CreateUserBodySchema = z.object({
     .string()
     .url({ message: "O website deve ser uma url válida", protocol: /^https?$/ })
     .optional(),
-  usertype: z.enum(["USER", "MODERATOR", "ADMIN"]),
+  contactEmail: z.string().email("O email de contato deve ser valido").optional(),
+  availableForHire: z.boolean().optional(),
+  usertype: z.literal("USER"),
 });
 
 type CreateUserRequest = FastifyRequest<{
@@ -44,7 +46,16 @@ type LoginRequest = FastifyRequest<{
 
 const UpdateUserBodySchema = CreateUserBodySchema.omit({
   password: true,
-}).partial();
+  usertype: true,
+})
+  .extend({
+    linkedin: z.string().url("O LinkedIn deve ser uma URL valida").nullable(),
+    github: z.string().url("O GitHub deve ser uma URL valida").nullable(),
+    website: z.string().url("O website deve ser uma URL valida").nullable(),
+    contactEmail: z.string().email("O email de contato deve ser valido").nullable(),
+    availableForHire: z.boolean(),
+  })
+  .partial();
 
 const UpdateUserParamsSchema = z.object({
   id: z.string().uuid("ID do user inválido"),
@@ -53,6 +64,14 @@ const UpdateUserParamsSchema = z.object({
 type UpdateUserRequest = FastifyRequest<{
   Params: z.infer<typeof UpdateUserParamsSchema>;
   Body: z.infer<typeof UpdateUserBodySchema>;
+}>;
+
+const PublicProfileParamsSchema = z.object({
+  username: z.string().min(3).max(100),
+});
+
+type PublicProfileRequest = FastifyRequest<{
+  Params: z.infer<typeof PublicProfileParamsSchema>;
 }>;
 
 const userRouteSchema = {
@@ -66,6 +85,15 @@ const userRouteSchema = {
   login: {
     body: LoginUserBodySchema,
   },
+  publicProfile: {
+    params: PublicProfileParamsSchema,
+  },
 };
 
-export { userRouteSchema, CreateUserRequest, UpdateUserRequest, LoginRequest };
+export {
+  userRouteSchema,
+  CreateUserRequest,
+  UpdateUserRequest,
+  LoginRequest,
+  PublicProfileRequest,
+};

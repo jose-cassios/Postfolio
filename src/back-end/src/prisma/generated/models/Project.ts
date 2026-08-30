@@ -30,6 +30,10 @@ export type ProjectMinAggregateOutputType = {
   description: string | null
   category: $Enums.ProjectCategory | null
   githublink: string | null
+  externalLink: string | null
+  coverImageUrl: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
   portfolioId: string | null
 }
 
@@ -39,6 +43,10 @@ export type ProjectMaxAggregateOutputType = {
   description: string | null
   category: $Enums.ProjectCategory | null
   githublink: string | null
+  externalLink: string | null
+  coverImageUrl: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
   portfolioId: string | null
 }
 
@@ -48,6 +56,13 @@ export type ProjectCountAggregateOutputType = {
   description: number
   category: number
   githublink: number
+  externalLink: number
+  coverImageUrl: number
+  galleryUrls: number
+  tools: number
+  tags: number
+  createdAt: number
+  updatedAt: number
   portfolioId: number
   _all: number
 }
@@ -59,6 +74,10 @@ export type ProjectMinAggregateInputType = {
   description?: true
   category?: true
   githublink?: true
+  externalLink?: true
+  coverImageUrl?: true
+  createdAt?: true
+  updatedAt?: true
   portfolioId?: true
 }
 
@@ -68,6 +87,10 @@ export type ProjectMaxAggregateInputType = {
   description?: true
   category?: true
   githublink?: true
+  externalLink?: true
+  coverImageUrl?: true
+  createdAt?: true
+  updatedAt?: true
   portfolioId?: true
 }
 
@@ -77,6 +100,13 @@ export type ProjectCountAggregateInputType = {
   description?: true
   category?: true
   githublink?: true
+  externalLink?: true
+  coverImageUrl?: true
+  galleryUrls?: true
+  tools?: true
+  tags?: true
+  createdAt?: true
+  updatedAt?: true
   portfolioId?: true
   _all?: true
 }
@@ -159,6 +189,13 @@ export type ProjectGroupByOutputType = {
   description: string
   category: $Enums.ProjectCategory
   githublink: string | null
+  externalLink: string | null
+  coverImageUrl: string | null
+  galleryUrls: string[]
+  tools: string[]
+  tags: string[]
+  createdAt: Date
+  updatedAt: Date
   portfolioId: string
   _count: ProjectCountAggregateOutputType | null
   _min: ProjectMinAggregateOutputType | null
@@ -189,6 +226,13 @@ export type ProjectWhereInput = {
   description?: Prisma.StringFilter<"Project"> | string
   category?: Prisma.EnumProjectCategoryFilter<"Project"> | $Enums.ProjectCategory
   githublink?: Prisma.StringNullableFilter<"Project"> | string | null
+  externalLink?: Prisma.StringNullableFilter<"Project"> | string | null
+  coverImageUrl?: Prisma.StringNullableFilter<"Project"> | string | null
+  galleryUrls?: Prisma.StringNullableListFilter<"Project">
+  tools?: Prisma.StringNullableListFilter<"Project">
+  tags?: Prisma.StringNullableListFilter<"Project">
+  createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   portfolioId?: Prisma.StringFilter<"Project"> | string
   portfolio?: Prisma.XOR<Prisma.PortfolioScalarRelationFilter, Prisma.PortfolioWhereInput>
   Rating?: Prisma.RatingListRelationFilter
@@ -197,6 +241,7 @@ export type ProjectWhereInput = {
   Comments?: Prisma.CommentsListRelationFilter
   Appreciate?: Prisma.AppreciateListRelationFilter
   Feedback?: Prisma.FeedbackListRelationFilter
+  likes?: Prisma.LikeListRelationFilter
   AppreciateProjectDetails?: Prisma.XOR<Prisma.PostMetricsNullableScalarRelationFilter, Prisma.PostMetricsWhereInput> | null
 }
 
@@ -206,6 +251,13 @@ export type ProjectOrderByWithRelationInput = {
   description?: Prisma.SortOrder
   category?: Prisma.SortOrder
   githublink?: Prisma.SortOrderInput | Prisma.SortOrder
+  externalLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  coverImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  galleryUrls?: Prisma.SortOrder
+  tools?: Prisma.SortOrder
+  tags?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   portfolioId?: Prisma.SortOrder
   portfolio?: Prisma.PortfolioOrderByWithRelationInput
   Rating?: Prisma.RatingOrderByRelationAggregateInput
@@ -214,6 +266,7 @@ export type ProjectOrderByWithRelationInput = {
   Comments?: Prisma.CommentsOrderByRelationAggregateInput
   Appreciate?: Prisma.AppreciateOrderByRelationAggregateInput
   Feedback?: Prisma.FeedbackOrderByRelationAggregateInput
+  likes?: Prisma.LikeOrderByRelationAggregateInput
   AppreciateProjectDetails?: Prisma.PostMetricsOrderByWithRelationInput
 }
 
@@ -226,6 +279,13 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringFilter<"Project"> | string
   category?: Prisma.EnumProjectCategoryFilter<"Project"> | $Enums.ProjectCategory
   githublink?: Prisma.StringNullableFilter<"Project"> | string | null
+  externalLink?: Prisma.StringNullableFilter<"Project"> | string | null
+  coverImageUrl?: Prisma.StringNullableFilter<"Project"> | string | null
+  galleryUrls?: Prisma.StringNullableListFilter<"Project">
+  tools?: Prisma.StringNullableListFilter<"Project">
+  tags?: Prisma.StringNullableListFilter<"Project">
+  createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   portfolioId?: Prisma.StringFilter<"Project"> | string
   portfolio?: Prisma.XOR<Prisma.PortfolioScalarRelationFilter, Prisma.PortfolioWhereInput>
   Rating?: Prisma.RatingListRelationFilter
@@ -234,6 +294,7 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   Comments?: Prisma.CommentsListRelationFilter
   Appreciate?: Prisma.AppreciateListRelationFilter
   Feedback?: Prisma.FeedbackListRelationFilter
+  likes?: Prisma.LikeListRelationFilter
   AppreciateProjectDetails?: Prisma.XOR<Prisma.PostMetricsNullableScalarRelationFilter, Prisma.PostMetricsWhereInput> | null
 }, "id">
 
@@ -243,6 +304,13 @@ export type ProjectOrderByWithAggregationInput = {
   description?: Prisma.SortOrder
   category?: Prisma.SortOrder
   githublink?: Prisma.SortOrderInput | Prisma.SortOrder
+  externalLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  coverImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  galleryUrls?: Prisma.SortOrder
+  tools?: Prisma.SortOrder
+  tags?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   portfolioId?: Prisma.SortOrder
   _count?: Prisma.ProjectCountOrderByAggregateInput
   _max?: Prisma.ProjectMaxOrderByAggregateInput
@@ -258,6 +326,13 @@ export type ProjectScalarWhereWithAggregatesInput = {
   description?: Prisma.StringWithAggregatesFilter<"Project"> | string
   category?: Prisma.EnumProjectCategoryWithAggregatesFilter<"Project"> | $Enums.ProjectCategory
   githublink?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
+  externalLink?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
+  coverImageUrl?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
+  galleryUrls?: Prisma.StringNullableListFilter<"Project">
+  tools?: Prisma.StringNullableListFilter<"Project">
+  tags?: Prisma.StringNullableListFilter<"Project">
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"Project"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Project"> | Date | string
   portfolioId?: Prisma.StringWithAggregatesFilter<"Project"> | string
 }
 
@@ -267,6 +342,13 @@ export type ProjectCreateInput = {
   description: string
   category: $Enums.ProjectCategory
   githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
   portfolio: Prisma.PortfolioCreateNestedOneWithoutWorksInput
   Rating?: Prisma.RatingCreateNestedManyWithoutProjectInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsCreateNestedManyWithoutProjectInput
@@ -274,6 +356,7 @@ export type ProjectCreateInput = {
   Comments?: Prisma.CommentsCreateNestedManyWithoutProjectInput
   Appreciate?: Prisma.AppreciateCreateNestedManyWithoutProjectInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutProjectInput
+  likes?: Prisma.LikeCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsCreateNestedOneWithoutProjectInput
 }
 
@@ -283,6 +366,13 @@ export type ProjectUncheckedCreateInput = {
   description: string
   category: $Enums.ProjectCategory
   githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
   portfolioId: string
   Rating?: Prisma.RatingUncheckedCreateNestedManyWithoutProjectInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsUncheckedCreateNestedManyWithoutProjectInput
@@ -290,6 +380,7 @@ export type ProjectUncheckedCreateInput = {
   Comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutProjectInput
   Appreciate?: Prisma.AppreciateUncheckedCreateNestedManyWithoutProjectInput
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutProjectInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedCreateNestedOneWithoutProjectInput
 }
 
@@ -299,6 +390,13 @@ export type ProjectUpdateInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
   githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolio?: Prisma.PortfolioUpdateOneRequiredWithoutWorksNestedInput
   Rating?: Prisma.RatingUpdateManyWithoutProjectNestedInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsUpdateManyWithoutProjectNestedInput
@@ -306,6 +404,7 @@ export type ProjectUpdateInput = {
   Comments?: Prisma.CommentsUpdateManyWithoutProjectNestedInput
   Appreciate?: Prisma.AppreciateUpdateManyWithoutProjectNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutProjectNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUpdateOneWithoutProjectNestedInput
 }
 
@@ -315,6 +414,13 @@ export type ProjectUncheckedUpdateInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
   githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolioId?: Prisma.StringFieldUpdateOperationsInput | string
   Rating?: Prisma.RatingUncheckedUpdateManyWithoutProjectNestedInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsUncheckedUpdateManyWithoutProjectNestedInput
@@ -322,6 +428,7 @@ export type ProjectUncheckedUpdateInput = {
   Comments?: Prisma.CommentsUncheckedUpdateManyWithoutProjectNestedInput
   Appreciate?: Prisma.AppreciateUncheckedUpdateManyWithoutProjectNestedInput
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutProjectNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedUpdateOneWithoutProjectNestedInput
 }
 
@@ -331,6 +438,13 @@ export type ProjectCreateManyInput = {
   description: string
   category: $Enums.ProjectCategory
   githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
   portfolioId: string
 }
 
@@ -340,6 +454,13 @@ export type ProjectUpdateManyMutationInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
   githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ProjectUncheckedUpdateManyInput = {
@@ -348,6 +469,13 @@ export type ProjectUncheckedUpdateManyInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
   githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolioId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -361,12 +489,27 @@ export type ProjectOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type StringNullableListFilter<$PrismaModel = never> = {
+  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
+}
+
 export type ProjectCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   category?: Prisma.SortOrder
   githublink?: Prisma.SortOrder
+  externalLink?: Prisma.SortOrder
+  coverImageUrl?: Prisma.SortOrder
+  galleryUrls?: Prisma.SortOrder
+  tools?: Prisma.SortOrder
+  tags?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   portfolioId?: Prisma.SortOrder
 }
 
@@ -376,6 +519,10 @@ export type ProjectMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   category?: Prisma.SortOrder
   githublink?: Prisma.SortOrder
+  externalLink?: Prisma.SortOrder
+  coverImageUrl?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   portfolioId?: Prisma.SortOrder
 }
 
@@ -385,6 +532,10 @@ export type ProjectMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   category?: Prisma.SortOrder
   githublink?: Prisma.SortOrder
+  externalLink?: Prisma.SortOrder
+  coverImageUrl?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   portfolioId?: Prisma.SortOrder
 }
 
@@ -435,8 +586,31 @@ export type ProjectUncheckedUpdateManyWithoutPortfolioNestedInput = {
   deleteMany?: Prisma.ProjectScalarWhereInput | Prisma.ProjectScalarWhereInput[]
 }
 
-export type EnumProjectCategoryFieldUpdateOperationsInput = {
-  set?: $Enums.ProjectCategory
+export type ProjectCreategalleryUrlsInput = {
+  set: string[]
+}
+
+export type ProjectCreatetoolsInput = {
+  set: string[]
+}
+
+export type ProjectCreatetagsInput = {
+  set: string[]
+}
+
+export type ProjectUpdategalleryUrlsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type ProjectUpdatetoolsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type ProjectUpdatetagsInput = {
+  set?: string[]
+  push?: string | string[]
 }
 
 export type ProjectCreateNestedOneWithoutAppreciateInput = {
@@ -495,6 +669,20 @@ export type ProjectUpdateOneRequiredWithoutCommentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutCommentsInput, Prisma.ProjectUpdateWithoutCommentsInput>, Prisma.ProjectUncheckedUpdateWithoutCommentsInput>
 }
 
+export type ProjectCreateNestedOneWithoutLikesInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutLikesInput, Prisma.ProjectUncheckedCreateWithoutLikesInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutLikesInput
+  connect?: Prisma.ProjectWhereUniqueInput
+}
+
+export type ProjectUpdateOneRequiredWithoutLikesNestedInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutLikesInput, Prisma.ProjectUncheckedCreateWithoutLikesInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutLikesInput
+  upsert?: Prisma.ProjectUpsertWithoutLikesInput
+  connect?: Prisma.ProjectWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutLikesInput, Prisma.ProjectUpdateWithoutLikesInput>, Prisma.ProjectUncheckedUpdateWithoutLikesInput>
+}
+
 export type ProjectCreateNestedOneWithoutFeedbackInput = {
   create?: Prisma.XOR<Prisma.ProjectCreateWithoutFeedbackInput, Prisma.ProjectUncheckedCreateWithoutFeedbackInput>
   connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutFeedbackInput
@@ -543,12 +731,20 @@ export type ProjectCreateWithoutPortfolioInput = {
   description: string
   category: $Enums.ProjectCategory
   githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
   Rating?: Prisma.RatingCreateNestedManyWithoutProjectInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsCreateNestedManyWithoutProjectInput
   FavorateProjects?: Prisma.FavorateProjectsCreateNestedManyWithoutProjectInput
   Comments?: Prisma.CommentsCreateNestedManyWithoutProjectInput
   Appreciate?: Prisma.AppreciateCreateNestedManyWithoutProjectInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutProjectInput
+  likes?: Prisma.LikeCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsCreateNestedOneWithoutProjectInput
 }
 
@@ -558,12 +754,20 @@ export type ProjectUncheckedCreateWithoutPortfolioInput = {
   description: string
   category: $Enums.ProjectCategory
   githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
   Rating?: Prisma.RatingUncheckedCreateNestedManyWithoutProjectInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsUncheckedCreateNestedManyWithoutProjectInput
   FavorateProjects?: Prisma.FavorateProjectsUncheckedCreateNestedManyWithoutProjectInput
   Comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutProjectInput
   Appreciate?: Prisma.AppreciateUncheckedCreateNestedManyWithoutProjectInput
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutProjectInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedCreateNestedOneWithoutProjectInput
 }
 
@@ -602,6 +806,13 @@ export type ProjectScalarWhereInput = {
   description?: Prisma.StringFilter<"Project"> | string
   category?: Prisma.EnumProjectCategoryFilter<"Project"> | $Enums.ProjectCategory
   githublink?: Prisma.StringNullableFilter<"Project"> | string | null
+  externalLink?: Prisma.StringNullableFilter<"Project"> | string | null
+  coverImageUrl?: Prisma.StringNullableFilter<"Project"> | string | null
+  galleryUrls?: Prisma.StringNullableListFilter<"Project">
+  tools?: Prisma.StringNullableListFilter<"Project">
+  tags?: Prisma.StringNullableListFilter<"Project">
+  createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   portfolioId?: Prisma.StringFilter<"Project"> | string
 }
 
@@ -611,12 +822,20 @@ export type ProjectCreateWithoutAppreciateInput = {
   description: string
   category: $Enums.ProjectCategory
   githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
   portfolio: Prisma.PortfolioCreateNestedOneWithoutWorksInput
   Rating?: Prisma.RatingCreateNestedManyWithoutProjectInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsCreateNestedManyWithoutProjectInput
   FavorateProjects?: Prisma.FavorateProjectsCreateNestedManyWithoutProjectInput
   Comments?: Prisma.CommentsCreateNestedManyWithoutProjectInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutProjectInput
+  likes?: Prisma.LikeCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsCreateNestedOneWithoutProjectInput
 }
 
@@ -626,12 +845,20 @@ export type ProjectUncheckedCreateWithoutAppreciateInput = {
   description: string
   category: $Enums.ProjectCategory
   githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
   portfolioId: string
   Rating?: Prisma.RatingUncheckedCreateNestedManyWithoutProjectInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsUncheckedCreateNestedManyWithoutProjectInput
   FavorateProjects?: Prisma.FavorateProjectsUncheckedCreateNestedManyWithoutProjectInput
   Comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutProjectInput
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutProjectInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedCreateNestedOneWithoutProjectInput
 }
 
@@ -657,12 +884,20 @@ export type ProjectUpdateWithoutAppreciateInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
   githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolio?: Prisma.PortfolioUpdateOneRequiredWithoutWorksNestedInput
   Rating?: Prisma.RatingUpdateManyWithoutProjectNestedInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsUpdateManyWithoutProjectNestedInput
   FavorateProjects?: Prisma.FavorateProjectsUpdateManyWithoutProjectNestedInput
   Comments?: Prisma.CommentsUpdateManyWithoutProjectNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutProjectNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUpdateOneWithoutProjectNestedInput
 }
 
@@ -672,12 +907,20 @@ export type ProjectUncheckedUpdateWithoutAppreciateInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
   githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolioId?: Prisma.StringFieldUpdateOperationsInput | string
   Rating?: Prisma.RatingUncheckedUpdateManyWithoutProjectNestedInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsUncheckedUpdateManyWithoutProjectNestedInput
   FavorateProjects?: Prisma.FavorateProjectsUncheckedUpdateManyWithoutProjectNestedInput
   Comments?: Prisma.CommentsUncheckedUpdateManyWithoutProjectNestedInput
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutProjectNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedUpdateOneWithoutProjectNestedInput
 }
 
@@ -687,6 +930,13 @@ export type ProjectCreateWithoutAppreciateProjectDetailsInput = {
   description: string
   category: $Enums.ProjectCategory
   githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
   portfolio: Prisma.PortfolioCreateNestedOneWithoutWorksInput
   Rating?: Prisma.RatingCreateNestedManyWithoutProjectInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsCreateNestedManyWithoutProjectInput
@@ -694,6 +944,7 @@ export type ProjectCreateWithoutAppreciateProjectDetailsInput = {
   Comments?: Prisma.CommentsCreateNestedManyWithoutProjectInput
   Appreciate?: Prisma.AppreciateCreateNestedManyWithoutProjectInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutProjectInput
+  likes?: Prisma.LikeCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutAppreciateProjectDetailsInput = {
@@ -702,6 +953,13 @@ export type ProjectUncheckedCreateWithoutAppreciateProjectDetailsInput = {
   description: string
   category: $Enums.ProjectCategory
   githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
   portfolioId: string
   Rating?: Prisma.RatingUncheckedCreateNestedManyWithoutProjectInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsUncheckedCreateNestedManyWithoutProjectInput
@@ -709,6 +967,7 @@ export type ProjectUncheckedCreateWithoutAppreciateProjectDetailsInput = {
   Comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutProjectInput
   Appreciate?: Prisma.AppreciateUncheckedCreateNestedManyWithoutProjectInput
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutProjectInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutAppreciateProjectDetailsInput = {
@@ -733,6 +992,13 @@ export type ProjectUpdateWithoutAppreciateProjectDetailsInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
   githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolio?: Prisma.PortfolioUpdateOneRequiredWithoutWorksNestedInput
   Rating?: Prisma.RatingUpdateManyWithoutProjectNestedInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsUpdateManyWithoutProjectNestedInput
@@ -740,6 +1006,7 @@ export type ProjectUpdateWithoutAppreciateProjectDetailsInput = {
   Comments?: Prisma.CommentsUpdateManyWithoutProjectNestedInput
   Appreciate?: Prisma.AppreciateUpdateManyWithoutProjectNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutProjectNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutAppreciateProjectDetailsInput = {
@@ -748,6 +1015,13 @@ export type ProjectUncheckedUpdateWithoutAppreciateProjectDetailsInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
   githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolioId?: Prisma.StringFieldUpdateOperationsInput | string
   Rating?: Prisma.RatingUncheckedUpdateManyWithoutProjectNestedInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsUncheckedUpdateManyWithoutProjectNestedInput
@@ -755,6 +1029,7 @@ export type ProjectUncheckedUpdateWithoutAppreciateProjectDetailsInput = {
   Comments?: Prisma.CommentsUncheckedUpdateManyWithoutProjectNestedInput
   Appreciate?: Prisma.AppreciateUncheckedUpdateManyWithoutProjectNestedInput
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutProjectNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectCreateWithoutFavorateProjectsInput = {
@@ -763,12 +1038,20 @@ export type ProjectCreateWithoutFavorateProjectsInput = {
   description: string
   category: $Enums.ProjectCategory
   githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
   portfolio: Prisma.PortfolioCreateNestedOneWithoutWorksInput
   Rating?: Prisma.RatingCreateNestedManyWithoutProjectInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsCreateNestedManyWithoutProjectInput
   Comments?: Prisma.CommentsCreateNestedManyWithoutProjectInput
   Appreciate?: Prisma.AppreciateCreateNestedManyWithoutProjectInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutProjectInput
+  likes?: Prisma.LikeCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsCreateNestedOneWithoutProjectInput
 }
 
@@ -778,12 +1061,20 @@ export type ProjectUncheckedCreateWithoutFavorateProjectsInput = {
   description: string
   category: $Enums.ProjectCategory
   githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
   portfolioId: string
   Rating?: Prisma.RatingUncheckedCreateNestedManyWithoutProjectInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsUncheckedCreateNestedManyWithoutProjectInput
   Comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutProjectInput
   Appreciate?: Prisma.AppreciateUncheckedCreateNestedManyWithoutProjectInput
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutProjectInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedCreateNestedOneWithoutProjectInput
 }
 
@@ -809,12 +1100,20 @@ export type ProjectUpdateWithoutFavorateProjectsInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
   githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolio?: Prisma.PortfolioUpdateOneRequiredWithoutWorksNestedInput
   Rating?: Prisma.RatingUpdateManyWithoutProjectNestedInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsUpdateManyWithoutProjectNestedInput
   Comments?: Prisma.CommentsUpdateManyWithoutProjectNestedInput
   Appreciate?: Prisma.AppreciateUpdateManyWithoutProjectNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutProjectNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUpdateOneWithoutProjectNestedInput
 }
 
@@ -824,12 +1123,20 @@ export type ProjectUncheckedUpdateWithoutFavorateProjectsInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
   githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolioId?: Prisma.StringFieldUpdateOperationsInput | string
   Rating?: Prisma.RatingUncheckedUpdateManyWithoutProjectNestedInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsUncheckedUpdateManyWithoutProjectNestedInput
   Comments?: Prisma.CommentsUncheckedUpdateManyWithoutProjectNestedInput
   Appreciate?: Prisma.AppreciateUncheckedUpdateManyWithoutProjectNestedInput
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutProjectNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedUpdateOneWithoutProjectNestedInput
 }
 
@@ -839,12 +1146,20 @@ export type ProjectCreateWithoutCommentsInput = {
   description: string
   category: $Enums.ProjectCategory
   githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
   portfolio: Prisma.PortfolioCreateNestedOneWithoutWorksInput
   Rating?: Prisma.RatingCreateNestedManyWithoutProjectInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsCreateNestedManyWithoutProjectInput
   FavorateProjects?: Prisma.FavorateProjectsCreateNestedManyWithoutProjectInput
   Appreciate?: Prisma.AppreciateCreateNestedManyWithoutProjectInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutProjectInput
+  likes?: Prisma.LikeCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsCreateNestedOneWithoutProjectInput
 }
 
@@ -854,12 +1169,20 @@ export type ProjectUncheckedCreateWithoutCommentsInput = {
   description: string
   category: $Enums.ProjectCategory
   githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
   portfolioId: string
   Rating?: Prisma.RatingUncheckedCreateNestedManyWithoutProjectInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsUncheckedCreateNestedManyWithoutProjectInput
   FavorateProjects?: Prisma.FavorateProjectsUncheckedCreateNestedManyWithoutProjectInput
   Appreciate?: Prisma.AppreciateUncheckedCreateNestedManyWithoutProjectInput
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutProjectInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedCreateNestedOneWithoutProjectInput
 }
 
@@ -885,12 +1208,20 @@ export type ProjectUpdateWithoutCommentsInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
   githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolio?: Prisma.PortfolioUpdateOneRequiredWithoutWorksNestedInput
   Rating?: Prisma.RatingUpdateManyWithoutProjectNestedInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsUpdateManyWithoutProjectNestedInput
   FavorateProjects?: Prisma.FavorateProjectsUpdateManyWithoutProjectNestedInput
   Appreciate?: Prisma.AppreciateUpdateManyWithoutProjectNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutProjectNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUpdateOneWithoutProjectNestedInput
 }
 
@@ -900,10 +1231,126 @@ export type ProjectUncheckedUpdateWithoutCommentsInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
   githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolioId?: Prisma.StringFieldUpdateOperationsInput | string
   Rating?: Prisma.RatingUncheckedUpdateManyWithoutProjectNestedInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsUncheckedUpdateManyWithoutProjectNestedInput
   FavorateProjects?: Prisma.FavorateProjectsUncheckedUpdateManyWithoutProjectNestedInput
+  Appreciate?: Prisma.AppreciateUncheckedUpdateManyWithoutProjectNestedInput
+  Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutProjectNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutProjectNestedInput
+  AppreciateProjectDetails?: Prisma.PostMetricsUncheckedUpdateOneWithoutProjectNestedInput
+}
+
+export type ProjectCreateWithoutLikesInput = {
+  id?: string
+  name: string
+  description: string
+  category: $Enums.ProjectCategory
+  githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  portfolio: Prisma.PortfolioCreateNestedOneWithoutWorksInput
+  Rating?: Prisma.RatingCreateNestedManyWithoutProjectInput
+  ProjectCompDetails?: Prisma.ProjectCompDetailsCreateNestedManyWithoutProjectInput
+  FavorateProjects?: Prisma.FavorateProjectsCreateNestedManyWithoutProjectInput
+  Comments?: Prisma.CommentsCreateNestedManyWithoutProjectInput
+  Appreciate?: Prisma.AppreciateCreateNestedManyWithoutProjectInput
+  Feedback?: Prisma.FeedbackCreateNestedManyWithoutProjectInput
+  AppreciateProjectDetails?: Prisma.PostMetricsCreateNestedOneWithoutProjectInput
+}
+
+export type ProjectUncheckedCreateWithoutLikesInput = {
+  id?: string
+  name: string
+  description: string
+  category: $Enums.ProjectCategory
+  githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  portfolioId: string
+  Rating?: Prisma.RatingUncheckedCreateNestedManyWithoutProjectInput
+  ProjectCompDetails?: Prisma.ProjectCompDetailsUncheckedCreateNestedManyWithoutProjectInput
+  FavorateProjects?: Prisma.FavorateProjectsUncheckedCreateNestedManyWithoutProjectInput
+  Comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutProjectInput
+  Appreciate?: Prisma.AppreciateUncheckedCreateNestedManyWithoutProjectInput
+  Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutProjectInput
+  AppreciateProjectDetails?: Prisma.PostMetricsUncheckedCreateNestedOneWithoutProjectInput
+}
+
+export type ProjectCreateOrConnectWithoutLikesInput = {
+  where: Prisma.ProjectWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutLikesInput, Prisma.ProjectUncheckedCreateWithoutLikesInput>
+}
+
+export type ProjectUpsertWithoutLikesInput = {
+  update: Prisma.XOR<Prisma.ProjectUpdateWithoutLikesInput, Prisma.ProjectUncheckedUpdateWithoutLikesInput>
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutLikesInput, Prisma.ProjectUncheckedCreateWithoutLikesInput>
+  where?: Prisma.ProjectWhereInput
+}
+
+export type ProjectUpdateToOneWithWhereWithoutLikesInput = {
+  where?: Prisma.ProjectWhereInput
+  data: Prisma.XOR<Prisma.ProjectUpdateWithoutLikesInput, Prisma.ProjectUncheckedUpdateWithoutLikesInput>
+}
+
+export type ProjectUpdateWithoutLikesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
+  githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  portfolio?: Prisma.PortfolioUpdateOneRequiredWithoutWorksNestedInput
+  Rating?: Prisma.RatingUpdateManyWithoutProjectNestedInput
+  ProjectCompDetails?: Prisma.ProjectCompDetailsUpdateManyWithoutProjectNestedInput
+  FavorateProjects?: Prisma.FavorateProjectsUpdateManyWithoutProjectNestedInput
+  Comments?: Prisma.CommentsUpdateManyWithoutProjectNestedInput
+  Appreciate?: Prisma.AppreciateUpdateManyWithoutProjectNestedInput
+  Feedback?: Prisma.FeedbackUpdateManyWithoutProjectNestedInput
+  AppreciateProjectDetails?: Prisma.PostMetricsUpdateOneWithoutProjectNestedInput
+}
+
+export type ProjectUncheckedUpdateWithoutLikesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
+  githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  portfolioId?: Prisma.StringFieldUpdateOperationsInput | string
+  Rating?: Prisma.RatingUncheckedUpdateManyWithoutProjectNestedInput
+  ProjectCompDetails?: Prisma.ProjectCompDetailsUncheckedUpdateManyWithoutProjectNestedInput
+  FavorateProjects?: Prisma.FavorateProjectsUncheckedUpdateManyWithoutProjectNestedInput
+  Comments?: Prisma.CommentsUncheckedUpdateManyWithoutProjectNestedInput
   Appreciate?: Prisma.AppreciateUncheckedUpdateManyWithoutProjectNestedInput
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedUpdateOneWithoutProjectNestedInput
@@ -915,12 +1362,20 @@ export type ProjectCreateWithoutFeedbackInput = {
   description: string
   category: $Enums.ProjectCategory
   githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
   portfolio: Prisma.PortfolioCreateNestedOneWithoutWorksInput
   Rating?: Prisma.RatingCreateNestedManyWithoutProjectInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsCreateNestedManyWithoutProjectInput
   FavorateProjects?: Prisma.FavorateProjectsCreateNestedManyWithoutProjectInput
   Comments?: Prisma.CommentsCreateNestedManyWithoutProjectInput
   Appreciate?: Prisma.AppreciateCreateNestedManyWithoutProjectInput
+  likes?: Prisma.LikeCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsCreateNestedOneWithoutProjectInput
 }
 
@@ -930,12 +1385,20 @@ export type ProjectUncheckedCreateWithoutFeedbackInput = {
   description: string
   category: $Enums.ProjectCategory
   githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
   portfolioId: string
   Rating?: Prisma.RatingUncheckedCreateNestedManyWithoutProjectInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsUncheckedCreateNestedManyWithoutProjectInput
   FavorateProjects?: Prisma.FavorateProjectsUncheckedCreateNestedManyWithoutProjectInput
   Comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutProjectInput
   Appreciate?: Prisma.AppreciateUncheckedCreateNestedManyWithoutProjectInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedCreateNestedOneWithoutProjectInput
 }
 
@@ -961,12 +1424,20 @@ export type ProjectUpdateWithoutFeedbackInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
   githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolio?: Prisma.PortfolioUpdateOneRequiredWithoutWorksNestedInput
   Rating?: Prisma.RatingUpdateManyWithoutProjectNestedInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsUpdateManyWithoutProjectNestedInput
   FavorateProjects?: Prisma.FavorateProjectsUpdateManyWithoutProjectNestedInput
   Comments?: Prisma.CommentsUpdateManyWithoutProjectNestedInput
   Appreciate?: Prisma.AppreciateUpdateManyWithoutProjectNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUpdateOneWithoutProjectNestedInput
 }
 
@@ -976,12 +1447,20 @@ export type ProjectUncheckedUpdateWithoutFeedbackInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
   githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolioId?: Prisma.StringFieldUpdateOperationsInput | string
   Rating?: Prisma.RatingUncheckedUpdateManyWithoutProjectNestedInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsUncheckedUpdateManyWithoutProjectNestedInput
   FavorateProjects?: Prisma.FavorateProjectsUncheckedUpdateManyWithoutProjectNestedInput
   Comments?: Prisma.CommentsUncheckedUpdateManyWithoutProjectNestedInput
   Appreciate?: Prisma.AppreciateUncheckedUpdateManyWithoutProjectNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedUpdateOneWithoutProjectNestedInput
 }
 
@@ -991,12 +1470,20 @@ export type ProjectCreateWithoutRatingInput = {
   description: string
   category: $Enums.ProjectCategory
   githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
   portfolio: Prisma.PortfolioCreateNestedOneWithoutWorksInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsCreateNestedManyWithoutProjectInput
   FavorateProjects?: Prisma.FavorateProjectsCreateNestedManyWithoutProjectInput
   Comments?: Prisma.CommentsCreateNestedManyWithoutProjectInput
   Appreciate?: Prisma.AppreciateCreateNestedManyWithoutProjectInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutProjectInput
+  likes?: Prisma.LikeCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsCreateNestedOneWithoutProjectInput
 }
 
@@ -1006,12 +1493,20 @@ export type ProjectUncheckedCreateWithoutRatingInput = {
   description: string
   category: $Enums.ProjectCategory
   githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
   portfolioId: string
   ProjectCompDetails?: Prisma.ProjectCompDetailsUncheckedCreateNestedManyWithoutProjectInput
   FavorateProjects?: Prisma.FavorateProjectsUncheckedCreateNestedManyWithoutProjectInput
   Comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutProjectInput
   Appreciate?: Prisma.AppreciateUncheckedCreateNestedManyWithoutProjectInput
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutProjectInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedCreateNestedOneWithoutProjectInput
 }
 
@@ -1037,12 +1532,20 @@ export type ProjectUpdateWithoutRatingInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
   githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolio?: Prisma.PortfolioUpdateOneRequiredWithoutWorksNestedInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsUpdateManyWithoutProjectNestedInput
   FavorateProjects?: Prisma.FavorateProjectsUpdateManyWithoutProjectNestedInput
   Comments?: Prisma.CommentsUpdateManyWithoutProjectNestedInput
   Appreciate?: Prisma.AppreciateUpdateManyWithoutProjectNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutProjectNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUpdateOneWithoutProjectNestedInput
 }
 
@@ -1052,12 +1555,20 @@ export type ProjectUncheckedUpdateWithoutRatingInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
   githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolioId?: Prisma.StringFieldUpdateOperationsInput | string
   ProjectCompDetails?: Prisma.ProjectCompDetailsUncheckedUpdateManyWithoutProjectNestedInput
   FavorateProjects?: Prisma.FavorateProjectsUncheckedUpdateManyWithoutProjectNestedInput
   Comments?: Prisma.CommentsUncheckedUpdateManyWithoutProjectNestedInput
   Appreciate?: Prisma.AppreciateUncheckedUpdateManyWithoutProjectNestedInput
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutProjectNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedUpdateOneWithoutProjectNestedInput
 }
 
@@ -1067,12 +1578,20 @@ export type ProjectCreateWithoutProjectCompDetailsInput = {
   description: string
   category: $Enums.ProjectCategory
   githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
   portfolio: Prisma.PortfolioCreateNestedOneWithoutWorksInput
   Rating?: Prisma.RatingCreateNestedManyWithoutProjectInput
   FavorateProjects?: Prisma.FavorateProjectsCreateNestedManyWithoutProjectInput
   Comments?: Prisma.CommentsCreateNestedManyWithoutProjectInput
   Appreciate?: Prisma.AppreciateCreateNestedManyWithoutProjectInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutProjectInput
+  likes?: Prisma.LikeCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsCreateNestedOneWithoutProjectInput
 }
 
@@ -1082,12 +1601,20 @@ export type ProjectUncheckedCreateWithoutProjectCompDetailsInput = {
   description: string
   category: $Enums.ProjectCategory
   githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
   portfolioId: string
   Rating?: Prisma.RatingUncheckedCreateNestedManyWithoutProjectInput
   FavorateProjects?: Prisma.FavorateProjectsUncheckedCreateNestedManyWithoutProjectInput
   Comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutProjectInput
   Appreciate?: Prisma.AppreciateUncheckedCreateNestedManyWithoutProjectInput
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutProjectInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedCreateNestedOneWithoutProjectInput
 }
 
@@ -1113,12 +1640,20 @@ export type ProjectUpdateWithoutProjectCompDetailsInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
   githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolio?: Prisma.PortfolioUpdateOneRequiredWithoutWorksNestedInput
   Rating?: Prisma.RatingUpdateManyWithoutProjectNestedInput
   FavorateProjects?: Prisma.FavorateProjectsUpdateManyWithoutProjectNestedInput
   Comments?: Prisma.CommentsUpdateManyWithoutProjectNestedInput
   Appreciate?: Prisma.AppreciateUpdateManyWithoutProjectNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutProjectNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUpdateOneWithoutProjectNestedInput
 }
 
@@ -1128,12 +1663,20 @@ export type ProjectUncheckedUpdateWithoutProjectCompDetailsInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
   githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolioId?: Prisma.StringFieldUpdateOperationsInput | string
   Rating?: Prisma.RatingUncheckedUpdateManyWithoutProjectNestedInput
   FavorateProjects?: Prisma.FavorateProjectsUncheckedUpdateManyWithoutProjectNestedInput
   Comments?: Prisma.CommentsUncheckedUpdateManyWithoutProjectNestedInput
   Appreciate?: Prisma.AppreciateUncheckedUpdateManyWithoutProjectNestedInput
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutProjectNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedUpdateOneWithoutProjectNestedInput
 }
 
@@ -1143,6 +1686,13 @@ export type ProjectCreateManyPortfolioInput = {
   description: string
   category: $Enums.ProjectCategory
   githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type ProjectUpdateWithoutPortfolioInput = {
@@ -1151,12 +1701,20 @@ export type ProjectUpdateWithoutPortfolioInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
   githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   Rating?: Prisma.RatingUpdateManyWithoutProjectNestedInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsUpdateManyWithoutProjectNestedInput
   FavorateProjects?: Prisma.FavorateProjectsUpdateManyWithoutProjectNestedInput
   Comments?: Prisma.CommentsUpdateManyWithoutProjectNestedInput
   Appreciate?: Prisma.AppreciateUpdateManyWithoutProjectNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutProjectNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUpdateOneWithoutProjectNestedInput
 }
 
@@ -1166,12 +1724,20 @@ export type ProjectUncheckedUpdateWithoutPortfolioInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
   githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   Rating?: Prisma.RatingUncheckedUpdateManyWithoutProjectNestedInput
   ProjectCompDetails?: Prisma.ProjectCompDetailsUncheckedUpdateManyWithoutProjectNestedInput
   FavorateProjects?: Prisma.FavorateProjectsUncheckedUpdateManyWithoutProjectNestedInput
   Comments?: Prisma.CommentsUncheckedUpdateManyWithoutProjectNestedInput
   Appreciate?: Prisma.AppreciateUncheckedUpdateManyWithoutProjectNestedInput
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutProjectNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedUpdateOneWithoutProjectNestedInput
 }
 
@@ -1181,6 +1747,13 @@ export type ProjectUncheckedUpdateManyWithoutPortfolioInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
   githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -1195,6 +1768,7 @@ export type ProjectCountOutputType = {
   Comments: number
   Appreciate: number
   Feedback: number
+  likes: number
 }
 
 export type ProjectCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1204,6 +1778,7 @@ export type ProjectCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   Comments?: boolean | ProjectCountOutputTypeCountCommentsArgs
   Appreciate?: boolean | ProjectCountOutputTypeCountAppreciateArgs
   Feedback?: boolean | ProjectCountOutputTypeCountFeedbackArgs
+  likes?: boolean | ProjectCountOutputTypeCountLikesArgs
 }
 
 /**
@@ -1258,6 +1833,13 @@ export type ProjectCountOutputTypeCountFeedbackArgs<ExtArgs extends runtime.Type
   where?: Prisma.FeedbackWhereInput
 }
 
+/**
+ * ProjectCountOutputType without action
+ */
+export type ProjectCountOutputTypeCountLikesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LikeWhereInput
+}
+
 
 export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1265,6 +1847,13 @@ export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   description?: boolean
   category?: boolean
   githublink?: boolean
+  externalLink?: boolean
+  coverImageUrl?: boolean
+  galleryUrls?: boolean
+  tools?: boolean
+  tags?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   portfolioId?: boolean
   portfolio?: boolean | Prisma.PortfolioDefaultArgs<ExtArgs>
   Rating?: boolean | Prisma.Project$RatingArgs<ExtArgs>
@@ -1273,6 +1862,7 @@ export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   Comments?: boolean | Prisma.Project$CommentsArgs<ExtArgs>
   Appreciate?: boolean | Prisma.Project$AppreciateArgs<ExtArgs>
   Feedback?: boolean | Prisma.Project$FeedbackArgs<ExtArgs>
+  likes?: boolean | Prisma.Project$likesArgs<ExtArgs>
   AppreciateProjectDetails?: boolean | Prisma.Project$AppreciateProjectDetailsArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["project"]>
@@ -1283,6 +1873,13 @@ export type ProjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   description?: boolean
   category?: boolean
   githublink?: boolean
+  externalLink?: boolean
+  coverImageUrl?: boolean
+  galleryUrls?: boolean
+  tools?: boolean
+  tags?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   portfolioId?: boolean
   portfolio?: boolean | Prisma.PortfolioDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["project"]>
@@ -1293,6 +1890,13 @@ export type ProjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   description?: boolean
   category?: boolean
   githublink?: boolean
+  externalLink?: boolean
+  coverImageUrl?: boolean
+  galleryUrls?: boolean
+  tools?: boolean
+  tags?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   portfolioId?: boolean
   portfolio?: boolean | Prisma.PortfolioDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["project"]>
@@ -1303,10 +1907,17 @@ export type ProjectSelectScalar = {
   description?: boolean
   category?: boolean
   githublink?: boolean
+  externalLink?: boolean
+  coverImageUrl?: boolean
+  galleryUrls?: boolean
+  tools?: boolean
+  tags?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   portfolioId?: boolean
 }
 
-export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "category" | "githublink" | "portfolioId", ExtArgs["result"]["project"]>
+export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "category" | "githublink" | "externalLink" | "coverImageUrl" | "galleryUrls" | "tools" | "tags" | "createdAt" | "updatedAt" | "portfolioId", ExtArgs["result"]["project"]>
 export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   portfolio?: boolean | Prisma.PortfolioDefaultArgs<ExtArgs>
   Rating?: boolean | Prisma.Project$RatingArgs<ExtArgs>
@@ -1315,6 +1926,7 @@ export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   Comments?: boolean | Prisma.Project$CommentsArgs<ExtArgs>
   Appreciate?: boolean | Prisma.Project$AppreciateArgs<ExtArgs>
   Feedback?: boolean | Prisma.Project$FeedbackArgs<ExtArgs>
+  likes?: boolean | Prisma.Project$likesArgs<ExtArgs>
   AppreciateProjectDetails?: boolean | Prisma.Project$AppreciateProjectDetailsArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -1335,6 +1947,7 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     Comments: Prisma.$CommentsPayload<ExtArgs>[]
     Appreciate: Prisma.$AppreciatePayload<ExtArgs>[]
     Feedback: Prisma.$FeedbackPayload<ExtArgs>[]
+    likes: Prisma.$LikePayload<ExtArgs>[]
     AppreciateProjectDetails: Prisma.$PostMetricsPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1343,6 +1956,13 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     description: string
     category: $Enums.ProjectCategory
     githublink: string | null
+    externalLink: string | null
+    coverImageUrl: string | null
+    galleryUrls: string[]
+    tools: string[]
+    tags: string[]
+    createdAt: Date
+    updatedAt: Date
     portfolioId: string
   }, ExtArgs["result"]["project"]>
   composites: {}
@@ -1745,6 +2365,7 @@ export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends runtime.
   Comments<T extends Prisma.Project$CommentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$CommentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   Appreciate<T extends Prisma.Project$AppreciateArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$AppreciateArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AppreciatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   Feedback<T extends Prisma.Project$FeedbackArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$FeedbackArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  likes<T extends Prisma.Project$likesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$likesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   AppreciateProjectDetails<T extends Prisma.Project$AppreciateProjectDetailsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$AppreciateProjectDetailsArgs<ExtArgs>>): Prisma.Prisma__PostMetricsClient<runtime.Types.Result.GetResult<Prisma.$PostMetricsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1780,6 +2401,13 @@ export interface ProjectFieldRefs {
   readonly description: Prisma.FieldRef<"Project", 'String'>
   readonly category: Prisma.FieldRef<"Project", 'ProjectCategory'>
   readonly githublink: Prisma.FieldRef<"Project", 'String'>
+  readonly externalLink: Prisma.FieldRef<"Project", 'String'>
+  readonly coverImageUrl: Prisma.FieldRef<"Project", 'String'>
+  readonly galleryUrls: Prisma.FieldRef<"Project", 'String[]'>
+  readonly tools: Prisma.FieldRef<"Project", 'String[]'>
+  readonly tags: Prisma.FieldRef<"Project", 'String[]'>
+  readonly createdAt: Prisma.FieldRef<"Project", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"Project", 'DateTime'>
   readonly portfolioId: Prisma.FieldRef<"Project", 'String'>
 }
     
@@ -2323,6 +2951,30 @@ export type Project$FeedbackArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.FeedbackScalarFieldEnum | Prisma.FeedbackScalarFieldEnum[]
+}
+
+/**
+ * Project.likes
+ */
+export type Project$likesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Like
+   */
+  select?: Prisma.LikeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Like
+   */
+  omit?: Prisma.LikeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LikeInclude<ExtArgs> | null
+  where?: Prisma.LikeWhereInput
+  orderBy?: Prisma.LikeOrderByWithRelationInput | Prisma.LikeOrderByWithRelationInput[]
+  cursor?: Prisma.LikeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LikeScalarFieldEnum | Prisma.LikeScalarFieldEnum[]
 }
 
 /**

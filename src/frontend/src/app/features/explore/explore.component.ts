@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { CATEGORIES } from '../../shared/data/categories';
 import { ProjectCardComponent } from '../../shared/components/project-card/project-card.component';
-import { FEATURED_PROJECTS } from '../../shared/data/mock-projects'
 import { ProjectCardMode } from '../../shared/components/project-card/project-card.component';
 import { MatIconModule } from "@angular/material/icon";
 import { RouterLink } from '@angular/router';
+import { Project } from '../../shared/models/project';
+import { ProjectService } from '../../shared/services/project.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-explore',
@@ -17,26 +18,42 @@ import { RouterLink } from '@angular/router';
 })
 export class ExploreComponent implements OnInit {
   showFilters = false;
-  categories = CATEGORIES;
-  projects = FEATURED_PROJECTS;
+  categories = [
+    { name: 'Full stack', slug: 'FULLSTACK' },
+    { name: 'Front-end', slug: 'FRONTEND' },
+    { name: 'Back-end', slug: 'BACKEND' },
+    { name: 'Design', slug: 'DESIGN' },
+    { name: 'Mobile', slug: 'MOBILE' },
+    { name: 'Análise de dados', slug: 'DATA_ANALYSIS' },
+    { name: 'Outros', slug: 'OTHER' },
+  ];
+  tools = ['Figma', 'Angular', 'React', 'Vue', 'TypeScript', 'Node.js'];
+  projects: Project[] = [];
   mode = ProjectCardMode;
-  filteredProjects = this.projects;
+  filteredProjects: Project[] = [];
+  isLoading = true;
+  errorMessage = '';
+  totalProjects = 0;
+  totalPages = 0;
+  currentPage = 1;
 
   selectedCategory: string | null = null;
   selectedCategoryName: string | null = null;
-  selectedSort: 'recent' | 'likes' | 'views' = 'recent';
+  selectedSort: 'newest' | 'likes' | 'appreciates' = 'newest';
+  selectedTool: string | null = null;
   searchTerm = '';
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private projectService: ProjectService,
   ) {}
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       this.selectedCategory = params['categoria'] || null;
       this.updateCategoryName();
-      this.applyFilters();
+      this.loadProjects(1);
     });
   }
 
@@ -46,7 +63,7 @@ export class ExploreComponent implements OnInit {
       return;
     }
 
-    const category = CATEGORIES.find(
+    const category = this.categories.find(
       c => c.slug === this.selectedCategory
     );
 
@@ -54,40 +71,35 @@ export class ExploreComponent implements OnInit {
   }
 
   applyFilters() {
-    let results = this.projects.filter(project => {
+    this.loadProjects(1);
+  }
 
-      const matchesCategory = this.selectedCategory
-        ? project.category === this.selectedCategory
-        : true;
-
-      const matchesSearch = project.title
-        .toLowerCase()
-        .includes(this.searchTerm.toLowerCase());
-
-      return matchesCategory && matchesSearch;
+  loadProjects(page: number) {
+    this.isLoading = true;
+    this.errorMessage = '';
+    this.projectService.list({
+      q: this.searchTerm.trim() || undefined,
+      category: this.selectedCategory || undefined,
+      tool: this.selectedTool || undefined,
+      sort: this.selectedSort,
+      page,
+      limit: 12,
+    }).pipe(finalize(() => this.isLoading = false)).subscribe({
+      next: (response) => {
+        this.projects = response.data;
+        this.filteredProjects = response.data;
+        this.currentPage = response.pagination.page;
+        this.totalPages = response.pagination.totalPages;
+        this.totalProjects = response.pagination.total;
+      },
+      error: () => this.errorMessage = 'Não foi possível carregar os projetos.',
     });
-
-    if (this.selectedSort === 'likes') {
-      results = results.sort((a, b) => b.likes - a.likes);
-    }
-
-    if (this.selectedSort === 'views') {
-      results = results.sort((a, b) => b.views - a.views);
-    }
-
-    if (this.selectedSort === 'recent') {
-      results = results.sort((a, b) =>
-        new Date(b.id).getTime() - new Date(a.id).getTime() // posteriormente trocar para data
-      );
-    }
-
-    this.filteredProjects = results;
   }
 
   getSortLabel(): string {
     switch (this.selectedSort) {
       case 'likes': return 'mais curtidos';
-      case 'views': return 'mais visualizados';
+      case 'appreciates': return 'mais apreciados';
       default: return 'mais recentes';
     }
   }
@@ -104,5 +116,10 @@ export class ExploreComponent implements OnInit {
       queryParams: { categoria: null },
       queryParamsHandling: 'merge'
     });
+  }
+
+  selectTool(tool: string | null) {
+    this.selectedTool = tool;
+    this.loadProjects(1);
   }
 }

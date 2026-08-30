@@ -25,9 +25,9 @@ export class RegisterFormComponent {
   readonly form = this.fb.nonNullable.group({
     username: ['', [Validators.required, Validators.minLength(3)]],
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
+    password: ['', [Validators.required, Validators.minLength(8)]],
     confirmPassword: ['', [Validators.required]],
-    usertype: ['USER' as 'USER' | 'MODERATOR' | 'ADMIN', [Validators.required]],
+    usertype: ['USER' as const, [Validators.required]],
   }, {
     validators: this.passwordMatchValidator,
   });
@@ -50,7 +50,7 @@ export class RegisterFormComponent {
 
     const rawValues = this.form.getRawValue();
     const { username, email, password } = rawValues;
-    const usertype = rawValues.usertype as 'USER' | 'MODERATOR' | 'ADMIN';
+    const usertype = rawValues.usertype;
 
     this.auth.register({ username, email, password, usertype })
       .pipe(

@@ -18,7 +18,7 @@ export class PortfolioUserCreatedHandler
   }
 
   async handle(event: UserCreatedEvent): Promise<void> {
-    this.portfolioService.create({
+    await this.portfolioService.create({
       name: "default",
       description: "not found",
       pagelink: null,

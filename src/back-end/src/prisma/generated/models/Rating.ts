@@ -245,6 +245,7 @@ export type RatingOrderByWithRelationInput = {
 
 export type RatingWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  userId_competitionId?: Prisma.RatingUserIdCompetitionIdCompoundUniqueInput
   userId_competitionId_projectId?: Prisma.RatingUserIdCompetitionIdProjectIdCompoundUniqueInput
   AND?: Prisma.RatingWhereInput | Prisma.RatingWhereInput[]
   OR?: Prisma.RatingWhereInput[]
@@ -258,7 +259,7 @@ export type RatingWhereUniqueInput = Prisma.AtLeast<{
   project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
   competition?: Prisma.XOR<Prisma.CompetitionScalarRelationFilter, Prisma.CompetitionWhereInput>
   portfolioDetails?: Prisma.XOR<Prisma.ProjectCompDetailsScalarRelationFilter, Prisma.ProjectCompDetailsWhereInput>
-}, "id" | "userId_competitionId_projectId">
+}, "id" | "userId_competitionId" | "userId_competitionId_projectId">
 
 export type RatingOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -353,6 +354,11 @@ export type RatingListRelationFilter = {
 
 export type RatingOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type RatingUserIdCompetitionIdCompoundUniqueInput = {
+  userId: string
+  competitionId: string
 }
 
 export type RatingUserIdCompetitionIdProjectIdCompoundUniqueInput = {

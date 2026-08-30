@@ -21,6 +21,13 @@ export const routes: Routes = [
         .then(m => m.CompetitionsComponent)
   },
   {
+    path: 'salvos',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/saved/saved.component')
+        .then(m => m.SavedComponent)
+  },
+  {
     path: 'sobre',
     loadComponent: () =>
       import('./features/about/about.component')

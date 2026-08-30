@@ -23,7 +23,6 @@ import { ProjectRoute } from "@project/api/ProjectRoute";
 import { CompetitionRoute } from "@competition/api/CompetitionRoute";
 // import { ChatRoute } from "@chat/api/ChatRoute";
 import { EmailRoute } from "@email/api/EmailRoute";
-import { RatingRoute } from "@rating/api/RatingRoute";
 import { FavorateProjectsRoute } from "@favorateProjects/api/FavorateProjectsRoutes";
 import { CommentsRoute } from "@comments/api/CommentsRoutes";
 
@@ -129,7 +128,7 @@ export class AppComposer {
     CompetitionRoute.register(app, this.controllers.competitionController);
     // ChatRoute.register(app, this.controllers.chatController);
     EmailRoute.register(app, this.controllers.emailController);
-    RatingRoute.register(app, this.controllers.ratingController);
+    // O fluxo legado de notas foi substituido pelo voto unico por competicao.
     FavorateProjectsRoute.register(
       app,
       this.controllers.favorateProjectsController

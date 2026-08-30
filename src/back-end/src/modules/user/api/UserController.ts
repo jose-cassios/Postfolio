@@ -1,10 +1,16 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { BadRequest, InternalServerError } from "@shared/error/HttpError";
+import {
+  BadRequest,
+  Forbidden,
+  InternalServerError,
+  NotFound,
+} from "@shared/error/HttpError";
 import { CreateUserDTO, LoginUserDTO, UpdateUserDTO } from "@user/api/UserDTO";
 import {
   LoginRequest,
   CreateUserRequest,
   UpdateUserRequest,
+  PublicProfileRequest,
 } from "@user/api/UserSchema";
 import { IUserService } from "@user/domain/interfaces/IUserService";
 import { inject, injectable } from "inversify";
@@ -26,14 +32,55 @@ export class UserController {
   }
 
   async getAll(req: FastifyRequest, reply: FastifyReply) {
+    const requester = req.user?.id
+      ? await this.userService.findById(req.user.id)
+      : null;
+    if (![UserType.ADMIN, UserType.MODERATOR].includes(requester?.getUserType() as UserType)) {
+      throw new Forbidden("Apenas moderadores podem listar usuarios.");
+    }
     const allUsers = await this.userService.findMany();
-    reply.send(allUsers);
+    reply.send(
+      allUsers.map((user) => ({
+        id: user.getId(),
+        username: user.getUsername(),
+        email: user.getEmail().getValue(),
+        bio: user.getBio(),
+        linkedin: user.getLinkedin(),
+        github: user.getGithub(),
+        website: user.getWebsite(),
+        availableForHire: user.isAvailableForHire(),
+        usertype: UserTypeMapper.fromDomainToPrisma(user.getUserType()),
+        active: user.isActive(),
+      }))
+    );
+  }
+
+  async setActive(req: FastifyRequest, reply: FastifyReply) {
+    const requesterId = req.user?.id;
+    const { id } = req.params as { id?: string };
+    const { active } = req.body as { active?: boolean };
+    if (!requesterId || !id || typeof active !== "boolean") {
+      throw new BadRequest("Usuario e status sao obrigatorios.");
+    }
+    const requester = await this.userService.findById(requesterId);
+    if (![UserType.ADMIN, UserType.MODERATOR].includes(requester?.getUserType() as UserType)) {
+      throw new Forbidden("Apenas moderadores podem moderar usuarios.");
+    }
+    if (requesterId === id && !active) {
+      throw new BadRequest("Voce nao pode suspender a propria conta.");
+    }
+    const target = await this.userService.findById(id);
+    if (requester?.getUserType() !== UserType.ADMIN && target?.getUserType() === UserType.ADMIN) {
+      throw new Forbidden("Moderadores nao podem suspender administradores.");
+    }
+    const user = await this.userService.setActive(id, active);
+    reply.send({ id: user.getId(), active: user.isActive() });
   }
 
   async create(req: CreateUserRequest, reply: FastifyReply) {
     const userDto: CreateUserDTO = {
       ...req.body,
-      userType: UserTypeMapper.fromSchemaToDto(req.body.usertype),
+      userType: UserType.USER,
     };
 
     await this.userService.create(userDto);
@@ -45,21 +92,20 @@ export class UserController {
 
   async updateById(req: UpdateUserRequest, reply: FastifyReply) {
     const id = req.params.id;
-    const userType = req.body.usertype
-      ? UserTypeMapper.fromSchemaToDto(req.body.usertype)
-      : undefined;
+
+    if (req.user?.id !== id) {
+      throw new Forbidden("Voce so pode editar o proprio perfil.");
+    }
 
     const dto: UpdateUserDTO = {
       ...req.body,
-      userType: userType,
       id,
     };
 
     const user = await this.userService.updateById(dto);
 
-  const type =
-    userType !== undefined
-      ? UserTypeMapper.fromDomainToPrisma(userType)
+    const type = user.getUserType()
+      ? UserTypeMapper.fromDomainToPrisma(user.getUserType())
       : null;
 
     reply.send({
@@ -70,7 +116,9 @@ export class UserController {
       linkedin: user.getLinkedin(),
       github: user.getGithub(),
       website: user.getWebsite(),
-      userType: type,
+      contactEmail: user.getContactEmail(),
+      availableForHire: user.isAvailableForHire(),
+      usertype: type,
     });
   }
 
@@ -146,7 +194,31 @@ export class UserController {
         linkedin: user.getLinkedin(),
         github: user.getGithub(),
         website: user.getWebsite(),
-        userType: userType ? UserTypeMapper.fromDomainToPrisma(userType) : null,
+        contactEmail: user.getContactEmail(),
+        availableForHire: user.isAvailableForHire(),
+        usertype: userType ? UserTypeMapper.fromDomainToPrisma(userType) : null,
+        achievements: await this.userService.findAchievements(user.getId()),
+      },
+    });
+  }
+
+  async getPublicProfile(req: PublicProfileRequest, reply: FastifyReply) {
+    const user = await this.userService.findByUsername(req.params.username);
+
+    if (!user) throw new NotFound("Perfil nao encontrado.");
+
+    const userType = user.getUserType();
+    reply.send({
+      data: {
+        id: user.getId(),
+        username: user.getUsername(),
+        bio: user.getBio(),
+        linkedin: user.getLinkedin(),
+        github: user.getGithub(),
+        website: user.getWebsite(),
+        availableForHire: user.isAvailableForHire(),
+        usertype: userType ? UserTypeMapper.fromDomainToPrisma(userType) : null,
+        achievements: await this.userService.findAchievements(user.getId()),
       },
     });
   }

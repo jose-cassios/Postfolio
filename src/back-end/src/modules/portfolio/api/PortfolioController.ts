@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { BadRequest } from "@shared/error/HttpError";
+import { BadRequest, Forbidden, NotFound } from "@shared/error/HttpError";
 import { IPortfolioService } from "@portfolio/domain/interfaces/IPortfolioService";
 import {
   CreatePortfolioRequest,
@@ -21,71 +21,95 @@ export class PortfolioController {
 
   async register(req: CreatePortfolioRequest, reply: FastifyReply) {
     const authorId = req.user?.id;
-
-    if (!authorId) throw new BadRequest("Autor é obrigatorio");
+    if (!authorId) throw new BadRequest("Autor e obrigatorio");
 
     const createPortfolioDto: CreatePortfolioDTO = { ...req.body, authorId };
-
     const portfolio = await this.portfolioService.create(createPortfolioDto);
-
     reply.send(portfolio);
   }
 
   async findAll(req: FastifyRequest, reply: FastifyReply) {
     const portfolios = await this.portfolioService.findMany();
     reply.send(portfolios);
-    // const portfolios = portfolioService.
   }
 
   async findByUser(req: FastifyRequest, reply: FastifyReply) {
-    const authorId = req.user?.id || null;
-
-    if (!authorId) throw new BadRequest("Id é obrigatorio");
+    const authorId = req.user?.id;
+    if (!authorId) throw new BadRequest("Id e obrigatorio");
 
     const portfolio = await this.portfolioService.findByAuthor(authorId);
+    if (!portfolio) throw new NotFound("Portfolio nao encontrado");
+    reply.send(portfolio);
+  }
+
+  async findByUsername(req: FastifyRequest, reply: FastifyReply) {
+    const { username } = req.params as { username?: string };
+    if (!username) throw new BadRequest("Nome de usuario e obrigatorio");
+
+    const portfolio = await this.portfolioService.findByUsername(username);
+    if (!portfolio) throw new NotFound("Portfolio nao encontrado");
     reply.send(portfolio);
   }
 
   async findById(req: FastifyRequest, reply: FastifyReply) {
-    const { id = null } = req.body as Partial<{ id: string }>;
-
-    if (!id) throw new BadRequest("Id é obrigatorio");
+    const { id } = req.body as Partial<{ id: string }>;
+    if (!id) throw new BadRequest("Id e obrigatorio");
 
     const portfolio = await this.portfolioService.findById(id);
-
+    if (!portfolio) throw new NotFound("Portfolio nao encontrado");
     reply.send(portfolio);
   }
 
   async getProjects(req: FastifyRequest, reply: FastifyReply) {
-    const { id = null } = req.params as Partial<{ id: string }>;
-    if (!id) throw new BadRequest("Id é obrigatorio");
+    const { id } = req.params as Partial<{ id: string }>;
+    if (!id) throw new BadRequest("Id e obrigatorio");
 
     const response = await this.portfolioService.findProjects(id);
+    reply.send(response);
+  }
 
+  async getProjectsByUsername(req: FastifyRequest, reply: FastifyReply) {
+    const { username } = req.params as { username?: string };
+    if (!username) throw new BadRequest("Nome de usuario e obrigatorio");
+
+    const portfolio = await this.portfolioService.findByUsername(username);
+    if (!portfolio) throw new NotFound("Portfolio nao encontrado");
+
+    const response = await this.portfolioService.findProjects(
+      portfolio.getId()
+    );
     reply.send(response);
   }
 
   async update(req: UpdatePortfolioRequest, reply: FastifyReply) {
     const authorId = req.user?.id;
+    if (!authorId) throw new BadRequest("Autor e obrigatorio");
 
-    if (!authorId) throw new BadRequest("Autor é obrigatorio");
+    const portfolio = await this.portfolioService.findById(req.params.id);
+    if (!portfolio) throw new NotFound("Portfolio nao encontrado");
+    if (portfolio.getAuthorId() !== authorId) {
+      throw new Forbidden("Voce so pode editar o proprio portfolio.");
+    }
 
     const updatePortfolioDto: UpdatePortfolioDTO = {
       id: req.params.id,
       ...req.body,
     };
-
     const response = await this.portfolioService.update(updatePortfolioDto);
-
     reply.send(response);
   }
 
   async deleteById(req: FastifyRequest, reply: FastifyReply) {
-    const { id = null } = req.body as Partial<{ id: string }>;
+    const authorId = req.user?.id;
+    const { id } = req.body as Partial<{ id: string }>;
+    if (!id) throw new BadRequest("Id e obrigatorio");
 
-    if (!id) throw new BadRequest("Id é obrigatorio");
+    const portfolio = await this.portfolioService.findById(id);
+    if (!portfolio) throw new NotFound("Portfolio nao encontrado");
+    if (!authorId || portfolio.getAuthorId() !== authorId) {
+      throw new Forbidden("Voce so pode remover o proprio portfolio.");
+    }
 
-    const portfolio = await this.portfolioService.deleteById(id);
-    reply.send(portfolio);
+    reply.send(await this.portfolioService.deleteById(id));
   }
 }

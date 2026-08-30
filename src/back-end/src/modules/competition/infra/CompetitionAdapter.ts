@@ -10,8 +10,8 @@ export class CompetitionAdapter implements CompetitionPort {
     private repository: ICompetitionRepository
   ) {}
 
-  exist(id: string): Promise<boolean> {
-    throw new Error("Method not implemented.");
+  async exist(id: string): Promise<boolean> {
+    return Boolean(await this.repository.findById(id));
   }
   //   getProjectDetailsId(
   //     userId: string,

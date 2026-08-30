@@ -15,7 +15,10 @@ export default class User {
     private linkedin: string | null = null,
     private github: string | null = null,
     private website: string | null = null,
-    private userType: UserType | null = UserType.USER, 
+    private userType: UserType | null = UserType.USER,
+    private contactEmail: string | null = null,
+    private availableForHire: boolean = false,
+    private active: boolean = true,
   ) {}
 
   public static async create(dto: CreateUserDTO) {
@@ -32,25 +35,22 @@ export default class User {
       dto.linkedin,
       dto.github,
       dto.website,
-      dto.userType
+      dto.userType,
+      dto.contactEmail,
+      dto.availableForHire
     );
   }
 
   public async update(dto: UpdateUserDTO): Promise<void> {
+    let emailChanged = false;
+
     if (dto.username !== undefined) {
       this.username = dto.username;
     }
 
     if (dto.email !== undefined) {
+      emailChanged = dto.email !== this.email.getValue();
       this.email = new Email(dto.email);
-      const event = new UserUpdateEvent(
-        this.id,
-        this.username,
-        this.email.getValue(),
-        true
-      );
-      EventListener.publish(event);
-      return;
     }
 
     if (dto.bio !== undefined) {
@@ -69,11 +69,19 @@ export default class User {
       this.website = dto.website;
     }
 
+    if (dto.contactEmail !== undefined) {
+      this.contactEmail = dto.contactEmail;
+    }
+
+    if (dto.availableForHire !== undefined) {
+      this.availableForHire = dto.availableForHire;
+    }
+
     const event = new UserUpdateEvent(
       this.id,
       this.username,
       this.email.getValue(),
-      false
+      emailChanged
     );
     EventListener.publish(event);
   }
@@ -118,5 +126,21 @@ export default class User {
 
   public getUserType(): UserType | null {
     return this.userType;
+  }
+
+  public getContactEmail(): string | null {
+    return this.contactEmail;
+  }
+
+  public isAvailableForHire(): boolean {
+    return this.availableForHire;
+  }
+
+  public isActive(): boolean {
+    return this.active;
+  }
+
+  public setActive(active: boolean): void {
+    this.active = active;
   }
 }

@@ -17,4 +17,9 @@ export class UserAdaper implements UserPort {
 
     return true;
   }
+
+  async isAdmin(userId: string): Promise<boolean> {
+    const user = await this.userService.findById(userId);
+    return user?.getUserType() === "ADMIN";
+  }
 }

@@ -8,11 +8,14 @@
     <!-- Navegação -->
     <nav class="nav">
       <a routerLink="/explorar" routerLinkActive="active">Explorar</a>
-      <!-- <a routerLink="/competicoes" routerLinkActive="active">Competições</a> -->
+      <a routerLink="/competicoes" routerLinkActive="active">Competições</a>
+      @if (isLogged()) {
+        <a routerLink="/salvos" routerLinkActive="active">Salvos</a>
+      }
       <a routerLink="/sobre" routerLinkActive="active">Sobre</a>
 
-      @if (isLogged() && user()?.usertype === 'ADMIN') {
-        <a routerLink="/admin" routerLinkActive="active">Admin</a>
+      @if (isLogged() && (user()?.usertype === 'ADMIN' || user()?.usertype === 'MODERATOR')) {
+        <a routerLink="/admin" routerLinkActive="active">Moderação</a>
       }
     </nav>
 

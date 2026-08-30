@@ -15,6 +15,7 @@ export interface IPortfolioService {
   findById(id: string): Promise<Portfolio | null>;
   findProjects(id: string): Promise<ProjectContract[]>;
   findByAuthor(authorId: string): Promise<Portfolio | null>;
+  findByUsername(username: string): Promise<Portfolio | null>;
 
   // getWorks(portfolioId: string): Promise<Work[]>;
 }

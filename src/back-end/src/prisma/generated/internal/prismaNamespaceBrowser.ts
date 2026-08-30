@@ -61,6 +61,7 @@ export const ModelName = {
   PostMetrics: 'PostMetrics',
   FavorateProjects: 'FavorateProjects',
   Comments: 'Comments',
+  Like: 'Like',
   Feedback: 'Feedback',
   Rating: 'Rating',
   ProjectCompDetails: 'ProjectCompDetails'
@@ -91,6 +92,9 @@ export const UserScalarFieldEnum = {
   linkedin: 'linkedin',
   github: 'github',
   website: 'website',
+  contactEmail: 'contactEmail',
+  availableForHire: 'availableForHire',
+  active: 'active',
   userType: 'userType'
 } as const
 
@@ -138,7 +142,13 @@ export const CompetitionScalarFieldEnum = {
   description: 'description',
   createdAt: 'createdAt',
   startsAt: 'startsAt',
-  endsAt: 'endsAt'
+  endsAt: 'endsAt',
+  category: 'category',
+  registrationStartsAt: 'registrationStartsAt',
+  registrationEndsAt: 'registrationEndsAt',
+  votingStartsAt: 'votingStartsAt',
+  votingEndsAt: 'votingEndsAt',
+  resultsAt: 'resultsAt'
 } as const
 
 export type CompetitionScalarFieldEnum = (typeof CompetitionScalarFieldEnum)[keyof typeof CompetitionScalarFieldEnum]
@@ -150,6 +160,13 @@ export const ProjectScalarFieldEnum = {
   description: 'description',
   category: 'category',
   githublink: 'githublink',
+  externalLink: 'externalLink',
+  coverImageUrl: 'coverImageUrl',
+  galleryUrls: 'galleryUrls',
+  tools: 'tools',
+  tags: 'tags',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
   portfolioId: 'portfolioId'
 } as const
 
@@ -193,6 +210,16 @@ export const CommentsScalarFieldEnum = {
 } as const
 
 export type CommentsScalarFieldEnum = (typeof CommentsScalarFieldEnum)[keyof typeof CommentsScalarFieldEnum]
+
+
+export const LikeScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  projectId: 'projectId',
+  createdAt: 'createdAt'
+} as const
+
+export type LikeScalarFieldEnum = (typeof LikeScalarFieldEnum)[keyof typeof LikeScalarFieldEnum]
 
 
 export const FeedbackScalarFieldEnum = {

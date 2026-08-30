@@ -33,6 +33,9 @@ export type UserMinAggregateOutputType = {
   linkedin: string | null
   github: string | null
   website: string | null
+  contactEmail: string | null
+  availableForHire: boolean | null
+  active: boolean | null
   userType: $Enums.UserType | null
 }
 
@@ -45,6 +48,9 @@ export type UserMaxAggregateOutputType = {
   linkedin: string | null
   github: string | null
   website: string | null
+  contactEmail: string | null
+  availableForHire: boolean | null
+  active: boolean | null
   userType: $Enums.UserType | null
 }
 
@@ -57,6 +63,9 @@ export type UserCountAggregateOutputType = {
   linkedin: number
   github: number
   website: number
+  contactEmail: number
+  availableForHire: number
+  active: number
   userType: number
   _all: number
 }
@@ -71,6 +80,9 @@ export type UserMinAggregateInputType = {
   linkedin?: true
   github?: true
   website?: true
+  contactEmail?: true
+  availableForHire?: true
+  active?: true
   userType?: true
 }
 
@@ -83,6 +95,9 @@ export type UserMaxAggregateInputType = {
   linkedin?: true
   github?: true
   website?: true
+  contactEmail?: true
+  availableForHire?: true
+  active?: true
   userType?: true
 }
 
@@ -95,6 +110,9 @@ export type UserCountAggregateInputType = {
   linkedin?: true
   github?: true
   website?: true
+  contactEmail?: true
+  availableForHire?: true
+  active?: true
   userType?: true
   _all?: true
 }
@@ -180,6 +198,9 @@ export type UserGroupByOutputType = {
   linkedin: string | null
   github: string | null
   website: string | null
+  contactEmail: string | null
+  availableForHire: boolean
+  active: boolean
   userType: $Enums.UserType | null
   _count: UserCountAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
@@ -213,6 +234,9 @@ export type UserWhereInput = {
   linkedin?: Prisma.StringNullableFilter<"User"> | string | null
   github?: Prisma.StringNullableFilter<"User"> | string | null
   website?: Prisma.StringNullableFilter<"User"> | string | null
+  contactEmail?: Prisma.StringNullableFilter<"User"> | string | null
+  availableForHire?: Prisma.BoolFilter<"User"> | boolean
+  active?: Prisma.BoolFilter<"User"> | boolean
   userType?: Prisma.EnumUserTypeNullableFilter<"User"> | $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthListRelationFilter
   portfolios?: Prisma.XOR<Prisma.PortfolioNullableScalarRelationFilter, Prisma.PortfolioWhereInput> | null
@@ -223,6 +247,7 @@ export type UserWhereInput = {
   Comments?: Prisma.CommentsListRelationFilter
   Appreciate?: Prisma.AppreciateListRelationFilter
   Feedback?: Prisma.FeedbackListRelationFilter
+  likes?: Prisma.LikeListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -234,6 +259,9 @@ export type UserOrderByWithRelationInput = {
   linkedin?: Prisma.SortOrderInput | Prisma.SortOrder
   github?: Prisma.SortOrderInput | Prisma.SortOrder
   website?: Prisma.SortOrderInput | Prisma.SortOrder
+  contactEmail?: Prisma.SortOrderInput | Prisma.SortOrder
+  availableForHire?: Prisma.SortOrder
+  active?: Prisma.SortOrder
   userType?: Prisma.SortOrderInput | Prisma.SortOrder
   ProviderOAuth?: Prisma.ProviderOAuthOrderByRelationAggregateInput
   portfolios?: Prisma.PortfolioOrderByWithRelationInput
@@ -244,6 +272,7 @@ export type UserOrderByWithRelationInput = {
   Comments?: Prisma.CommentsOrderByRelationAggregateInput
   Appreciate?: Prisma.AppreciateOrderByRelationAggregateInput
   Feedback?: Prisma.FeedbackOrderByRelationAggregateInput
+  likes?: Prisma.LikeOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -258,6 +287,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   linkedin?: Prisma.StringNullableFilter<"User"> | string | null
   github?: Prisma.StringNullableFilter<"User"> | string | null
   website?: Prisma.StringNullableFilter<"User"> | string | null
+  contactEmail?: Prisma.StringNullableFilter<"User"> | string | null
+  availableForHire?: Prisma.BoolFilter<"User"> | boolean
+  active?: Prisma.BoolFilter<"User"> | boolean
   userType?: Prisma.EnumUserTypeNullableFilter<"User"> | $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthListRelationFilter
   portfolios?: Prisma.XOR<Prisma.PortfolioNullableScalarRelationFilter, Prisma.PortfolioWhereInput> | null
@@ -268,6 +300,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   Comments?: Prisma.CommentsListRelationFilter
   Appreciate?: Prisma.AppreciateListRelationFilter
   Feedback?: Prisma.FeedbackListRelationFilter
+  likes?: Prisma.LikeListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -279,6 +312,9 @@ export type UserOrderByWithAggregationInput = {
   linkedin?: Prisma.SortOrderInput | Prisma.SortOrder
   github?: Prisma.SortOrderInput | Prisma.SortOrder
   website?: Prisma.SortOrderInput | Prisma.SortOrder
+  contactEmail?: Prisma.SortOrderInput | Prisma.SortOrder
+  availableForHire?: Prisma.SortOrder
+  active?: Prisma.SortOrder
   userType?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
@@ -297,6 +333,9 @@ export type UserScalarWhereWithAggregatesInput = {
   linkedin?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   github?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   website?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  contactEmail?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  availableForHire?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  active?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   userType?: Prisma.EnumUserTypeNullableWithAggregatesFilter<"User"> | $Enums.UserType | null
 }
 
@@ -309,6 +348,9 @@ export type UserCreateInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  contactEmail?: string | null
+  availableForHire?: boolean
+  active?: boolean
   userType?: $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthCreateNestedManyWithoutUserInput
   portfolios?: Prisma.PortfolioCreateNestedOneWithoutAuthorInput
@@ -319,6 +361,7 @@ export type UserCreateInput = {
   Comments?: Prisma.CommentsCreateNestedManyWithoutUserInput
   Appreciate?: Prisma.AppreciateCreateNestedManyWithoutUserInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -330,6 +373,9 @@ export type UserUncheckedCreateInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  contactEmail?: string | null
+  availableForHire?: boolean
+  active?: boolean
   userType?: $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthUncheckedCreateNestedManyWithoutUserInput
   portfolios?: Prisma.PortfolioUncheckedCreateNestedOneWithoutAuthorInput
@@ -340,6 +386,7 @@ export type UserUncheckedCreateInput = {
   Comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutUserInput
   Appreciate?: Prisma.AppreciateUncheckedCreateNestedManyWithoutUserInput
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -351,6 +398,9 @@ export type UserUpdateInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthUpdateManyWithoutUserNestedInput
   portfolios?: Prisma.PortfolioUpdateOneWithoutAuthorNestedInput
@@ -361,6 +411,7 @@ export type UserUpdateInput = {
   Comments?: Prisma.CommentsUpdateManyWithoutUserNestedInput
   Appreciate?: Prisma.AppreciateUpdateManyWithoutUserNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -372,6 +423,9 @@ export type UserUncheckedUpdateInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthUncheckedUpdateManyWithoutUserNestedInput
   portfolios?: Prisma.PortfolioUncheckedUpdateOneWithoutAuthorNestedInput
@@ -382,6 +436,7 @@ export type UserUncheckedUpdateInput = {
   Comments?: Prisma.CommentsUncheckedUpdateManyWithoutUserNestedInput
   Appreciate?: Prisma.AppreciateUncheckedUpdateManyWithoutUserNestedInput
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -393,6 +448,9 @@ export type UserCreateManyInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  contactEmail?: string | null
+  availableForHire?: boolean
+  active?: boolean
   userType?: $Enums.UserType | null
 }
 
@@ -405,6 +463,9 @@ export type UserUpdateManyMutationInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
 }
 
@@ -417,6 +478,9 @@ export type UserUncheckedUpdateManyInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
 }
 
@@ -429,6 +493,9 @@ export type UserCountOrderByAggregateInput = {
   linkedin?: Prisma.SortOrder
   github?: Prisma.SortOrder
   website?: Prisma.SortOrder
+  contactEmail?: Prisma.SortOrder
+  availableForHire?: Prisma.SortOrder
+  active?: Prisma.SortOrder
   userType?: Prisma.SortOrder
 }
 
@@ -441,6 +508,9 @@ export type UserMaxOrderByAggregateInput = {
   linkedin?: Prisma.SortOrder
   github?: Prisma.SortOrder
   website?: Prisma.SortOrder
+  contactEmail?: Prisma.SortOrder
+  availableForHire?: Prisma.SortOrder
+  active?: Prisma.SortOrder
   userType?: Prisma.SortOrder
 }
 
@@ -453,6 +523,9 @@ export type UserMinOrderByAggregateInput = {
   linkedin?: Prisma.SortOrder
   github?: Prisma.SortOrder
   website?: Prisma.SortOrder
+  contactEmail?: Prisma.SortOrder
+  availableForHire?: Prisma.SortOrder
+  active?: Prisma.SortOrder
   userType?: Prisma.SortOrder
 }
 
@@ -467,6 +540,10 @@ export type StringFieldUpdateOperationsInput = {
 
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
 }
 
 export type NullableEnumUserTypeFieldUpdateOperationsInput = {
@@ -571,6 +648,20 @@ export type UserUpdateOneRequiredWithoutCommentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCommentsInput, Prisma.UserUpdateWithoutCommentsInput>, Prisma.UserUncheckedUpdateWithoutCommentsInput>
 }
 
+export type UserCreateNestedOneWithoutLikesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLikesInput, Prisma.UserUncheckedCreateWithoutLikesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLikesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutLikesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLikesInput, Prisma.UserUncheckedCreateWithoutLikesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLikesInput
+  upsert?: Prisma.UserUpsertWithoutLikesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutLikesInput, Prisma.UserUpdateWithoutLikesInput>, Prisma.UserUncheckedUpdateWithoutLikesInput>
+}
+
 export type UserCreateNestedOneWithoutFeedbackInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutFeedbackInput, Prisma.UserUncheckedCreateWithoutFeedbackInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutFeedbackInput
@@ -608,6 +699,9 @@ export type UserCreateWithoutProviderOAuthInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  contactEmail?: string | null
+  availableForHire?: boolean
+  active?: boolean
   userType?: $Enums.UserType | null
   portfolios?: Prisma.PortfolioCreateNestedOneWithoutAuthorInput
   ratings?: Prisma.RatingCreateNestedManyWithoutUserInput
@@ -617,6 +711,7 @@ export type UserCreateWithoutProviderOAuthInput = {
   Comments?: Prisma.CommentsCreateNestedManyWithoutUserInput
   Appreciate?: Prisma.AppreciateCreateNestedManyWithoutUserInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutProviderOAuthInput = {
@@ -628,6 +723,9 @@ export type UserUncheckedCreateWithoutProviderOAuthInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  contactEmail?: string | null
+  availableForHire?: boolean
+  active?: boolean
   userType?: $Enums.UserType | null
   portfolios?: Prisma.PortfolioUncheckedCreateNestedOneWithoutAuthorInput
   ratings?: Prisma.RatingUncheckedCreateNestedManyWithoutUserInput
@@ -637,6 +735,7 @@ export type UserUncheckedCreateWithoutProviderOAuthInput = {
   Comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutUserInput
   Appreciate?: Prisma.AppreciateUncheckedCreateNestedManyWithoutUserInput
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutProviderOAuthInput = {
@@ -664,6 +763,9 @@ export type UserUpdateWithoutProviderOAuthInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
   portfolios?: Prisma.PortfolioUpdateOneWithoutAuthorNestedInput
   ratings?: Prisma.RatingUpdateManyWithoutUserNestedInput
@@ -673,6 +775,7 @@ export type UserUpdateWithoutProviderOAuthInput = {
   Comments?: Prisma.CommentsUpdateManyWithoutUserNestedInput
   Appreciate?: Prisma.AppreciateUpdateManyWithoutUserNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProviderOAuthInput = {
@@ -684,6 +787,9 @@ export type UserUncheckedUpdateWithoutProviderOAuthInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
   portfolios?: Prisma.PortfolioUncheckedUpdateOneWithoutAuthorNestedInput
   ratings?: Prisma.RatingUncheckedUpdateManyWithoutUserNestedInput
@@ -693,6 +799,7 @@ export type UserUncheckedUpdateWithoutProviderOAuthInput = {
   Comments?: Prisma.CommentsUncheckedUpdateManyWithoutUserNestedInput
   Appreciate?: Prisma.AppreciateUncheckedUpdateManyWithoutUserNestedInput
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMessageSentInput = {
@@ -704,6 +811,9 @@ export type UserCreateWithoutMessageSentInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  contactEmail?: string | null
+  availableForHire?: boolean
+  active?: boolean
   userType?: $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthCreateNestedManyWithoutUserInput
   portfolios?: Prisma.PortfolioCreateNestedOneWithoutAuthorInput
@@ -713,6 +823,7 @@ export type UserCreateWithoutMessageSentInput = {
   Comments?: Prisma.CommentsCreateNestedManyWithoutUserInput
   Appreciate?: Prisma.AppreciateCreateNestedManyWithoutUserInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMessageSentInput = {
@@ -724,6 +835,9 @@ export type UserUncheckedCreateWithoutMessageSentInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  contactEmail?: string | null
+  availableForHire?: boolean
+  active?: boolean
   userType?: $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthUncheckedCreateNestedManyWithoutUserInput
   portfolios?: Prisma.PortfolioUncheckedCreateNestedOneWithoutAuthorInput
@@ -733,6 +847,7 @@ export type UserUncheckedCreateWithoutMessageSentInput = {
   Comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutUserInput
   Appreciate?: Prisma.AppreciateUncheckedCreateNestedManyWithoutUserInput
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMessageSentInput = {
@@ -749,6 +864,9 @@ export type UserCreateWithoutMessageReceivedInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  contactEmail?: string | null
+  availableForHire?: boolean
+  active?: boolean
   userType?: $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthCreateNestedManyWithoutUserInput
   portfolios?: Prisma.PortfolioCreateNestedOneWithoutAuthorInput
@@ -758,6 +876,7 @@ export type UserCreateWithoutMessageReceivedInput = {
   Comments?: Prisma.CommentsCreateNestedManyWithoutUserInput
   Appreciate?: Prisma.AppreciateCreateNestedManyWithoutUserInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMessageReceivedInput = {
@@ -769,6 +888,9 @@ export type UserUncheckedCreateWithoutMessageReceivedInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  contactEmail?: string | null
+  availableForHire?: boolean
+  active?: boolean
   userType?: $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthUncheckedCreateNestedManyWithoutUserInput
   portfolios?: Prisma.PortfolioUncheckedCreateNestedOneWithoutAuthorInput
@@ -778,6 +900,7 @@ export type UserUncheckedCreateWithoutMessageReceivedInput = {
   Comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutUserInput
   Appreciate?: Prisma.AppreciateUncheckedCreateNestedManyWithoutUserInput
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMessageReceivedInput = {
@@ -805,6 +928,9 @@ export type UserUpdateWithoutMessageSentInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthUpdateManyWithoutUserNestedInput
   portfolios?: Prisma.PortfolioUpdateOneWithoutAuthorNestedInput
@@ -814,6 +940,7 @@ export type UserUpdateWithoutMessageSentInput = {
   Comments?: Prisma.CommentsUpdateManyWithoutUserNestedInput
   Appreciate?: Prisma.AppreciateUpdateManyWithoutUserNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMessageSentInput = {
@@ -825,6 +952,9 @@ export type UserUncheckedUpdateWithoutMessageSentInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthUncheckedUpdateManyWithoutUserNestedInput
   portfolios?: Prisma.PortfolioUncheckedUpdateOneWithoutAuthorNestedInput
@@ -834,6 +964,7 @@ export type UserUncheckedUpdateWithoutMessageSentInput = {
   Comments?: Prisma.CommentsUncheckedUpdateManyWithoutUserNestedInput
   Appreciate?: Prisma.AppreciateUncheckedUpdateManyWithoutUserNestedInput
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutMessageReceivedInput = {
@@ -856,6 +987,9 @@ export type UserUpdateWithoutMessageReceivedInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthUpdateManyWithoutUserNestedInput
   portfolios?: Prisma.PortfolioUpdateOneWithoutAuthorNestedInput
@@ -865,6 +999,7 @@ export type UserUpdateWithoutMessageReceivedInput = {
   Comments?: Prisma.CommentsUpdateManyWithoutUserNestedInput
   Appreciate?: Prisma.AppreciateUpdateManyWithoutUserNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMessageReceivedInput = {
@@ -876,6 +1011,9 @@ export type UserUncheckedUpdateWithoutMessageReceivedInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthUncheckedUpdateManyWithoutUserNestedInput
   portfolios?: Prisma.PortfolioUncheckedUpdateOneWithoutAuthorNestedInput
@@ -885,6 +1023,7 @@ export type UserUncheckedUpdateWithoutMessageReceivedInput = {
   Comments?: Prisma.CommentsUncheckedUpdateManyWithoutUserNestedInput
   Appreciate?: Prisma.AppreciateUncheckedUpdateManyWithoutUserNestedInput
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPortfoliosInput = {
@@ -896,6 +1035,9 @@ export type UserCreateWithoutPortfoliosInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  contactEmail?: string | null
+  availableForHire?: boolean
+  active?: boolean
   userType?: $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthCreateNestedManyWithoutUserInput
   ratings?: Prisma.RatingCreateNestedManyWithoutUserInput
@@ -905,6 +1047,7 @@ export type UserCreateWithoutPortfoliosInput = {
   Comments?: Prisma.CommentsCreateNestedManyWithoutUserInput
   Appreciate?: Prisma.AppreciateCreateNestedManyWithoutUserInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPortfoliosInput = {
@@ -916,6 +1059,9 @@ export type UserUncheckedCreateWithoutPortfoliosInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  contactEmail?: string | null
+  availableForHire?: boolean
+  active?: boolean
   userType?: $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthUncheckedCreateNestedManyWithoutUserInput
   ratings?: Prisma.RatingUncheckedCreateNestedManyWithoutUserInput
@@ -925,6 +1071,7 @@ export type UserUncheckedCreateWithoutPortfoliosInput = {
   Comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutUserInput
   Appreciate?: Prisma.AppreciateUncheckedCreateNestedManyWithoutUserInput
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPortfoliosInput = {
@@ -952,6 +1099,9 @@ export type UserUpdateWithoutPortfoliosInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthUpdateManyWithoutUserNestedInput
   ratings?: Prisma.RatingUpdateManyWithoutUserNestedInput
@@ -961,6 +1111,7 @@ export type UserUpdateWithoutPortfoliosInput = {
   Comments?: Prisma.CommentsUpdateManyWithoutUserNestedInput
   Appreciate?: Prisma.AppreciateUpdateManyWithoutUserNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPortfoliosInput = {
@@ -972,6 +1123,9 @@ export type UserUncheckedUpdateWithoutPortfoliosInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthUncheckedUpdateManyWithoutUserNestedInput
   ratings?: Prisma.RatingUncheckedUpdateManyWithoutUserNestedInput
@@ -981,6 +1135,7 @@ export type UserUncheckedUpdateWithoutPortfoliosInput = {
   Comments?: Prisma.CommentsUncheckedUpdateManyWithoutUserNestedInput
   Appreciate?: Prisma.AppreciateUncheckedUpdateManyWithoutUserNestedInput
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAppreciateInput = {
@@ -992,6 +1147,9 @@ export type UserCreateWithoutAppreciateInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  contactEmail?: string | null
+  availableForHire?: boolean
+  active?: boolean
   userType?: $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthCreateNestedManyWithoutUserInput
   portfolios?: Prisma.PortfolioCreateNestedOneWithoutAuthorInput
@@ -1001,6 +1159,7 @@ export type UserCreateWithoutAppreciateInput = {
   FavorateProjects?: Prisma.FavorateProjectsCreateNestedManyWithoutUserInput
   Comments?: Prisma.CommentsCreateNestedManyWithoutUserInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAppreciateInput = {
@@ -1012,6 +1171,9 @@ export type UserUncheckedCreateWithoutAppreciateInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  contactEmail?: string | null
+  availableForHire?: boolean
+  active?: boolean
   userType?: $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthUncheckedCreateNestedManyWithoutUserInput
   portfolios?: Prisma.PortfolioUncheckedCreateNestedOneWithoutAuthorInput
@@ -1021,6 +1183,7 @@ export type UserUncheckedCreateWithoutAppreciateInput = {
   FavorateProjects?: Prisma.FavorateProjectsUncheckedCreateNestedManyWithoutUserInput
   Comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutUserInput
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAppreciateInput = {
@@ -1048,6 +1211,9 @@ export type UserUpdateWithoutAppreciateInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthUpdateManyWithoutUserNestedInput
   portfolios?: Prisma.PortfolioUpdateOneWithoutAuthorNestedInput
@@ -1057,6 +1223,7 @@ export type UserUpdateWithoutAppreciateInput = {
   FavorateProjects?: Prisma.FavorateProjectsUpdateManyWithoutUserNestedInput
   Comments?: Prisma.CommentsUpdateManyWithoutUserNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAppreciateInput = {
@@ -1068,6 +1235,9 @@ export type UserUncheckedUpdateWithoutAppreciateInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthUncheckedUpdateManyWithoutUserNestedInput
   portfolios?: Prisma.PortfolioUncheckedUpdateOneWithoutAuthorNestedInput
@@ -1077,6 +1247,7 @@ export type UserUncheckedUpdateWithoutAppreciateInput = {
   FavorateProjects?: Prisma.FavorateProjectsUncheckedUpdateManyWithoutUserNestedInput
   Comments?: Prisma.CommentsUncheckedUpdateManyWithoutUserNestedInput
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutFavorateProjectsInput = {
@@ -1088,6 +1259,9 @@ export type UserCreateWithoutFavorateProjectsInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  contactEmail?: string | null
+  availableForHire?: boolean
+  active?: boolean
   userType?: $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthCreateNestedManyWithoutUserInput
   portfolios?: Prisma.PortfolioCreateNestedOneWithoutAuthorInput
@@ -1097,6 +1271,7 @@ export type UserCreateWithoutFavorateProjectsInput = {
   Comments?: Prisma.CommentsCreateNestedManyWithoutUserInput
   Appreciate?: Prisma.AppreciateCreateNestedManyWithoutUserInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutFavorateProjectsInput = {
@@ -1108,6 +1283,9 @@ export type UserUncheckedCreateWithoutFavorateProjectsInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  contactEmail?: string | null
+  availableForHire?: boolean
+  active?: boolean
   userType?: $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthUncheckedCreateNestedManyWithoutUserInput
   portfolios?: Prisma.PortfolioUncheckedCreateNestedOneWithoutAuthorInput
@@ -1117,6 +1295,7 @@ export type UserUncheckedCreateWithoutFavorateProjectsInput = {
   Comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutUserInput
   Appreciate?: Prisma.AppreciateUncheckedCreateNestedManyWithoutUserInput
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutFavorateProjectsInput = {
@@ -1144,6 +1323,9 @@ export type UserUpdateWithoutFavorateProjectsInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthUpdateManyWithoutUserNestedInput
   portfolios?: Prisma.PortfolioUpdateOneWithoutAuthorNestedInput
@@ -1153,6 +1335,7 @@ export type UserUpdateWithoutFavorateProjectsInput = {
   Comments?: Prisma.CommentsUpdateManyWithoutUserNestedInput
   Appreciate?: Prisma.AppreciateUpdateManyWithoutUserNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFavorateProjectsInput = {
@@ -1164,6 +1347,9 @@ export type UserUncheckedUpdateWithoutFavorateProjectsInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthUncheckedUpdateManyWithoutUserNestedInput
   portfolios?: Prisma.PortfolioUncheckedUpdateOneWithoutAuthorNestedInput
@@ -1173,6 +1359,7 @@ export type UserUncheckedUpdateWithoutFavorateProjectsInput = {
   Comments?: Prisma.CommentsUncheckedUpdateManyWithoutUserNestedInput
   Appreciate?: Prisma.AppreciateUncheckedUpdateManyWithoutUserNestedInput
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCommentsInput = {
@@ -1184,6 +1371,9 @@ export type UserCreateWithoutCommentsInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  contactEmail?: string | null
+  availableForHire?: boolean
+  active?: boolean
   userType?: $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthCreateNestedManyWithoutUserInput
   portfolios?: Prisma.PortfolioCreateNestedOneWithoutAuthorInput
@@ -1193,6 +1383,7 @@ export type UserCreateWithoutCommentsInput = {
   FavorateProjects?: Prisma.FavorateProjectsCreateNestedManyWithoutUserInput
   Appreciate?: Prisma.AppreciateCreateNestedManyWithoutUserInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCommentsInput = {
@@ -1204,6 +1395,9 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  contactEmail?: string | null
+  availableForHire?: boolean
+  active?: boolean
   userType?: $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthUncheckedCreateNestedManyWithoutUserInput
   portfolios?: Prisma.PortfolioUncheckedCreateNestedOneWithoutAuthorInput
@@ -1213,6 +1407,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   FavorateProjects?: Prisma.FavorateProjectsUncheckedCreateNestedManyWithoutUserInput
   Appreciate?: Prisma.AppreciateUncheckedCreateNestedManyWithoutUserInput
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCommentsInput = {
@@ -1240,6 +1435,9 @@ export type UserUpdateWithoutCommentsInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthUpdateManyWithoutUserNestedInput
   portfolios?: Prisma.PortfolioUpdateOneWithoutAuthorNestedInput
@@ -1249,6 +1447,7 @@ export type UserUpdateWithoutCommentsInput = {
   FavorateProjects?: Prisma.FavorateProjectsUpdateManyWithoutUserNestedInput
   Appreciate?: Prisma.AppreciateUpdateManyWithoutUserNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentsInput = {
@@ -1260,6 +1459,9 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthUncheckedUpdateManyWithoutUserNestedInput
   portfolios?: Prisma.PortfolioUncheckedUpdateOneWithoutAuthorNestedInput
@@ -1267,6 +1469,119 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   messageSent?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
   messageReceived?: Prisma.MessageUncheckedUpdateManyWithoutReceiverNestedInput
   FavorateProjects?: Prisma.FavorateProjectsUncheckedUpdateManyWithoutUserNestedInput
+  Appreciate?: Prisma.AppreciateUncheckedUpdateManyWithoutUserNestedInput
+  Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutLikesInput = {
+  id?: string
+  username: string
+  email: string
+  password?: string | null
+  bio: string
+  linkedin?: string | null
+  github?: string | null
+  website?: string | null
+  contactEmail?: string | null
+  availableForHire?: boolean
+  active?: boolean
+  userType?: $Enums.UserType | null
+  ProviderOAuth?: Prisma.ProviderOAuthCreateNestedManyWithoutUserInput
+  portfolios?: Prisma.PortfolioCreateNestedOneWithoutAuthorInput
+  ratings?: Prisma.RatingCreateNestedManyWithoutUserInput
+  messageSent?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageReceived?: Prisma.MessageCreateNestedManyWithoutReceiverInput
+  FavorateProjects?: Prisma.FavorateProjectsCreateNestedManyWithoutUserInput
+  Comments?: Prisma.CommentsCreateNestedManyWithoutUserInput
+  Appreciate?: Prisma.AppreciateCreateNestedManyWithoutUserInput
+  Feedback?: Prisma.FeedbackCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutLikesInput = {
+  id?: string
+  username: string
+  email: string
+  password?: string | null
+  bio: string
+  linkedin?: string | null
+  github?: string | null
+  website?: string | null
+  contactEmail?: string | null
+  availableForHire?: boolean
+  active?: boolean
+  userType?: $Enums.UserType | null
+  ProviderOAuth?: Prisma.ProviderOAuthUncheckedCreateNestedManyWithoutUserInput
+  portfolios?: Prisma.PortfolioUncheckedCreateNestedOneWithoutAuthorInput
+  ratings?: Prisma.RatingUncheckedCreateNestedManyWithoutUserInput
+  messageSent?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageReceived?: Prisma.MessageUncheckedCreateNestedManyWithoutReceiverInput
+  FavorateProjects?: Prisma.FavorateProjectsUncheckedCreateNestedManyWithoutUserInput
+  Comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutUserInput
+  Appreciate?: Prisma.AppreciateUncheckedCreateNestedManyWithoutUserInput
+  Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutLikesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutLikesInput, Prisma.UserUncheckedCreateWithoutLikesInput>
+}
+
+export type UserUpsertWithoutLikesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutLikesInput, Prisma.UserUncheckedUpdateWithoutLikesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutLikesInput, Prisma.UserUncheckedCreateWithoutLikesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutLikesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutLikesInput, Prisma.UserUncheckedUpdateWithoutLikesInput>
+}
+
+export type UserUpdateWithoutLikesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
+  ProviderOAuth?: Prisma.ProviderOAuthUpdateManyWithoutUserNestedInput
+  portfolios?: Prisma.PortfolioUpdateOneWithoutAuthorNestedInput
+  ratings?: Prisma.RatingUpdateManyWithoutUserNestedInput
+  messageSent?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageReceived?: Prisma.MessageUpdateManyWithoutReceiverNestedInput
+  FavorateProjects?: Prisma.FavorateProjectsUpdateManyWithoutUserNestedInput
+  Comments?: Prisma.CommentsUpdateManyWithoutUserNestedInput
+  Appreciate?: Prisma.AppreciateUpdateManyWithoutUserNestedInput
+  Feedback?: Prisma.FeedbackUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutLikesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
+  ProviderOAuth?: Prisma.ProviderOAuthUncheckedUpdateManyWithoutUserNestedInput
+  portfolios?: Prisma.PortfolioUncheckedUpdateOneWithoutAuthorNestedInput
+  ratings?: Prisma.RatingUncheckedUpdateManyWithoutUserNestedInput
+  messageSent?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageReceived?: Prisma.MessageUncheckedUpdateManyWithoutReceiverNestedInput
+  FavorateProjects?: Prisma.FavorateProjectsUncheckedUpdateManyWithoutUserNestedInput
+  Comments?: Prisma.CommentsUncheckedUpdateManyWithoutUserNestedInput
   Appreciate?: Prisma.AppreciateUncheckedUpdateManyWithoutUserNestedInput
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -1280,6 +1595,9 @@ export type UserCreateWithoutFeedbackInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  contactEmail?: string | null
+  availableForHire?: boolean
+  active?: boolean
   userType?: $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthCreateNestedManyWithoutUserInput
   portfolios?: Prisma.PortfolioCreateNestedOneWithoutAuthorInput
@@ -1289,6 +1607,7 @@ export type UserCreateWithoutFeedbackInput = {
   FavorateProjects?: Prisma.FavorateProjectsCreateNestedManyWithoutUserInput
   Comments?: Prisma.CommentsCreateNestedManyWithoutUserInput
   Appreciate?: Prisma.AppreciateCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutFeedbackInput = {
@@ -1300,6 +1619,9 @@ export type UserUncheckedCreateWithoutFeedbackInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  contactEmail?: string | null
+  availableForHire?: boolean
+  active?: boolean
   userType?: $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthUncheckedCreateNestedManyWithoutUserInput
   portfolios?: Prisma.PortfolioUncheckedCreateNestedOneWithoutAuthorInput
@@ -1309,6 +1631,7 @@ export type UserUncheckedCreateWithoutFeedbackInput = {
   FavorateProjects?: Prisma.FavorateProjectsUncheckedCreateNestedManyWithoutUserInput
   Comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutUserInput
   Appreciate?: Prisma.AppreciateUncheckedCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutFeedbackInput = {
@@ -1336,6 +1659,9 @@ export type UserUpdateWithoutFeedbackInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthUpdateManyWithoutUserNestedInput
   portfolios?: Prisma.PortfolioUpdateOneWithoutAuthorNestedInput
@@ -1345,6 +1671,7 @@ export type UserUpdateWithoutFeedbackInput = {
   FavorateProjects?: Prisma.FavorateProjectsUpdateManyWithoutUserNestedInput
   Comments?: Prisma.CommentsUpdateManyWithoutUserNestedInput
   Appreciate?: Prisma.AppreciateUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFeedbackInput = {
@@ -1356,6 +1683,9 @@ export type UserUncheckedUpdateWithoutFeedbackInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthUncheckedUpdateManyWithoutUserNestedInput
   portfolios?: Prisma.PortfolioUncheckedUpdateOneWithoutAuthorNestedInput
@@ -1365,6 +1695,7 @@ export type UserUncheckedUpdateWithoutFeedbackInput = {
   FavorateProjects?: Prisma.FavorateProjectsUncheckedUpdateManyWithoutUserNestedInput
   Comments?: Prisma.CommentsUncheckedUpdateManyWithoutUserNestedInput
   Appreciate?: Prisma.AppreciateUncheckedUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRatingsInput = {
@@ -1376,6 +1707,9 @@ export type UserCreateWithoutRatingsInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  contactEmail?: string | null
+  availableForHire?: boolean
+  active?: boolean
   userType?: $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthCreateNestedManyWithoutUserInput
   portfolios?: Prisma.PortfolioCreateNestedOneWithoutAuthorInput
@@ -1385,6 +1719,7 @@ export type UserCreateWithoutRatingsInput = {
   Comments?: Prisma.CommentsCreateNestedManyWithoutUserInput
   Appreciate?: Prisma.AppreciateCreateNestedManyWithoutUserInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRatingsInput = {
@@ -1396,6 +1731,9 @@ export type UserUncheckedCreateWithoutRatingsInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  contactEmail?: string | null
+  availableForHire?: boolean
+  active?: boolean
   userType?: $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthUncheckedCreateNestedManyWithoutUserInput
   portfolios?: Prisma.PortfolioUncheckedCreateNestedOneWithoutAuthorInput
@@ -1405,6 +1743,7 @@ export type UserUncheckedCreateWithoutRatingsInput = {
   Comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutUserInput
   Appreciate?: Prisma.AppreciateUncheckedCreateNestedManyWithoutUserInput
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutUserInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRatingsInput = {
@@ -1432,6 +1771,9 @@ export type UserUpdateWithoutRatingsInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthUpdateManyWithoutUserNestedInput
   portfolios?: Prisma.PortfolioUpdateOneWithoutAuthorNestedInput
@@ -1441,6 +1783,7 @@ export type UserUpdateWithoutRatingsInput = {
   Comments?: Prisma.CommentsUpdateManyWithoutUserNestedInput
   Appreciate?: Prisma.AppreciateUpdateManyWithoutUserNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRatingsInput = {
@@ -1452,6 +1795,9 @@ export type UserUncheckedUpdateWithoutRatingsInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
   ProviderOAuth?: Prisma.ProviderOAuthUncheckedUpdateManyWithoutUserNestedInput
   portfolios?: Prisma.PortfolioUncheckedUpdateOneWithoutAuthorNestedInput
@@ -1461,6 +1807,7 @@ export type UserUncheckedUpdateWithoutRatingsInput = {
   Comments?: Prisma.CommentsUncheckedUpdateManyWithoutUserNestedInput
   Appreciate?: Prisma.AppreciateUncheckedUpdateManyWithoutUserNestedInput
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutUserNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -1477,6 +1824,7 @@ export type UserCountOutputType = {
   Comments: number
   Appreciate: number
   Feedback: number
+  likes: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1488,6 +1836,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   Comments?: boolean | UserCountOutputTypeCountCommentsArgs
   Appreciate?: boolean | UserCountOutputTypeCountAppreciateArgs
   Feedback?: boolean | UserCountOutputTypeCountFeedbackArgs
+  likes?: boolean | UserCountOutputTypeCountLikesArgs
 }
 
 /**
@@ -1556,6 +1905,13 @@ export type UserCountOutputTypeCountFeedbackArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.FeedbackWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountLikesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LikeWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1566,6 +1922,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   linkedin?: boolean
   github?: boolean
   website?: boolean
+  contactEmail?: boolean
+  availableForHire?: boolean
+  active?: boolean
   userType?: boolean
   ProviderOAuth?: boolean | Prisma.User$ProviderOAuthArgs<ExtArgs>
   portfolios?: boolean | Prisma.User$portfoliosArgs<ExtArgs>
@@ -1576,6 +1935,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   Comments?: boolean | Prisma.User$CommentsArgs<ExtArgs>
   Appreciate?: boolean | Prisma.User$AppreciateArgs<ExtArgs>
   Feedback?: boolean | Prisma.User$FeedbackArgs<ExtArgs>
+  likes?: boolean | Prisma.User$likesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1588,6 +1948,9 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   linkedin?: boolean
   github?: boolean
   website?: boolean
+  contactEmail?: boolean
+  availableForHire?: boolean
+  active?: boolean
   userType?: boolean
 }, ExtArgs["result"]["user"]>
 
@@ -1600,6 +1963,9 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   linkedin?: boolean
   github?: boolean
   website?: boolean
+  contactEmail?: boolean
+  availableForHire?: boolean
+  active?: boolean
   userType?: boolean
 }, ExtArgs["result"]["user"]>
 
@@ -1612,10 +1978,13 @@ export type UserSelectScalar = {
   linkedin?: boolean
   github?: boolean
   website?: boolean
+  contactEmail?: boolean
+  availableForHire?: boolean
+  active?: boolean
   userType?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "username" | "email" | "password" | "bio" | "linkedin" | "github" | "website" | "userType", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "username" | "email" | "password" | "bio" | "linkedin" | "github" | "website" | "contactEmail" | "availableForHire" | "active" | "userType", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   ProviderOAuth?: boolean | Prisma.User$ProviderOAuthArgs<ExtArgs>
   portfolios?: boolean | Prisma.User$portfoliosArgs<ExtArgs>
@@ -1626,6 +1995,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   Comments?: boolean | Prisma.User$CommentsArgs<ExtArgs>
   Appreciate?: boolean | Prisma.User$AppreciateArgs<ExtArgs>
   Feedback?: boolean | Prisma.User$FeedbackArgs<ExtArgs>
+  likes?: boolean | Prisma.User$likesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1643,6 +2013,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     Comments: Prisma.$CommentsPayload<ExtArgs>[]
     Appreciate: Prisma.$AppreciatePayload<ExtArgs>[]
     Feedback: Prisma.$FeedbackPayload<ExtArgs>[]
+    likes: Prisma.$LikePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1653,6 +2024,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     linkedin: string | null
     github: string | null
     website: string | null
+    contactEmail: string | null
+    availableForHire: boolean
+    active: boolean
     userType: $Enums.UserType | null
   }, ExtArgs["result"]["user"]>
   composites: {}
@@ -2057,6 +2431,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   Comments<T extends Prisma.User$CommentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$CommentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   Appreciate<T extends Prisma.User$AppreciateArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$AppreciateArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AppreciatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   Feedback<T extends Prisma.User$FeedbackArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$FeedbackArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  likes<T extends Prisma.User$likesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$likesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2094,6 +2469,9 @@ export interface UserFieldRefs {
   readonly linkedin: Prisma.FieldRef<"User", 'String'>
   readonly github: Prisma.FieldRef<"User", 'String'>
   readonly website: Prisma.FieldRef<"User", 'String'>
+  readonly contactEmail: Prisma.FieldRef<"User", 'String'>
+  readonly availableForHire: Prisma.FieldRef<"User", 'Boolean'>
+  readonly active: Prisma.FieldRef<"User", 'Boolean'>
   readonly userType: Prisma.FieldRef<"User", 'UserType'>
 }
     
@@ -2696,6 +3074,30 @@ export type User$FeedbackArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.FeedbackScalarFieldEnum | Prisma.FeedbackScalarFieldEnum[]
+}
+
+/**
+ * User.likes
+ */
+export type User$likesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Like
+   */
+  select?: Prisma.LikeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Like
+   */
+  omit?: Prisma.LikeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LikeInclude<ExtArgs> | null
+  where?: Prisma.LikeWhereInput
+  orderBy?: Prisma.LikeOrderByWithRelationInput | Prisma.LikeOrderByWithRelationInput[]
+  cursor?: Prisma.LikeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LikeScalarFieldEnum | Prisma.LikeScalarFieldEnum[]
 }
 
 /**

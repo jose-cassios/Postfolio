@@ -48,6 +48,8 @@
   gap: 14px;
 
   margin-bottom: 24px;
+  color: inherit;
+  text-decoration: none;
 
   strong {
     display: block;
@@ -66,6 +68,11 @@
 
   border-radius: 50%;
   object-fit: cover;
+  display: grid;
+  place-items: center;
+  background: $color-primary-100;
+  color: $color-primary-600;
+  font-weight: 700;
 }
 
 .actions {
@@ -106,6 +113,12 @@
       background: $color-primary-600;
     }
   }
+
+  .active {
+    background: $color-primary-100;
+    color: $color-primary-600;
+    border-color: $color-primary-500;
+  }
 }
 
 /* META INFO */
@@ -136,7 +149,7 @@ hr {
 .section {
   margin-bottom: 32px;
 
-  h3 {
+  h2, h3 {
     font-size: 1rem;
     margin-bottom: 12px;
   }
@@ -201,4 +214,65 @@ hr {
     color: $color-primary-500;
     transform: translateX(-2px);
   }
+}
+
+.category {
+  display: inline-flex;
+  padding: 5px 10px;
+  margin-bottom: 10px;
+  border-radius: 999px;
+  background: $color-primary-100;
+  color: $color-primary-600;
+  font-size: .75rem;
+}
+
+.notice, .page-state {
+  padding: 16px;
+  border-radius: 10px;
+  background: $color-primary-100;
+  margin-bottom: 20px;
+}
+
+.links { display: flex; flex-wrap: wrap; gap: 12px; }
+.links h2 { width: 100%; }
+
+.feedback-box, .comments {
+  border-top: 1px solid $color-border-default;
+  padding-top: 28px;
+
+  textarea {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid $color-border-default;
+    border-radius: 8px;
+    resize: vertical;
+  }
+}
+
+.primary-action, .load-more {
+  margin-top: 10px;
+  padding: 9px 15px;
+  border: 0;
+  border-radius: 8px;
+  background: $color-primary-500;
+  color: white;
+  cursor: pointer;
+}
+
+.comment {
+  padding: 14px 0;
+  border-bottom: 1px solid $color-border-default;
+}
+
+.public-feedback blockquote {
+  margin: 12px 0;
+  padding: 14px 18px;
+  border-left: 3px solid $color-primary-500;
+  background: $color-primary-100;
+  border-radius: 0 10px 10px 0;
+
+  footer { color: $color-text-secondary; font-size: .82rem; }
 }

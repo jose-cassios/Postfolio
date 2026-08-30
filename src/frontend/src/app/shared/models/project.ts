@@ -2,11 +2,13 @@ export interface Project {
   id: string;
   title: string;
   slug?: string;
-  imageUrl: string;
+  imageUrl: string | null;
 
   likes: number;
   views: number;
   commentsCount: number;
+  appreciates?: number;
+  saves?: number;
   createdAt: Date;
 
   author?: {
@@ -14,7 +16,13 @@ export interface Project {
     avatar?: string;
     username?: string;
     bio?: string;
+    availableForHire?: boolean;
   };
   technologies?: string[];
+  tags?: string[];
   category?: string;
+  description?: string;
+  gallery?: string[];
+  githubLink?: string | null;
+  externalLink?: string | null;
 }

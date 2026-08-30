@@ -1,24 +1,20 @@
-import { CreateCompetitionDTO } from "@competition/api/CompetitionDTO";
+import { CompetitionContract, CreateCompetitionDTO } from "@competition/api/CompetitionDTO";
 import { Competition } from "@competition/domain/entities/Competition";
 // import Work from "@domain/entities/work/Work";
-import { ProjectContract } from "@shared/contracts/ProjectContracts";
 
 export interface ICompetitionService {
-  create(dto: CreateCompetitionDTO): Promise<Competition>;
+  create(dto: CreateCompetitionDTO, userId: string): Promise<Competition>;
   update(competition: Competition): Promise<Competition>;
   delete(id: string): Promise<Competition | null>;
 
-  subscribeProject(competitionId: string, projectId: string): Promise<void>;
-  unsubscribeProject(competitionId: string, projectId: string): Promise<void>;
+  subscribeProject(competitionId: string, projectId: string, userId: string): Promise<void>;
+  unsubscribeProject(competitionId: string, projectId: string, userId: string): Promise<void>;
+  vote(competitionId: string, projectId: string, userId: string): Promise<void>;
 
   findMany(): Promise<Competition[]>;
   findById(id: string): Promise<Competition | null>;
-
-  findSubscribedProjects(competitionId: string): Promise<ProjectContract[]>;
-  findProjecWithDetails(
-    competitionId: string,
-    projectId: string
-  ): Promise<ProjectContract | null>;
+  findContracts(): Promise<CompetitionContract[]>;
+  findContractById(id: string): Promise<CompetitionContract>;
 
   // createRating(ratingDto: CreaetRatingDTO): Promise<Rating>;
   // updateRating(rating: Rating): Promise<Rating>;

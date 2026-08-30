@@ -70,7 +70,7 @@ export class CommentsController {
   async getComments(req: GetCommentsRequest, reply: FastifyReply) {
     const dto: GetCommentsDTO = {
       postId: req.params.postId,
-      cursor: req.query.cursor,
+      cursor: req.query.cursor ?? null,
     };
 
     const response = await this.service.getComments(dto);

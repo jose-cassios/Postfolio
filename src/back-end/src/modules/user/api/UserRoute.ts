@@ -6,6 +6,7 @@ import {
   CreateUserRequest,
   userRouteSchema,
   UpdateUserRequest,
+  PublicProfileRequest,
 } from "@user/api/UserSchema";
 
 function userRoutesPlugin(
@@ -14,7 +15,17 @@ function userRoutesPlugin(
 ) {
   app.get("", (req, reply) => userController.hello(req, reply));
 
-  app.post("/all", (req, reply) => userController.getAll(req, reply));
+  app.get(
+    "/admin/users",
+    { preValidation: UserMiddle.authenticate },
+    (req, reply) => userController.getAll(req, reply)
+  );
+
+  app.put(
+    "/admin/users/:id/status",
+    { preValidation: UserMiddle.authenticate },
+    (req, reply) => userController.setActive(req, reply)
+  );
 
   app.post("", { schema: userRouteSchema.create }, (req, reply) =>
     userController.create(req as CreateUserRequest, reply)
@@ -49,6 +60,13 @@ function userRoutesPlugin(
     "/profile",
     { preValidation: UserMiddle.authenticate },
     (req, reply) => userController.getProfile(req, reply)
+  );
+
+  app.get(
+    "/profile/:username",
+    { schema: userRouteSchema.publicProfile },
+    (req, reply) =>
+      userController.getPublicProfile(req as PublicProfileRequest, reply)
   );
 }
 

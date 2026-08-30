@@ -1,101 +1,43 @@
-import { FastifyInstance } from "fastify";
-import { UserMiddle } from "@infrastructure/middleware/UserMiddle";
 import { CompetitionController } from "@competition/api/CompetitionController";
 import {
+  CompetitionProjectRequest,
   CreateCompetitionRequest,
-  UpdateCompetitionRequest,
+  competitonRouteSchema,
 } from "@competition/api/CompetitionSchema";
+import { UserMiddle } from "@infrastructure/middleware/UserMiddle";
+import { FastifyInstance } from "fastify";
 
-function competitionRoutesPlugin(
-  app: FastifyInstance,
-  competitionController: CompetitionController
-) {
-  app.post("", { preValidation: UserMiddle.authenticate }, (req, rep) =>
-    competitionController.create(req as CreateCompetitionRequest, rep)
+function competitionRoutesPlugin(app: FastifyInstance, controller: CompetitionController) {
+  app.get("", (req, rep) => controller.getAll(req, rep));
+  app.post(
+    "",
+    { schema: competitonRouteSchema.create, preValidation: UserMiddle.authenticate },
+    (req, rep) => controller.create(req as CreateCompetitionRequest, rep)
   );
-
-  app.put(
-    "/:competitionId",
-    { preValidation: UserMiddle.authenticate },
-    (req, rep) =>
-      competitionController.update(req as UpdateCompetitionRequest, rep)
+  app.get("/:competitionId", { schema: competitonRouteSchema.id }, (req, rep) =>
+    controller.getCompetition(req, rep)
   );
-
+  app.post(
+    "/:competitionId/projects/:projectId",
+    { schema: competitonRouteSchema.project, preValidation: UserMiddle.authenticate },
+    (req, rep) => controller.subscribeProject(req as CompetitionProjectRequest, rep)
+  );
   app.delete(
-    "/:competitionId",
-    { preValidation: UserMiddle.authenticate },
-    (req, rep) => competitionController.getCompetition(req, rep)
+    "/:competitionId/projects/:projectId",
+    { schema: competitonRouteSchema.project, preValidation: UserMiddle.authenticate },
+    (req, rep) => controller.unsubscribeProject(req as CompetitionProjectRequest, rep)
   );
-
-  // app.post(
-  //   "/:competitionId/work/:workId",
-  //   {
-  //     preValidation: UserMiddle.authenticate,
-  //   },
-  //   (req, rep) => competitionController.subscribeWork(req, rep)
-  // );
-
-  // app.delete(
-  //   "/:competitionId/work/:workId",
-  //   {
-  //     preValidation: UserMiddle.authenticate,
-  //   },
-  //   (req, rep) => competitionController.unsubscribeWork(req, rep)
-  // );
-
-  app.post("/all", { preValidation: UserMiddle.authenticate }, (req, rep) =>
-    competitionController.getAll(req, rep)
-  );
-
   app.post(
-    "/:competitionId",
-    { preValidation: UserMiddle.authenticate },
-    (req, rep) => competitionController.getCompetition(req, rep)
+    "/:competitionId/votes/:projectId",
+    { schema: competitonRouteSchema.project, preValidation: UserMiddle.authenticate },
+    (req, rep) => controller.vote(req as CompetitionProjectRequest, rep)
   );
-
-  app.post(
-    "/:competitionId/project",
-    { preValidation: UserMiddle.authenticate },
-    (req, rep) =>
-      competitionController.getProjectDetailsForCompetition(req, rep)
-  );
-
-  app.post(
-    "/:competitionId/work/:projectId/details",
-    { preValidation: UserMiddle.authenticate },
-    (req, rep) => competitionController.getProjectDetails(req, rep)
-  );
-
-  // About Rating
-  // app.post(
-  //   "/:competitionId/work/:workId/rating",
-  //   { preValidation: UserMiddle.authenticate },
-  //   (req, rep) => competitionController.createRating(req, rep)
-  // );
-
-  // app.put(
-  //   "/:competition/works/:work/ratings/:rating",
-  //   { preValidation: UserMiddle.authenticate },
-  //   (req, rep) => competitionController.updateRating(req, rep)
-  // );
-
-  // app.delete(
-  //   "/:competition/work/:work/rating/:rating",
-  //   { preValidation: UserMiddle.authenticate },
-  //   (req, rep) => competitionController.deleteRating(req, rep)
-  // );
 }
 
 export class CompetitionRoute {
-  public static register(
-    app: FastifyInstance,
-    competitionController: CompetitionController
-  ) {
-    app.register(
-      (data) => competitionRoutesPlugin(data, competitionController),
-      {
-        prefix: "api/competition",
-      }
-    );
+  static register(app: FastifyInstance, controller: CompetitionController) {
+    app.register((instance) => competitionRoutesPlugin(instance, controller), {
+      prefix: "api/competition",
+    });
   }
 }

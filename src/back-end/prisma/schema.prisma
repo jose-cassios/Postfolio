@@ -17,6 +17,9 @@ model User {
   linkedin      String?
   github        String?
   website       String?
+  contactEmail  String?
+  availableForHire Boolean @default(false)
+  active        Boolean         @default(true)
   userType      UserType?
   ProviderOAuth ProviderOAuth[]
   portfolios    Portfolio?
@@ -28,6 +31,7 @@ model User {
   Comments         Comments[]
   Appreciate       Appreciate[]
   Feedback         Feedback[]
+  likes            Like[]
 
   @@map("tb_user")
 }
@@ -77,6 +81,12 @@ model Competition {
   createdAt    DateTime             @default(now())
   startsAt     DateTime?
   endsAt       DateTime?
+  category     ProjectCategory @default(OTHER)
+  registrationStartsAt DateTime?
+  registrationEndsAt   DateTime?
+  votingStartsAt       DateTime?
+  votingEndsAt         DateTime?
+  resultsAt             DateTime?
   worksDetails ProjectCompDetails[]
   Rating       Rating[]
 
@@ -89,6 +99,13 @@ model Project {
   description              String
   category                 ProjectCategory
   githublink               String?
+  externalLink             String?
+  coverImageUrl            String?
+  galleryUrls              String[]             @default([])
+  tools                    String[]             @default([])
+  tags                     String[]             @default([])
+  createdAt                DateTime             @default(now())
+  updatedAt                DateTime             @updatedAt
   portfolioId              String
   portfolio                Portfolio            @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
   Rating                   Rating[]
@@ -97,6 +114,7 @@ model Project {
   Comments                 Comments[]
   Appreciate               Appreciate[]
   Feedback                 Feedback[]
+  likes                    Like[]
   AppreciateProjectDetails PostMetrics?
 
   @@map("tb_project")
@@ -154,6 +172,19 @@ model Comments {
   @@map("tb_comments")
 }
 
+model Like {
+  id        String   @id @default(uuid())
+  userId    String
+  projectId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, projectId])
+  @@map("tb_like")
+}
+
 model Feedback {
   id           String       @id @default(uuid())
   content      String
@@ -181,6 +212,7 @@ model Rating {
   competition          Competition        @relation(fields: [competitionId], references: [id], onDelete: Cascade)
   portfolioDetails     ProjectCompDetails @relation(fields: [projectCompDetailsID], references: [id], onDelete: Cascade)
 
+  @@unique([userId, competitionId])
   @@unique([userId, competitionId, projectId])
   @@map("tb_rating")
 }

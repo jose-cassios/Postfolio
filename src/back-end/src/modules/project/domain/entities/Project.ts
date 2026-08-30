@@ -8,7 +8,14 @@ export class Project {
     private description: string,
     private category: ProjectCategory,
     private portfolioId: string,
-    private githubLink: string | null = null
+    private githubLink: string | null = null,
+    private externalLink: string | null = null,
+    private coverImageUrl: string | null = null,
+    private galleryUrls: string[] = [],
+    private tools: string[] = [],
+    private tags: string[] = [],
+    private createdAt: Date = new Date(),
+    private updatedAt: Date = new Date()
   ) {}
 
   // Atualização seletiva
@@ -28,6 +35,12 @@ export class Project {
     if (dto.githublink !== undefined) {
       this.githubLink = dto.githublink;
     }
+
+    if (dto.externalLink !== undefined) this.externalLink = dto.externalLink;
+    if (dto.coverImageUrl !== undefined) this.coverImageUrl = dto.coverImageUrl;
+    if (dto.galleryUrls !== undefined) this.galleryUrls = dto.galleryUrls;
+    if (dto.tools !== undefined) this.tools = dto.tools;
+    if (dto.tags !== undefined) this.tags = dto.tags;
   }
 
   // Getters
@@ -54,4 +67,12 @@ export class Project {
   public getGithubLink(): string | null {
     return this.githubLink;
   }
+
+  public getExternalLink(): string | null { return this.externalLink; }
+  public getCoverImageUrl(): string | null { return this.coverImageUrl; }
+  public getGalleryUrls(): string[] { return this.galleryUrls; }
+  public getTools(): string[] { return this.tools; }
+  public getTags(): string[] { return this.tags; }
+  public getCreatedAt(): Date { return this.createdAt; }
+  public getUpdatedAt(): Date { return this.updatedAt; }
 }

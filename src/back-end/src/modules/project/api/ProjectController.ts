@@ -3,6 +3,9 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import {
   CreateProjectRequest,
   UpdateProjectRequest,
+  ProjectListRequest,
+  SetLikeRequest,
+  SetAppreciationRequest,
 } from "@project/api/ProjectSchema";
 import { CreateProjectDTO, UpdateProjectDTO } from "@project/api/ProjectDTO";
 import { BadRequest } from "@shared/error/HttpError";
@@ -18,18 +21,20 @@ export class WorkController {
   ) {}
 
   async create(req: CreateProjectRequest, reply: FastifyReply) {
-    const dto: CreateProjectDTO = {
+    const userId = req.user?.id;
+    if (!userId) throw new BadRequest("Usuario autenticado e obrigatorio");
+
+    const dto: Omit<CreateProjectDTO, "portfolioId"> = {
       ...req.body,
       category: ProjectCategoryMapper.fromSchemaToDomain(req.body.category),
-      portfolioId: req.body.portfolio,
     };
-
-    const response = await this.workService.create(dto);
-
-    reply.send(response);
+    reply.code(201).send(await this.workService.create(dto, userId));
   }
 
   async update(req: UpdateProjectRequest, reply: FastifyReply) {
+    const userId = req.user?.id;
+    if (!userId) throw new BadRequest("Usuario autenticado e obrigatorio");
+
     const dto: UpdateProjectDTO = {
       ...req.body,
       id: req.params.projectId,
@@ -37,34 +42,81 @@ export class WorkController {
         ? ProjectCategoryMapper.fromSchemaToDomain(req.body.category)
         : undefined,
     };
-
-    const response = await this.workService.update(dto);
-
-    reply.send(response);
+    reply.send(await this.workService.update(dto, userId));
   }
 
   async delete(req: FastifyRequest, reply: FastifyReply) {
-    const { projectId } = req.params as { projectId: string };
+    const userId = req.user?.id;
+    const { projectId } = req.params as { projectId?: string };
+    if (!userId) throw new BadRequest("Usuario autenticado e obrigatorio");
+    if (!projectId) throw new BadRequest("ID do projeto e necessario");
 
-    if (!projectId) throw new BadRequest("ID do trabalho é necessario");
-
-    const response = await this.workService.delete(projectId);
-
-    reply.send(response);
+    reply.send(await this.workService.delete(projectId, userId));
   }
 
   async getAll(req: FastifyRequest, reply: FastifyReply) {
-    const response = await this.workService.findMany();
-    reply.send(response);
+    reply.send(await this.workService.findMany());
   }
 
   async getById(req: FastifyRequest, reply: FastifyReply) {
-    const { work } = req.params as { work: string };
+    const { projectId } = req.params as { projectId?: string };
+    if (!projectId) throw new BadRequest("ID do projeto e necessario");
 
-    if (!work) throw new BadRequest("ID do trabalho é necessario");
+    reply.send(await this.workService.findPublicById(projectId));
+  }
 
-    const response = await this.workService.findById(work);
+  async list(req: ProjectListRequest, reply: FastifyReply) {
+    const query = {
+      ...req.query,
+      category: req.query.category
+        ? ProjectCategoryMapper.fromSchemaToDomain(req.query.category)
+        : undefined,
+    };
+    reply.send(await this.workService.findPublicMany(query));
+  }
 
-    reply.send(response);
+  async getContact(req: FastifyRequest, reply: FastifyReply) {
+    const { projectId } = req.params as { projectId?: string };
+    if (!projectId) throw new BadRequest("ID do projeto e necessario");
+    reply.send(await this.workService.findOwnerContact(projectId));
+  }
+
+  async setLike(req: SetLikeRequest, reply: FastifyReply) {
+    const userId = req.user?.id;
+    if (!userId) throw new BadRequest("Usuario autenticado e obrigatorio");
+    reply.send(
+      await this.workService.setLike(req.params.projectId, userId, req.body.liked)
+    );
+  }
+
+  async setAppreciation(req: SetAppreciationRequest, reply: FastifyReply) {
+    const userId = req.user?.id;
+    if (!userId) throw new BadRequest("Usuario autenticado e obrigatorio");
+    reply.send(
+      await this.workService.setAppreciation(
+        req.params.projectId,
+        userId,
+        req.body.appreciated,
+        req.body.feedback
+      )
+    );
+  }
+
+  async getInteraction(req: FastifyRequest, reply: FastifyReply) {
+    const userId = req.user?.id;
+    const { projectId } = req.params as { projectId?: string };
+    if (!userId || !projectId) {
+      throw new BadRequest("Usuario e projeto sao obrigatorios");
+    }
+    reply.send(await this.workService.getInteraction(projectId, userId));
+  }
+
+  async getPrivateFeedback(req: FastifyRequest, reply: FastifyReply) {
+    const userId = req.user?.id;
+    const { projectId } = req.params as { projectId?: string };
+    if (!userId || !projectId) {
+      throw new BadRequest("Usuario e projeto sao obrigatorios");
+    }
+    reply.send(await this.workService.findPrivateFeedback(projectId, userId));
   }
 }

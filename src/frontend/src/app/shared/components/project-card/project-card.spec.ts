@@ -14,6 +14,15 @@ describe('ProjectCardComponent', () => {
 
     fixture = TestBed.createComponent(ProjectCardComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('project', {
+      id: 'project-1',
+      title: 'Projeto de teste',
+      imageUrl: null,
+      likes: 0,
+      views: 0,
+      commentsCount: 0,
+      createdAt: new Date(),
+    });
     await fixture.whenStable();
   });
 

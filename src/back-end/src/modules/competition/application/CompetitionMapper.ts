@@ -1,5 +1,6 @@
 import { Competition as CompetitionModel } from "@PrismaGen/client";
 import { Competition } from "@competition/domain/entities/Competition";
+import { ProjectCategoryMapper } from "@project/application/ProjectMapper";
 
 export const CompetitionMapper = {
   fromPrismaToDomain(model: CompetitionModel): Competition {
@@ -9,7 +10,13 @@ export const CompetitionMapper = {
       model.description,
       model.createdAt,
       model.startsAt,
-      model.endsAt
+      model.endsAt,
+      ProjectCategoryMapper.fromPrismaToDomain(model.category),
+      model.registrationStartsAt,
+      model.registrationEndsAt,
+      model.votingStartsAt,
+      model.votingEndsAt,
+      model.resultsAt
     );
   },
   fromDomainToPrisma(domain: Competition): CompetitionModel {
@@ -20,6 +27,12 @@ export const CompetitionMapper = {
       createdAt: domain.createdAt,
       startsAt: domain.startsAt,
       endsAt: domain.endsAt,
+      category: ProjectCategoryMapper.fromDomainToPrisma(domain.category),
+      registrationStartsAt: domain.registrationStartsAt,
+      registrationEndsAt: domain.registrationEndsAt,
+      votingStartsAt: domain.votingStartsAt,
+      votingEndsAt: domain.votingEndsAt,
+      resultsAt: domain.resultsAt,
     };
   },
 };
