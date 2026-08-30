@@ -1,5 +1,5 @@
 import { Project } from "@project/domain/entities/Project";
-import { Forbidden, NotFound, TooManyRequests } from "@shared/error/HttpError";
+import { BadRequest, Forbidden, NotFound, TooManyRequests } from "@shared/error/HttpError";
 import { CreateProjectDTO, ProjectListQuery, UpdateProjectDTO } from "@project/api/ProjectDTO";
 import { ProjectMapper } from "@project/application/ProjectMapper";
 import { IProjectService } from "@project/domain/interfaces/IProjectService";
@@ -7,6 +7,7 @@ import { IProjectRepository } from "@project/domain/interfaces/IProjectRepositor
 import { IPortfolioPort } from "@portfolio/domain/interfaces/PortfolioPort";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@compositionRoot/Types";
+import { ProjectStatus } from "@project/domain/valueObject/ProjectContent";
 
 @injectable()
 export class ProjectService implements IProjectService {
@@ -25,8 +26,9 @@ export class ProjectService implements IProjectService {
 
     const latestProject = await this.repository.findLatestByPortfolio(portfolioId);
     if (
+      createProjectDto.status === ProjectStatus.PUBLISHED &&
       latestProject &&
-      Date.now() - latestProject.getCreatedAt().getTime() < 60_000
+      Date.now() - (latestProject.getPublishedAt() ?? latestProject.getCreatedAt()).getTime() < 60_000
     ) {
       throw new TooManyRequests(
         "Aguarde um minuto antes de publicar outro projeto."
@@ -37,6 +39,9 @@ export class ProjectService implements IProjectService {
       ...createProjectDto,
       portfolioId,
     });
+    if (project.getStatus() === ProjectStatus.PUBLISHED && !project.isReadyToPublish()) {
+      throw new BadRequest("Adicione um titulo e pelo menos um bloco antes de publicar.");
+    }
     return await this.repository.create(project);
   }
 
@@ -51,7 +56,18 @@ export class ProjectService implements IProjectService {
       throw new Forbidden("Voce so pode editar os proprios projetos.");
     }
 
+    const isLegacyUpdate =
+      updateProjectDto.status === undefined &&
+      updateProjectDto.contentBlocks === undefined &&
+      project.getContentBlocks().length === 0;
     project.update(updateProjectDto);
+    if (
+      project.getStatus() === ProjectStatus.PUBLISHED &&
+      !project.isReadyToPublish() &&
+      !isLegacyUpdate
+    ) {
+      throw new BadRequest("Adicione um titulo e pelo menos um bloco antes de publicar.");
+    }
     return await this.repository.update(project);
   }
 
@@ -84,6 +100,19 @@ export class ProjectService implements IProjectService {
     return project;
   }
 
+  async findMine(userId: string) {
+    return await this.repository.findByOwner(userId);
+  }
+
+  async findForEditor(id: string, userId: string) {
+    const project = await this.repository.findById(id);
+    if (!project) throw new NotFound("O projeto nao existe");
+    if (!(await this.portfolioPort.isOwnedBy(project.getPortfolioId(), userId))) {
+      throw new Forbidden("Voce so pode editar os proprios projetos.");
+    }
+    return ProjectMapper.fromDomainToContract(project);
+  }
+
   async findOwnerContact(id: string) {
     const contact = await this.repository.findOwnerContact(id);
     if (!contact) {
@@ -93,7 +122,8 @@ export class ProjectService implements IProjectService {
   }
 
   async setLike(id: string, userId: string, liked: boolean) {
-    if (!(await this.repository.findById(id))) {
+    const project = await this.repository.findById(id);
+    if (!project || project.getStatus() !== ProjectStatus.PUBLISHED) {
       throw new NotFound("O projeto nao existe");
     }
     return await this.repository.setLike(id, userId, liked);
@@ -105,7 +135,8 @@ export class ProjectService implements IProjectService {
     appreciated: boolean,
     feedback?: { content: string; type: "PUBLIC" | "PRIVATE" }
   ) {
-    if (!(await this.repository.findById(id))) {
+    const project = await this.repository.findById(id);
+    if (!project || project.getStatus() !== ProjectStatus.PUBLISHED) {
       throw new NotFound("O projeto nao existe");
     }
     return await this.repository.setAppreciation(
@@ -117,7 +148,8 @@ export class ProjectService implements IProjectService {
   }
 
   async getInteraction(id: string, userId: string) {
-    if (!(await this.repository.findById(id))) {
+    const project = await this.repository.findById(id);
+    if (!project || project.getStatus() !== ProjectStatus.PUBLISHED) {
       throw new NotFound("O projeto nao existe");
     }
     return await this.repository.getInteraction(id, userId);

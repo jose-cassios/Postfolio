@@ -4,21 +4,9 @@ import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../features/auth/services/auth.service';
 import { Project } from '../models/project';
 import { ProjectDetails } from '../models/project-details';
+import { ProjectDocument, ProjectEditorPayload } from '../models/project-content';
 
-interface ProjectApiContract {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  githubLink: string | null;
-  externalLink: string | null;
-  coverImageUrl: string | null;
-  galleryUrls: string[];
-  tools: string[];
-  tags: string[];
-  createdAt: string;
-  updatedAt: string;
-  portfolioId: string;
+interface ProjectApiContract extends ProjectDocument {
   author?: {
     id: string;
     username: string;
@@ -105,6 +93,26 @@ export class ProjectService {
     return this.api
       .get<ProjectApiContract>(`project/${encodeURIComponent(id)}`)
       .pipe(map((project) => this.mapDetails(project)));
+  }
+
+  getForEditor(id: string) {
+    return this.api.get<ProjectDocument>(
+      `project/${encodeURIComponent(id)}/editor`,
+      undefined,
+      this.auth.authOptions(),
+    );
+  }
+
+  createProject(payload: ProjectEditorPayload) {
+    return this.api.post<ProjectDocument>('project', payload, this.auth.authOptions());
+  }
+
+  updateProject(id: string, payload: ProjectEditorPayload) {
+    return this.api.put<ProjectDocument>(
+      `project/${encodeURIComponent(id)}`,
+      payload,
+      this.auth.authOptions(),
+    );
   }
 
   getInteraction(id: string) {
@@ -211,6 +219,10 @@ export class ProjectService {
       gallery: project.galleryUrls,
       githubLink: project.githubLink,
       externalLink: project.externalLink,
+      contentBlocks: project.contentBlocks ?? [],
+      contentMarkdown: project.contentMarkdown ?? '',
+      status: project.status ?? 'PUBLISHED',
+      publishedAt: project.publishedAt ?? project.createdAt,
     };
   }
 
@@ -224,7 +236,10 @@ export class ProjectService {
       appreciates: project.metrics?.appreciates ?? 0,
       saves: project.metrics?.saves ?? 0,
       tags: project.tags,
-      publishedAt: project.createdAt,
+      publishedAt: project.publishedAt ?? project.createdAt,
+      contentBlocks: project.contentBlocks ?? [],
+      contentMarkdown: project.contentMarkdown ?? '',
+      status: project.status ?? 'PUBLISHED',
       publicFeedback: project.publicFeedback ?? [],
     };
   }

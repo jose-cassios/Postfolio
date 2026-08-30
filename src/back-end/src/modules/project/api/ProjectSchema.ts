@@ -1,12 +1,65 @@
 import { FastifyRequest } from "fastify";
 import { z } from "zod";
 
-const CreateProjectBodySchema = z.object({
-  name: z
-    .string()
-    .min(3, "Nome deve ter pelo menos 3 caracteres")
-    .max(100, "Nome muito longo"),
-  description: z.string().max(500, "Descrição muito longa"),
+const HttpUrlSchema = z
+  .string()
+  .url({ message: "Informe uma URL HTTP valida", protocol: /^https?$/ });
+const DraftUrlSchema = z.union([z.literal(""), HttpUrlSchema]);
+
+const BlockIdSchema = z.string().trim().min(1).max(80);
+const MediaWidthSchema = z.enum(["STANDARD", "WIDE", "FULL"]);
+
+const TextBlockSchema = z.object({
+  id: BlockIdSchema,
+  type: z.literal("TEXT"),
+  content: z.string().max(5_000, "O bloco de texto e muito longo"),
+  variant: z.enum(["TITLE", "HEADING", "BODY", "QUOTE"]).default("BODY"),
+  alignment: z.enum(["LEFT", "CENTER", "RIGHT"]).default("LEFT"),
+  bold: z.boolean().default(false),
+  italic: z.boolean().default(false),
+});
+
+const ImageBlockSchema = z.object({
+  id: BlockIdSchema,
+  type: z.literal("IMAGE"),
+  url: DraftUrlSchema,
+  alt: z.string().trim().max(160).default(""),
+  caption: z.string().trim().max(240).default(""),
+  width: MediaWidthSchema.default("WIDE"),
+});
+
+const VideoBlockSchema = z.object({
+  id: BlockIdSchema,
+  type: z.literal("VIDEO"),
+  url: DraftUrlSchema,
+  posterUrl: DraftUrlSchema.nullable().optional().default(null),
+  caption: z.string().trim().max(240).default(""),
+  width: MediaWidthSchema.default("WIDE"),
+});
+
+const CarouselBlockSchema = z.object({
+  id: BlockIdSchema,
+  type: z.literal("CAROUSEL"),
+  items: z
+    .array(z.object({
+      url: DraftUrlSchema,
+      alt: z.string().trim().max(160).default(""),
+    }))
+    .max(10, "O carrossel aceita no maximo dez imagens"),
+  caption: z.string().trim().max(240).default(""),
+  width: MediaWidthSchema.default("WIDE"),
+});
+
+const ProjectBlockSchema = z.discriminatedUnion("type", [
+  TextBlockSchema,
+  ImageBlockSchema,
+  VideoBlockSchema,
+  CarouselBlockSchema,
+]);
+
+const ProjectBodyFields = z.object({
+  name: z.string().trim().max(100, "Nome muito longo"),
+  description: z.string().trim().max(500, "Descricao muito longa").default(""),
   category: z.enum([
     "FULLSTACK",
     "FRONTEND",
@@ -16,15 +69,53 @@ const CreateProjectBodySchema = z.object({
     "DATA_ANALYSIS",
     "OTHER",
   ]),
-  githublink: z.string().url("O GitHub deve ser uma URL valida").nullable().optional(),
-  externalLink: z.string().url("O link externo deve ser uma URL valida").nullable().optional(),
-  coverImageUrl: z.string().url("A capa deve ser uma URL valida").nullable().optional(),
-  galleryUrls: z
-    .array(z.string().url("Cada imagem deve ser uma URL valida"))
-    .max(3, "Use no maximo tres imagens de amostra")
-    .default([]),
+  githublink: HttpUrlSchema.nullable().optional(),
+  externalLink: HttpUrlSchema.nullable().optional(),
+  coverImageUrl: HttpUrlSchema.nullable().optional(),
+  galleryUrls: z.array(HttpUrlSchema).max(10).default([]),
   tools: z.array(z.string().trim().min(1).max(40)).max(20).default([]),
   tags: z.array(z.string().trim().min(1).max(30)).max(20).default([]),
+  contentBlocks: z.array(ProjectBlockSchema).max(40).default([]),
+  status: z.enum(["DRAFT", "PUBLISHED"]).optional(),
+});
+
+const CreateProjectBodySchema = ProjectBodyFields.superRefine((project, context) => {
+  if (project.status === "DRAFT") return;
+
+  if (project.name.length < 3) {
+    context.addIssue({
+      code: "custom",
+      path: ["name"],
+      message: "Nome deve ter pelo menos 3 caracteres",
+    });
+  }
+
+  // Clientes anteriores ao editor não enviam status nem blocos. Durante o
+  // rollout eles continuam criando o formato legado como publicado.
+  if (project.status === undefined) return;
+
+  if (!project.contentBlocks.length) {
+    context.addIssue({
+      code: "custom",
+      path: ["contentBlocks"],
+      message: "Adicione pelo menos um bloco antes de publicar",
+    });
+  }
+  project.contentBlocks.forEach((block, index) => {
+    const path = ["contentBlocks", index];
+    const isIncomplete =
+      (block.type === "TEXT" && !block.content.trim()) ||
+      ((block.type === "IMAGE" || block.type === "VIDEO") && !block.url) ||
+      (block.type === "CAROUSEL" &&
+        block.items.filter((item) => Boolean(item.url)).length < 2);
+    if (isIncomplete) {
+      context.addIssue({
+        code: "custom",
+        path,
+        message: "Complete ou remova os blocos vazios antes de publicar",
+      });
+    }
+  });
 });
 
 type CreateProjectRequest = FastifyRequest<{
@@ -32,10 +123,10 @@ type CreateProjectRequest = FastifyRequest<{
 }>;
 
 const UpdateProjectParamsSchema = z.object({
-  projectId: z.string().uuid("ID do trabalho é obrigatorio"),
+  projectId: z.string().uuid("ID do trabalho e obrigatorio"),
 });
 
-const UpdateProjectBodySchema = CreateProjectBodySchema.partial();
+const UpdateProjectBodySchema = ProjectBodyFields.partial();
 
 const ProjectListQuerySchema = z.object({
   q: z.string().trim().max(100).optional(),
@@ -78,36 +169,13 @@ type SetAppreciationRequest = FastifyRequest<{
   Body: z.infer<typeof SetAppreciationBodySchema>;
 }>;
 
-// const UpdateProjectBodySchema = z.object({
-//   name: z
-//     .string({ message: "O nome é obrigatorio" })
-//     .min(3, "O nome é muito curto")
-//     .max(100, "O nome é muito grande"),
-//   description: z
-//     .string({ message: "A descrição é obrigatorio" })
-//     .max(500, "Descrição muito longa"),
-//   category: z.enum([
-//     "FULLSTACK",
-//     "FRONTEND",
-//     "BACKEND",
-//     "DESIGN",
-//     "MOBILE",
-//     "DATA_ANALYSIS",
-//     "OTHER",
-//   ]),
-//   githublink: z.string().optional(),
-//   portfolio: z.string({ message: "O portfolio é obrigatorio" }).uuid(),
-// });
-
 type UpdateProjectRequest = FastifyRequest<{
   Body: z.infer<typeof UpdateProjectBodySchema>;
   Params: z.infer<typeof UpdateProjectParamsSchema>;
 }>;
 
 const projectRouteSchema = {
-  create: {
-    body: CreateProjectBodySchema,
-  },
+  create: { body: CreateProjectBodySchema },
   update: {
     body: UpdateProjectBodySchema,
     params: UpdateProjectParamsSchema,

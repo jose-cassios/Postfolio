@@ -1,11 +1,19 @@
 import {
+  Prisma,
   ProjectCategory as ProjectCategoryModel,
   Project as ProjectModel,
+  ProjectStatus as ProjectStatusModel,
 } from "@PrismaGen/client";
 import { Project } from "@project/domain/entities/Project";
 import { CreateProjectDTO, UpdateProjectDTO } from "@project/api/ProjectDTO";
 import { ProjectContract } from "@shared/contracts/ProjectContracts";
 import { ProjectCategory } from "@project/domain/enum/ProjectCategory";
+import {
+  parseProjectBlocks,
+  ProjectStatus,
+  projectBlocksToMarkdown,
+  projectBlocksToSummary,
+} from "@project/domain/valueObject/ProjectContent";
 
 export const ProjectCategoryMapper = {
   fromPrismaToDomain(prismaCategory: ProjectCategoryModel): ProjectCategory {
@@ -83,6 +91,10 @@ export const ProjectMapper = {
       projectModel.galleryUrls,
       projectModel.tools,
       projectModel.tags,
+      parseProjectBlocks(projectModel.contentBlocks),
+      projectModel.contentMarkdown,
+      projectModel.status as ProjectStatus,
+      projectModel.publishedAt,
       projectModel.createdAt,
       projectModel.updatedAt
     );
@@ -99,6 +111,10 @@ export const ProjectMapper = {
       galleryUrls: projectModel.galleryUrls,
       tools: projectModel.tools,
       tags: projectModel.tags,
+      contentBlocks: parseProjectBlocks(projectModel.contentBlocks),
+      contentMarkdown: projectModel.contentMarkdown,
+      status: projectModel.status as ProjectStatus,
+      publishedAt: projectModel.publishedAt,
       createdAt: projectModel.createdAt,
       updatedAt: projectModel.updatedAt,
       portfolioId: projectModel.portfolioId,
@@ -116,16 +132,23 @@ export const ProjectMapper = {
       galleryUrls: project.getGalleryUrls(),
       tools: project.getTools(),
       tags: project.getTags(),
+      contentBlocks: project.getContentBlocks() as unknown as Prisma.JsonValue,
+      contentMarkdown: project.getContentMarkdown(),
+      status: project.getStatus() as ProjectStatusModel,
+      publishedAt: project.getPublishedAt(),
       createdAt: project.getCreatedAt(),
       updatedAt: project.getUpdatedAt(),
       portfolioId: project.getPortfolioId(),
     };
   },
   fromCreateProjectDtoToDomain(dto: CreateProjectDTO): Project {
+    const contentBlocks = dto.contentBlocks ?? [];
+    const status = dto.status ?? ProjectStatus.DRAFT;
+    const description = dto.description?.trim() || projectBlocksToSummary(contentBlocks);
     return new Project(
       "",
       dto.name,
-      dto.description,
+      description,
       dto.category,
       dto.portfolioId,
       dto.githublink,
@@ -133,8 +156,33 @@ export const ProjectMapper = {
       dto.coverImageUrl,
       dto.galleryUrls,
       dto.tools,
-      dto.tags
+      dto.tags,
+      contentBlocks,
+      projectBlocksToMarkdown(contentBlocks),
+      status,
+      status === ProjectStatus.PUBLISHED ? new Date() : null,
     );
+  },
+  fromDomainToContract(project: Project): ProjectContract {
+    return {
+      id: project.getId(),
+      name: project.getName(),
+      description: project.getDescription(),
+      category: project.getCategory(),
+      githubLink: project.getGithubLink(),
+      externalLink: project.getExternalLink(),
+      coverImageUrl: project.getCoverImageUrl(),
+      galleryUrls: project.getGalleryUrls(),
+      tools: project.getTools(),
+      tags: project.getTags(),
+      contentBlocks: project.getContentBlocks(),
+      contentMarkdown: project.getContentMarkdown(),
+      status: project.getStatus(),
+      publishedAt: project.getPublishedAt(),
+      createdAt: project.getCreatedAt(),
+      updatedAt: project.getUpdatedAt(),
+      portfolioId: project.getPortfolioId(),
+    };
   },
   // fromUpdateProjectDtoToDomain(dto: UpdateProjectDTO): Project {
   //   return new Project(

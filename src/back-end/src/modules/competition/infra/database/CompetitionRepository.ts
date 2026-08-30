@@ -1,6 +1,6 @@
 import { InternalServerError } from "@shared/error/HttpError";
 import { prisma } from "@infrastructure/config/Prisma";
-import { Prisma } from "@PrismaGen/client";
+import { Prisma, ProjectStatus } from "@PrismaGen/client";
 import { Competition } from "@competition/domain/entities/Competition";
 import { CompetitionMapper } from "@competition/application/CompetitionMapper";
 import { ICompetitionRepository } from "@competition/domain/interfaces/ICompetitionRepository";
@@ -142,6 +142,7 @@ export class PrismaCompetitionRepository implements ICompetitionRepository {
   private contractInclude() {
     return {
       worksDetails: {
+        where: { project: { status: ProjectStatus.PUBLISHED } },
         include: {
           project: {
             include: {

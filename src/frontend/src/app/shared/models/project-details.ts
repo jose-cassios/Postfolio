@@ -1,7 +1,6 @@
 import { Project } from "./project";
 
 export interface ProjectDetails extends Project {
-  publishedAt: string|number|Date;
   coverImageUrl: string | null;
   description: string;
   gallery: string[];
@@ -9,4 +8,5 @@ export interface ProjectDetails extends Project {
   saves: number;
   tags: string[];
   publicFeedback?: Array<{ id: string; content: string; username: string }>;
+  publishedAt: string | null;
 }

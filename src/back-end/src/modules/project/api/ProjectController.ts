@@ -11,7 +11,8 @@ import { CreateProjectDTO, UpdateProjectDTO } from "@project/api/ProjectDTO";
 import { BadRequest } from "@shared/error/HttpError";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@compositionRoot/Types";
-import { ProjectCategoryMapper } from "@project/application/ProjectMapper";
+import { ProjectCategoryMapper, ProjectMapper } from "@project/application/ProjectMapper";
+import { ProjectStatus } from "@project/domain/valueObject/ProjectContent";
 
 @injectable()
 export class WorkController {
@@ -27,8 +28,12 @@ export class WorkController {
     const dto: Omit<CreateProjectDTO, "portfolioId"> = {
       ...req.body,
       category: ProjectCategoryMapper.fromSchemaToDomain(req.body.category),
+      status: req.body.status
+        ? ProjectStatus[req.body.status]
+        : ProjectStatus.PUBLISHED,
     };
-    reply.code(201).send(await this.workService.create(dto, userId));
+    const project = await this.workService.create(dto, userId);
+    reply.code(201).send(ProjectMapper.fromDomainToContract(project));
   }
 
   async update(req: UpdateProjectRequest, reply: FastifyReply) {
@@ -41,8 +46,25 @@ export class WorkController {
       category: req.body.category
         ? ProjectCategoryMapper.fromSchemaToDomain(req.body.category)
         : undefined,
+      status: req.body.status ? ProjectStatus[req.body.status] : undefined,
     };
-    reply.send(await this.workService.update(dto, userId));
+    const project = await this.workService.update(dto, userId);
+    reply.send(ProjectMapper.fromDomainToContract(project));
+  }
+
+  async getMine(req: FastifyRequest, reply: FastifyReply) {
+    const userId = req.user?.id;
+    if (!userId) throw new BadRequest("Usuario autenticado e obrigatorio");
+    reply.send(await this.workService.findMine(userId));
+  }
+
+  async getForEditor(req: FastifyRequest, reply: FastifyReply) {
+    const userId = req.user?.id;
+    const { projectId } = req.params as { projectId?: string };
+    if (!userId || !projectId) {
+      throw new BadRequest("Usuario e projeto sao obrigatorios");
+    }
+    reply.send(await this.workService.findForEditor(projectId, userId));
   }
 
   async delete(req: FastifyRequest, reply: FastifyReply) {

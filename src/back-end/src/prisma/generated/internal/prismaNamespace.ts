@@ -1586,6 +1586,10 @@ export const ProjectScalarFieldEnum = {
   galleryUrls: 'galleryUrls',
   tools: 'tools',
   tags: 'tags',
+  contentBlocks: 'contentBlocks',
+  contentMarkdown: 'contentMarkdown',
+  status: 'status',
+  publishedAt: 'publishedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   portfolioId: 'portfolioId'
@@ -1686,6 +1690,13 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -1700,6 +1711,15 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 
@@ -1796,7 +1816,35 @@ export type EnumProjectCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$
  * Reference to a field of type 'ProjectCategory[]'
  */
 export type ListEnumProjectCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProjectCategory[]'>
-    
+
+
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+
+
+
+/**
+ * Reference to a field of type 'ProjectStatus'
+ */
+export type EnumProjectStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProjectStatus'>
+
+
+
+/**
+ * Reference to a field of type 'ProjectStatus[]'
+ */
+export type ListEnumProjectStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProjectStatus[]'>
+
 
 
 /**
@@ -2067,4 +2115,3 @@ export type PrismaAction =
  * `PrismaClient` proxy available in interactive transactions.
  */
 export type TransactionClient = Omit<DefaultPrismaClient, runtime.ITXClientDenyList>
-

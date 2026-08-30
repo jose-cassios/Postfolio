@@ -1,6 +1,6 @@
 import { InternalServerError } from "@shared/error/HttpError";
 import { prisma } from "@infrastructure/config/Prisma";
-import { Prisma } from "@PrismaGen/client";
+import { Prisma, ProjectStatus } from "@PrismaGen/client";
 import { Project } from "@project/domain/entities/Project";
 import { ProjectMapper } from "@project/application/ProjectMapper";
 import { IProjectRepository } from "@project/domain/interfaces/IProjectRepository";
@@ -21,6 +21,7 @@ export class ProjectRepository implements IProjectRepository {
         data: {
           ...ProjectMapper.fromDomainToPrisma(project),
           id: undefined,
+          contentBlocks: project.getContentBlocks() as unknown as Prisma.InputJsonValue,
         },
       });
       return ProjectMapper.fromPrismaToDomain(model);
@@ -42,6 +43,7 @@ export class ProjectRepository implements IProjectRepository {
         },
         data: {
           ...ProjectMapper.fromDomainToPrisma(project),
+          contentBlocks: project.getContentBlocks() as unknown as Prisma.InputJsonValue,
           updatedAt: new Date(),
         },
       });
@@ -71,7 +73,9 @@ export class ProjectRepository implements IProjectRepository {
   }
 
   async findMany(): Promise<Project[]> {
-    const models = await prisma.project.findMany();
+    const models = await prisma.project.findMany({
+      where: { status: ProjectStatus.PUBLISHED },
+    });
     return models.map(ProjectMapper.fromPrismaToDomain);
   }
 
@@ -88,16 +92,25 @@ export class ProjectRepository implements IProjectRepository {
     const models = await prisma.project.findMany({
       where: {
         portfolioId: portfolioId,
+        status: ProjectStatus.PUBLISHED,
       },
-      orderBy: { createdAt: "desc" },
+      orderBy: { publishedAt: "desc" },
+    });
+    return models.map(ProjectMapper.fromPrismaToContracts);
+  }
+
+  async findByOwner(userId: string): Promise<ProjectContract[]> {
+    const models = await prisma.project.findMany({
+      where: { portfolio: { authorId: userId } },
+      orderBy: { updatedAt: "desc" },
     });
     return models.map(ProjectMapper.fromPrismaToContracts);
   }
 
   async findLatestByPortfolio(portfolioId: string): Promise<Project | null> {
     const model = await prisma.project.findFirst({
-      where: { portfolioId },
-      orderBy: { createdAt: "desc" },
+      where: { portfolioId, status: ProjectStatus.PUBLISHED },
+      orderBy: { publishedAt: "desc" },
     });
     return model ? ProjectMapper.fromPrismaToDomain(model) : null;
   }
@@ -106,6 +119,7 @@ export class ProjectRepository implements IProjectRepository {
     query: ProjectListQuery
   ): Promise<PaginatedProjectsContract> {
     const where: Prisma.ProjectWhereInput = {
+      status: ProjectStatus.PUBLISHED,
       ...(query.category && {
         category: ProjectCategoryMapper.fromDomainToPrisma(query.category),
       }),
@@ -125,7 +139,7 @@ export class ProjectRepository implements IProjectRepository {
         ? { likes: { _count: "desc" } }
         : query.sort === "appreciates"
           ? { AppreciateProjectDetails: { appreciateCount: "desc" } }
-          : { createdAt: "desc" };
+          : { publishedAt: "desc" };
 
     const [models, total] = await Promise.all([
       prisma.project.findMany({
@@ -181,7 +195,7 @@ export class ProjectRepository implements IProjectRepository {
 
   async findPublicById(id: string): Promise<ProjectContract | null> {
     const model = await prisma.project.findUnique({
-      where: { id },
+      where: { id, status: ProjectStatus.PUBLISHED },
       include: {
         portfolio: {
           include: {
@@ -232,6 +246,7 @@ export class ProjectRepository implements IProjectRepository {
     const project = await prisma.project.findFirst({
       where: {
         id: projectId,
+        status: ProjectStatus.PUBLISHED,
         portfolio: { author: { availableForHire: true } },
       },
       select: {
@@ -356,7 +371,11 @@ export class ProjectRepository implements IProjectRepository {
 
   async isOwnedBy(projectId: string, userId: string): Promise<boolean> {
     return Boolean(await prisma.project.findFirst({
-      where: { id: projectId, portfolio: { authorId: userId } },
+      where: {
+        id: projectId,
+        status: ProjectStatus.PUBLISHED,
+        portfolio: { authorId: userId },
+      },
       select: { id: true },
     }));
   }

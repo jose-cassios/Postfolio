@@ -38,13 +38,75 @@
             @if (p.author?.availableForHire) {
               <button class="primary" (click)="hire()"><mat-icon>mail</mat-icon> Contratar</button>
             }
+            @if (isOwner()) {
+              <a class="edit-project" [routerLink]="['/projetos', p.id, 'editar']">
+                <mat-icon>edit</mat-icon> Editar projeto
+              </a>
+            }
             <button (click)="share()"><mat-icon>share</mat-icon> Compartilhar</button>
           </div>
 
           <div class="meta"><span>Publicado em {{ p.publishedAt | date:'dd/MM/yyyy' }}</span></div>
           <hr />
 
-          <section class="section"><h2>Sobre o projeto</h2><p>{{ p.description }}</p></section>
+          @if (p.contentBlocks?.length) {
+            <section class="project-story" aria-label="Conteúdo do projeto">
+              @for (block of p.contentBlocks ?? []; track block.id) {
+                @switch (block.type) {
+                  @case ('TEXT') {
+                    <div
+                      class="story-text"
+                      [class.story-title]="block.variant === 'TITLE'"
+                      [class.story-heading]="block.variant === 'HEADING'"
+                      [class.story-quote]="block.variant === 'QUOTE'"
+                      [class.bold]="block.bold"
+                      [class.italic]="block.italic"
+                      [style.text-align]="block.alignment.toLowerCase()"
+                    >{{ block.content }}</div>
+                  }
+                  @case ('IMAGE') {
+                    <figure
+                      class="story-media"
+                      [class.width-standard]="block.width === 'STANDARD'"
+                      [class.width-wide]="block.width === 'WIDE'"
+                      [class.width-full]="block.width === 'FULL'"
+                    >
+                      <img [src]="block.url" [alt]="block.alt || 'Imagem do projeto'" loading="lazy" />
+                      @if (block.caption) { <figcaption>{{ block.caption }}</figcaption> }
+                    </figure>
+                  }
+                  @case ('VIDEO') {
+                    <figure
+                      class="story-media"
+                      [class.width-standard]="block.width === 'STANDARD'"
+                      [class.width-wide]="block.width === 'WIDE'"
+                      [class.width-full]="block.width === 'FULL'"
+                    >
+                      <video [src]="block.url" [poster]="block.posterUrl || ''" controls preload="metadata"></video>
+                      @if (block.caption) { <figcaption>{{ block.caption }}</figcaption> }
+                    </figure>
+                  }
+                  @case ('CAROUSEL') {
+                    <figure
+                      class="story-media"
+                      [class.width-standard]="block.width === 'STANDARD'"
+                      [class.width-wide]="block.width === 'WIDE'"
+                      [class.width-full]="block.width === 'FULL'"
+                    >
+                      <div class="story-carousel" tabindex="0" aria-label="Galeria de imagens">
+                        @for (item of block.items; track $index) {
+                          <img [src]="item.url" [alt]="item.alt || 'Imagem do carrossel'" loading="lazy" />
+                        }
+                      </div>
+                      @if (block.caption) { <figcaption>{{ block.caption }}</figcaption> }
+                    </figure>
+                  }
+                }
+              }
+            </section>
+          } @else {
+            <section class="section"><h2>Sobre o projeto</h2><p>{{ p.description }}</p></section>
+          }
 
           @if (p.githubLink || p.externalLink) {
             <section class="section links">
@@ -66,7 +128,7 @@
             </div></section>
           }
 
-          @if (p.gallery.length) {
+          @if (!p.contentBlocks?.length && p.gallery.length) {
             <section class="section"><h2>Mais imagens</h2><div class="gallery">
               @for (img of p.gallery; track img) { <img [src]="img" alt="Imagem complementar do projeto" loading="lazy" /> }
             </div></section>

@@ -39,6 +39,14 @@ export const ProjectCategory = {
 export type ProjectCategory = (typeof ProjectCategory)[keyof typeof ProjectCategory]
 
 
+export const ProjectStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED'
+} as const
+
+export type ProjectStatus = (typeof ProjectStatus)[keyof typeof ProjectStatus]
+
+
 export const SocialProviderType = {
   GOOGLE: 'GOOGLE'
 } as const

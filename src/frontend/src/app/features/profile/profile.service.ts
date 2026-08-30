@@ -5,7 +5,6 @@ import {
   Portfolio,
   ProfileProject,
   ProfileUser,
-  ProjectPayload,
 } from './profile.models';
 
 interface ProfileResponse {
@@ -30,20 +29,16 @@ export class ProfileService {
   }
 
   getProjects(username: string) {
+    if (this.auth.user()?.username === username) {
+      return this.api.get<ProfileProject[]>(
+        'project/mine',
+        undefined,
+        this.auth.authOptions(),
+      );
+    }
+
     return this.api.get<ProfileProject[]>(
       `portfolio/user/${encodeURIComponent(username)}/projects`,
-    );
-  }
-
-  createProject(payload: ProjectPayload) {
-    return this.api.post<ProfileProject>('project', payload, this.auth.authOptions());
-  }
-
-  updateProject(projectId: string, payload: ProjectPayload) {
-    return this.api.put<ProfileProject>(
-      `project/${projectId}`,
-      payload,
-      this.auth.authOptions(),
     );
   }
 

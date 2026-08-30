@@ -17,7 +17,6 @@ import {
   ProfileProject,
   ProfileUser,
   ProjectCategory,
-  ProjectPayload,
 } from './profile.models';
 import { ProfileService } from './profile.service';
 
@@ -26,7 +25,6 @@ interface Feedback {
   message: string;
 }
 
-const URL_PATTERN = /^https?:\/\/\S+$/i;
 const PROFILE_URL_PATTERN = /^(https?:\/\/)?\S+$/i;
 
 @Component({
@@ -53,11 +51,8 @@ export class ProfileComponent {
   readonly projectsError = signal<string | null>(null);
   readonly feedback = signal<Feedback | null>(null);
   readonly showEditModal = signal(false);
-  readonly showProjectModal = signal(false);
   readonly isSavingProfile = signal(false);
-  readonly isSavingProject = signal(false);
   readonly deletingProjectId = signal<string | null>(null);
-  readonly editingProjectId = signal<string | null>(null);
 
   private requestedEdit = false;
   private requestedProject = false;
@@ -76,10 +71,6 @@ export class ProfileComponent {
       ? { ...profile!, ...current, id: current.id ?? profile!.id }
       : profile;
   });
-  readonly projectModalTitle = computed(() =>
-    this.editingProjectId() ? 'Editar projeto' : 'Adicionar projeto',
-  );
-
   readonly categories: ReadonlyArray<{
     value: ProjectCategory;
     label: string;
@@ -101,18 +92,6 @@ export class ProfileComponent {
     github: ['', [Validators.pattern(PROFILE_URL_PATTERN)]],
     website: ['', [Validators.pattern(PROFILE_URL_PATTERN)]],
     availableForHire: [false],
-  });
-
-  readonly projectForm = this.fb.nonNullable.group({
-    name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
-    description: ['', [Validators.required, Validators.maxLength(500)]],
-    category: ['OTHER' as ProjectCategory, [Validators.required]],
-    githublink: ['', [Validators.pattern(URL_PATTERN)]],
-    externalLink: ['', [Validators.pattern(URL_PATTERN)]],
-    coverImageUrl: ['', [Validators.pattern(URL_PATTERN)]],
-    galleryUrls: [''],
-    tools: [''],
-    tags: [''],
   });
 
   constructor() {
@@ -248,102 +227,14 @@ export class ProfileComponent {
       });
   }
 
-  openCreateProjectModal(): void {
+  openCreateProjectEditor(): void {
     if (!this.isOwnProfile()) return;
-    this.editingProjectId.set(null);
-    this.projectForm.reset({
-      name: '',
-      description: '',
-      category: 'OTHER',
-      githublink: '',
-      externalLink: '',
-      coverImageUrl: '',
-      galleryUrls: '',
-      tools: '',
-      tags: '',
-    });
-    this.feedback.set(null);
-    this.showProjectModal.set(true);
+    this.router.navigate(['/projetos/novo']);
   }
 
-  openEditProjectModal(project: ProfileProject): void {
+  openEditProjectEditor(project: ProfileProject): void {
     if (!this.isOwnProfile()) return;
-    this.editingProjectId.set(project.id);
-    this.projectForm.reset({
-      name: project.name,
-      description: project.description,
-      category: project.category,
-      githublink: project.githubLink ?? '',
-      externalLink: project.externalLink ?? '',
-      coverImageUrl: project.coverImageUrl ?? '',
-      galleryUrls: project.galleryUrls.join('\n'),
-      tools: project.tools.join(', '),
-      tags: project.tags.join(', '),
-    });
-    this.feedback.set(null);
-    this.showProjectModal.set(true);
-  }
-
-  closeProjectModal(): void {
-    if (!this.isSavingProject()) {
-      this.showProjectModal.set(false);
-      this.editingProjectId.set(null);
-    }
-  }
-
-  submitProject(): void {
-    if (this.projectForm.invalid || this.isSavingProject()) {
-      this.projectForm.markAllAsTouched();
-      return;
-    }
-
-    const values = this.projectForm.getRawValue();
-    const payload: ProjectPayload = {
-      name: values.name,
-      description: values.description,
-      category: values.category,
-      githublink: values.githublink || null,
-      externalLink: values.externalLink || null,
-      coverImageUrl: values.coverImageUrl || null,
-      galleryUrls: this.splitValues(values.galleryUrls, /[\n,]+/).slice(0, 3),
-      tools: this.splitValues(values.tools),
-      tags: this.splitValues(values.tags),
-    };
-    const editingId = this.editingProjectId();
-    const request = editingId
-      ? this.profileService.updateProject(editingId, payload)
-      : this.profileService.createProject(payload);
-
-    this.isSavingProject.set(true);
-    this.feedback.set(null);
-    request
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        finalize(() => this.isSavingProject.set(false)),
-      )
-      .subscribe({
-        next: (project) => {
-          this.projects.update((projects) =>
-            editingId
-              ? projects.map((item) => (item.id === project.id ? project : item))
-              : [project, ...projects],
-          );
-          this.showProjectModal.set(false);
-          this.editingProjectId.set(null);
-          this.feedback.set({
-            type: 'success',
-            message: editingId
-              ? 'Projeto atualizado com sucesso.'
-              : 'Projeto publicado com sucesso.',
-          });
-        },
-        error: (error) => {
-          this.feedback.set({
-            type: 'error',
-            message: this.errorMessage(error, 'Não foi possível salvar o projeto.'),
-          });
-        },
-      });
+    this.router.navigate(['/projetos', project.id, 'editar']);
   }
 
   deleteProject(project: ProfileProject): void {
@@ -392,7 +283,7 @@ export class ProfileComponent {
     }
     if (this.requestedProject) {
       this.requestedProject = false;
-      this.openCreateProjectModal();
+      this.openCreateProjectEditor();
     }
   }
 
@@ -402,10 +293,6 @@ export class ProfileComponent {
       return validationMessage || error.error?.message || fallback;
     }
     return fallback;
-  }
-
-  private splitValues(value: string, separator: RegExp = /[,]+/): string[] {
-    return value.split(separator).map((item) => item.trim()).filter(Boolean);
   }
 
   private normalizeOptionalUrl(value: string): string | null {

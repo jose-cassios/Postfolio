@@ -12,8 +12,8 @@ export class ProjectAdapter implements ProjectPort {
   ) {}
 
   async exist(projectId: string): Promise<string | null> {
-    const project = await this.projectRepository.findById(projectId);
-    return project ? project.getId() : null;
+    const project = await this.projectRepository.findPublicById(projectId);
+    return project?.id ?? null;
   }
 
   async findProjectsByPortfolioId(

@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, PLATFORM_ID, inject, signal } from '@angular/core';
+import { Component, PLATFORM_ID, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -42,6 +42,9 @@ export class ProjectComponent {
   readonly notice = signal('');
   readonly nextCommentsCursor = signal<string | null>(null);
   readonly hasMoreComments = signal(false);
+  readonly isOwner = computed(() =>
+    this.project()?.author?.username === this.auth.user()?.username,
+  );
   commentText = '';
   feedbackText = '';
   feedbackPrivate = false;

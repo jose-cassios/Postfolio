@@ -1,3 +1,5 @@
+import { ProjectBlock, ProjectStatus } from '../../shared/models/project-content';
+
 export type UserType = 'USER' | 'MODERATOR' | 'ADMIN';
 
 export interface ProfileUser {
@@ -41,19 +43,11 @@ export interface ProfileProject {
   galleryUrls: string[];
   tools: string[];
   tags: string[];
+  contentBlocks: ProjectBlock[];
+  contentMarkdown: string;
+  status: ProjectStatus;
+  publishedAt: string | null;
   createdAt: string;
   updatedAt: string;
   portfolioId: string;
-}
-
-export interface ProjectPayload {
-  name: string;
-  description: string;
-  category: ProjectCategory;
-  githublink: string | null;
-  externalLink: string | null;
-  coverImageUrl: string | null;
-  galleryUrls: string[];
-  tools: string[];
-  tags: string[];
 }

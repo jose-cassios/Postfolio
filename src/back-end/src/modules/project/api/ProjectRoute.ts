@@ -39,6 +39,16 @@ function projectRoutesPlugin(app: FastifyInstance, controller: WorkController) {
     controller.list(req as ProjectListRequest, rep)
   );
 
+  app.get("/mine", { preValidation: UserMiddle.authenticate }, (req, rep) =>
+    controller.getMine(req, rep)
+  );
+
+  app.get(
+    "/:projectId/editor",
+    { schema: projectRouteSchema.interaction, preValidation: UserMiddle.authenticate },
+    (req, rep) => controller.getForEditor(req, rep)
+  );
+
   app.get(
     "/:projectId/contact",
     { preValidation: UserMiddle.authenticate },

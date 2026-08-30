@@ -1,4 +1,5 @@
 import { ProjectCategory } from "@project/domain/enum/ProjectCategory";
+import { ProjectBlock, ProjectStatus } from "@project/domain/valueObject/ProjectContent";
 
 interface CreateProjectDTO {
   name: string;
@@ -10,6 +11,8 @@ interface CreateProjectDTO {
   galleryUrls?: string[];
   tools?: string[];
   tags?: string[];
+  contentBlocks?: ProjectBlock[];
+  status?: ProjectStatus;
   portfolioId: string;
 }
 
@@ -24,6 +27,8 @@ interface UpdateProjectDTO {
   galleryUrls?: string[];
   tools?: string[];
   tags?: string[];
+  contentBlocks?: ProjectBlock[];
+  status?: ProjectStatus;
 }
 
 export interface ProjectListQuery {

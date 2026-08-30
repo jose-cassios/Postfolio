@@ -2,7 +2,7 @@ import { FavorateProjectsMapper } from "@favorateProjects/application/FavoratePr
 import { FavorateProjects } from "@favorateProjects/domain/entities/FavorateProjects";
 import { IFavorateProjectsRepository } from "@favorateProjects/domain/interfaces/IFavorateProjectsRepository";
 import { prisma } from "@infrastructure/config/Prisma";
-import { Prisma } from "@PrismaGen/client";
+import { Prisma, ProjectStatus } from "@PrismaGen/client";
 import { FavorateProjectsContract } from "@shared/contracts/FavorateProjectsContract";
 import { InternalServerError } from "@shared/error/HttpError";
 
@@ -51,6 +51,7 @@ export class FavorateProjectsRepository implements IFavorateProjectsRepository {
       const models = await prisma.favorateProjects.findMany({
         where: {
           userId,
+          project: { status: ProjectStatus.PUBLISHED },
         },
       });
 

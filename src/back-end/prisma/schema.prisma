@@ -103,6 +103,10 @@ model Project {
   galleryUrls              String[]             @default([])
   tools                    String[]             @default([])
   tags                     String[]             @default([])
+  contentBlocks            Json                 @default("[]")
+  contentMarkdown          String               @default("")
+  status                   ProjectStatus        @default(DRAFT)
+  publishedAt              DateTime?
   createdAt                DateTime             @default(now())
   updatedAt                DateTime             @updatedAt
   portfolioId              String
@@ -249,6 +253,11 @@ enum ProjectCategory {
   MOBILE
   DATA_ANALYSIS
   OTHER
+}
+
+enum ProjectStatus {
+  DRAFT
+  PUBLISHED
 }
 
 enum SocialProviderType {

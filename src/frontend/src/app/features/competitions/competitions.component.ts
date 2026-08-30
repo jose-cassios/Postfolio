@@ -33,7 +33,9 @@ export class CompetitionsComponent {
     const username = this.auth.user()?.username;
     if (username) {
       this.profileService.getProjects(username).subscribe({
-        next: (projects) => this.myProjects.set(projects),
+        next: (projects) => this.myProjects.set(
+          projects.filter((project) => project.status === 'PUBLISHED'),
+        ),
       });
     }
   }

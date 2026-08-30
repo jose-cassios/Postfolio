@@ -11,6 +11,8 @@ export interface IProjectService {
   findById(id: string): Promise<Project | null>;
   findPublicMany(query: ProjectListQuery): Promise<PaginatedProjectsContract>;
   findPublicById(id: string): Promise<ProjectContract | null>;
+  findMine(userId: string): Promise<ProjectContract[]>;
+  findForEditor(id: string, userId: string): Promise<ProjectContract>;
   findOwnerContact(id: string): Promise<ProjectContactContract>;
   setLike(id: string, userId: string, liked: boolean): Promise<ProjectInteractionContract>;
   setAppreciation(

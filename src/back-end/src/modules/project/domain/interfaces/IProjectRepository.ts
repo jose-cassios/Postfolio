@@ -11,6 +11,7 @@ export interface IProjectRepository {
   findMany(): Promise<Project[]>;
   findById(id: string): Promise<Project | null>;
   findByPortfolio(portfolioId: string): Promise<ProjectContract[]>;
+  findByOwner(userId: string): Promise<ProjectContract[]>;
   findPublicMany(query: ProjectListQuery): Promise<PaginatedProjectsContract>;
   findPublicById(id: string): Promise<ProjectContract | null>;
   findOwnerContact(projectId: string): Promise<ProjectContactContract | null>;

@@ -32,6 +32,9 @@ export type ProjectMinAggregateOutputType = {
   githublink: string | null
   externalLink: string | null
   coverImageUrl: string | null
+  contentMarkdown: string | null
+  status: $Enums.ProjectStatus | null
+  publishedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
   portfolioId: string | null
@@ -45,6 +48,9 @@ export type ProjectMaxAggregateOutputType = {
   githublink: string | null
   externalLink: string | null
   coverImageUrl: string | null
+  contentMarkdown: string | null
+  status: $Enums.ProjectStatus | null
+  publishedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
   portfolioId: string | null
@@ -61,6 +67,10 @@ export type ProjectCountAggregateOutputType = {
   galleryUrls: number
   tools: number
   tags: number
+  contentBlocks: number
+  contentMarkdown: number
+  status: number
+  publishedAt: number
   createdAt: number
   updatedAt: number
   portfolioId: number
@@ -76,6 +86,9 @@ export type ProjectMinAggregateInputType = {
   githublink?: true
   externalLink?: true
   coverImageUrl?: true
+  contentMarkdown?: true
+  status?: true
+  publishedAt?: true
   createdAt?: true
   updatedAt?: true
   portfolioId?: true
@@ -89,6 +102,9 @@ export type ProjectMaxAggregateInputType = {
   githublink?: true
   externalLink?: true
   coverImageUrl?: true
+  contentMarkdown?: true
+  status?: true
+  publishedAt?: true
   createdAt?: true
   updatedAt?: true
   portfolioId?: true
@@ -105,6 +121,10 @@ export type ProjectCountAggregateInputType = {
   galleryUrls?: true
   tools?: true
   tags?: true
+  contentBlocks?: true
+  contentMarkdown?: true
+  status?: true
+  publishedAt?: true
   createdAt?: true
   updatedAt?: true
   portfolioId?: true
@@ -194,6 +214,10 @@ export type ProjectGroupByOutputType = {
   galleryUrls: string[]
   tools: string[]
   tags: string[]
+  contentBlocks: runtime.JsonValue
+  contentMarkdown: string
+  status: $Enums.ProjectStatus
+  publishedAt: Date | null
   createdAt: Date
   updatedAt: Date
   portfolioId: string
@@ -231,6 +255,10 @@ export type ProjectWhereInput = {
   galleryUrls?: Prisma.StringNullableListFilter<"Project">
   tools?: Prisma.StringNullableListFilter<"Project">
   tags?: Prisma.StringNullableListFilter<"Project">
+  contentBlocks?: Prisma.JsonFilter<"Project">
+  contentMarkdown?: Prisma.StringFilter<"Project"> | string
+  status?: Prisma.EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus
+  publishedAt?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   portfolioId?: Prisma.StringFilter<"Project"> | string
@@ -256,6 +284,10 @@ export type ProjectOrderByWithRelationInput = {
   galleryUrls?: Prisma.SortOrder
   tools?: Prisma.SortOrder
   tags?: Prisma.SortOrder
+  contentBlocks?: Prisma.SortOrder
+  contentMarkdown?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   portfolioId?: Prisma.SortOrder
@@ -284,6 +316,10 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   galleryUrls?: Prisma.StringNullableListFilter<"Project">
   tools?: Prisma.StringNullableListFilter<"Project">
   tags?: Prisma.StringNullableListFilter<"Project">
+  contentBlocks?: Prisma.JsonFilter<"Project">
+  contentMarkdown?: Prisma.StringFilter<"Project"> | string
+  status?: Prisma.EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus
+  publishedAt?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   portfolioId?: Prisma.StringFilter<"Project"> | string
@@ -309,6 +345,10 @@ export type ProjectOrderByWithAggregationInput = {
   galleryUrls?: Prisma.SortOrder
   tools?: Prisma.SortOrder
   tags?: Prisma.SortOrder
+  contentBlocks?: Prisma.SortOrder
+  contentMarkdown?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   portfolioId?: Prisma.SortOrder
@@ -331,6 +371,10 @@ export type ProjectScalarWhereWithAggregatesInput = {
   galleryUrls?: Prisma.StringNullableListFilter<"Project">
   tools?: Prisma.StringNullableListFilter<"Project">
   tags?: Prisma.StringNullableListFilter<"Project">
+  contentBlocks?: Prisma.JsonWithAggregatesFilter<"Project">
+  contentMarkdown?: Prisma.StringWithAggregatesFilter<"Project"> | string
+  status?: Prisma.EnumProjectStatusWithAggregatesFilter<"Project"> | $Enums.ProjectStatus
+  publishedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Project"> | Date | string
   portfolioId?: Prisma.StringWithAggregatesFilter<"Project"> | string
@@ -347,6 +391,10 @@ export type ProjectCreateInput = {
   galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
   tools?: Prisma.ProjectCreatetoolsInput | string[]
   tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   portfolio: Prisma.PortfolioCreateNestedOneWithoutWorksInput
@@ -371,6 +419,10 @@ export type ProjectUncheckedCreateInput = {
   galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
   tools?: Prisma.ProjectCreatetoolsInput | string[]
   tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   portfolioId: string
@@ -395,6 +447,10 @@ export type ProjectUpdateInput = {
   galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
   tools?: Prisma.ProjectUpdatetoolsInput | string[]
   tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolio?: Prisma.PortfolioUpdateOneRequiredWithoutWorksNestedInput
@@ -419,6 +475,10 @@ export type ProjectUncheckedUpdateInput = {
   galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
   tools?: Prisma.ProjectUpdatetoolsInput | string[]
   tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolioId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -443,6 +503,10 @@ export type ProjectCreateManyInput = {
   galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
   tools?: Prisma.ProjectCreatetoolsInput | string[]
   tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   portfolioId: string
@@ -459,6 +523,10 @@ export type ProjectUpdateManyMutationInput = {
   galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
   tools?: Prisma.ProjectUpdatetoolsInput | string[]
   tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -474,6 +542,10 @@ export type ProjectUncheckedUpdateManyInput = {
   galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
   tools?: Prisma.ProjectUpdatetoolsInput | string[]
   tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolioId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -508,6 +580,10 @@ export type ProjectCountOrderByAggregateInput = {
   galleryUrls?: Prisma.SortOrder
   tools?: Prisma.SortOrder
   tags?: Prisma.SortOrder
+  contentBlocks?: Prisma.SortOrder
+  contentMarkdown?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   portfolioId?: Prisma.SortOrder
@@ -521,6 +597,9 @@ export type ProjectMaxOrderByAggregateInput = {
   githublink?: Prisma.SortOrder
   externalLink?: Prisma.SortOrder
   coverImageUrl?: Prisma.SortOrder
+  contentMarkdown?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   portfolioId?: Prisma.SortOrder
@@ -534,6 +613,9 @@ export type ProjectMinOrderByAggregateInput = {
   githublink?: Prisma.SortOrder
   externalLink?: Prisma.SortOrder
   coverImageUrl?: Prisma.SortOrder
+  contentMarkdown?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   portfolioId?: Prisma.SortOrder
@@ -611,6 +693,10 @@ export type ProjectUpdatetoolsInput = {
 export type ProjectUpdatetagsInput = {
   set?: string[]
   push?: string | string[]
+}
+
+export type EnumProjectStatusFieldUpdateOperationsInput = {
+  set?: $Enums.ProjectStatus
 }
 
 export type ProjectCreateNestedOneWithoutAppreciateInput = {
@@ -736,6 +822,10 @@ export type ProjectCreateWithoutPortfolioInput = {
   galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
   tools?: Prisma.ProjectCreatetoolsInput | string[]
   tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   Rating?: Prisma.RatingCreateNestedManyWithoutProjectInput
@@ -759,6 +849,10 @@ export type ProjectUncheckedCreateWithoutPortfolioInput = {
   galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
   tools?: Prisma.ProjectCreatetoolsInput | string[]
   tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   Rating?: Prisma.RatingUncheckedCreateNestedManyWithoutProjectInput
@@ -811,6 +905,10 @@ export type ProjectScalarWhereInput = {
   galleryUrls?: Prisma.StringNullableListFilter<"Project">
   tools?: Prisma.StringNullableListFilter<"Project">
   tags?: Prisma.StringNullableListFilter<"Project">
+  contentBlocks?: Prisma.JsonFilter<"Project">
+  contentMarkdown?: Prisma.StringFilter<"Project"> | string
+  status?: Prisma.EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus
+  publishedAt?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   portfolioId?: Prisma.StringFilter<"Project"> | string
@@ -827,6 +925,10 @@ export type ProjectCreateWithoutAppreciateInput = {
   galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
   tools?: Prisma.ProjectCreatetoolsInput | string[]
   tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   portfolio: Prisma.PortfolioCreateNestedOneWithoutWorksInput
@@ -850,6 +952,10 @@ export type ProjectUncheckedCreateWithoutAppreciateInput = {
   galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
   tools?: Prisma.ProjectCreatetoolsInput | string[]
   tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   portfolioId: string
@@ -889,6 +995,10 @@ export type ProjectUpdateWithoutAppreciateInput = {
   galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
   tools?: Prisma.ProjectUpdatetoolsInput | string[]
   tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolio?: Prisma.PortfolioUpdateOneRequiredWithoutWorksNestedInput
@@ -912,6 +1022,10 @@ export type ProjectUncheckedUpdateWithoutAppreciateInput = {
   galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
   tools?: Prisma.ProjectUpdatetoolsInput | string[]
   tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolioId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -935,6 +1049,10 @@ export type ProjectCreateWithoutAppreciateProjectDetailsInput = {
   galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
   tools?: Prisma.ProjectCreatetoolsInput | string[]
   tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   portfolio: Prisma.PortfolioCreateNestedOneWithoutWorksInput
@@ -958,6 +1076,10 @@ export type ProjectUncheckedCreateWithoutAppreciateProjectDetailsInput = {
   galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
   tools?: Prisma.ProjectCreatetoolsInput | string[]
   tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   portfolioId: string
@@ -997,6 +1119,10 @@ export type ProjectUpdateWithoutAppreciateProjectDetailsInput = {
   galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
   tools?: Prisma.ProjectUpdatetoolsInput | string[]
   tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolio?: Prisma.PortfolioUpdateOneRequiredWithoutWorksNestedInput
@@ -1020,6 +1146,10 @@ export type ProjectUncheckedUpdateWithoutAppreciateProjectDetailsInput = {
   galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
   tools?: Prisma.ProjectUpdatetoolsInput | string[]
   tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolioId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1043,6 +1173,10 @@ export type ProjectCreateWithoutFavorateProjectsInput = {
   galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
   tools?: Prisma.ProjectCreatetoolsInput | string[]
   tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   portfolio: Prisma.PortfolioCreateNestedOneWithoutWorksInput
@@ -1066,6 +1200,10 @@ export type ProjectUncheckedCreateWithoutFavorateProjectsInput = {
   galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
   tools?: Prisma.ProjectCreatetoolsInput | string[]
   tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   portfolioId: string
@@ -1105,6 +1243,10 @@ export type ProjectUpdateWithoutFavorateProjectsInput = {
   galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
   tools?: Prisma.ProjectUpdatetoolsInput | string[]
   tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolio?: Prisma.PortfolioUpdateOneRequiredWithoutWorksNestedInput
@@ -1128,6 +1270,10 @@ export type ProjectUncheckedUpdateWithoutFavorateProjectsInput = {
   galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
   tools?: Prisma.ProjectUpdatetoolsInput | string[]
   tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolioId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1151,6 +1297,10 @@ export type ProjectCreateWithoutCommentsInput = {
   galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
   tools?: Prisma.ProjectCreatetoolsInput | string[]
   tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   portfolio: Prisma.PortfolioCreateNestedOneWithoutWorksInput
@@ -1174,6 +1324,10 @@ export type ProjectUncheckedCreateWithoutCommentsInput = {
   galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
   tools?: Prisma.ProjectCreatetoolsInput | string[]
   tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   portfolioId: string
@@ -1213,6 +1367,10 @@ export type ProjectUpdateWithoutCommentsInput = {
   galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
   tools?: Prisma.ProjectUpdatetoolsInput | string[]
   tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolio?: Prisma.PortfolioUpdateOneRequiredWithoutWorksNestedInput
@@ -1236,6 +1394,10 @@ export type ProjectUncheckedUpdateWithoutCommentsInput = {
   galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
   tools?: Prisma.ProjectUpdatetoolsInput | string[]
   tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolioId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1259,6 +1421,10 @@ export type ProjectCreateWithoutLikesInput = {
   galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
   tools?: Prisma.ProjectCreatetoolsInput | string[]
   tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   portfolio: Prisma.PortfolioCreateNestedOneWithoutWorksInput
@@ -1282,6 +1448,10 @@ export type ProjectUncheckedCreateWithoutLikesInput = {
   galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
   tools?: Prisma.ProjectCreatetoolsInput | string[]
   tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   portfolioId: string
@@ -1321,6 +1491,10 @@ export type ProjectUpdateWithoutLikesInput = {
   galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
   tools?: Prisma.ProjectUpdatetoolsInput | string[]
   tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolio?: Prisma.PortfolioUpdateOneRequiredWithoutWorksNestedInput
@@ -1344,6 +1518,10 @@ export type ProjectUncheckedUpdateWithoutLikesInput = {
   galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
   tools?: Prisma.ProjectUpdatetoolsInput | string[]
   tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolioId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1367,6 +1545,10 @@ export type ProjectCreateWithoutFeedbackInput = {
   galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
   tools?: Prisma.ProjectCreatetoolsInput | string[]
   tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   portfolio: Prisma.PortfolioCreateNestedOneWithoutWorksInput
@@ -1390,6 +1572,10 @@ export type ProjectUncheckedCreateWithoutFeedbackInput = {
   galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
   tools?: Prisma.ProjectCreatetoolsInput | string[]
   tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   portfolioId: string
@@ -1429,6 +1615,10 @@ export type ProjectUpdateWithoutFeedbackInput = {
   galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
   tools?: Prisma.ProjectUpdatetoolsInput | string[]
   tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolio?: Prisma.PortfolioUpdateOneRequiredWithoutWorksNestedInput
@@ -1452,6 +1642,10 @@ export type ProjectUncheckedUpdateWithoutFeedbackInput = {
   galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
   tools?: Prisma.ProjectUpdatetoolsInput | string[]
   tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolioId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1475,6 +1669,10 @@ export type ProjectCreateWithoutRatingInput = {
   galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
   tools?: Prisma.ProjectCreatetoolsInput | string[]
   tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   portfolio: Prisma.PortfolioCreateNestedOneWithoutWorksInput
@@ -1498,6 +1696,10 @@ export type ProjectUncheckedCreateWithoutRatingInput = {
   galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
   tools?: Prisma.ProjectCreatetoolsInput | string[]
   tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   portfolioId: string
@@ -1537,6 +1739,10 @@ export type ProjectUpdateWithoutRatingInput = {
   galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
   tools?: Prisma.ProjectUpdatetoolsInput | string[]
   tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolio?: Prisma.PortfolioUpdateOneRequiredWithoutWorksNestedInput
@@ -1560,6 +1766,10 @@ export type ProjectUncheckedUpdateWithoutRatingInput = {
   galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
   tools?: Prisma.ProjectUpdatetoolsInput | string[]
   tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolioId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1583,6 +1793,10 @@ export type ProjectCreateWithoutProjectCompDetailsInput = {
   galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
   tools?: Prisma.ProjectCreatetoolsInput | string[]
   tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   portfolio: Prisma.PortfolioCreateNestedOneWithoutWorksInput
@@ -1606,6 +1820,10 @@ export type ProjectUncheckedCreateWithoutProjectCompDetailsInput = {
   galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
   tools?: Prisma.ProjectCreatetoolsInput | string[]
   tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   portfolioId: string
@@ -1645,6 +1863,10 @@ export type ProjectUpdateWithoutProjectCompDetailsInput = {
   galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
   tools?: Prisma.ProjectUpdatetoolsInput | string[]
   tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolio?: Prisma.PortfolioUpdateOneRequiredWithoutWorksNestedInput
@@ -1668,6 +1890,10 @@ export type ProjectUncheckedUpdateWithoutProjectCompDetailsInput = {
   galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
   tools?: Prisma.ProjectUpdatetoolsInput | string[]
   tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolioId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1691,6 +1917,10 @@ export type ProjectCreateManyPortfolioInput = {
   galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
   tools?: Prisma.ProjectCreatetoolsInput | string[]
   tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1706,6 +1936,10 @@ export type ProjectUpdateWithoutPortfolioInput = {
   galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
   tools?: Prisma.ProjectUpdatetoolsInput | string[]
   tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   Rating?: Prisma.RatingUpdateManyWithoutProjectNestedInput
@@ -1729,6 +1963,10 @@ export type ProjectUncheckedUpdateWithoutPortfolioInput = {
   galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
   tools?: Prisma.ProjectUpdatetoolsInput | string[]
   tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   Rating?: Prisma.RatingUncheckedUpdateManyWithoutProjectNestedInput
@@ -1752,6 +1990,10 @@ export type ProjectUncheckedUpdateManyWithoutPortfolioInput = {
   galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
   tools?: Prisma.ProjectUpdatetoolsInput | string[]
   tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1852,6 +2094,10 @@ export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   galleryUrls?: boolean
   tools?: boolean
   tags?: boolean
+  contentBlocks?: boolean
+  contentMarkdown?: boolean
+  status?: boolean
+  publishedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   portfolioId?: boolean
@@ -1878,6 +2124,10 @@ export type ProjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   galleryUrls?: boolean
   tools?: boolean
   tags?: boolean
+  contentBlocks?: boolean
+  contentMarkdown?: boolean
+  status?: boolean
+  publishedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   portfolioId?: boolean
@@ -1895,6 +2145,10 @@ export type ProjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   galleryUrls?: boolean
   tools?: boolean
   tags?: boolean
+  contentBlocks?: boolean
+  contentMarkdown?: boolean
+  status?: boolean
+  publishedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   portfolioId?: boolean
@@ -1912,12 +2166,16 @@ export type ProjectSelectScalar = {
   galleryUrls?: boolean
   tools?: boolean
   tags?: boolean
+  contentBlocks?: boolean
+  contentMarkdown?: boolean
+  status?: boolean
+  publishedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   portfolioId?: boolean
 }
 
-export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "category" | "githublink" | "externalLink" | "coverImageUrl" | "galleryUrls" | "tools" | "tags" | "createdAt" | "updatedAt" | "portfolioId", ExtArgs["result"]["project"]>
+export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "category" | "githublink" | "externalLink" | "coverImageUrl" | "galleryUrls" | "tools" | "tags" | "contentBlocks" | "contentMarkdown" | "status" | "publishedAt" | "createdAt" | "updatedAt" | "portfolioId", ExtArgs["result"]["project"]>
 export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   portfolio?: boolean | Prisma.PortfolioDefaultArgs<ExtArgs>
   Rating?: boolean | Prisma.Project$RatingArgs<ExtArgs>
@@ -1961,6 +2219,10 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     galleryUrls: string[]
     tools: string[]
     tags: string[]
+    contentBlocks: runtime.JsonValue
+    contentMarkdown: string
+    status: $Enums.ProjectStatus
+    publishedAt: Date | null
     createdAt: Date
     updatedAt: Date
     portfolioId: string
@@ -2406,6 +2668,10 @@ export interface ProjectFieldRefs {
   readonly galleryUrls: Prisma.FieldRef<"Project", 'String[]'>
   readonly tools: Prisma.FieldRef<"Project", 'String[]'>
   readonly tags: Prisma.FieldRef<"Project", 'String[]'>
+  readonly contentBlocks: Prisma.FieldRef<"Project", 'Json'>
+  readonly contentMarkdown: Prisma.FieldRef<"Project", 'String'>
+  readonly status: Prisma.FieldRef<"Project", 'ProjectStatus'>
+  readonly publishedAt: Prisma.FieldRef<"Project", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Project", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Project", 'DateTime'>
   readonly portfolioId: Prisma.FieldRef<"Project", 'String'>

@@ -60,7 +60,7 @@
           <button class="btn ghost" type="button" (click)="openEditModal()">
             Editar perfil
           </button>
-          <button class="btn primary" type="button" (click)="openCreateProjectModal()">
+          <button class="btn primary" type="button" (click)="openCreateProjectEditor()">
             + Adicionar projeto
           </button>
         </div>
@@ -71,7 +71,7 @@
       <div class="section-heading">
         <div>
           <span class="eyebrow">Portfólio</span>
-          <h2 id="projects-title">Projetos publicados</h2>
+          <h2 id="projects-title">{{ isOwnProfile() ? 'Seus projetos' : 'Projetos publicados' }}</h2>
           @if (portfolio(); as currentPortfolio) {
             @if (currentPortfolio.description && currentPortfolio.description !== 'not found') {
               <p>{{ currentPortfolio.description }}</p>
@@ -89,19 +89,28 @@
         <div class="projects-grid">
           @for (project of projects(); track project.id) {
             <article class="project-card">
-              <a [routerLink]="['/projetos', project.id]" class="project-cover" [attr.data-category]="project.category">
+              <a
+                [routerLink]="project.status === 'DRAFT'
+                  ? ['/projetos', project.id, 'editar']
+                  : ['/projetos', project.id]"
+                class="project-cover"
+                [attr.data-category]="project.category"
+              >
                 @if (project.coverImageUrl) {
-                  <img [src]="project.coverImageUrl" [alt]="project.name" loading="lazy" />
+                  <img [src]="project.coverImageUrl" [alt]="project.name || 'Projeto sem título'" loading="lazy" />
                 } @else {
                   <span>{{ categoryLabel(project.category) }}</span>
                 }
               </a>
               <div class="project-content">
                 <div class="project-title-row">
-                  <h3>{{ project.name }}</h3>
+                  <h3>{{ project.name || 'Projeto sem título' }}</h3>
+                  @if (project.status === 'DRAFT') {
+                    <span class="draft-status">Rascunho</span>
+                  }
                   @if (isOwnProfile()) {
                     <div class="project-actions">
-                      <button type="button" (click)="openEditProjectModal(project)">Editar</button>
+                      <button type="button" (click)="openEditProjectEditor(project)">Editar</button>
                       <button
                         type="button"
                         class="danger"
@@ -140,7 +149,7 @@
               : 'Este usuário ainda não publicou projetos.' }}
           </p>
           @if (isOwnProfile()) {
-            <button class="btn primary" type="button" (click)="openCreateProjectModal()">
+            <button class="btn primary" type="button" (click)="openCreateProjectEditor()">
               Criar primeiro projeto
             </button>
           }
@@ -218,83 +227,4 @@
     </section>
   }
 
-  @if (showProjectModal()) {
-    <div class="modal-backdrop" (click)="closeProjectModal()"></div>
-    <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="project-title">
-      <div class="modal-heading">
-        <div>
-          <span class="eyebrow">Seu trabalho</span>
-          <h2 id="project-title">{{ projectModalTitle() }}</h2>
-        </div>
-        <button class="close-button" type="button" aria-label="Fechar" (click)="closeProjectModal()">×</button>
-      </div>
-
-      @if (feedback(); as notice) {
-        <div class="feedback" [class.error]="notice.type === 'error'" role="status">
-          {{ notice.message }}
-        </div>
-      }
-
-      <form [formGroup]="projectForm" (ngSubmit)="submitProject()" novalidate>
-        <div class="form-grid">
-          <label class="full-width">
-            <span>Nome do projeto</span>
-            <input type="text" formControlName="name" />
-            @if (projectForm.controls.name.touched && projectForm.controls.name.invalid) {
-              <small>Use entre 3 e 100 caracteres.</small>
-            }
-          </label>
-          <label class="full-width">
-            <span>Descrição</span>
-            <textarea formControlName="description" rows="5" maxlength="500"></textarea>
-            @if (projectForm.controls.description.touched && projectForm.controls.description.invalid) {
-              <small>Descreva o projeto em até 500 caracteres.</small>
-            }
-          </label>
-          <label>
-            <span>Categoria</span>
-            <select formControlName="category">
-              @for (category of categories; track category.value) {
-                <option [value]="category.value">{{ category.label }}</option>
-              }
-            </select>
-          </label>
-          <label>
-            <span>Repositório GitHub</span>
-            <input type="url" formControlName="githublink" placeholder="https://github.com/..." />
-            @if (projectForm.controls.githublink.touched && projectForm.controls.githublink.invalid) {
-              <small>Informe uma URL completa, começando com http:// ou https://.</small>
-            }
-          </label>
-          <label>
-            <span>Link do projeto ou vídeo</span>
-            <input type="url" formControlName="externalLink" placeholder="https://..." />
-          </label>
-          <label class="full-width">
-            <span>URL da imagem de capa</span>
-            <input type="url" formControlName="coverImageUrl" placeholder="https://.../capa.jpg" />
-          </label>
-          <label class="full-width">
-            <span>Imagens de amostra (até 3 URLs, uma por linha)</span>
-            <textarea formControlName="galleryUrls" rows="3"></textarea>
-          </label>
-          <label>
-            <span>Ferramentas (separadas por vírgula)</span>
-            <input type="text" formControlName="tools" placeholder="Angular, Figma, Node.js" />
-          </label>
-          <label>
-            <span>Tags (separadas por vírgula)</span>
-            <input type="text" formControlName="tags" placeholder="acessibilidade, dashboard" />
-          </label>
-        </div>
-
-        <div class="modal-actions">
-          <button type="button" class="btn ghost" (click)="closeProjectModal()">Cancelar</button>
-          <button type="submit" class="btn primary" [disabled]="isSavingProject()">
-            {{ isSavingProject() ? 'Salvando…' : editingProjectId() ? 'Salvar projeto' : 'Publicar projeto' }}
-          </button>
-        </div>
-      </form>
-    </section>
-  }
 </section>

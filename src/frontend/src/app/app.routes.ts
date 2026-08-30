@@ -59,6 +59,20 @@ export const routes: Routes = [
         .then(m => m.RegisterComponent)
   },
   {
+    path: 'projetos/novo',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/project-editor/project-editor.component')
+        .then(m => m.ProjectEditorComponent)
+  },
+  {
+    path: 'projetos/:projectId/editar',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/project-editor/project-editor.component')
+        .then(m => m.ProjectEditorComponent)
+  },
+  {
     path: 'projetos/:slug',
     loadComponent: () =>
       import('./features/project/project.component')

@@ -1,3 +1,5 @@
+import { ProjectBlock, ProjectStatus } from "@project/domain/valueObject/ProjectContent";
+
 export interface ProjectContract {
   id: string;
   name: string;
@@ -9,6 +11,10 @@ export interface ProjectContract {
   galleryUrls: string[];
   tools: string[];
   tags: string[];
+  contentBlocks: ProjectBlock[];
+  contentMarkdown: string;
+  status: ProjectStatus;
+  publishedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
   portfolioId: string;

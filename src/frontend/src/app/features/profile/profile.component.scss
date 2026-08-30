@@ -340,6 +340,16 @@
   }
 }
 
+.draft-status {
+  flex: 0 0 auto;
+  padding: 0.28rem 0.55rem;
+  border-radius: 999px;
+  background: #fff7ed;
+  color: #9a3412;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
 .empty-state {
   padding: 3rem 1.5rem;
   border-radius: 20px;
