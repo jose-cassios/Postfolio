@@ -72,6 +72,21 @@ export class ProfileComponent {
       ? { ...profile!, ...current, id: current.id ?? profile!.id }
       : profile;
   });
+  readonly reputationBadges = computed(() => {
+    const reputation = this.displayedProfile()?.reputation;
+    if (!reputation) return [];
+
+    const { evidence } = reputation;
+    const badges: string[] = [];
+
+    if (reputation.creatorScore > 0) badges.push('Criador em evolução');
+    if (evidence.postmarksSent > 0) badges.push('Postmarker');
+    if (evidence.usefulFeedbacks > 0) badges.push('Feedback útil');
+    if (evidence.appliedSuggestions > 0) badges.push('Sugestão aplicada');
+    if (evidence.recognizedContributions > 0) badges.push('Contribuição reconhecida');
+
+    return badges.slice(0, 4);
+  });
   readonly categories: ReadonlyArray<{
     value: ProjectCategory;
     label: string;
@@ -277,6 +292,11 @@ export class ProfileComponent {
 
   categoryLabel(category: ProjectCategory): string {
     return this.categories.find((item) => item.value === category)?.label ?? category;
+  }
+
+  reputationProgress(score: number, comparisonScore: number): number {
+    const reference = Math.max(10, score, comparisonScore);
+    return Math.round((score / reference) * 100);
   }
 
   private openRequestedModal(): void {

@@ -75,21 +75,30 @@
     </header>
 
     @if (user.reputation; as reputation) {
-      <section class="reputation-section" aria-labelledby="reputation-title">
-        <div class="reputation-heading">
-          <div><span class="eyebrow">Trajetória verificável</span><h2 id="reputation-title">Evidências da comunidade</h2></div>
-          <div class="reputation-scores">
-            <span><strong>{{ reputation.creatorScore }}</strong>Creator</span>
-            <span><strong>{{ reputation.contributorScore }}</strong>Contributor</span>
+      <section class="reputation-overview" aria-label="Atuação na comunidade">
+        <div class="reputation-visuals" aria-label="Resumo de reputação">
+          <div class="score-chart creator-score" [style.--score-progress]="reputationProgress(reputation.creatorScore, reputation.contributorScore) + '%'">
+            <div class="score-chart-center">
+              <strong>{{ reputation.creatorScore }}</strong>
+              <span>Creator</span>
+            </div>
+          </div>
+          <div class="score-chart contributor-score" [style.--score-progress]="reputationProgress(reputation.contributorScore, reputation.creatorScore) + '%'">
+            <div class="score-chart-center">
+              <strong>{{ reputation.contributorScore }}</strong>
+              <span>Contributor</span>
+            </div>
           </div>
         </div>
-        <div class="evidence-grid">
-          <div><strong>{{ reputation.evidence.publishedProjects }}</strong><span>Projetos publicados</span></div>
-          <div><strong>{{ reputation.evidence.versionsCreated }}</strong><span>Versões criadas</span></div>
-          <div><strong>{{ reputation.evidence.postmarksSent }}</strong><span>Postmarks enviados</span></div>
-          <div><strong>{{ reputation.evidence.usefulFeedbacks }}</strong><span>Feedbacks úteis</span></div>
-          <div><strong>{{ reputation.evidence.appliedSuggestions }}</strong><span>Sugestões aplicadas</span></div>
-          <div><strong>{{ reputation.evidence.recognizedContributions }}</strong><span>Contribuições reconhecidas</span></div>
+
+        <div class="contribution-badges" aria-label="Reconhecimentos da comunidade">
+          @if (reputationBadges().length) {
+            @for (badge of reputationBadges(); track badge) {
+              <span>{{ badge }}</span>
+            }
+          } @else {
+            <p>Os reconhecimentos da comunidade aparecerão aqui.</p>
+          }
         </div>
       </section>
     }
@@ -183,6 +192,33 @@
         </div>
       }
     </section>
+
+    @if (user.reputation; as reputation) {
+      <details class="statistics-panel">
+        <summary>
+          <span>Estatísticas de participação</span>
+          <small>Ver detalhes</small>
+        </summary>
+        <dl class="statistics-grid">
+          <div>
+            <dt>Postmarks enviados</dt>
+            <dd>{{ reputation.evidence.postmarksSent }}</dd>
+          </div>
+          <div>
+            <dt>Feedbacks úteis</dt>
+            <dd>{{ reputation.evidence.usefulFeedbacks }}</dd>
+          </div>
+          <div>
+            <dt>Sugestões aplicadas</dt>
+            <dd>{{ reputation.evidence.appliedSuggestions }}</dd>
+          </div>
+          <div>
+            <dt>Contribuições reconhecidas</dt>
+            <dd>{{ reputation.evidence.recognizedContributions }}</dd>
+          </div>
+        </dl>
+      </details>
+    }
   }
 
   @if (showEditModal()) {
