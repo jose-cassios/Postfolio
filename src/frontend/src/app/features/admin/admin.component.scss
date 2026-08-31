@@ -26,12 +26,13 @@ button { color: white; background: $color-primary-500; border: 0; font-weight: 7
 button:disabled { cursor: not-allowed; opacity: .5; }
 .status-button { background: #a13f3f; }
 .status-button.reactivate { background: #168454; }
+.history-button { background: white; color: $color-text-primary; border: 1px solid $color-border-default; }
 .modal-backdrop { position: fixed; z-index: 20; inset: 0; background: rgba(12, 18, 36, .48); }
-.rank-modal { position: fixed; z-index: 21; top: 50%; left: 50%; width: min(720px, calc(100vw - 32px)); max-height: calc(100vh - 32px); overflow: auto; transform: translate(-50%, -50%); padding: 28px; border: 1px solid $color-border-default; border-radius: 18px; background: white; box-shadow: 0 24px 60px rgba(12, 18, 36, .25); }
+.rank-modal, .reputation-modal { position: fixed; z-index: 21; top: 50%; left: 50%; width: min(720px, calc(100vw - 32px)); max-height: calc(100vh - 32px); overflow: auto; transform: translate(-50%, -50%); padding: 28px; border: 1px solid $color-border-default; border-radius: 18px; background: white; box-shadow: 0 24px 60px rgba(12, 18, 36, .25); }
 .rank-modal header { margin-bottom: 20px; }
-.rank-modal header span { color: $color-primary-500; font-weight: 700; }
-.rank-modal header h2 { margin: 6px 0; }
-.rank-modal header p { margin: 0; color: $color-text-secondary; }
+.rank-modal header span, .reputation-modal header span { color: $color-primary-500; font-weight: 700; }
+.rank-modal header h2, .reputation-modal header h2 { margin: 6px 0; }
+.rank-modal header p, .reputation-modal header p { margin: 0; color: $color-text-secondary; }
 .rank-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .rank-grid label { display: grid; grid-template-columns: 70px 1fr; align-items: center; gap: 8px; padding: 10px 12px; border: 1px solid $color-border-default; border-radius: 10px; }
 .rank-grid label > span { font-weight: 750; }
@@ -39,10 +40,33 @@ button:disabled { cursor: not-allowed; opacity: .5; }
 .rank-grid small { grid-column: 2; color: $color-text-secondary; font-size: .73rem; }
 .rank-error { margin: 14px 0 0; color: #a13f3f; }
 .rank-modal footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
+.reputation-modal footer { display: flex; justify-content: flex-end; margin-top: 20px; }
 .cancel-button { background: white; color: $color-text-primary; border: 1px solid $color-border-default; }
+.xp-totals { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 20px 0; }
+.xp-totals div { padding: 14px; border: 1px solid $color-border-default; border-radius: 12px; background: #faf9ff; }
+.xp-totals span, .history-list article span, .history-list article small { display: block; color: $color-text-secondary; font-size: .75rem; }
+.xp-totals strong { display: block; margin-top: 4px; font-size: 1.35rem; }
+.adjustment-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 20px 0; padding: 16px; border: 1px solid $color-border-default; border-radius: 14px; }
+.adjustment-form h3, .history-list h3 { grid-column: 1 / -1; margin: 0; }
+.adjustment-form label { display: grid; gap: 5px; color: $color-text-secondary; font-size: .76rem; }
+.adjustment-form input, .adjustment-form textarea { box-sizing: border-box; width: 100%; }
+.adjustment-form .full-width, .adjustment-form button { grid-column: 1 / -1; }
+.history-list { display: grid; gap: 10px; }
+.history-list article { display: grid; grid-template-columns: 1fr auto; gap: 7px 14px; padding: 13px; border: 1px solid $color-border-default; border-radius: 12px; }
+.history-list article > div { display: grid; gap: 3px; }
+.history-list article b { color: #168454; white-space: nowrap; }
+.history-list article b.negative, .history-list article.negative > b { color: #a13f3f; }
+.reversal-action, .reversed { grid-column: 1 / -1; margin: 3px 0 0; }
+.reversal-action { display: flex; gap: 8px; }
+.reversal-action input { flex: 1; min-width: 0; }
+.reverse-button { background: #a13f3f; }
+.reversed { color: #a13f3f; font-size: .76rem; }
 @media (max-width: 760px) {
   .panel-heading, .user-list article, .controls { align-items: stretch; flex-direction: column; }
   .controls { width: 100%; }
   .controls label, .controls button { width: 100%; }
   .rank-grid { grid-template-columns: 1fr; }
+  .adjustment-form { grid-template-columns: 1fr; }
+  .adjustment-form h3, .history-list h3, .adjustment-form .full-width, .adjustment-form button { grid-column: 1; }
+  .reversal-action { flex-direction: column; }
 }

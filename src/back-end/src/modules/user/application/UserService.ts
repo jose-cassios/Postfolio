@@ -11,7 +11,11 @@ import { UserCreatedEvent } from "@shared/event/UserCreatedEvent";
 import { EventListener } from "@shared/event/EventListener";
 import { UserType } from "@user/domain/enum/UserType";
 import { validateReputationRankConfig } from "@user/application/ReputationRanks";
-import { ReputationRankConfigContract } from "@shared/contracts/UserContracts";
+import {
+  ReputationAdjustmentInput,
+  ReputationRankConfigContract,
+  ReputationReversalInput,
+} from "@shared/contracts/UserContracts";
 
 @injectable()
 export class UserService implements IUserService {
@@ -164,5 +168,31 @@ export class UserService implements IUserService {
       throw new BadRequest(error instanceof Error ? error.message : "Configuracao de ranks invalida.");
     }
     return await this.repository.updateReputationRankConfig(config);
+  }
+
+  async findReputationHistory(userId: string, limit = 100) {
+    if (!(await this.repository.findById(userId))) {
+      throw new NotFound("Usuario nao encontrado.");
+    }
+    return await this.repository.findReputationHistory(userId, Math.min(Math.max(limit, 1), 100));
+  }
+
+  async applyReputationAdjustment(
+    userId: string,
+    adminId: string,
+    input: ReputationAdjustmentInput,
+  ) {
+    if (!(await this.repository.findById(userId))) {
+      throw new NotFound("Usuario nao encontrado.");
+    }
+    return await this.repository.applyReputationAdjustment(userId, adminId, input);
+  }
+
+  async reverseReputationEvent(
+    eventId: string,
+    adminId: string,
+    input: ReputationReversalInput,
+  ) {
+    return await this.repository.reverseReputationEvent(eventId, adminId, input);
   }
 }

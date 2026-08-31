@@ -1,6 +1,13 @@
 import User from "@user/domain/entities/User";
 import Email from "@user/domain/valueObject/Email";
-import { ReputationRankConfigContract, UserAchievementContract, UserReputationContract } from "@shared/contracts/UserContracts";
+import {
+  ReputationAdjustmentInput,
+  ReputationHistoryContract,
+  ReputationRankConfigContract,
+  ReputationReversalInput,
+  UserAchievementContract,
+  UserReputationContract,
+} from "@shared/contracts/UserContracts";
 
 export interface IUserRepository {
   create(user: User): Promise<User>;
@@ -15,4 +22,7 @@ export interface IUserRepository {
   findReputation(userId: string): Promise<UserReputationContract>;
   findReputationRankConfig(): Promise<ReputationRankConfigContract[]>;
   updateReputationRankConfig(config: ReputationRankConfigContract[]): Promise<ReputationRankConfigContract[]>;
+  findReputationHistory(userId: string, limit: number): Promise<ReputationHistoryContract>;
+  applyReputationAdjustment(userId: string, adminId: string, input: ReputationAdjustmentInput): Promise<ReputationHistoryContract>;
+  reverseReputationEvent(eventId: string, adminId: string, input: ReputationReversalInput): Promise<ReputationHistoryContract>;
 }

@@ -113,6 +113,20 @@ const UpdateReputationRankConfigBodySchema = z.object({
   }
 });
 
+const ReputationAxisSchema = z.enum(["CREATOR", "CONTRIBUTOR"]);
+const AdminReputationAdjustmentBodySchema = z.object({
+  axis: ReputationAxisSchema,
+  points: z.number().int().refine((value) => value !== 0, "O ajuste deve ser diferente de zero."),
+  reason: z.string().trim().min(3, "Informe o motivo do ajuste.").max(500),
+  idempotencyKey: z.string().trim().min(16).max(120),
+});
+const ReputationEventParamsSchema = z.object({
+  eventId: z.string().uuid("ID do evento de reputacao invalido"),
+});
+const ReputationReversalBodySchema = z.object({
+  reason: z.string().trim().min(3, "Informe o motivo da reversao.").max(500),
+});
+
 type UpdateUserRequest = FastifyRequest<{
   Params: z.infer<typeof UpdateUserParamsSchema>;
   Body: z.infer<typeof UpdateUserBodySchema>;
@@ -125,6 +139,16 @@ type UpdateUserRoleRequest = FastifyRequest<{
 
 type UpdateReputationRankConfigRequest = FastifyRequest<{
   Body: z.infer<typeof UpdateReputationRankConfigBodySchema>;
+}>;
+
+type AdminReputationAdjustmentRequest = FastifyRequest<{
+  Params: z.infer<typeof UpdateUserParamsSchema>;
+  Body: z.infer<typeof AdminReputationAdjustmentBodySchema>;
+}>;
+
+type ReputationReversalRequest = FastifyRequest<{
+  Params: z.infer<typeof ReputationEventParamsSchema>;
+  Body: z.infer<typeof ReputationReversalBodySchema>;
 }>;
 
 const PublicProfileParamsSchema = z.object({
@@ -150,6 +174,17 @@ const userRouteSchema = {
   reputationRankConfig: {
     body: UpdateReputationRankConfigBodySchema,
   },
+  reputationAdjustment: {
+    params: UpdateUserParamsSchema,
+    body: AdminReputationAdjustmentBodySchema,
+  },
+  reputationHistory: {
+    params: UpdateUserParamsSchema,
+  },
+  reputationReversal: {
+    params: ReputationEventParamsSchema,
+    body: ReputationReversalBodySchema,
+  },
   login: {
     body: LoginUserBodySchema,
   },
@@ -164,6 +199,8 @@ export {
   UpdateUserRequest,
   UpdateUserRoleRequest,
   UpdateReputationRankConfigRequest,
+  AdminReputationAdjustmentRequest,
+  ReputationReversalRequest,
   LoginRequest,
   PublicProfileRequest,
 };

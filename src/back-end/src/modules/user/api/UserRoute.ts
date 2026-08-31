@@ -8,6 +8,8 @@ import {
   UpdateUserRequest,
   UpdateUserRoleRequest,
   UpdateReputationRankConfigRequest,
+  AdminReputationAdjustmentRequest,
+  ReputationReversalRequest,
   PublicProfileRequest,
 } from "@user/api/UserSchema";
 
@@ -36,6 +38,30 @@ function userRoutesPlugin(
       req as UpdateReputationRankConfigRequest,
       reply,
     )
+  );
+
+  app.get(
+    "/admin/users/:id/reputation-events",
+    { schema: userRouteSchema.reputationHistory, preValidation: UserMiddle.authenticate },
+    (req, reply) => userController.getReputationHistory(req, reply),
+  );
+
+  app.post(
+    "/admin/users/:id/reputation-adjustments",
+    { schema: userRouteSchema.reputationAdjustment, preValidation: UserMiddle.authenticate },
+    (req, reply) => userController.applyReputationAdjustment(
+      req as AdminReputationAdjustmentRequest,
+      reply,
+    ),
+  );
+
+  app.post(
+    "/admin/reputation-events/:eventId/reversal",
+    { schema: userRouteSchema.reputationReversal, preValidation: UserMiddle.authenticate },
+    (req, reply) => userController.reverseReputationEvent(
+      req as ReputationReversalRequest,
+      reply,
+    ),
   );
 
   app.put(

@@ -76,14 +76,20 @@
 
     @if (user.reputation; as reputation) {
       <section class="reputation-overview" aria-label="Atuação na comunidade">
-        <div class="reputation-visuals" aria-label="Ranks de reputação">
-          @for (indicator of rankIndicators(); track indicator.axis) {
-            <article
-              class="rank-indicator"
-              [class.creator-rank]="indicator.axis === 'creator'"
-              [class.contributor-rank]="indicator.axis === 'contributor'"
-              [class.is-open]="isRankPopoverOpen(indicator.axis)"
-            >
+        <div class="rank-summary">
+          <div class="reputation-heading">
+        <span class="eyebrow">Reputação</span>
+            <h2>Ranks de reputação</h2>
+            <p>Seu progresso como Creator e Contributor.</p>
+          </div>
+          <div class="reputation-visuals" aria-label="Ranks de reputação">
+            @for (indicator of rankIndicators(); track indicator.axis) {
+              <article
+                class="rank-indicator"
+                [class.creator-rank]="indicator.axis === 'creator'"
+                [class.contributor-rank]="indicator.axis === 'contributor'"
+                [class.is-open]="isRankPopoverOpen(indicator.axis)"
+              >
               <button
                 class="rank-trigger"
                 type="button"
@@ -145,8 +151,9 @@
                   <p class="rank-max">✓ Todos os requisitos deste eixo foram concluídos.</p>
                 }
               </div>
-            </article>
-          }
+              </article>
+            }
+          </div>
         </div>
 
         <div class="contribution-badges" aria-label="Reconhecimentos da comunidade">

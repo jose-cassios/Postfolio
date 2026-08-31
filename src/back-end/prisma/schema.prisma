@@ -339,6 +339,9 @@ model ReputationEvent {
   projectVersionId String?
   eventId          String?
   metadata         Json?
+  reason           String?
+  adminId          String?
+  reversalOfId     String?             @unique
   idempotencyKey   String              @unique
   createdAt        DateTime            @default(now())
 
@@ -347,6 +350,8 @@ model ReputationEvent {
   postmark       Appreciate?     @relation(fields: [postmarkId], references: [id], onDelete: SetNull)
   projectVersion ProjectVersion? @relation(fields: [projectVersionId], references: [id], onDelete: SetNull)
   event          Competition?    @relation("ReputationEventCompetition", fields: [eventId], references: [id], onDelete: SetNull)
+  reversalOf     ReputationEvent? @relation("ReputationEventReversal", fields: [reversalOfId], references: [id], onDelete: Restrict)
+  reversal       ReputationEvent? @relation("ReputationEventReversal")
 
   @@index([userId, axis, createdAt])
   @@index([eventId])

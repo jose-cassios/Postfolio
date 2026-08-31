@@ -88,6 +88,9 @@ interface XpEventContext {
   projectVersionId?: string;
   eventId?: string;
   metadata?: Prisma.InputJsonValue;
+  reason?: string;
+  adminId?: string;
+  reversalOfId?: string;
 }
 
 export type XpGrantInput = XpEventContext & (
@@ -129,10 +132,10 @@ export function resolveXpGrant(input: XpGrantInput): {
 export async function distributeXp(
   tx: Prisma.TransactionClient,
   input: XpGrantInput,
-): Promise<void> {
+): Promise<{ id: string; axis: string; points: number }> {
   const reward = resolveXpGrant(input);
 
-  await tx.reputationEvent.upsert({
+  return await tx.reputationEvent.upsert({
     where: { idempotencyKey: input.idempotencyKey },
     update: {},
     create: {
@@ -145,7 +148,11 @@ export async function distributeXp(
       projectVersionId: input.projectVersionId,
       eventId: input.eventId,
       metadata: input.metadata,
+      reason: input.reason,
+      adminId: input.adminId,
+      reversalOfId: input.reversalOfId,
       idempotencyKey: input.idempotencyKey,
     },
+    select: { id: true, axis: true, points: true },
   });
 }

@@ -44,6 +44,9 @@ export type ReputationEventMinAggregateOutputType = {
   postmarkId: string | null
   projectVersionId: string | null
   eventId: string | null
+  reason: string | null
+  adminId: string | null
+  reversalOfId: string | null
   idempotencyKey: string | null
   createdAt: Date | null
 }
@@ -58,6 +61,9 @@ export type ReputationEventMaxAggregateOutputType = {
   postmarkId: string | null
   projectVersionId: string | null
   eventId: string | null
+  reason: string | null
+  adminId: string | null
+  reversalOfId: string | null
   idempotencyKey: string | null
   createdAt: Date | null
 }
@@ -73,6 +79,9 @@ export type ReputationEventCountAggregateOutputType = {
   projectVersionId: number
   eventId: number
   metadata: number
+  reason: number
+  adminId: number
+  reversalOfId: number
   idempotencyKey: number
   createdAt: number
   _all: number
@@ -97,6 +106,9 @@ export type ReputationEventMinAggregateInputType = {
   postmarkId?: true
   projectVersionId?: true
   eventId?: true
+  reason?: true
+  adminId?: true
+  reversalOfId?: true
   idempotencyKey?: true
   createdAt?: true
 }
@@ -111,6 +123,9 @@ export type ReputationEventMaxAggregateInputType = {
   postmarkId?: true
   projectVersionId?: true
   eventId?: true
+  reason?: true
+  adminId?: true
+  reversalOfId?: true
   idempotencyKey?: true
   createdAt?: true
 }
@@ -126,6 +141,9 @@ export type ReputationEventCountAggregateInputType = {
   projectVersionId?: true
   eventId?: true
   metadata?: true
+  reason?: true
+  adminId?: true
+  reversalOfId?: true
   idempotencyKey?: true
   createdAt?: true
   _all?: true
@@ -228,6 +246,9 @@ export type ReputationEventGroupByOutputType = {
   projectVersionId: string | null
   eventId: string | null
   metadata: runtime.JsonValue | null
+  reason: string | null
+  adminId: string | null
+  reversalOfId: string | null
   idempotencyKey: string
   createdAt: Date
   _count: ReputationEventCountAggregateOutputType | null
@@ -266,6 +287,9 @@ export type ReputationEventWhereInput = {
   projectVersionId?: Prisma.StringNullableFilter<"ReputationEvent"> | string | null
   eventId?: Prisma.StringNullableFilter<"ReputationEvent"> | string | null
   metadata?: Prisma.JsonNullableFilter<"ReputationEvent">
+  reason?: Prisma.StringNullableFilter<"ReputationEvent"> | string | null
+  adminId?: Prisma.StringNullableFilter<"ReputationEvent"> | string | null
+  reversalOfId?: Prisma.StringNullableFilter<"ReputationEvent"> | string | null
   idempotencyKey?: Prisma.StringFilter<"ReputationEvent"> | string
   createdAt?: Prisma.DateTimeFilter<"ReputationEvent"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -273,6 +297,8 @@ export type ReputationEventWhereInput = {
   postmark?: Prisma.XOR<Prisma.AppreciateNullableScalarRelationFilter, Prisma.AppreciateWhereInput> | null
   projectVersion?: Prisma.XOR<Prisma.ProjectVersionNullableScalarRelationFilter, Prisma.ProjectVersionWhereInput> | null
   event?: Prisma.XOR<Prisma.CompetitionNullableScalarRelationFilter, Prisma.CompetitionWhereInput> | null
+  reversalOf?: Prisma.XOR<Prisma.ReputationEventNullableScalarRelationFilter, Prisma.ReputationEventWhereInput> | null
+  reversal?: Prisma.XOR<Prisma.ReputationEventNullableScalarRelationFilter, Prisma.ReputationEventWhereInput> | null
 }
 
 export type ReputationEventOrderByWithRelationInput = {
@@ -286,6 +312,9 @@ export type ReputationEventOrderByWithRelationInput = {
   projectVersionId?: Prisma.SortOrderInput | Prisma.SortOrder
   eventId?: Prisma.SortOrderInput | Prisma.SortOrder
   metadata?: Prisma.SortOrderInput | Prisma.SortOrder
+  reason?: Prisma.SortOrderInput | Prisma.SortOrder
+  adminId?: Prisma.SortOrderInput | Prisma.SortOrder
+  reversalOfId?: Prisma.SortOrderInput | Prisma.SortOrder
   idempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
@@ -293,10 +322,13 @@ export type ReputationEventOrderByWithRelationInput = {
   postmark?: Prisma.AppreciateOrderByWithRelationInput
   projectVersion?: Prisma.ProjectVersionOrderByWithRelationInput
   event?: Prisma.CompetitionOrderByWithRelationInput
+  reversalOf?: Prisma.ReputationEventOrderByWithRelationInput
+  reversal?: Prisma.ReputationEventOrderByWithRelationInput
 }
 
 export type ReputationEventWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  reversalOfId?: string
   idempotencyKey?: string
   AND?: Prisma.ReputationEventWhereInput | Prisma.ReputationEventWhereInput[]
   OR?: Prisma.ReputationEventWhereInput[]
@@ -310,13 +342,17 @@ export type ReputationEventWhereUniqueInput = Prisma.AtLeast<{
   projectVersionId?: Prisma.StringNullableFilter<"ReputationEvent"> | string | null
   eventId?: Prisma.StringNullableFilter<"ReputationEvent"> | string | null
   metadata?: Prisma.JsonNullableFilter<"ReputationEvent">
+  reason?: Prisma.StringNullableFilter<"ReputationEvent"> | string | null
+  adminId?: Prisma.StringNullableFilter<"ReputationEvent"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ReputationEvent"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   project?: Prisma.XOR<Prisma.ProjectNullableScalarRelationFilter, Prisma.ProjectWhereInput> | null
   postmark?: Prisma.XOR<Prisma.AppreciateNullableScalarRelationFilter, Prisma.AppreciateWhereInput> | null
   projectVersion?: Prisma.XOR<Prisma.ProjectVersionNullableScalarRelationFilter, Prisma.ProjectVersionWhereInput> | null
   event?: Prisma.XOR<Prisma.CompetitionNullableScalarRelationFilter, Prisma.CompetitionWhereInput> | null
-}, "id" | "idempotencyKey">
+  reversalOf?: Prisma.XOR<Prisma.ReputationEventNullableScalarRelationFilter, Prisma.ReputationEventWhereInput> | null
+  reversal?: Prisma.XOR<Prisma.ReputationEventNullableScalarRelationFilter, Prisma.ReputationEventWhereInput> | null
+}, "id" | "reversalOfId" | "idempotencyKey">
 
 export type ReputationEventOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -329,6 +365,9 @@ export type ReputationEventOrderByWithAggregationInput = {
   projectVersionId?: Prisma.SortOrderInput | Prisma.SortOrder
   eventId?: Prisma.SortOrderInput | Prisma.SortOrder
   metadata?: Prisma.SortOrderInput | Prisma.SortOrder
+  reason?: Prisma.SortOrderInput | Prisma.SortOrder
+  adminId?: Prisma.SortOrderInput | Prisma.SortOrder
+  reversalOfId?: Prisma.SortOrderInput | Prisma.SortOrder
   idempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.ReputationEventCountOrderByAggregateInput
@@ -352,6 +391,9 @@ export type ReputationEventScalarWhereWithAggregatesInput = {
   projectVersionId?: Prisma.StringNullableWithAggregatesFilter<"ReputationEvent"> | string | null
   eventId?: Prisma.StringNullableWithAggregatesFilter<"ReputationEvent"> | string | null
   metadata?: Prisma.JsonNullableWithAggregatesFilter<"ReputationEvent">
+  reason?: Prisma.StringNullableWithAggregatesFilter<"ReputationEvent"> | string | null
+  adminId?: Prisma.StringNullableWithAggregatesFilter<"ReputationEvent"> | string | null
+  reversalOfId?: Prisma.StringNullableWithAggregatesFilter<"ReputationEvent"> | string | null
   idempotencyKey?: Prisma.StringWithAggregatesFilter<"ReputationEvent"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ReputationEvent"> | Date | string
 }
@@ -362,6 +404,8 @@ export type ReputationEventCreateInput = {
   axis: $Enums.ReputationAxis
   points: number
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: string | null
+  adminId?: string | null
   idempotencyKey: string
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutReputationEventsInput
@@ -369,6 +413,8 @@ export type ReputationEventCreateInput = {
   postmark?: Prisma.AppreciateCreateNestedOneWithoutReputationEventsInput
   projectVersion?: Prisma.ProjectVersionCreateNestedOneWithoutReputationEventsInput
   event?: Prisma.CompetitionCreateNestedOneWithoutReputationEventsInput
+  reversalOf?: Prisma.ReputationEventCreateNestedOneWithoutReversalInput
+  reversal?: Prisma.ReputationEventCreateNestedOneWithoutReversalOfInput
 }
 
 export type ReputationEventUncheckedCreateInput = {
@@ -382,8 +428,12 @@ export type ReputationEventUncheckedCreateInput = {
   projectVersionId?: string | null
   eventId?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: string | null
+  adminId?: string | null
+  reversalOfId?: string | null
   idempotencyKey: string
   createdAt?: Date | string
+  reversal?: Prisma.ReputationEventUncheckedCreateNestedOneWithoutReversalOfInput
 }
 
 export type ReputationEventUpdateInput = {
@@ -392,6 +442,8 @@ export type ReputationEventUpdateInput = {
   axis?: Prisma.EnumReputationAxisFieldUpdateOperationsInput | $Enums.ReputationAxis
   points?: Prisma.IntFieldUpdateOperationsInput | number
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutReputationEventsNestedInput
@@ -399,6 +451,8 @@ export type ReputationEventUpdateInput = {
   postmark?: Prisma.AppreciateUpdateOneWithoutReputationEventsNestedInput
   projectVersion?: Prisma.ProjectVersionUpdateOneWithoutReputationEventsNestedInput
   event?: Prisma.CompetitionUpdateOneWithoutReputationEventsNestedInput
+  reversalOf?: Prisma.ReputationEventUpdateOneWithoutReversalNestedInput
+  reversal?: Prisma.ReputationEventUpdateOneWithoutReversalOfNestedInput
 }
 
 export type ReputationEventUncheckedUpdateInput = {
@@ -412,8 +466,12 @@ export type ReputationEventUncheckedUpdateInput = {
   projectVersionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reversalOfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reversal?: Prisma.ReputationEventUncheckedUpdateOneWithoutReversalOfNestedInput
 }
 
 export type ReputationEventCreateManyInput = {
@@ -427,6 +485,9 @@ export type ReputationEventCreateManyInput = {
   projectVersionId?: string | null
   eventId?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: string | null
+  adminId?: string | null
+  reversalOfId?: string | null
   idempotencyKey: string
   createdAt?: Date | string
 }
@@ -437,6 +498,8 @@ export type ReputationEventUpdateManyMutationInput = {
   axis?: Prisma.EnumReputationAxisFieldUpdateOperationsInput | $Enums.ReputationAxis
   points?: Prisma.IntFieldUpdateOperationsInput | number
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -452,6 +515,9 @@ export type ReputationEventUncheckedUpdateManyInput = {
   projectVersionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reversalOfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -466,6 +532,11 @@ export type ReputationEventOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type ReputationEventNullableScalarRelationFilter = {
+  is?: Prisma.ReputationEventWhereInput | null
+  isNot?: Prisma.ReputationEventWhereInput | null
+}
+
 export type ReputationEventCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -477,6 +548,9 @@ export type ReputationEventCountOrderByAggregateInput = {
   projectVersionId?: Prisma.SortOrder
   eventId?: Prisma.SortOrder
   metadata?: Prisma.SortOrder
+  reason?: Prisma.SortOrder
+  adminId?: Prisma.SortOrder
+  reversalOfId?: Prisma.SortOrder
   idempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -495,6 +569,9 @@ export type ReputationEventMaxOrderByAggregateInput = {
   postmarkId?: Prisma.SortOrder
   projectVersionId?: Prisma.SortOrder
   eventId?: Prisma.SortOrder
+  reason?: Prisma.SortOrder
+  adminId?: Prisma.SortOrder
+  reversalOfId?: Prisma.SortOrder
   idempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -509,6 +586,9 @@ export type ReputationEventMinOrderByAggregateInput = {
   postmarkId?: Prisma.SortOrder
   projectVersionId?: Prisma.SortOrder
   eventId?: Prisma.SortOrder
+  reason?: Prisma.SortOrder
+  adminId?: Prisma.SortOrder
+  reversalOfId?: Prisma.SortOrder
   idempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -727,6 +807,24 @@ export type ReputationEventUncheckedUpdateManyWithoutProjectVersionNestedInput =
   deleteMany?: Prisma.ReputationEventScalarWhereInput | Prisma.ReputationEventScalarWhereInput[]
 }
 
+export type ReputationEventCreateNestedOneWithoutReversalInput = {
+  create?: Prisma.XOR<Prisma.ReputationEventCreateWithoutReversalInput, Prisma.ReputationEventUncheckedCreateWithoutReversalInput>
+  connectOrCreate?: Prisma.ReputationEventCreateOrConnectWithoutReversalInput
+  connect?: Prisma.ReputationEventWhereUniqueInput
+}
+
+export type ReputationEventCreateNestedOneWithoutReversalOfInput = {
+  create?: Prisma.XOR<Prisma.ReputationEventCreateWithoutReversalOfInput, Prisma.ReputationEventUncheckedCreateWithoutReversalOfInput>
+  connectOrCreate?: Prisma.ReputationEventCreateOrConnectWithoutReversalOfInput
+  connect?: Prisma.ReputationEventWhereUniqueInput
+}
+
+export type ReputationEventUncheckedCreateNestedOneWithoutReversalOfInput = {
+  create?: Prisma.XOR<Prisma.ReputationEventCreateWithoutReversalOfInput, Prisma.ReputationEventUncheckedCreateWithoutReversalOfInput>
+  connectOrCreate?: Prisma.ReputationEventCreateOrConnectWithoutReversalOfInput
+  connect?: Prisma.ReputationEventWhereUniqueInput
+}
+
 export type EnumReputationEventTypeFieldUpdateOperationsInput = {
   set?: $Enums.ReputationEventType
 }
@@ -735,18 +833,52 @@ export type EnumReputationAxisFieldUpdateOperationsInput = {
   set?: $Enums.ReputationAxis
 }
 
+export type ReputationEventUpdateOneWithoutReversalNestedInput = {
+  create?: Prisma.XOR<Prisma.ReputationEventCreateWithoutReversalInput, Prisma.ReputationEventUncheckedCreateWithoutReversalInput>
+  connectOrCreate?: Prisma.ReputationEventCreateOrConnectWithoutReversalInput
+  upsert?: Prisma.ReputationEventUpsertWithoutReversalInput
+  disconnect?: Prisma.ReputationEventWhereInput | boolean
+  delete?: Prisma.ReputationEventWhereInput | boolean
+  connect?: Prisma.ReputationEventWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ReputationEventUpdateToOneWithWhereWithoutReversalInput, Prisma.ReputationEventUpdateWithoutReversalInput>, Prisma.ReputationEventUncheckedUpdateWithoutReversalInput>
+}
+
+export type ReputationEventUpdateOneWithoutReversalOfNestedInput = {
+  create?: Prisma.XOR<Prisma.ReputationEventCreateWithoutReversalOfInput, Prisma.ReputationEventUncheckedCreateWithoutReversalOfInput>
+  connectOrCreate?: Prisma.ReputationEventCreateOrConnectWithoutReversalOfInput
+  upsert?: Prisma.ReputationEventUpsertWithoutReversalOfInput
+  disconnect?: Prisma.ReputationEventWhereInput | boolean
+  delete?: Prisma.ReputationEventWhereInput | boolean
+  connect?: Prisma.ReputationEventWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ReputationEventUpdateToOneWithWhereWithoutReversalOfInput, Prisma.ReputationEventUpdateWithoutReversalOfInput>, Prisma.ReputationEventUncheckedUpdateWithoutReversalOfInput>
+}
+
+export type ReputationEventUncheckedUpdateOneWithoutReversalOfNestedInput = {
+  create?: Prisma.XOR<Prisma.ReputationEventCreateWithoutReversalOfInput, Prisma.ReputationEventUncheckedCreateWithoutReversalOfInput>
+  connectOrCreate?: Prisma.ReputationEventCreateOrConnectWithoutReversalOfInput
+  upsert?: Prisma.ReputationEventUpsertWithoutReversalOfInput
+  disconnect?: Prisma.ReputationEventWhereInput | boolean
+  delete?: Prisma.ReputationEventWhereInput | boolean
+  connect?: Prisma.ReputationEventWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ReputationEventUpdateToOneWithWhereWithoutReversalOfInput, Prisma.ReputationEventUpdateWithoutReversalOfInput>, Prisma.ReputationEventUncheckedUpdateWithoutReversalOfInput>
+}
+
 export type ReputationEventCreateWithoutUserInput = {
   id?: string
   type: $Enums.ReputationEventType
   axis: $Enums.ReputationAxis
   points: number
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: string | null
+  adminId?: string | null
   idempotencyKey: string
   createdAt?: Date | string
   project?: Prisma.ProjectCreateNestedOneWithoutReputationEventsInput
   postmark?: Prisma.AppreciateCreateNestedOneWithoutReputationEventsInput
   projectVersion?: Prisma.ProjectVersionCreateNestedOneWithoutReputationEventsInput
   event?: Prisma.CompetitionCreateNestedOneWithoutReputationEventsInput
+  reversalOf?: Prisma.ReputationEventCreateNestedOneWithoutReversalInput
+  reversal?: Prisma.ReputationEventCreateNestedOneWithoutReversalOfInput
 }
 
 export type ReputationEventUncheckedCreateWithoutUserInput = {
@@ -759,8 +891,12 @@ export type ReputationEventUncheckedCreateWithoutUserInput = {
   projectVersionId?: string | null
   eventId?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: string | null
+  adminId?: string | null
+  reversalOfId?: string | null
   idempotencyKey: string
   createdAt?: Date | string
+  reversal?: Prisma.ReputationEventUncheckedCreateNestedOneWithoutReversalOfInput
 }
 
 export type ReputationEventCreateOrConnectWithoutUserInput = {
@@ -803,6 +939,9 @@ export type ReputationEventScalarWhereInput = {
   projectVersionId?: Prisma.StringNullableFilter<"ReputationEvent"> | string | null
   eventId?: Prisma.StringNullableFilter<"ReputationEvent"> | string | null
   metadata?: Prisma.JsonNullableFilter<"ReputationEvent">
+  reason?: Prisma.StringNullableFilter<"ReputationEvent"> | string | null
+  adminId?: Prisma.StringNullableFilter<"ReputationEvent"> | string | null
+  reversalOfId?: Prisma.StringNullableFilter<"ReputationEvent"> | string | null
   idempotencyKey?: Prisma.StringFilter<"ReputationEvent"> | string
   createdAt?: Prisma.DateTimeFilter<"ReputationEvent"> | Date | string
 }
@@ -813,12 +952,16 @@ export type ReputationEventCreateWithoutEventInput = {
   axis: $Enums.ReputationAxis
   points: number
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: string | null
+  adminId?: string | null
   idempotencyKey: string
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutReputationEventsInput
   project?: Prisma.ProjectCreateNestedOneWithoutReputationEventsInput
   postmark?: Prisma.AppreciateCreateNestedOneWithoutReputationEventsInput
   projectVersion?: Prisma.ProjectVersionCreateNestedOneWithoutReputationEventsInput
+  reversalOf?: Prisma.ReputationEventCreateNestedOneWithoutReversalInput
+  reversal?: Prisma.ReputationEventCreateNestedOneWithoutReversalOfInput
 }
 
 export type ReputationEventUncheckedCreateWithoutEventInput = {
@@ -831,8 +974,12 @@ export type ReputationEventUncheckedCreateWithoutEventInput = {
   postmarkId?: string | null
   projectVersionId?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: string | null
+  adminId?: string | null
+  reversalOfId?: string | null
   idempotencyKey: string
   createdAt?: Date | string
+  reversal?: Prisma.ReputationEventUncheckedCreateNestedOneWithoutReversalOfInput
 }
 
 export type ReputationEventCreateOrConnectWithoutEventInput = {
@@ -867,12 +1014,16 @@ export type ReputationEventCreateWithoutProjectInput = {
   axis: $Enums.ReputationAxis
   points: number
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: string | null
+  adminId?: string | null
   idempotencyKey: string
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutReputationEventsInput
   postmark?: Prisma.AppreciateCreateNestedOneWithoutReputationEventsInput
   projectVersion?: Prisma.ProjectVersionCreateNestedOneWithoutReputationEventsInput
   event?: Prisma.CompetitionCreateNestedOneWithoutReputationEventsInput
+  reversalOf?: Prisma.ReputationEventCreateNestedOneWithoutReversalInput
+  reversal?: Prisma.ReputationEventCreateNestedOneWithoutReversalOfInput
 }
 
 export type ReputationEventUncheckedCreateWithoutProjectInput = {
@@ -885,8 +1036,12 @@ export type ReputationEventUncheckedCreateWithoutProjectInput = {
   projectVersionId?: string | null
   eventId?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: string | null
+  adminId?: string | null
+  reversalOfId?: string | null
   idempotencyKey: string
   createdAt?: Date | string
+  reversal?: Prisma.ReputationEventUncheckedCreateNestedOneWithoutReversalOfInput
 }
 
 export type ReputationEventCreateOrConnectWithoutProjectInput = {
@@ -921,12 +1076,16 @@ export type ReputationEventCreateWithoutPostmarkInput = {
   axis: $Enums.ReputationAxis
   points: number
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: string | null
+  adminId?: string | null
   idempotencyKey: string
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutReputationEventsInput
   project?: Prisma.ProjectCreateNestedOneWithoutReputationEventsInput
   projectVersion?: Prisma.ProjectVersionCreateNestedOneWithoutReputationEventsInput
   event?: Prisma.CompetitionCreateNestedOneWithoutReputationEventsInput
+  reversalOf?: Prisma.ReputationEventCreateNestedOneWithoutReversalInput
+  reversal?: Prisma.ReputationEventCreateNestedOneWithoutReversalOfInput
 }
 
 export type ReputationEventUncheckedCreateWithoutPostmarkInput = {
@@ -939,8 +1098,12 @@ export type ReputationEventUncheckedCreateWithoutPostmarkInput = {
   projectVersionId?: string | null
   eventId?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: string | null
+  adminId?: string | null
+  reversalOfId?: string | null
   idempotencyKey: string
   createdAt?: Date | string
+  reversal?: Prisma.ReputationEventUncheckedCreateNestedOneWithoutReversalOfInput
 }
 
 export type ReputationEventCreateOrConnectWithoutPostmarkInput = {
@@ -975,12 +1138,16 @@ export type ReputationEventCreateWithoutProjectVersionInput = {
   axis: $Enums.ReputationAxis
   points: number
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: string | null
+  adminId?: string | null
   idempotencyKey: string
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutReputationEventsInput
   project?: Prisma.ProjectCreateNestedOneWithoutReputationEventsInput
   postmark?: Prisma.AppreciateCreateNestedOneWithoutReputationEventsInput
   event?: Prisma.CompetitionCreateNestedOneWithoutReputationEventsInput
+  reversalOf?: Prisma.ReputationEventCreateNestedOneWithoutReversalInput
+  reversal?: Prisma.ReputationEventCreateNestedOneWithoutReversalOfInput
 }
 
 export type ReputationEventUncheckedCreateWithoutProjectVersionInput = {
@@ -993,8 +1160,12 @@ export type ReputationEventUncheckedCreateWithoutProjectVersionInput = {
   postmarkId?: string | null
   eventId?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: string | null
+  adminId?: string | null
+  reversalOfId?: string | null
   idempotencyKey: string
   createdAt?: Date | string
+  reversal?: Prisma.ReputationEventUncheckedCreateNestedOneWithoutReversalOfInput
 }
 
 export type ReputationEventCreateOrConnectWithoutProjectVersionInput = {
@@ -1023,6 +1194,182 @@ export type ReputationEventUpdateManyWithWhereWithoutProjectVersionInput = {
   data: Prisma.XOR<Prisma.ReputationEventUpdateManyMutationInput, Prisma.ReputationEventUncheckedUpdateManyWithoutProjectVersionInput>
 }
 
+export type ReputationEventCreateWithoutReversalInput = {
+  id?: string
+  type: $Enums.ReputationEventType
+  axis: $Enums.ReputationAxis
+  points: number
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: string | null
+  adminId?: string | null
+  idempotencyKey: string
+  createdAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutReputationEventsInput
+  project?: Prisma.ProjectCreateNestedOneWithoutReputationEventsInput
+  postmark?: Prisma.AppreciateCreateNestedOneWithoutReputationEventsInput
+  projectVersion?: Prisma.ProjectVersionCreateNestedOneWithoutReputationEventsInput
+  event?: Prisma.CompetitionCreateNestedOneWithoutReputationEventsInput
+  reversalOf?: Prisma.ReputationEventCreateNestedOneWithoutReversalInput
+}
+
+export type ReputationEventUncheckedCreateWithoutReversalInput = {
+  id?: string
+  userId: string
+  type: $Enums.ReputationEventType
+  axis: $Enums.ReputationAxis
+  points: number
+  projectId?: string | null
+  postmarkId?: string | null
+  projectVersionId?: string | null
+  eventId?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: string | null
+  adminId?: string | null
+  reversalOfId?: string | null
+  idempotencyKey: string
+  createdAt?: Date | string
+}
+
+export type ReputationEventCreateOrConnectWithoutReversalInput = {
+  where: Prisma.ReputationEventWhereUniqueInput
+  create: Prisma.XOR<Prisma.ReputationEventCreateWithoutReversalInput, Prisma.ReputationEventUncheckedCreateWithoutReversalInput>
+}
+
+export type ReputationEventCreateWithoutReversalOfInput = {
+  id?: string
+  type: $Enums.ReputationEventType
+  axis: $Enums.ReputationAxis
+  points: number
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: string | null
+  adminId?: string | null
+  idempotencyKey: string
+  createdAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutReputationEventsInput
+  project?: Prisma.ProjectCreateNestedOneWithoutReputationEventsInput
+  postmark?: Prisma.AppreciateCreateNestedOneWithoutReputationEventsInput
+  projectVersion?: Prisma.ProjectVersionCreateNestedOneWithoutReputationEventsInput
+  event?: Prisma.CompetitionCreateNestedOneWithoutReputationEventsInput
+  reversal?: Prisma.ReputationEventCreateNestedOneWithoutReversalOfInput
+}
+
+export type ReputationEventUncheckedCreateWithoutReversalOfInput = {
+  id?: string
+  userId: string
+  type: $Enums.ReputationEventType
+  axis: $Enums.ReputationAxis
+  points: number
+  projectId?: string | null
+  postmarkId?: string | null
+  projectVersionId?: string | null
+  eventId?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: string | null
+  adminId?: string | null
+  idempotencyKey: string
+  createdAt?: Date | string
+  reversal?: Prisma.ReputationEventUncheckedCreateNestedOneWithoutReversalOfInput
+}
+
+export type ReputationEventCreateOrConnectWithoutReversalOfInput = {
+  where: Prisma.ReputationEventWhereUniqueInput
+  create: Prisma.XOR<Prisma.ReputationEventCreateWithoutReversalOfInput, Prisma.ReputationEventUncheckedCreateWithoutReversalOfInput>
+}
+
+export type ReputationEventUpsertWithoutReversalInput = {
+  update: Prisma.XOR<Prisma.ReputationEventUpdateWithoutReversalInput, Prisma.ReputationEventUncheckedUpdateWithoutReversalInput>
+  create: Prisma.XOR<Prisma.ReputationEventCreateWithoutReversalInput, Prisma.ReputationEventUncheckedCreateWithoutReversalInput>
+  where?: Prisma.ReputationEventWhereInput
+}
+
+export type ReputationEventUpdateToOneWithWhereWithoutReversalInput = {
+  where?: Prisma.ReputationEventWhereInput
+  data: Prisma.XOR<Prisma.ReputationEventUpdateWithoutReversalInput, Prisma.ReputationEventUncheckedUpdateWithoutReversalInput>
+}
+
+export type ReputationEventUpdateWithoutReversalInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumReputationEventTypeFieldUpdateOperationsInput | $Enums.ReputationEventType
+  axis?: Prisma.EnumReputationAxisFieldUpdateOperationsInput | $Enums.ReputationAxis
+  points?: Prisma.IntFieldUpdateOperationsInput | number
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutReputationEventsNestedInput
+  project?: Prisma.ProjectUpdateOneWithoutReputationEventsNestedInput
+  postmark?: Prisma.AppreciateUpdateOneWithoutReputationEventsNestedInput
+  projectVersion?: Prisma.ProjectVersionUpdateOneWithoutReputationEventsNestedInput
+  event?: Prisma.CompetitionUpdateOneWithoutReputationEventsNestedInput
+  reversalOf?: Prisma.ReputationEventUpdateOneWithoutReversalNestedInput
+}
+
+export type ReputationEventUncheckedUpdateWithoutReversalInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumReputationEventTypeFieldUpdateOperationsInput | $Enums.ReputationEventType
+  axis?: Prisma.EnumReputationAxisFieldUpdateOperationsInput | $Enums.ReputationAxis
+  points?: Prisma.IntFieldUpdateOperationsInput | number
+  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postmarkId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectVersionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reversalOfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ReputationEventUpsertWithoutReversalOfInput = {
+  update: Prisma.XOR<Prisma.ReputationEventUpdateWithoutReversalOfInput, Prisma.ReputationEventUncheckedUpdateWithoutReversalOfInput>
+  create: Prisma.XOR<Prisma.ReputationEventCreateWithoutReversalOfInput, Prisma.ReputationEventUncheckedCreateWithoutReversalOfInput>
+  where?: Prisma.ReputationEventWhereInput
+}
+
+export type ReputationEventUpdateToOneWithWhereWithoutReversalOfInput = {
+  where?: Prisma.ReputationEventWhereInput
+  data: Prisma.XOR<Prisma.ReputationEventUpdateWithoutReversalOfInput, Prisma.ReputationEventUncheckedUpdateWithoutReversalOfInput>
+}
+
+export type ReputationEventUpdateWithoutReversalOfInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumReputationEventTypeFieldUpdateOperationsInput | $Enums.ReputationEventType
+  axis?: Prisma.EnumReputationAxisFieldUpdateOperationsInput | $Enums.ReputationAxis
+  points?: Prisma.IntFieldUpdateOperationsInput | number
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutReputationEventsNestedInput
+  project?: Prisma.ProjectUpdateOneWithoutReputationEventsNestedInput
+  postmark?: Prisma.AppreciateUpdateOneWithoutReputationEventsNestedInput
+  projectVersion?: Prisma.ProjectVersionUpdateOneWithoutReputationEventsNestedInput
+  event?: Prisma.CompetitionUpdateOneWithoutReputationEventsNestedInput
+  reversal?: Prisma.ReputationEventUpdateOneWithoutReversalOfNestedInput
+}
+
+export type ReputationEventUncheckedUpdateWithoutReversalOfInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumReputationEventTypeFieldUpdateOperationsInput | $Enums.ReputationEventType
+  axis?: Prisma.EnumReputationAxisFieldUpdateOperationsInput | $Enums.ReputationAxis
+  points?: Prisma.IntFieldUpdateOperationsInput | number
+  projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postmarkId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projectVersionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reversal?: Prisma.ReputationEventUncheckedUpdateOneWithoutReversalOfNestedInput
+}
+
 export type ReputationEventCreateManyUserInput = {
   id?: string
   type: $Enums.ReputationEventType
@@ -1033,6 +1380,9 @@ export type ReputationEventCreateManyUserInput = {
   projectVersionId?: string | null
   eventId?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: string | null
+  adminId?: string | null
+  reversalOfId?: string | null
   idempotencyKey: string
   createdAt?: Date | string
 }
@@ -1043,12 +1393,16 @@ export type ReputationEventUpdateWithoutUserInput = {
   axis?: Prisma.EnumReputationAxisFieldUpdateOperationsInput | $Enums.ReputationAxis
   points?: Prisma.IntFieldUpdateOperationsInput | number
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneWithoutReputationEventsNestedInput
   postmark?: Prisma.AppreciateUpdateOneWithoutReputationEventsNestedInput
   projectVersion?: Prisma.ProjectVersionUpdateOneWithoutReputationEventsNestedInput
   event?: Prisma.CompetitionUpdateOneWithoutReputationEventsNestedInput
+  reversalOf?: Prisma.ReputationEventUpdateOneWithoutReversalNestedInput
+  reversal?: Prisma.ReputationEventUpdateOneWithoutReversalOfNestedInput
 }
 
 export type ReputationEventUncheckedUpdateWithoutUserInput = {
@@ -1061,8 +1415,12 @@ export type ReputationEventUncheckedUpdateWithoutUserInput = {
   projectVersionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reversalOfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reversal?: Prisma.ReputationEventUncheckedUpdateOneWithoutReversalOfNestedInput
 }
 
 export type ReputationEventUncheckedUpdateManyWithoutUserInput = {
@@ -1075,6 +1433,9 @@ export type ReputationEventUncheckedUpdateManyWithoutUserInput = {
   projectVersionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reversalOfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1089,6 +1450,9 @@ export type ReputationEventCreateManyEventInput = {
   postmarkId?: string | null
   projectVersionId?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: string | null
+  adminId?: string | null
+  reversalOfId?: string | null
   idempotencyKey: string
   createdAt?: Date | string
 }
@@ -1099,12 +1463,16 @@ export type ReputationEventUpdateWithoutEventInput = {
   axis?: Prisma.EnumReputationAxisFieldUpdateOperationsInput | $Enums.ReputationAxis
   points?: Prisma.IntFieldUpdateOperationsInput | number
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutReputationEventsNestedInput
   project?: Prisma.ProjectUpdateOneWithoutReputationEventsNestedInput
   postmark?: Prisma.AppreciateUpdateOneWithoutReputationEventsNestedInput
   projectVersion?: Prisma.ProjectVersionUpdateOneWithoutReputationEventsNestedInput
+  reversalOf?: Prisma.ReputationEventUpdateOneWithoutReversalNestedInput
+  reversal?: Prisma.ReputationEventUpdateOneWithoutReversalOfNestedInput
 }
 
 export type ReputationEventUncheckedUpdateWithoutEventInput = {
@@ -1117,8 +1485,12 @@ export type ReputationEventUncheckedUpdateWithoutEventInput = {
   postmarkId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projectVersionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reversalOfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reversal?: Prisma.ReputationEventUncheckedUpdateOneWithoutReversalOfNestedInput
 }
 
 export type ReputationEventUncheckedUpdateManyWithoutEventInput = {
@@ -1131,6 +1503,9 @@ export type ReputationEventUncheckedUpdateManyWithoutEventInput = {
   postmarkId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projectVersionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reversalOfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1145,6 +1520,9 @@ export type ReputationEventCreateManyProjectInput = {
   projectVersionId?: string | null
   eventId?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: string | null
+  adminId?: string | null
+  reversalOfId?: string | null
   idempotencyKey: string
   createdAt?: Date | string
 }
@@ -1155,12 +1533,16 @@ export type ReputationEventUpdateWithoutProjectInput = {
   axis?: Prisma.EnumReputationAxisFieldUpdateOperationsInput | $Enums.ReputationAxis
   points?: Prisma.IntFieldUpdateOperationsInput | number
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutReputationEventsNestedInput
   postmark?: Prisma.AppreciateUpdateOneWithoutReputationEventsNestedInput
   projectVersion?: Prisma.ProjectVersionUpdateOneWithoutReputationEventsNestedInput
   event?: Prisma.CompetitionUpdateOneWithoutReputationEventsNestedInput
+  reversalOf?: Prisma.ReputationEventUpdateOneWithoutReversalNestedInput
+  reversal?: Prisma.ReputationEventUpdateOneWithoutReversalOfNestedInput
 }
 
 export type ReputationEventUncheckedUpdateWithoutProjectInput = {
@@ -1173,8 +1555,12 @@ export type ReputationEventUncheckedUpdateWithoutProjectInput = {
   projectVersionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reversalOfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reversal?: Prisma.ReputationEventUncheckedUpdateOneWithoutReversalOfNestedInput
 }
 
 export type ReputationEventUncheckedUpdateManyWithoutProjectInput = {
@@ -1187,6 +1573,9 @@ export type ReputationEventUncheckedUpdateManyWithoutProjectInput = {
   projectVersionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reversalOfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1201,6 +1590,9 @@ export type ReputationEventCreateManyPostmarkInput = {
   projectVersionId?: string | null
   eventId?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: string | null
+  adminId?: string | null
+  reversalOfId?: string | null
   idempotencyKey: string
   createdAt?: Date | string
 }
@@ -1211,12 +1603,16 @@ export type ReputationEventUpdateWithoutPostmarkInput = {
   axis?: Prisma.EnumReputationAxisFieldUpdateOperationsInput | $Enums.ReputationAxis
   points?: Prisma.IntFieldUpdateOperationsInput | number
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutReputationEventsNestedInput
   project?: Prisma.ProjectUpdateOneWithoutReputationEventsNestedInput
   projectVersion?: Prisma.ProjectVersionUpdateOneWithoutReputationEventsNestedInput
   event?: Prisma.CompetitionUpdateOneWithoutReputationEventsNestedInput
+  reversalOf?: Prisma.ReputationEventUpdateOneWithoutReversalNestedInput
+  reversal?: Prisma.ReputationEventUpdateOneWithoutReversalOfNestedInput
 }
 
 export type ReputationEventUncheckedUpdateWithoutPostmarkInput = {
@@ -1229,8 +1625,12 @@ export type ReputationEventUncheckedUpdateWithoutPostmarkInput = {
   projectVersionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reversalOfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reversal?: Prisma.ReputationEventUncheckedUpdateOneWithoutReversalOfNestedInput
 }
 
 export type ReputationEventUncheckedUpdateManyWithoutPostmarkInput = {
@@ -1243,6 +1643,9 @@ export type ReputationEventUncheckedUpdateManyWithoutPostmarkInput = {
   projectVersionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reversalOfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1257,6 +1660,9 @@ export type ReputationEventCreateManyProjectVersionInput = {
   postmarkId?: string | null
   eventId?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: string | null
+  adminId?: string | null
+  reversalOfId?: string | null
   idempotencyKey: string
   createdAt?: Date | string
 }
@@ -1267,12 +1673,16 @@ export type ReputationEventUpdateWithoutProjectVersionInput = {
   axis?: Prisma.EnumReputationAxisFieldUpdateOperationsInput | $Enums.ReputationAxis
   points?: Prisma.IntFieldUpdateOperationsInput | number
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutReputationEventsNestedInput
   project?: Prisma.ProjectUpdateOneWithoutReputationEventsNestedInput
   postmark?: Prisma.AppreciateUpdateOneWithoutReputationEventsNestedInput
   event?: Prisma.CompetitionUpdateOneWithoutReputationEventsNestedInput
+  reversalOf?: Prisma.ReputationEventUpdateOneWithoutReversalNestedInput
+  reversal?: Prisma.ReputationEventUpdateOneWithoutReversalOfNestedInput
 }
 
 export type ReputationEventUncheckedUpdateWithoutProjectVersionInput = {
@@ -1285,8 +1695,12 @@ export type ReputationEventUncheckedUpdateWithoutProjectVersionInput = {
   postmarkId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reversalOfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reversal?: Prisma.ReputationEventUncheckedUpdateOneWithoutReversalOfNestedInput
 }
 
 export type ReputationEventUncheckedUpdateManyWithoutProjectVersionInput = {
@@ -1299,6 +1713,9 @@ export type ReputationEventUncheckedUpdateManyWithoutProjectVersionInput = {
   postmarkId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reversalOfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1316,6 +1733,9 @@ export type ReputationEventSelect<ExtArgs extends runtime.Types.Extensions.Inter
   projectVersionId?: boolean
   eventId?: boolean
   metadata?: boolean
+  reason?: boolean
+  adminId?: boolean
+  reversalOfId?: boolean
   idempotencyKey?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1323,6 +1743,8 @@ export type ReputationEventSelect<ExtArgs extends runtime.Types.Extensions.Inter
   postmark?: boolean | Prisma.ReputationEvent$postmarkArgs<ExtArgs>
   projectVersion?: boolean | Prisma.ReputationEvent$projectVersionArgs<ExtArgs>
   event?: boolean | Prisma.ReputationEvent$eventArgs<ExtArgs>
+  reversalOf?: boolean | Prisma.ReputationEvent$reversalOfArgs<ExtArgs>
+  reversal?: boolean | Prisma.ReputationEvent$reversalArgs<ExtArgs>
 }, ExtArgs["result"]["reputationEvent"]>
 
 export type ReputationEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1336,6 +1758,9 @@ export type ReputationEventSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   projectVersionId?: boolean
   eventId?: boolean
   metadata?: boolean
+  reason?: boolean
+  adminId?: boolean
+  reversalOfId?: boolean
   idempotencyKey?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1343,6 +1768,7 @@ export type ReputationEventSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   postmark?: boolean | Prisma.ReputationEvent$postmarkArgs<ExtArgs>
   projectVersion?: boolean | Prisma.ReputationEvent$projectVersionArgs<ExtArgs>
   event?: boolean | Prisma.ReputationEvent$eventArgs<ExtArgs>
+  reversalOf?: boolean | Prisma.ReputationEvent$reversalOfArgs<ExtArgs>
 }, ExtArgs["result"]["reputationEvent"]>
 
 export type ReputationEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1356,6 +1782,9 @@ export type ReputationEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   projectVersionId?: boolean
   eventId?: boolean
   metadata?: boolean
+  reason?: boolean
+  adminId?: boolean
+  reversalOfId?: boolean
   idempotencyKey?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1363,6 +1792,7 @@ export type ReputationEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   postmark?: boolean | Prisma.ReputationEvent$postmarkArgs<ExtArgs>
   projectVersion?: boolean | Prisma.ReputationEvent$projectVersionArgs<ExtArgs>
   event?: boolean | Prisma.ReputationEvent$eventArgs<ExtArgs>
+  reversalOf?: boolean | Prisma.ReputationEvent$reversalOfArgs<ExtArgs>
 }, ExtArgs["result"]["reputationEvent"]>
 
 export type ReputationEventSelectScalar = {
@@ -1376,17 +1806,22 @@ export type ReputationEventSelectScalar = {
   projectVersionId?: boolean
   eventId?: boolean
   metadata?: boolean
+  reason?: boolean
+  adminId?: boolean
+  reversalOfId?: boolean
   idempotencyKey?: boolean
   createdAt?: boolean
 }
 
-export type ReputationEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "type" | "axis" | "points" | "projectId" | "postmarkId" | "projectVersionId" | "eventId" | "metadata" | "idempotencyKey" | "createdAt", ExtArgs["result"]["reputationEvent"]>
+export type ReputationEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "type" | "axis" | "points" | "projectId" | "postmarkId" | "projectVersionId" | "eventId" | "metadata" | "reason" | "adminId" | "reversalOfId" | "idempotencyKey" | "createdAt", ExtArgs["result"]["reputationEvent"]>
 export type ReputationEventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   project?: boolean | Prisma.ReputationEvent$projectArgs<ExtArgs>
   postmark?: boolean | Prisma.ReputationEvent$postmarkArgs<ExtArgs>
   projectVersion?: boolean | Prisma.ReputationEvent$projectVersionArgs<ExtArgs>
   event?: boolean | Prisma.ReputationEvent$eventArgs<ExtArgs>
+  reversalOf?: boolean | Prisma.ReputationEvent$reversalOfArgs<ExtArgs>
+  reversal?: boolean | Prisma.ReputationEvent$reversalArgs<ExtArgs>
 }
 export type ReputationEventIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1394,6 +1829,7 @@ export type ReputationEventIncludeCreateManyAndReturn<ExtArgs extends runtime.Ty
   postmark?: boolean | Prisma.ReputationEvent$postmarkArgs<ExtArgs>
   projectVersion?: boolean | Prisma.ReputationEvent$projectVersionArgs<ExtArgs>
   event?: boolean | Prisma.ReputationEvent$eventArgs<ExtArgs>
+  reversalOf?: boolean | Prisma.ReputationEvent$reversalOfArgs<ExtArgs>
 }
 export type ReputationEventIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1401,6 +1837,7 @@ export type ReputationEventIncludeUpdateManyAndReturn<ExtArgs extends runtime.Ty
   postmark?: boolean | Prisma.ReputationEvent$postmarkArgs<ExtArgs>
   projectVersion?: boolean | Prisma.ReputationEvent$projectVersionArgs<ExtArgs>
   event?: boolean | Prisma.ReputationEvent$eventArgs<ExtArgs>
+  reversalOf?: boolean | Prisma.ReputationEvent$reversalOfArgs<ExtArgs>
 }
 
 export type $ReputationEventPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1411,6 +1848,8 @@ export type $ReputationEventPayload<ExtArgs extends runtime.Types.Extensions.Int
     postmark: Prisma.$AppreciatePayload<ExtArgs> | null
     projectVersion: Prisma.$ProjectVersionPayload<ExtArgs> | null
     event: Prisma.$CompetitionPayload<ExtArgs> | null
+    reversalOf: Prisma.$ReputationEventPayload<ExtArgs> | null
+    reversal: Prisma.$ReputationEventPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1423,6 +1862,9 @@ export type $ReputationEventPayload<ExtArgs extends runtime.Types.Extensions.Int
     projectVersionId: string | null
     eventId: string | null
     metadata: runtime.JsonValue | null
+    reason: string | null
+    adminId: string | null
+    reversalOfId: string | null
     idempotencyKey: string
     createdAt: Date
   }, ExtArgs["result"]["reputationEvent"]>
@@ -1824,6 +2266,8 @@ export interface Prisma__ReputationEventClient<T, Null = never, ExtArgs extends 
   postmark<T extends Prisma.ReputationEvent$postmarkArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ReputationEvent$postmarkArgs<ExtArgs>>): Prisma.Prisma__AppreciateClient<runtime.Types.Result.GetResult<Prisma.$AppreciatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   projectVersion<T extends Prisma.ReputationEvent$projectVersionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ReputationEvent$projectVersionArgs<ExtArgs>>): Prisma.Prisma__ProjectVersionClient<runtime.Types.Result.GetResult<Prisma.$ProjectVersionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   event<T extends Prisma.ReputationEvent$eventArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ReputationEvent$eventArgs<ExtArgs>>): Prisma.Prisma__CompetitionClient<runtime.Types.Result.GetResult<Prisma.$CompetitionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  reversalOf<T extends Prisma.ReputationEvent$reversalOfArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ReputationEvent$reversalOfArgs<ExtArgs>>): Prisma.Prisma__ReputationEventClient<runtime.Types.Result.GetResult<Prisma.$ReputationEventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  reversal<T extends Prisma.ReputationEvent$reversalArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ReputationEvent$reversalArgs<ExtArgs>>): Prisma.Prisma__ReputationEventClient<runtime.Types.Result.GetResult<Prisma.$ReputationEventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1863,6 +2307,9 @@ export interface ReputationEventFieldRefs {
   readonly projectVersionId: Prisma.FieldRef<"ReputationEvent", 'String'>
   readonly eventId: Prisma.FieldRef<"ReputationEvent", 'String'>
   readonly metadata: Prisma.FieldRef<"ReputationEvent", 'Json'>
+  readonly reason: Prisma.FieldRef<"ReputationEvent", 'String'>
+  readonly adminId: Prisma.FieldRef<"ReputationEvent", 'String'>
+  readonly reversalOfId: Prisma.FieldRef<"ReputationEvent", 'String'>
   readonly idempotencyKey: Prisma.FieldRef<"ReputationEvent", 'String'>
   readonly createdAt: Prisma.FieldRef<"ReputationEvent", 'DateTime'>
 }
@@ -2339,6 +2786,44 @@ export type ReputationEvent$eventArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   include?: Prisma.CompetitionInclude<ExtArgs> | null
   where?: Prisma.CompetitionWhereInput
+}
+
+/**
+ * ReputationEvent.reversalOf
+ */
+export type ReputationEvent$reversalOfArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ReputationEvent
+   */
+  select?: Prisma.ReputationEventSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ReputationEvent
+   */
+  omit?: Prisma.ReputationEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReputationEventInclude<ExtArgs> | null
+  where?: Prisma.ReputationEventWhereInput
+}
+
+/**
+ * ReputationEvent.reversal
+ */
+export type ReputationEvent$reversalArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ReputationEvent
+   */
+  select?: Prisma.ReputationEventSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ReputationEvent
+   */
+  omit?: Prisma.ReputationEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReputationEventInclude<ExtArgs> | null
+  where?: Prisma.ReputationEventWhereInput
 }
 
 /**

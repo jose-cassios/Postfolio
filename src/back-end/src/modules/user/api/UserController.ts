@@ -12,6 +12,8 @@ import {
   UpdateUserRequest,
   UpdateUserRoleRequest,
   UpdateReputationRankConfigRequest,
+  AdminReputationAdjustmentRequest,
+  ReputationReversalRequest,
   PublicProfileRequest,
 } from "@user/api/UserSchema";
 import { IUserService } from "@user/domain/interfaces/IUserService";
@@ -111,6 +113,41 @@ export class UserController {
   ) {
     await this.requireAdmin(req.user?.id);
     reply.send(await this.userService.updateReputationRankConfig(req.body.ranks));
+  }
+
+  async getReputationHistory(req: FastifyRequest, reply: FastifyReply) {
+    await this.requireAdmin(req.user?.id);
+    const { id } = req.params as { id?: string };
+    if (!id) throw new BadRequest("Usuario e obrigatorio.");
+    reply.send(await this.userService.findReputationHistory(id));
+  }
+
+  async applyReputationAdjustment(
+    req: AdminReputationAdjustmentRequest,
+    reply: FastifyReply,
+  ) {
+    const adminId = req.user?.id;
+    await this.requireAdmin(adminId);
+    if (!adminId) throw new BadRequest("Administrador autenticado e obrigatorio.");
+    reply.send(await this.userService.applyReputationAdjustment(
+      req.params.id,
+      adminId,
+      req.body,
+    ));
+  }
+
+  async reverseReputationEvent(
+    req: ReputationReversalRequest,
+    reply: FastifyReply,
+  ) {
+    const adminId = req.user?.id;
+    await this.requireAdmin(adminId);
+    if (!adminId) throw new BadRequest("Administrador autenticado e obrigatorio.");
+    reply.send(await this.userService.reverseReputationEvent(
+      req.params.eventId,
+      adminId,
+      req.body,
+    ));
   }
 
   async create(req: CreateUserRequest, reply: FastifyReply) {

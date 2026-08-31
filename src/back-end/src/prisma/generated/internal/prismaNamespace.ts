@@ -2268,6 +2268,9 @@ export const ReputationEventScalarFieldEnum = {
   projectVersionId: 'projectVersionId',
   eventId: 'eventId',
   metadata: 'metadata',
+  reason: 'reason',
+  adminId: 'adminId',
+  reversalOfId: 'reversalOfId',
   idempotencyKey: 'idempotencyKey',
   createdAt: 'createdAt'
 } as const
