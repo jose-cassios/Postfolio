@@ -1,9 +1,19 @@
-import { InternalServerError } from "@shared/error/HttpError";
+import { BadRequest, Conflict, Forbidden, GenericHttpError, InternalServerError, NotFound } from "@shared/error/HttpError";
 import { prisma } from "@infrastructure/config/Prisma";
-import { Prisma, ProjectStatus } from "@PrismaGen/client";
+import {
+  AppreciateStatus,
+  Prisma,
+  Project as PrismaProject,
+  ProjectStatus,
+  ReputationEventType,
+} from "@PrismaGen/client";
 import { Project } from "@project/domain/entities/Project";
 import { ProjectMapper } from "@project/application/ProjectMapper";
-import { IProjectRepository } from "@project/domain/interfaces/IProjectRepository";
+import {
+  CreateAppreciationInput,
+  IProjectRepository,
+  VersionPublication,
+} from "@project/domain/interfaces/IProjectRepository";
 import { ProjectContract } from "@shared/contracts/ProjectContracts";
 import { ProjectListQuery } from "@project/api/ProjectDTO";
 import {
@@ -11,18 +21,35 @@ import {
   ProjectContactContract,
   ProjectInteractionContract,
   ProjectFeedbackContract,
+  ProjectAppreciationContract,
 } from "@shared/contracts/ProjectContracts";
 import { ProjectCategoryMapper } from "@project/application/ProjectMapper";
+import { recordReputationEvent } from "@project/application/ReputationPolicy";
 
 export class ProjectRepository implements IProjectRepository {
   async create(project: Project): Promise<Project> {
     try {
-      const model = await prisma.project.create({
-        data: {
-          ...ProjectMapper.fromDomainToPrisma(project),
-          id: undefined,
-          contentBlocks: project.getContentBlocks() as unknown as Prisma.InputJsonValue,
-        },
+      const model = await prisma.$transaction(async (tx) => {
+        const created = await tx.project.create({
+          data: {
+            ...ProjectMapper.fromDomainToPrisma(project),
+            id: undefined,
+            contentBlocks: project.getContentBlocks() as unknown as Prisma.InputJsonValue,
+          },
+        });
+        if (created.status !== ProjectStatus.PUBLISHED) return created;
+
+        const portfolio = await tx.portfolio.findUniqueOrThrow({
+          where: { id: created.portfolioId },
+          select: { authorId: true },
+        });
+        await tx.projectVersion.create({
+          data: this.versionSnapshot(created, 1, "Versao inicial", portfolio.authorId),
+        });
+        return await tx.project.update({
+          where: { id: created.id },
+          data: { currentVersion: 1 },
+        });
       });
       return ProjectMapper.fromPrismaToDomain(model);
     } catch (error) {
@@ -35,20 +62,113 @@ export class ProjectRepository implements IProjectRepository {
     }
   }
 
-  async update(project: Project): Promise<Project> {
+  async update(project: Project, publication?: VersionPublication): Promise<Project> {
     try {
-      const model = await prisma.project.update({
-        where: {
-          id: project.getId(),
-        },
-        data: {
-          ...ProjectMapper.fromDomainToPrisma(project),
-          contentBlocks: project.getContentBlocks() as unknown as Prisma.InputJsonValue,
-          updatedAt: new Date(),
-        },
+      const model = await prisma.$transaction(async (tx) => {
+        const current = await tx.project.findUniqueOrThrow({
+          where: { id: project.getId() },
+          select: { currentVersion: true },
+        });
+        const nextVersion = publication ? current.currentVersion + 1 : current.currentVersion;
+        const updated = await tx.project.update({
+          where: { id: project.getId() },
+          data: {
+            ...ProjectMapper.fromDomainToPrisma(project),
+            currentVersion: nextVersion,
+            contentBlocks: project.getContentBlocks() as unknown as Prisma.InputJsonValue,
+            updatedAt: new Date(),
+          },
+        });
+        if (!publication) return updated;
+
+        const previousVersion = await tx.projectVersion.findFirst({
+          where: { projectId: updated.id },
+          orderBy: { versionNumber: "desc" },
+        });
+        if (previousVersion && !this.hasSnapshotChanges(updated, previousVersion)) {
+          throw new BadRequest("Altere o conteudo do projeto antes de publicar outra versao.");
+        }
+
+        const appreciations = publication.appreciationIds.length
+          ? await tx.appreciate.findMany({
+              where: {
+                id: { in: publication.appreciationIds },
+                projectId: updated.id,
+              },
+              include: {
+                versionCredits: {
+                  select: { projectVersion: { select: { versionNumber: true } } },
+                },
+              },
+            })
+          : [];
+        if (appreciations.length !== publication.appreciationIds.length) {
+          throw new BadRequest("Um dos Appreciates selecionados nao pertence ao projeto.");
+        }
+        if (appreciations.some((appreciation) => appreciation.versionCredits.length)) {
+          throw new BadRequest("Um dos Appreciates ja recebeu credito em outra versao.");
+        }
+        if (appreciations.some((appreciation) => appreciation.status === AppreciateStatus.DISMISSED)) {
+          throw new BadRequest("Um Appreciate descartado nao pode receber credito.");
+        }
+        if (appreciations.some((appreciation) => appreciation.userId === publication.authorId)) {
+          throw new Forbidden("O autor nao pode gerar credito de contribuicao para si mesmo.");
+        }
+
+        const version = await tx.projectVersion.create({
+          data: this.versionSnapshot(
+            updated,
+            nextVersion,
+            publication.changelog,
+            publication.authorId,
+          ),
+        });
+
+        for (const appreciation of appreciations) {
+          await tx.projectVersionCredit.create({
+            data: {
+              projectVersionId: version.id,
+              appreciationId: appreciation.id,
+              contributorId: appreciation.userId,
+            },
+          });
+          await tx.appreciate.update({
+            where: { id: appreciation.id },
+            data: { status: AppreciateStatus.APPLIED, resolvedAt: new Date() },
+          });
+          await recordReputationEvent(tx, {
+            userId: appreciation.userId,
+            type: ReputationEventType.APPRECIATION_APPLIED,
+            idempotencyKey: `appreciation-applied:${appreciation.id}`,
+            projectId: updated.id,
+            appreciationId: appreciation.id,
+            projectVersionId: version.id,
+          });
+        }
+
+        if (nextVersion > 1) {
+          await recordReputationEvent(tx, {
+            userId: publication.authorId,
+            type: ReputationEventType.PROJECT_IMPROVED,
+            idempotencyKey: `project-improved:${version.id}`,
+            projectId: updated.id,
+            projectVersionId: version.id,
+          });
+        }
+        if (appreciations.length) {
+          await recordReputationEvent(tx, {
+            userId: publication.authorId,
+            type: ReputationEventType.PROJECT_VERSION_WITH_COMMUNITY_CREDIT,
+            idempotencyKey: `project-community-credit:${version.id}`,
+            projectId: updated.id,
+            projectVersionId: version.id,
+          });
+        }
+        return updated;
       });
       return ProjectMapper.fromPrismaToDomain(model);
     } catch (error) {
+      if (error instanceof GenericHttpError) throw error;
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         throw new InternalServerError(
           `Não foi possivel atualizar o trabalho! Código: ${error.code}`
@@ -125,6 +245,9 @@ export class ProjectRepository implements IProjectRepository {
       }),
       ...(query.tool && { tools: { has: query.tool } }),
       ...(query.tag && { tags: { has: query.tag } }),
+      ...(query.seekingFeedback !== undefined && {
+        seekingFeedback: query.seekingFeedback,
+      }),
       ...(query.q && {
         OR: [
           { name: { contains: query.q, mode: "insensitive" } },
@@ -134,11 +257,11 @@ export class ProjectRepository implements IProjectRepository {
       }),
     };
 
-    const orderBy: Prisma.ProjectOrderByWithRelationInput =
+    const orderBy: Prisma.ProjectOrderByWithRelationInput | Prisma.ProjectOrderByWithRelationInput[] =
       query.sort === "likes"
         ? { likes: { _count: "desc" } }
-        : query.sort === "appreciates"
-          ? { AppreciateProjectDetails: { appreciateCount: "desc" } }
+        : query.sort === "feedback"
+          ? [{ seekingFeedback: "desc" }, { publishedAt: "desc" }]
           : { publishedAt: "desc" };
 
     const [models, total] = await Promise.all([
@@ -165,6 +288,7 @@ export class ProjectRepository implements IProjectRepository {
           _count: {
             select: {
               likes: true,
+              Appreciate: true,
               Comments: true,
               FavorateProjects: true,
             },
@@ -180,7 +304,7 @@ export class ProjectRepository implements IProjectRepository {
         author: model.portfolio.author,
         metrics: {
           likes: model._count.likes,
-          appreciates: model.AppreciateProjectDetails?.appreciateCount ?? 0,
+          appreciates: model._count.Appreciate,
           comments: model._count.Comments,
           saves: model._count.FavorateProjects,
         },
@@ -220,8 +344,36 @@ export class ProjectRepository implements IProjectRepository {
             user: { select: { username: true } },
           },
         },
+        Appreciate: {
+          orderBy: { createdAt: "desc" },
+          include: {
+            user: {
+              select: { id: true, username: true, profilePhoto: true },
+            },
+            versionCredits: {
+              select: { projectVersion: { select: { versionNumber: true } } },
+            },
+          },
+        },
+        versions: {
+          orderBy: { versionNumber: "asc" },
+          include: {
+            author: { select: { id: true, username: true } },
+            credits: {
+              include: {
+                appreciation: { select: { id: true, aspect: true } },
+                contributor: { select: { id: true, username: true } },
+              },
+            },
+          },
+        },
         _count: {
-          select: { likes: true, Comments: true, FavorateProjects: true },
+          select: {
+            likes: true,
+            Appreciate: true,
+            Comments: true,
+            FavorateProjects: true,
+          },
         },
       },
     });
@@ -232,7 +384,7 @@ export class ProjectRepository implements IProjectRepository {
       author: model.portfolio.author,
       metrics: {
         likes: model._count.likes,
-        appreciates: model.AppreciateProjectDetails?.appreciateCount ?? 0,
+        appreciates: model._count.Appreciate,
         comments: model._count.Comments,
         saves: model._count.FavorateProjects,
       },
@@ -240,6 +392,22 @@ export class ProjectRepository implements IProjectRepository {
         id: feedback.id,
         content: feedback.content,
         username: feedback.user.username,
+      })),
+      appreciations: model.Appreciate.map((appreciation) =>
+        this.toAppreciationContract(appreciation)
+      ),
+      versions: model.versions.map((version) => ({
+        id: version.id,
+        versionNumber: version.versionNumber,
+        changelog: version.changelog,
+        contentMarkdown: version.contentMarkdown,
+        createdAt: version.createdAt,
+        author: version.author,
+        credits: version.credits.map((credit) => ({
+          appreciationId: credit.appreciation.id,
+          aspect: credit.appreciation.aspect,
+          contributor: credit.contributor,
+        })),
       })),
     };
   }
@@ -295,27 +463,17 @@ export class ProjectRepository implements IProjectRepository {
     return this.getInteraction(projectId, userId);
   }
 
-  async setAppreciation(
+  async createAppreciation(
     projectId: string,
     userId: string,
-    appreciated: boolean,
-    feedback?: { content: string; type: "PUBLIC" | "PRIVATE" }
-  ): Promise<ProjectInteractionContract> {
-    await prisma.$transaction(async (tx) => {
+    input: CreateAppreciationInput,
+  ): Promise<ProjectAppreciationContract> {
+    return await prisma.$transaction(async (tx) => {
       const existing = await tx.appreciate.findUnique({
         where: { userId_projectId: { userId, projectId } },
       });
-
-      if (!appreciated) {
-        if (existing) {
-          await tx.feedback.deleteMany({ where: { appreciateId: existing.id } });
-          await tx.appreciate.delete({ where: { id: existing.id } });
-          await tx.postMetrics.updateMany({
-            where: { projectId, appreciateCount: { gt: 0 } },
-            data: { appreciateCount: { decrement: 1 } },
-          });
-        }
-        return;
+      if (existing && existing.status !== AppreciateStatus.PENDING) {
+        throw new Conflict("Este Appreciate ja foi analisado pelo autor.");
       }
 
       const metrics = await tx.postMetrics.upsert({
@@ -323,10 +481,34 @@ export class ProjectRepository implements IProjectRepository {
         update: {},
         create: { projectId, appreciateCount: 0 },
       });
-
-      const appreciation = existing ?? await tx.appreciate.create({
-        data: { userId, projectId, postMetricsId: metrics.id },
-      });
+      const appreciation = existing
+        ? await tx.appreciate.update({
+            where: { id: existing.id },
+            data: {
+              ...input,
+              additionalComment: input.additionalComment || null,
+              status: AppreciateStatus.PENDING,
+              resolvedAt: null,
+            },
+            include: {
+              user: { select: { id: true, username: true, profilePhoto: true } },
+              versionCredits: {
+                select: { projectVersion: { select: { versionNumber: true } } },
+              },
+            },
+          })
+        : await tx.appreciate.create({
+            data: {
+              userId,
+              projectId,
+              postMetricsId: metrics.id,
+              ...input,
+              additionalComment: input.additionalComment || null,
+            },
+            include: {
+              user: { select: { id: true, username: true, profilePhoto: true } },
+            },
+          });
 
       if (!existing) {
         await tx.postMetrics.update({
@@ -334,40 +516,97 @@ export class ProjectRepository implements IProjectRepository {
           data: { appreciateCount: { increment: 1 } },
         });
       }
+      return this.toAppreciationContract(appreciation);
+    });
+  }
 
-      if (feedback) {
-        await tx.feedback.deleteMany({ where: { appreciateId: appreciation.id } });
-        await tx.feedback.create({
-          data: {
-            content: feedback.content,
-            type: feedback.type,
-            userId,
-            projectId,
-            appreciateId: appreciation.id,
+  async updateAppreciationStatus(
+    projectId: string,
+    appreciationId: string,
+    status: "PENDING" | "USEFUL" | "APPLIED" | "DISMISSED",
+  ): Promise<ProjectAppreciationContract> {
+    return await prisma.$transaction(async (tx) => {
+      const existing = await tx.appreciate.findFirst({
+        where: { id: appreciationId, projectId },
+        include: {
+          project: {
+            select: { portfolio: { select: { authorId: true } } },
           },
+          versionCredits: { select: { id: true } },
+        },
+      });
+      if (!existing) throw new NotFound("Appreciate nao encontrado.");
+      if (existing.userId === existing.project.portfolio.authorId) {
+        throw new Forbidden("Uma interacao propria nao pode gerar reputacao.");
+      }
+      if (existing.versionCredits.length && status !== "APPLIED") {
+        throw new Conflict(
+          "Um Appreciate creditado em uma versao deve permanecer como aplicado.",
+        );
+      }
+
+      const appreciation = await tx.appreciate.update({
+        where: { id: appreciationId },
+        data: {
+          status: status as AppreciateStatus,
+          resolvedAt: status === "PENDING" ? null : new Date(),
+        },
+        include: {
+          user: { select: { id: true, username: true, profilePhoto: true } },
+          versionCredits: {
+            select: { projectVersion: { select: { versionNumber: true } } },
+          },
+        },
+      });
+      if (status === "USEFUL" || status === "APPLIED") {
+        const type = status === "USEFUL"
+          ? ReputationEventType.APPRECIATION_USEFUL
+          : ReputationEventType.APPRECIATION_APPLIED;
+        await recordReputationEvent(tx, {
+          userId: existing.userId,
+          type,
+          idempotencyKey: `appreciation-${status.toLowerCase()}:${existing.id}`,
+          projectId,
+          appreciationId: existing.id,
         });
       }
+      return this.toAppreciationContract(appreciation);
     });
-    return this.getInteraction(projectId, userId);
+  }
+
+  async findAppreciations(projectId: string): Promise<ProjectAppreciationContract[]> {
+    const appreciations = await prisma.appreciate.findMany({
+      where: { projectId },
+      orderBy: { createdAt: "desc" },
+      include: {
+        user: { select: { id: true, username: true, profilePhoto: true } },
+        versionCredits: {
+          select: { projectVersion: { select: { versionNumber: true } } },
+        },
+      },
+    });
+    return appreciations.map((appreciation) =>
+      this.toAppreciationContract(appreciation)
+    );
   }
 
   async getInteraction(
     projectId: string,
     userId: string
   ): Promise<ProjectInteractionContract> {
-    const [liked, appreciated, saved, likes, metrics] = await Promise.all([
+    const [liked, appreciated, saved, likes, appreciates] = await Promise.all([
       prisma.like.findUnique({ where: { userId_projectId: { userId, projectId } } }),
       prisma.appreciate.findUnique({ where: { userId_projectId: { userId, projectId } } }),
       prisma.favorateProjects.findUnique({ where: { userId_projectId: { userId, projectId } } }),
       prisma.like.count({ where: { projectId } }),
-      prisma.postMetrics.findUnique({ where: { projectId } }),
+      prisma.appreciate.count({ where: { projectId } }),
     ]);
     return {
       liked: Boolean(liked),
       appreciated: Boolean(appreciated),
       saved: Boolean(saved),
       likes,
-      appreciates: metrics?.appreciateCount ?? 0,
+      appreciates,
     };
   }
 
@@ -397,5 +636,84 @@ export class ProjectRepository implements IProjectRepository {
       content: item.content,
       username: item.user.username,
     }));
+  }
+
+  private versionSnapshot(
+    project: PrismaProject,
+    versionNumber: number,
+    changelog: string,
+    authorId: string,
+  ): Prisma.ProjectVersionUncheckedCreateInput {
+    return {
+      projectId: project.id,
+      versionNumber,
+      changelog,
+      name: project.name,
+      description: project.description,
+      category: project.category,
+      githubLink: project.githublink,
+      externalLink: project.externalLink,
+      coverImageUrl: project.coverImageUrl,
+      galleryUrls: project.galleryUrls,
+      tools: project.tools,
+      tags: project.tags,
+      contentBlocks: project.contentBlocks as Prisma.InputJsonValue,
+      contentMarkdown: project.contentMarkdown,
+      authorId,
+    };
+  }
+
+  private toAppreciationContract(appreciation: {
+    id: string;
+    aspect: string;
+    strength: string;
+    improvement: string;
+    additionalComment: string | null;
+    status: AppreciateStatus;
+    createdAt: Date;
+    updatedAt: Date;
+    user: { id: string; username: string; profilePhoto: string | null };
+    versionCredits?: Array<{ projectVersion: { versionNumber: number } }>;
+  }): ProjectAppreciationContract {
+    return {
+      id: appreciation.id,
+      aspect: appreciation.aspect,
+      strength: appreciation.strength,
+      improvement: appreciation.improvement,
+      additionalComment: appreciation.additionalComment,
+      status: appreciation.status,
+      createdAt: appreciation.createdAt,
+      updatedAt: appreciation.updatedAt,
+      creditedInVersion:
+        appreciation.versionCredits?.[0]?.projectVersion.versionNumber ?? null,
+      author: appreciation.user,
+    };
+  }
+
+  private hasSnapshotChanges(
+    project: PrismaProject,
+    version: {
+      name: string;
+      description: string;
+      category: PrismaProject["category"];
+      githubLink: string | null;
+      externalLink: string | null;
+      coverImageUrl: string | null;
+      galleryUrls: string[];
+      tools: string[];
+      tags: string[];
+      contentMarkdown: string;
+    },
+  ): boolean {
+    return project.name !== version.name
+      || project.description !== version.description
+      || project.category !== version.category
+      || project.githublink !== version.githubLink
+      || project.externalLink !== version.externalLink
+      || project.coverImageUrl !== version.coverImageUrl
+      || project.contentMarkdown !== version.contentMarkdown
+      || JSON.stringify(project.galleryUrls) !== JSON.stringify(version.galleryUrls)
+      || JSON.stringify(project.tools) !== JSON.stringify(version.tools)
+      || JSON.stringify(project.tags) !== JSON.stringify(version.tags);
   }
 }

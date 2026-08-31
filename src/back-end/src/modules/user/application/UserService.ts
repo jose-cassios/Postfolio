@@ -138,4 +138,8 @@ export class UserService implements IUserService {
   async findAchievements(userId: string) {
     return await this.repository.findAchievements(userId);
   }
+
+  async findReputation(userId: string) {
+    return await this.repository.findReputation(userId);
+  }
 }

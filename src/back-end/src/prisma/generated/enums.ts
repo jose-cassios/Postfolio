@@ -47,6 +47,34 @@ export const ProjectStatus = {
 export type ProjectStatus = (typeof ProjectStatus)[keyof typeof ProjectStatus]
 
 
+export const AppreciateStatus = {
+  PENDING: 'PENDING',
+  USEFUL: 'USEFUL',
+  APPLIED: 'APPLIED',
+  DISMISSED: 'DISMISSED'
+} as const
+
+export type AppreciateStatus = (typeof AppreciateStatus)[keyof typeof AppreciateStatus]
+
+
+export const ReputationAxis = {
+  CREATOR: 'CREATOR',
+  CONTRIBUTOR: 'CONTRIBUTOR'
+} as const
+
+export type ReputationAxis = (typeof ReputationAxis)[keyof typeof ReputationAxis]
+
+
+export const ReputationEventType = {
+  APPRECIATION_USEFUL: 'APPRECIATION_USEFUL',
+  APPRECIATION_APPLIED: 'APPRECIATION_APPLIED',
+  PROJECT_IMPROVED: 'PROJECT_IMPROVED',
+  PROJECT_VERSION_WITH_COMMUNITY_CREDIT: 'PROJECT_VERSION_WITH_COMMUNITY_CREDIT'
+} as const
+
+export type ReputationEventType = (typeof ReputationEventType)[keyof typeof ReputationEventType]
+
+
 export const SocialProviderType = {
   GOOGLE: 'GOOGLE'
 } as const

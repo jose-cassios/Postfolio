@@ -14,6 +14,10 @@ export interface ProjectContract {
   contentBlocks: ProjectBlock[];
   contentMarkdown: string;
   status: ProjectStatus;
+  feedbackAspects: string[];
+  feedbackQuestion: string | null;
+  seekingFeedback: boolean;
+  currentVersion: number;
   publishedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
@@ -36,6 +40,8 @@ export interface ProjectContract {
     content: string;
     username: string;
   }>;
+  appreciations?: ProjectAppreciationContract[];
+  versions?: ProjectVersionContract[];
 }
 
 export interface PaginatedProjectsContract {
@@ -57,6 +63,35 @@ export interface ProjectInteractionContract {
   saved: boolean;
   likes: number;
   appreciates: number;
+}
+
+export type AppreciateStatus = "PENDING" | "USEFUL" | "APPLIED" | "DISMISSED";
+
+export interface ProjectAppreciationContract {
+  id: string;
+  aspect: string;
+  strength: string;
+  improvement: string;
+  additionalComment: string | null;
+  status: AppreciateStatus;
+  createdAt: Date;
+  updatedAt: Date;
+  creditedInVersion: number | null;
+  author: { id: string; username: string; profilePhoto: string | null };
+}
+
+export interface ProjectVersionContract {
+  id: string;
+  versionNumber: number;
+  changelog: string;
+  contentMarkdown: string;
+  createdAt: Date;
+  author: { id: string; username: string };
+  credits: Array<{
+    appreciationId: string;
+    aspect: string;
+    contributor: { id: string; username: string };
+  }>;
 }
 
 export interface ProjectFeedbackContract {

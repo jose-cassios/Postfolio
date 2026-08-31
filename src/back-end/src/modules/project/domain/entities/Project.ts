@@ -24,6 +24,10 @@ export class Project {
     private contentBlocks: ProjectBlock[] = [],
     private contentMarkdown: string = "",
     private status: ProjectStatus = ProjectStatus.DRAFT,
+    private feedbackAspects: string[] = [],
+    private feedbackQuestion: string | null = null,
+    private seekingFeedback: boolean = false,
+    private currentVersion: number = 0,
     private publishedAt: Date | null = null,
     private createdAt: Date = new Date(),
     private updatedAt: Date = new Date()
@@ -66,6 +70,9 @@ export class Project {
       }
       if (dto.status === ProjectStatus.DRAFT) this.publishedAt = null;
     }
+    if (dto.feedbackAspects !== undefined) this.feedbackAspects = dto.feedbackAspects;
+    if (dto.feedbackQuestion !== undefined) this.feedbackQuestion = dto.feedbackQuestion;
+    if (dto.seekingFeedback !== undefined) this.seekingFeedback = dto.seekingFeedback;
   }
 
   // Getters
@@ -101,6 +108,11 @@ export class Project {
   public getContentBlocks(): ProjectBlock[] { return this.contentBlocks; }
   public getContentMarkdown(): string { return this.contentMarkdown; }
   public getStatus(): ProjectStatus { return this.status; }
+  public getFeedbackAspects(): string[] { return this.feedbackAspects; }
+  public getFeedbackQuestion(): string | null { return this.feedbackQuestion; }
+  public isSeekingFeedback(): boolean { return this.seekingFeedback; }
+  public getCurrentVersion(): number { return this.currentVersion; }
+  public setCurrentVersion(version: number): void { this.currentVersion = version; }
   public getPublishedAt(): Date | null { return this.publishedAt; }
   public isReadyToPublish(): boolean {
     return this.name.trim().length >= 3 && isProjectContentReady(this.contentBlocks);

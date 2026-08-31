@@ -23,6 +23,10 @@ export class ApiService {
     return this.http.put<T>(`${this.baseUrl}/${endpoint}`, body, options);
   }
 
+  patch<T>(endpoint: string, body: any, options?: { headers?: Record<string, string> }) {
+    return this.http.patch<T>(`${this.baseUrl}/${endpoint}`, body, options);
+  }
+
   delete<T>(endpoint: string, options?: { headers?: Record<string, string> }) {
     return this.http.delete<T>(`${this.baseUrl}/${endpoint}`, options);
   }

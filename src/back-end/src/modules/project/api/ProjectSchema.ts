@@ -8,6 +8,16 @@ const DraftUrlSchema = z.union([z.literal(""), HttpUrlSchema]);
 
 const BlockIdSchema = z.string().trim().min(1).max(80);
 const MediaWidthSchema = z.enum(["STANDARD", "WIDE", "FULL"]);
+const FeedbackAspectSchema = z.enum([
+  "UI",
+  "UX",
+  "ARCHITECTURE",
+  "CODE",
+  "PERFORMANCE",
+  "ACCESSIBILITY",
+  "ORIGINALITY",
+  "DOCUMENTATION",
+]);
 
 const TextBlockSchema = z.object({
   id: BlockIdSchema,
@@ -77,6 +87,13 @@ const ProjectBodyFields = z.object({
   tags: z.array(z.string().trim().min(1).max(30)).max(20).default([]),
   contentBlocks: z.array(ProjectBlockSchema).max(40).default([]),
   status: z.enum(["DRAFT", "PUBLISHED"]).optional(),
+  feedbackAspects: z
+    .array(FeedbackAspectSchema)
+    .max(3, "Escolha no maximo tres aspectos")
+    .refine((items) => new Set(items).size === items.length, "Nao repita aspectos")
+    .default([]),
+  feedbackQuestion: z.string().trim().max(240).nullable().optional(),
+  seekingFeedback: z.boolean().default(false),
 });
 
 const CreateProjectBodySchema = ProjectBodyFields.superRefine((project, context) => {
@@ -116,6 +133,13 @@ const CreateProjectBodySchema = ProjectBodyFields.superRefine((project, context)
       });
     }
   });
+  if (project.seekingFeedback && !project.feedbackAspects.length) {
+    context.addIssue({
+      code: "custom",
+      path: ["feedbackAspects"],
+      message: "Escolha pelo menos um aspecto para pedir feedback",
+    });
+  }
 });
 
 type CreateProjectRequest = FastifyRequest<{
@@ -126,7 +150,27 @@ const UpdateProjectParamsSchema = z.object({
   projectId: z.string().uuid("ID do trabalho e obrigatorio"),
 });
 
-const UpdateProjectBodySchema = ProjectBodyFields.partial();
+const UpdateProjectBodySchema = ProjectBodyFields.partial()
+  .extend({
+    changelog: z.string().trim().min(3).max(500).optional(),
+    appreciationIds: z.array(z.string().uuid()).max(20).default([]),
+  })
+  .superRefine((project, context) => {
+    if (project.status === "PUBLISHED" && !project.changelog) {
+      context.addIssue({
+        code: "custom",
+        path: ["changelog"],
+        message: "Descreva o que mudou nesta versao",
+      });
+    }
+    if (project.seekingFeedback && !project.feedbackAspects?.length) {
+      context.addIssue({
+        code: "custom",
+        path: ["feedbackAspects"],
+        message: "Escolha pelo menos um aspecto para pedir feedback",
+      });
+    }
+  });
 
 const ProjectListQuerySchema = z.object({
   q: z.string().trim().max(100).optional(),
@@ -135,7 +179,8 @@ const ProjectListQuerySchema = z.object({
   ]).optional(),
   tool: z.string().trim().max(40).optional(),
   tag: z.string().trim().max(30).optional(),
-  sort: z.enum(["newest", "likes", "appreciates"]).default("newest"),
+  sort: z.enum(["newest", "likes", "feedback"]).default("newest"),
+  seekingFeedback: z.enum(["true", "false"]).transform((value) => value === "true").optional(),
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(48).default(12),
 });
@@ -149,14 +194,18 @@ const ProjectInteractionParamsSchema = z.object({
 });
 
 const SetLikeBodySchema = z.object({ liked: z.boolean() });
-const SetAppreciationBodySchema = z.object({
-  appreciated: z.boolean(),
-  feedback: z
-    .object({
-      content: z.string().trim().min(1).max(500),
-      type: z.enum(["PUBLIC", "PRIVATE"]),
-    })
-    .optional(),
+const CreateAppreciationBodySchema = z.object({
+  aspect: FeedbackAspectSchema,
+  strength: z.string().trim().min(3).max(500),
+  improvement: z.string().trim().min(3).max(500),
+  additionalComment: z.string().trim().max(500).nullable().optional(),
+});
+const AppreciationStatusParamsSchema = z.object({
+  projectId: z.string().uuid("ID do projeto invalido"),
+  appreciationId: z.string().uuid("ID do Appreciate invalido"),
+});
+const UpdateAppreciationStatusBodySchema = z.object({
+  status: z.enum(["USEFUL", "APPLIED", "DISMISSED"]),
 });
 
 type SetLikeRequest = FastifyRequest<{
@@ -164,9 +213,14 @@ type SetLikeRequest = FastifyRequest<{
   Body: z.infer<typeof SetLikeBodySchema>;
 }>;
 
-type SetAppreciationRequest = FastifyRequest<{
+type CreateAppreciationRequest = FastifyRequest<{
   Params: z.infer<typeof ProjectInteractionParamsSchema>;
-  Body: z.infer<typeof SetAppreciationBodySchema>;
+  Body: z.infer<typeof CreateAppreciationBodySchema>;
+}>;
+
+type UpdateAppreciationStatusRequest = FastifyRequest<{
+  Params: z.infer<typeof AppreciationStatusParamsSchema>;
+  Body: z.infer<typeof UpdateAppreciationStatusBodySchema>;
 }>;
 
 type UpdateProjectRequest = FastifyRequest<{
@@ -182,9 +236,13 @@ const projectRouteSchema = {
   },
   list: { querystring: ProjectListQuerySchema },
   setLike: { params: ProjectInteractionParamsSchema, body: SetLikeBodySchema },
-  setAppreciation: {
+  createAppreciation: {
     params: ProjectInteractionParamsSchema,
-    body: SetAppreciationBodySchema,
+    body: CreateAppreciationBodySchema,
+  },
+  appreciationStatus: {
+    params: AppreciationStatusParamsSchema,
+    body: UpdateAppreciationStatusBodySchema,
   },
   interaction: { params: ProjectInteractionParamsSchema },
 };
@@ -195,5 +253,6 @@ export {
   UpdateProjectRequest,
   ProjectListRequest,
   SetLikeRequest,
-  SetAppreciationRequest,
+  CreateAppreciationRequest,
+  UpdateAppreciationStatusRequest,
 };

@@ -16,6 +16,8 @@ interface ProjectApiContract extends ProjectDocument {
   };
   metrics?: { likes: number; appreciates: number; comments: number; saves: number };
   publicFeedback?: Array<{ id: string; content: string; username: string }>;
+  appreciations?: ProjectAppreciation[];
+  versions?: ProjectVersion[];
 }
 
 interface ProjectPageApi {
@@ -28,7 +30,8 @@ export interface ProjectQuery {
   category?: string;
   tool?: string;
   tag?: string;
-  sort?: 'newest' | 'likes' | 'appreciates';
+  sort?: 'newest' | 'likes' | 'feedback';
+  seekingFeedback?: boolean;
   page?: number;
   limit?: number;
 }
@@ -66,6 +69,42 @@ export interface ProjectFeedback {
   id: string;
   content: string;
   username: string;
+}
+
+export type AppreciateStatus = 'PENDING' | 'USEFUL' | 'APPLIED' | 'DISMISSED';
+
+export interface ProjectAppreciation {
+  id: string;
+  aspect: string;
+  strength: string;
+  improvement: string;
+  additionalComment: string | null;
+  status: AppreciateStatus;
+  creditedInVersion: number | null;
+  createdAt: string;
+  updatedAt: string;
+  author: { id: string; username: string; profilePhoto: string | null };
+}
+
+export interface ProjectVersion {
+  id: string;
+  versionNumber: number;
+  changelog: string;
+  contentMarkdown: string;
+  createdAt: string;
+  author: { id: string; username: string };
+  credits: Array<{
+    appreciationId: string;
+    aspect: string;
+    contributor: { id: string; username: string };
+  }>;
+}
+
+export interface CreateAppreciationPayload {
+  aspect: string;
+  strength: string;
+  improvement: string;
+  additionalComment?: string | null;
 }
 
 interface CommentPage {
@@ -132,14 +171,28 @@ export class ProjectService {
     );
   }
 
-  setAppreciation(
-    id: string,
-    appreciated: boolean,
-    feedback?: { content: string; type: 'PUBLIC' | 'PRIVATE' },
+  createAppreciation(id: string, payload: CreateAppreciationPayload) {
+    return this.api.post<ProjectAppreciation>(
+      `project/${encodeURIComponent(id)}/appreciations`,
+      payload,
+      this.auth.authOptions(),
+    );
+  }
+
+  getAppreciations(id: string) {
+    return this.api.get<ProjectAppreciation[]>(
+      `project/${encodeURIComponent(id)}/appreciations`,
+    );
+  }
+
+  updateAppreciationStatus(
+    projectId: string,
+    appreciationId: string,
+    status: Exclude<AppreciateStatus, 'PENDING'>,
   ) {
-    return this.api.put<ProjectInteraction>(
-      `project/${encodeURIComponent(id)}/appreciate`,
-      { appreciated, feedback },
+    return this.api.patch<ProjectAppreciation>(
+      `project/${encodeURIComponent(projectId)}/appreciations/${encodeURIComponent(appreciationId)}/status`,
+      { status },
       this.auth.authOptions(),
     );
   }
@@ -224,6 +277,8 @@ export class ProjectService {
       contentBlocks: project.contentBlocks ?? [],
       contentMarkdown: project.contentMarkdown ?? '',
       status: project.status ?? 'PUBLISHED',
+      seekingFeedback: project.seekingFeedback,
+      currentVersion: project.currentVersion,
       publishedAt: project.publishedAt ?? project.createdAt,
     };
   }
@@ -242,6 +297,12 @@ export class ProjectService {
       contentBlocks: project.contentBlocks ?? [],
       contentMarkdown: project.contentMarkdown ?? '',
       status: project.status ?? 'PUBLISHED',
+      feedbackAspects: project.feedbackAspects ?? [],
+      feedbackQuestion: project.feedbackQuestion ?? null,
+      seekingFeedback: project.seekingFeedback ?? false,
+      currentVersion: project.currentVersion ?? 0,
+      appreciations: project.appreciations ?? [],
+      versions: project.versions ?? [],
       publicFeedback: project.publicFeedback ?? [],
     };
   }

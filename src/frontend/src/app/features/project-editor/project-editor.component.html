@@ -12,7 +12,7 @@
         Salvar rascunho
       </button>
       <button class="publish-button" type="button" [disabled]="isSaving()" (click)="save('PUBLISHED')">
-        {{ isSaving() ? 'Salvando…' : 'Publicar' }}
+        {{ isSaving() ? 'Salvando…' : isEditing() ? 'Publicar nova versão' : 'Publicar' }}
       </button>
     </div>
   </header>
@@ -228,6 +228,47 @@
             <label>Repositório<input type="url" formControlName="githublink" placeholder="https://github.com/…" /></label>
             <label>Ferramentas<input type="text" formControlName="tools" placeholder="Angular, Figma, Node.js" /></label>
             <label>Tags<input type="text" formControlName="tags" placeholder="ux, acessibilidade, mobile" /></label>
+            <div class="feedback-settings">
+              <label class="check-line"><input type="checkbox" formControlName="seekingFeedback" /> Projeto em revisão / buscando feedback</label>
+              <span class="segmented-label">Aspectos desejados · até 3</span>
+              <div class="aspect-options">
+                @for (aspect of feedbackAspectOptions; track aspect.value) {
+                  <button
+                    type="button"
+                    [class.active]="feedbackAspects().includes(aspect.value)"
+                    [disabled]="feedbackAspects().length >= 3 && !feedbackAspects().includes(aspect.value)"
+                    (click)="toggleFeedbackAspect(aspect.value)"
+                  >{{ aspect.label }}</button>
+                }
+              </div>
+              <label>Pergunta para a comunidade
+                <textarea formControlName="feedbackQuestion" rows="3" maxlength="240" placeholder="Em que ponto você mais precisa de uma segunda opinião?"></textarea>
+              </label>
+            </div>
+
+            @if (isEditing()) {
+              <div class="version-settings">
+                <span class="segmented-label">Próxima versão</span>
+                <label>Changelog
+                  <textarea formControlName="changelog" rows="3" maxlength="500" placeholder="O que mudou nesta versão?"></textarea>
+                </label>
+                @if (appreciations().length) {
+                  <p class="inspector-help">Reconheça as sugestões incorporadas nesta versão.</p>
+                  <div class="credit-options">
+                    @for (appreciation of appreciations(); track appreciation.id) {
+                      <label class="credit-option">
+                        <input
+                          type="checkbox"
+                          [checked]="selectedAppreciationIds().includes(appreciation.id)"
+                          (change)="toggleAppreciationCredit(appreciation.id)"
+                        />
+                        <span><strong>&#64;{{ appreciation.author.username }}</strong>{{ appreciation.aspect }} · {{ appreciation.improvement }}</span>
+                      </label>
+                    }
+                  </div>
+                }
+              </div>
+            }
           </form>
         }
       </aside>

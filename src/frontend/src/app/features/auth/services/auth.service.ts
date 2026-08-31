@@ -2,7 +2,7 @@ import { Injectable, signal, computed, inject, PLATFORM_ID } from '@angular/core
 import { isPlatformBrowser } from '@angular/common';
 import { ApiService } from '../../../core/services/api.service';
 import { map, of, tap, throwError, switchMap } from 'rxjs';
-import { UserType } from '../../profile/profile.models';
+import { UserReputation, UserType } from '../../profile/profile.models';
 
 export interface User {
   id?: string;
@@ -15,6 +15,7 @@ export interface User {
   website?: string | null;
   availableForHire?: boolean;
   achievements?: Array<{ competitionId: string; competitionName: string; rank: number }>;
+  reputation?: UserReputation;
   usertype: UserType;
   profilePhoto?: string;
   coverPhoto?: string;

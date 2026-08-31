@@ -24,7 +24,7 @@ export function createApp(): FastifyInstance {
 
   app.register(fastifyCors, {
     origin: ["https://postfolio.com.br", "http://localhost:4200"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   });
 

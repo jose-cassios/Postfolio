@@ -10,6 +10,8 @@ export interface Project {
   views: number;
   commentsCount: number;
   appreciates?: number;
+  seekingFeedback?: boolean;
+  currentVersion?: number;
   saves?: number;
   createdAt: Date;
 

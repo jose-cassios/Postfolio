@@ -12,7 +12,7 @@ import {
   ProjectEditorPayload,
   ProjectStatus,
 } from '../../shared/models/project-content';
-import { ProjectService } from '../../shared/services/project.service';
+import { ProjectAppreciation, ProjectService } from '../../shared/services/project.service';
 import { AuthService } from '../auth/services/auth.service';
 import { ImageUploadFieldComponent } from '../../shared/components/image-upload-field/image-upload-field.component';
 
@@ -50,6 +50,9 @@ export class ProjectEditorComponent {
   readonly notice = signal('');
   readonly noticeIsError = signal(false);
   readonly invalidVideoIds = signal<string[]>([]);
+  readonly feedbackAspects = signal<string[]>([]);
+  readonly appreciations = signal<ProjectAppreciation[]>([]);
+  readonly selectedAppreciationIds = signal<string[]>([]);
 
   readonly categories = [
     { value: 'FULLSTACK', label: 'Full stack' },
@@ -59,6 +62,16 @@ export class ProjectEditorComponent {
     { value: 'MOBILE', label: 'Mobile' },
     { value: 'DATA_ANALYSIS', label: 'Análise de dados' },
     { value: 'OTHER', label: 'Outro' },
+  ] as const;
+  readonly feedbackAspectOptions = [
+    { value: 'UI', label: 'UI' },
+    { value: 'UX', label: 'UX' },
+    { value: 'ARCHITECTURE', label: 'Arquitetura' },
+    { value: 'CODE', label: 'Código' },
+    { value: 'PERFORMANCE', label: 'Performance' },
+    { value: 'ACCESSIBILITY', label: 'Acessibilidade' },
+    { value: 'ORIGINALITY', label: 'Originalidade' },
+    { value: 'DOCUMENTATION', label: 'Documentação' },
   ] as const;
 
   readonly projectForm = this.fb.nonNullable.group({
@@ -70,6 +83,9 @@ export class ProjectEditorComponent {
     coverImageUrl: [''],
     tools: [''],
     tags: [''],
+    feedbackQuestion: ['', [Validators.maxLength(240)]],
+    seekingFeedback: [false],
+    changelog: ['', [Validators.maxLength(500)]],
   });
 
   ngOnInit(): void {
@@ -91,9 +107,18 @@ export class ProjectEditorComponent {
             coverImageUrl: project.coverImageUrl ?? '',
             tools: project.tools.join(', '),
             tags: project.tags.join(', '),
+            feedbackQuestion: project.feedbackQuestion ?? '',
+            seekingFeedback: project.seekingFeedback ?? false,
+            changelog: '',
           });
+          this.feedbackAspects.set(project.feedbackAspects ?? []);
           this.blocks.set(project.contentBlocks ?? []);
           this.selectedBlockId.set(project.contentBlocks?.[0]?.id ?? null);
+          this.projectService.getAppreciations(id).subscribe({
+            next: (appreciations) => this.appreciations.set(
+              appreciations.filter((item) => !item.creditedInVersion && item.status !== 'DISMISSED'),
+            ),
+          });
         },
         error: () => this.showNotice('Não foi possível abrir este projeto.', true),
       });
@@ -181,6 +206,14 @@ export class ProjectEditorComponent {
       );
       return;
     }
+    if (
+      status === 'PUBLISHED'
+      && this.isEditing()
+      && this.projectForm.controls.changelog.value.trim().length < 3
+    ) {
+      this.showNotice('Descreva brevemente o que mudou nesta versão.', true);
+      return;
+    }
 
     const payload = this.buildPayload(status);
     const id = this.projectId();
@@ -215,6 +248,21 @@ export class ProjectEditorComponent {
     return ({ TEXT: 'Texto', IMAGE: 'Imagem', VIDEO: 'Vídeo curto', CAROUSEL: 'Carrossel' })[type];
   }
 
+  toggleFeedbackAspect(aspect: string): void {
+    this.feedbackAspects.update((selected) => {
+      if (selected.includes(aspect)) return selected.filter((item) => item !== aspect);
+      return selected.length < 3 ? [...selected, aspect] : selected;
+    });
+  }
+
+  toggleAppreciationCredit(appreciationId: string): void {
+    this.selectedAppreciationIds.update((selected) =>
+      selected.includes(appreciationId)
+        ? selected.filter((id) => id !== appreciationId)
+        : [...selected, appreciationId]
+    );
+  }
+
   private canPublish(): boolean {
     if (this.projectForm.controls.name.value.trim().length < 3) return false;
     if (!this.blocks().length || this.invalidVideoIds().length) return false;
@@ -243,6 +291,15 @@ export class ProjectEditorComponent {
       tags: this.splitValues(values.tags),
       contentBlocks,
       status,
+      feedbackAspects: this.feedbackAspects(),
+      feedbackQuestion: values.feedbackQuestion.trim() || null,
+      seekingFeedback: values.seekingFeedback,
+      ...(this.isEditing() && status === 'PUBLISHED'
+        ? {
+            changelog: values.changelog.trim(),
+            appreciationIds: this.selectedAppreciationIds(),
+          }
+        : {}),
     };
   }
 

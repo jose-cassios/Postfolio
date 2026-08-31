@@ -1,11 +1,24 @@
 import { ProjectContract } from "@shared/contracts/ProjectContracts";
 import { Project } from "@project/domain/entities/Project";
 import { ProjectListQuery } from "@project/api/ProjectDTO";
-import { PaginatedProjectsContract, ProjectContactContract, ProjectFeedbackContract, ProjectInteractionContract } from "@shared/contracts/ProjectContracts";
+import { AppreciateStatus, PaginatedProjectsContract, ProjectAppreciationContract, ProjectContactContract, ProjectFeedbackContract, ProjectInteractionContract } from "@shared/contracts/ProjectContracts";
+
+export interface VersionPublication {
+  authorId: string;
+  changelog: string;
+  appreciationIds: string[];
+}
+
+export interface CreateAppreciationInput {
+  aspect: string;
+  strength: string;
+  improvement: string;
+  additionalComment?: string | null;
+}
 
 export interface IProjectRepository {
   create(work: Project): Promise<Project>;
-  update(work: Project): Promise<Project>;
+  update(work: Project, publication?: VersionPublication): Promise<Project>;
   delete(id: string): Promise<Project | null>;
 
   findMany(): Promise<Project[]>;
@@ -17,12 +30,17 @@ export interface IProjectRepository {
   findOwnerContact(projectId: string): Promise<ProjectContactContract | null>;
   findLatestByPortfolio(portfolioId: string): Promise<Project | null>;
   setLike(projectId: string, userId: string, liked: boolean): Promise<ProjectInteractionContract>;
-  setAppreciation(
+  createAppreciation(
     projectId: string,
     userId: string,
-    appreciated: boolean,
-    feedback?: { content: string; type: "PUBLIC" | "PRIVATE" }
-  ): Promise<ProjectInteractionContract>;
+    input: CreateAppreciationInput
+  ): Promise<ProjectAppreciationContract>;
+  updateAppreciationStatus(
+    projectId: string,
+    appreciationId: string,
+    status: AppreciateStatus,
+  ): Promise<ProjectAppreciationContract>;
+  findAppreciations(projectId: string): Promise<ProjectAppreciationContract[]>;
   getInteraction(projectId: string, userId: string): Promise<ProjectInteractionContract>;
   isOwnedBy(projectId: string, userId: string): Promise<boolean>;
   findPrivateFeedback(projectId: string): Promise<ProjectFeedbackContract[]>;

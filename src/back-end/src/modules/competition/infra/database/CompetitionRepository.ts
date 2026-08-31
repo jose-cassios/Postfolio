@@ -4,7 +4,11 @@ import { Prisma, ProjectStatus } from "@PrismaGen/client";
 import { Competition } from "@competition/domain/entities/Competition";
 import { CompetitionMapper } from "@competition/application/CompetitionMapper";
 import { ICompetitionRepository } from "@competition/domain/interfaces/ICompetitionRepository";
-import { CompetitionContract } from "@competition/api/CompetitionDTO";
+import {
+  CompetitionContract,
+  EvaluationProgressContract,
+  EventEvaluationInput,
+} from "@competition/api/CompetitionDTO";
 import { Conflict, NotFound } from "@shared/error/HttpError";
 Competition;
 
@@ -15,6 +19,13 @@ export class PrismaCompetitionRepository implements ICompetitionRepository {
         data: {
           ...CompetitionMapper.fromDomainToPrisma(competition),
           id: undefined,
+          criteria: {
+            create: competition.criteria.map((criterion, position) => ({
+              name: criterion.name,
+              weight: criterion.weight,
+              position,
+            })),
+          },
         },
       });
       return CompetitionMapper.fromPrismaToDomain(model);
@@ -98,33 +109,71 @@ export class PrismaCompetitionRepository implements ICompetitionRepository {
     });
   }
 
-  async vote(competitionId: string, projectId: string, userId: string): Promise<void> {
-    try {
-      await prisma.$transaction(async (tx) => {
-        const details = await tx.projectCompDetails.findUniqueOrThrow({
-          where: { competitionId_projectId: { competitionId, projectId } },
-        });
-        await tx.rating.create({
-          data: {
-            score: 1,
-            userId,
-            projectId,
+  async upsertEvaluation(
+    competitionId: string,
+    projectId: string,
+    userId: string,
+    scores: EventEvaluationInput[],
+  ): Promise<void> {
+    await prisma.$transaction(async (tx) => {
+      const evaluation = await tx.eventEvaluation.upsert({
+        where: {
+          competitionId_projectId_evaluatorId: {
             competitionId,
-            projectCompDetailsID: details.id,
+            projectId,
+            evaluatorId: userId,
           },
-        });
-        await tx.projectCompDetails.update({
-          where: { id: details.id },
-          data: { totalReviewers: { increment: 1 }, totalScore: { increment: 1 } },
-        });
+        },
+        update: {},
+        create: { competitionId, projectId, evaluatorId: userId },
       });
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === "P2002") throw new Conflict("Voce ja votou nesta competicao.");
-        if (error.code === "P2025") throw new NotFound("Projeto inscrito nao encontrado.");
-      }
-      throw error;
-    }
+      await tx.eventEvaluationScore.deleteMany({
+        where: { evaluationId: evaluation.id },
+      });
+      await tx.eventEvaluationScore.createMany({
+        data: scores.map((score) => ({
+          evaluationId: evaluation.id,
+          criterionId: score.criterionId,
+          score: score.score,
+        })),
+      });
+    });
+  }
+
+  async getEvaluationProgress(
+    competitionId: string,
+    userId: string,
+  ): Promise<EvaluationProgressContract> {
+    const [competition, evaluatedProjects] = await Promise.all([
+      prisma.competition.findUniqueOrThrow({
+        where: { id: competitionId },
+        select: {
+          minimumEvaluations: true,
+          worksDetails: {
+            select: {
+              project: { select: { portfolio: { select: { authorId: true } } } },
+            },
+          },
+        },
+      }),
+      prisma.eventEvaluation.count({
+        where: { competitionId, evaluatorId: userId },
+      }),
+    ]);
+    const ownedProjects = competition.worksDetails.filter(
+      (details) => details.project.portfolio.authorId === userId,
+    ).length;
+    const participant = ownedProjects > 0;
+    const eligibleProjects = Math.max(0, competition.worksDetails.length - ownedProjects);
+    const requiredEvaluations = participant
+      ? Math.min(competition.minimumEvaluations, eligibleProjects)
+      : 0;
+    return {
+      participant,
+      evaluatedProjects,
+      requiredEvaluations,
+      completed: !participant || evaluatedProjects >= requiredEvaluations,
+    };
   }
 
   async findById(id: string): Promise<Competition | null> {
@@ -151,10 +200,26 @@ export class PrismaCompetitionRepository implements ICompetitionRepository {
           },
         },
       },
+      criteria: { orderBy: { position: "asc" } },
+      evaluations: {
+        include: { scores: true },
+      },
     } satisfies Prisma.CompetitionInclude;
   }
 
   private toContract(model: any): CompetitionContract {
+    const criteria = model.criteria as Array<{
+      id: string;
+      name: string;
+      weight: number;
+      position: number;
+      createdAt: Date;
+      competitionId: string;
+    }>;
+    const evaluations = model.evaluations as Array<{
+      projectId: string;
+      scores: Array<{ criterionId: string; score: number }>;
+    }>;
     const now = new Date();
     const status = !model.registrationStartsAt || now < model.registrationStartsAt
       ? "UPCOMING"
@@ -168,8 +233,51 @@ export class PrismaCompetitionRepository implements ICompetitionRepository {
               ? "WAITING_RESULTS"
               : "RESULTS";
     const resultsVisible = status === "RESULTS";
-    const ordered = [...model.worksDetails].sort((a, b) => b.totalReviewers - a.totalReviewers);
-    let previousVotes: number | null = null;
+    const criterionIds = new Set(criteria.map((criterion) => criterion.id));
+    const totalWeight = criteria.reduce((total, criterion) => total + criterion.weight, 0) || 1;
+    const primaryCriterion = [...criteria].sort(
+      (left, right) => right.weight - left.weight || left.position - right.position,
+    )[0];
+    const scoreByProject = new Map<string, {
+      score: number;
+      primaryCriterionScore: number;
+      evaluationCount: number;
+    }>();
+    for (const details of model.worksDetails) {
+      const projectEvaluations = evaluations.filter((evaluation) => {
+        if (evaluation.projectId !== details.project.id) return false;
+        const submitted = new Set(evaluation.scores.map((score) => score.criterionId));
+        return submitted.size === criterionIds.size
+          && [...criterionIds].every((criterionId) => submitted.has(criterionId));
+      });
+      const weightedScores = projectEvaluations.map((evaluation) =>
+        evaluation.scores.reduce((total, score) => {
+          const criterion = criteria.find((item) => item.id === score.criterionId);
+          return total + score.score * (criterion?.weight ?? 0);
+        }, 0) / totalWeight
+      );
+      const primaryScores = projectEvaluations.flatMap((evaluation) => {
+        const score = evaluation.scores.find(
+          (item) => item.criterionId === primaryCriterion?.id,
+        );
+        return score ? [score.score] : [];
+      });
+      scoreByProject.set(details.project.id, {
+        score: this.average(weightedScores),
+        primaryCriterionScore: this.average(primaryScores),
+        evaluationCount: projectEvaluations.length,
+      });
+    }
+    const ordered = resultsVisible
+      ? [...model.worksDetails].sort((left, right) => {
+          const leftScore = scoreByProject.get(left.project.id)!;
+          const rightScore = scoreByProject.get(right.project.id)!;
+          return rightScore.score - leftScore.score
+            || rightScore.primaryCriterionScore - leftScore.primaryCriterionScore
+            || rightScore.evaluationCount - leftScore.evaluationCount;
+        })
+      : [...model.worksDetails];
+    let previousResult: string | null = null;
     let currentRank = 0;
     return {
       id: model.id,
@@ -183,9 +291,13 @@ export class PrismaCompetitionRepository implements ICompetitionRepository {
       votingEndsAt: model.votingEndsAt,
       resultsAt: model.resultsAt,
       status,
+      minimumEvaluations: model.minimumEvaluations,
+      criteria,
       submissions: ordered.map((details, index) => {
-        if (details.totalReviewers !== previousVotes) currentRank = index + 1;
-        previousVotes = details.totalReviewers;
+        const result = scoreByProject.get(details.project.id)!;
+        const resultKey = `${result.score}:${result.primaryCriterionScore}:${result.evaluationCount}`;
+        if (resultKey !== previousResult) currentRank = index + 1;
+        previousResult = resultKey;
         return {
           id: details.project.id,
           name: details.project.name,
@@ -194,8 +306,10 @@ export class PrismaCompetitionRepository implements ICompetitionRepository {
           author: details.project.portfolio.author,
           ...(resultsVisible
             ? {
-                votes: details.totalReviewers,
-                rank: details.totalReviewers > 0 && currentRank <= 3
+                score: Number(result.score.toFixed(2)),
+                primaryCriterionScore: Number(result.primaryCriterionScore.toFixed(2)),
+                evaluationCount: result.evaluationCount,
+                rank: result.evaluationCount > 0 && currentRank <= 3
                   ? currentRank
                   : undefined,
               }
@@ -203,5 +317,11 @@ export class PrismaCompetitionRepository implements ICompetitionRepository {
         };
       }),
     };
+  }
+
+  private average(values: number[]): number {
+    return values.length
+      ? values.reduce((total, value) => total + value, 0) / values.length
+      : 0;
   }
 }

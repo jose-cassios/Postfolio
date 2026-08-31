@@ -2,11 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { finalize } from 'rxjs';
+import { finalize, Observable } from 'rxjs';
 import { AuthService } from '../auth/services/auth.service';
 import { ProfileProject } from '../profile/profile.models';
 import { ProfileService } from '../profile/profile.service';
-import { Competition, CompetitionService, CompetitionStatus } from './competition.service';
+import { Competition, CompetitionService, CompetitionStatus, EvaluationProgress } from './competition.service';
 
 @Component({
   selector: 'app-competitions',
@@ -27,6 +27,8 @@ export class CompetitionsComponent {
   readonly notice = signal('');
   readonly error = signal('');
   readonly selectedProjects: Record<string, string> = {};
+  readonly evaluationScores: Record<string, number> = {};
+  readonly progress = signal<Record<string, EvaluationProgress>>({});
 
   ngOnInit() {
     this.load();
@@ -44,7 +46,13 @@ export class CompetitionsComponent {
     this.loading.set(true);
     this.error.set('');
     this.service.list().pipe(finalize(() => this.loading.set(false))).subscribe({
-      next: (competitions) => this.competitions.set(competitions),
+      next: (competitions) => {
+        this.competitions.set(competitions);
+        if (this.auth.isAuthenticated()) {
+          competitions.filter((competition) => competition.status === 'VOTING')
+            .forEach((competition) => this.loadProgress(competition.id));
+        }
+      },
       error: () => this.error.set('Não foi possível carregar as competições.'),
     });
   }
@@ -60,9 +68,25 @@ export class CompetitionsComponent {
     this.run(() => this.service.unsubscribe(competition.id, projectId), 'Inscrição removida.');
   }
 
-  vote(competition: Competition, projectId: string) {
+  evaluate(competition: Competition, projectId: string) {
     if (!this.requireAuthentication()) return;
-    this.run(() => this.service.vote(competition.id, projectId), 'Seu voto foi registrado.');
+    const scores = competition.criteria.map((criterion) => ({
+      criterionId: criterion.id,
+      score: Number(this.evaluationScores[this.scoreKey(competition.id, projectId, criterion.id)]),
+    }));
+    if (scores.some((score) => !Number.isInteger(score.score) || score.score < 1 || score.score > 5)) {
+      this.notice.set('Dê uma nota de 1 a 5 em todos os critérios.');
+      return;
+    }
+    this.run(
+      () => this.service.evaluate(competition.id, projectId, scores),
+      'Sua avaliação foi registrada.',
+      () => this.loadProgress(competition.id),
+    );
+  }
+
+  scoreKey(competitionId: string, projectId: string, criterionId: string) {
+    return `${competitionId}:${projectId}:${criterionId}`;
   }
 
   isMyProject(project: { author: { id: string } }) {
@@ -73,19 +97,32 @@ export class CompetitionsComponent {
     return ({
       UPCOMING: 'Em breve',
       REGISTRATION: 'Inscrições abertas',
-      WAITING_VOTING: 'Aguardando votação',
-      VOTING: 'Votação aberta',
+      WAITING_VOTING: 'Aguardando avaliação',
+      VOTING: 'Avaliação aberta',
       WAITING_RESULTS: 'Aguardando resultados',
       RESULTS: 'Resultados',
     })[status];
   }
 
-  private run(request: () => ReturnType<CompetitionService['vote']>, message: string) {
+  private loadProgress(competitionId: string) {
+    this.service.evaluationProgress(competitionId).subscribe({
+      next: (progress) => this.progress.update((current) => ({
+        ...current,
+        [competitionId]: progress,
+      })),
+    });
+  }
+
+  private run(
+    request: () => Observable<unknown>,
+    message: string,
+    afterSuccess?: () => void,
+  ) {
     if (this.pending()) return;
     this.pending.set(true);
     this.notice.set('');
     request().pipe(finalize(() => this.pending.set(false))).subscribe({
-      next: () => { this.notice.set(message); this.load(); },
+      next: () => { this.notice.set(message); afterSuccess?.(); this.load(); },
       error: (error) => this.notice.set(error?.error?.message || 'Não foi possível concluir a ação.'),
     });
   }

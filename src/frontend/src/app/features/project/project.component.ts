@@ -8,7 +8,8 @@ import { AuthService } from '../auth/services/auth.service';
 import { ProjectDetails } from '../../shared/models/project-details';
 import {
   ProjectComment,
-  ProjectFeedback,
+  AppreciateStatus,
+  ProjectAppreciation,
   ProjectInteraction,
   ProjectService,
 } from '../../shared/services/project.service';
@@ -35,7 +36,7 @@ export class ProjectComponent {
     appreciates: 0,
   });
   readonly comments = signal<ProjectComment[]>([]);
-  readonly privateFeedback = signal<ProjectFeedback[]>([]);
+  readonly showAppreciateForm = signal(false);
   readonly isLoading = signal(true);
   readonly actionPending = signal(false);
   readonly errorMessage = signal('');
@@ -46,8 +47,10 @@ export class ProjectComponent {
     this.project()?.author?.username === this.auth.user()?.username,
   );
   commentText = '';
-  feedbackText = '';
-  feedbackPrivate = false;
+  selectedAspect = '';
+  appreciationStrength = '';
+  appreciationImprovement = '';
+  appreciationComment = '';
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('slug');
@@ -60,6 +63,7 @@ export class ProjectComponent {
     this.projects.getById(id).pipe(finalize(() => this.isLoading.set(false))).subscribe({
       next: (project) => {
         this.project.set(project);
+        this.selectedAspect = project.feedbackAspects[0] ?? 'UX';
         this.interaction.update((state) => ({
           ...state,
           likes: project.likes,
@@ -70,11 +74,6 @@ export class ProjectComponent {
           this.projects.getInteraction(id).subscribe({
             next: (interaction) => this.interaction.set(interaction),
           });
-          if (project.author?.username === this.auth.user()?.username) {
-            this.projects.getPrivateFeedback(id).subscribe({
-              next: (feedback) => this.privateFeedback.set(feedback),
-            });
-          }
         }
       },
       error: () => this.errorMessage.set('Este projeto não foi encontrado.'),
@@ -90,28 +89,89 @@ export class ProjectComponent {
       .subscribe({ next: (state) => this.interaction.set(state), error: () => this.showError() });
   }
 
-  toggleAppreciation(withFeedback = false) {
+  openAppreciation(): void {
+    if (!this.requireAuthentication() || this.isOwner()) return;
+    this.showAppreciateForm.set(true);
+  }
+
+  submitAppreciation() {
     const project = this.project();
     if (!project || !this.requireAuthentication() || this.actionPending()) return;
-    const feedback = withFeedback && this.feedbackText.trim()
-      ? {
-          content: this.feedbackText.trim(),
-          type: this.feedbackPrivate ? 'PRIVATE' as const : 'PUBLIC' as const,
-        }
-      : undefined;
+    if (
+      !this.selectedAspect
+      || this.appreciationStrength.trim().length < 3
+      || this.appreciationImprovement.trim().length < 3
+    ) return;
     this.actionPending.set(true);
-    const appreciated = withFeedback ? true : !this.interaction().appreciated;
-    this.projects.setAppreciation(project.id, appreciated, feedback)
+    this.projects.createAppreciation(project.id, {
+      aspect: this.selectedAspect,
+      strength: this.appreciationStrength.trim(),
+      improvement: this.appreciationImprovement.trim(),
+      additionalComment: this.appreciationComment.trim() || null,
+    })
       .pipe(finalize(() => this.actionPending.set(false)))
       .subscribe({
-        next: (state) => {
-          this.interaction.set(state);
-          this.feedbackText = '';
-          this.notice.set(state.appreciated ? 'Projeto apreciado com sucesso.' : 'Apreciação removida.');
-          if (withFeedback) this.ngOnInit();
+        next: (appreciation) => {
+          this.project.update((current) => current ? {
+            ...current,
+            appreciations: [
+              appreciation,
+              ...current.appreciations.filter((item) => item.id !== appreciation.id),
+            ],
+          } : current);
+          this.interaction.update((state) => ({
+            ...state,
+            appreciated: true,
+            appreciates: state.appreciated ? state.appreciates : state.appreciates + 1,
+          }));
+          this.appreciationStrength = '';
+          this.appreciationImprovement = '';
+          this.appreciationComment = '';
+          this.showAppreciateForm.set(false);
+          this.notice.set('Improve enviado para o autor.');
         },
         error: () => this.showError(),
       });
+  }
+
+  updateAppreciationStatus(
+    appreciation: ProjectAppreciation,
+    status: Exclude<AppreciateStatus, 'PENDING'>,
+  ): void {
+    const project = this.project();
+    if (!project || !this.isOwner() || this.actionPending()) return;
+    this.actionPending.set(true);
+    this.projects.updateAppreciationStatus(project.id, appreciation.id, status)
+      .pipe(finalize(() => this.actionPending.set(false)))
+      .subscribe({
+        next: (updated) => this.project.update((current) => current ? {
+          ...current,
+          appreciations: current.appreciations.map((item) =>
+            item.id === updated.id ? updated : item
+          ),
+        } : current),
+        error: () => this.showError(),
+      });
+  }
+
+  aspectLabel(aspect: string): string {
+    return ({
+      UI: 'UI', UX: 'UX', ARCHITECTURE: 'Arquitetura', CODE: 'Código',
+      PERFORMANCE: 'Performance', ACCESSIBILITY: 'Acessibilidade',
+      ORIGINALITY: 'Originalidade', DOCUMENTATION: 'Documentação',
+    } as Record<string, string>)[aspect] ?? aspect;
+  }
+
+  feedbackAspectOptions(project: ProjectDetails): string[] {
+    return project.feedbackAspects.length
+      ? project.feedbackAspects
+      : ['UI', 'UX', 'ARCHITECTURE', 'CODE', 'PERFORMANCE', 'ACCESSIBILITY', 'ORIGINALITY', 'DOCUMENTATION'];
+  }
+
+  appreciationStatusLabel(status: AppreciateStatus): string {
+    return ({
+      PENDING: 'Pendente', USEFUL: 'Útil', APPLIED: 'Aplicado', DISMISSED: 'Arquivado',
+    })[status];
   }
 
   toggleSaved() {

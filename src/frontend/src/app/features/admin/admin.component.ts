@@ -36,7 +36,15 @@ export class AdminComponent {
     votingStartsAt: ['', Validators.required],
     votingEndsAt: ['', Validators.required],
     resultsAt: ['', Validators.required],
+    minimumEvaluations: [3, [Validators.required, Validators.min(1), Validators.max(10)]],
+    criteria: this.fb.nonNullable.array([
+      this.createCriterion('UX', 40),
+      this.createCriterion('Execução', 30),
+      this.createCriterion('Originalidade', 30),
+    ]),
   });
+
+  get criteriaControls() { return this.form.controls.criteria.controls; }
 
   ngOnInit() { this.load(); this.loadUsers(); }
 
@@ -62,17 +70,61 @@ export class AdminComponent {
     });
   }
 
+  addCriterion() {
+    if (this.criteriaControls.length >= 8) return;
+    this.form.controls.criteria.push(this.createCriterion('', 1));
+  }
+
+  removeCriterion(index: number) {
+    if (this.criteriaControls.length <= 1) return;
+    this.form.controls.criteria.removeAt(index);
+  }
+
   submit() {
     if (this.form.invalid || this.saving()) { this.form.markAllAsTouched(); return; }
     const values = this.form.getRawValue();
-    const payload = Object.fromEntries(Object.entries(values).map(([key, value]) =>
-      key.endsWith('At') ? [key, new Date(value).toISOString()] : [key, value],
-    )) as unknown as CompetitionPayload;
+    const payload: CompetitionPayload = {
+      name: values.name,
+      description: values.description,
+      category: values.category,
+      registrationStartsAt: new Date(values.registrationStartsAt).toISOString(),
+      registrationEndsAt: new Date(values.registrationEndsAt).toISOString(),
+      votingStartsAt: new Date(values.votingStartsAt).toISOString(),
+      votingEndsAt: new Date(values.votingEndsAt).toISOString(),
+      resultsAt: new Date(values.resultsAt).toISOString(),
+      minimumEvaluations: values.minimumEvaluations,
+      criteria: values.criteria.map((criterion) => ({
+        name: criterion.name.trim(),
+        weight: criterion.weight,
+      })),
+    };
     this.saving.set(true);
     this.notice.set('');
     this.service.create(payload).pipe(finalize(() => this.saving.set(false))).subscribe({
-      next: () => { this.notice.set('Competição criada com sucesso.'); this.form.reset({ category: 'OTHER' }); this.load(); },
+      next: () => {
+        this.notice.set('Competição criada com sucesso.');
+        this.resetCriteria();
+        this.form.reset({
+          category: 'OTHER', minimumEvaluations: 3,
+        });
+        this.load();
+      },
       error: (error) => this.notice.set(error?.error?.message || 'Não foi possível criar a competição.'),
     });
+  }
+
+  private createCriterion(name: string, weight: number) {
+    return this.fb.nonNullable.group({
+      name: [name, [Validators.required, Validators.minLength(2), Validators.maxLength(60)]],
+      weight: [weight, [Validators.required, Validators.min(1), Validators.max(100)]],
+    });
+  }
+
+  private resetCriteria() {
+    const criteria = this.form.controls.criteria;
+    criteria.clear();
+    criteria.push(this.createCriterion('UX', 40));
+    criteria.push(this.createCriterion('Execução', 30));
+    criteria.push(this.createCriterion('Originalidade', 30));
   }
 }

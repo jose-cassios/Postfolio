@@ -370,14 +370,6 @@ export type PostMetricsUpdateOneRequiredWithoutAppreciateNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PostMetricsUpdateToOneWithWhereWithoutAppreciateInput, Prisma.PostMetricsUpdateWithoutAppreciateInput>, Prisma.PostMetricsUncheckedUpdateWithoutAppreciateInput>
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type PostMetricsCreateWithoutProjectInput = {
   id?: string
   appreciateCount: number

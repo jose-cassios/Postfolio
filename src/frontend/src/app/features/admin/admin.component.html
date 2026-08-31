@@ -13,9 +13,23 @@
         <label><span>Categoria</span><select formControlName="category">@for (category of categories; track category) { <option [value]="category">{{ category }}</option> }</select></label>
         <label><span>Início das inscrições</span><input type="datetime-local" formControlName="registrationStartsAt" /></label>
         <label><span>Fim das inscrições</span><input type="datetime-local" formControlName="registrationEndsAt" /></label>
-        <label><span>Início da votação</span><input type="datetime-local" formControlName="votingStartsAt" /></label>
-        <label><span>Fim da votação</span><input type="datetime-local" formControlName="votingEndsAt" /></label>
+        <label><span>Início da avaliação</span><input type="datetime-local" formControlName="votingStartsAt" /></label>
+        <label><span>Fim da avaliação</span><input type="datetime-local" formControlName="votingEndsAt" /></label>
         <label><span>Divulgação dos resultados</span><input type="datetime-local" formControlName="resultsAt" /></label>
+        <label><span>Avaliações mínimas por participante</span><input type="number" min="1" max="10" formControlName="minimumEvaluations" /></label>
+        <div class="wide criteria-editor" formArrayName="criteria">
+          <span>Critérios e pesos</span>
+          @for (criterion of criteriaControls; track $index) {
+            <div class="criterion-row" [formGroupName]="$index">
+              <input formControlName="name" aria-label="Nome do critério" />
+              <input type="number" formControlName="weight" min="1" max="100" aria-label="Peso do critério" />
+              <small>%</small>
+              <button type="button" class="remove-criterion" [disabled]="criteriaControls.length === 1" (click)="removeCriterion($index)" aria-label="Remover critério">×</button>
+            </div>
+          }
+          <button type="button" class="add-criterion" [disabled]="criteriaControls.length >= 8" (click)="addCriterion()">+ Adicionar critério</button>
+          <small>Os pesos devem somar 100%.</small>
+        </div>
         <button class="wide" type="submit" [disabled]="saving()">{{ saving() ? 'Criando...' : 'Criar competição' }}</button>
       </form>
     </section>

@@ -1,6 +1,6 @@
 import User from "@user/domain/entities/User";
 import Email from "@user/domain/valueObject/Email";
-import { UserAchievementContract } from "@shared/contracts/UserContracts";
+import { UserAchievementContract, UserReputationContract } from "@shared/contracts/UserContracts";
 
 export interface IUserRepository {
   create(user: User): Promise<User>;
@@ -12,4 +12,5 @@ export interface IUserRepository {
   findByEmail(email: Email): Promise<User | null>;
   findByUsername(username: string): Promise<User | null>;
   findAchievements(userId: string): Promise<UserAchievementContract[]>;
+  findReputation(userId: string): Promise<UserReputationContract>;
 }

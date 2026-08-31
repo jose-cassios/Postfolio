@@ -3,3 +3,16 @@ export interface UserAchievementContract {
   competitionName: string;
   rank: number;
 }
+
+export interface UserReputationContract {
+  creatorScore: number;
+  contributorScore: number;
+  evidence: {
+    publishedProjects: number;
+    versionsCreated: number;
+    appreciatesSent: number;
+    usefulFeedbacks: number;
+    appliedSuggestions: number;
+    recognizedContributions: number;
+  };
+}

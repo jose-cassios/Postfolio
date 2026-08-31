@@ -1,5 +1,5 @@
 <main class="competitions-page">
-  <header><span class="eyebrow">Comunidade Postfolio</span><h1>Competições</h1><p>Participe com um projeto e vote nos destaques da comunidade.</p></header>
+  <header><span class="eyebrow">Comunidade Postfolio</span><h1>Eventos</h1><p>Participe com um projeto e avalie trabalhos por critérios claros.</p></header>
   @if (notice()) { <p class="notice" role="status">{{ notice() }}</p> }
   @if (loading()) { <p class="state">Carregando competições...</p> }
   @else if (error()) { <p class="state">{{ error() }} <button (click)="load()">Tentar novamente</button></p> }
@@ -15,8 +15,21 @@
           <p>{{ competition.description }}</p>
           <div class="timeline">
             <span>Inscrições até {{ competition.registrationEndsAt | date:'dd/MM/yyyy HH:mm' }}</span>
-            <span>Votação: {{ competition.votingStartsAt | date:'dd/MM' }}–{{ competition.votingEndsAt | date:'dd/MM' }}</span>
+            <span>Avaliação: {{ competition.votingStartsAt | date:'dd/MM' }}–{{ competition.votingEndsAt | date:'dd/MM' }}</span>
           </div>
+          <div class="criteria-summary" aria-label="Critérios de avaliação">
+            @for (criterion of competition.criteria; track criterion.id) {
+              <span>{{ criterion.name }} <strong>{{ criterion.weight }}%</strong></span>
+            }
+          </div>
+
+          @if (progress()[competition.id]; as evaluationProgress) {
+            @if (evaluationProgress.participant && competition.status === 'VOTING') {
+              <p class="evaluation-progress" [class.complete]="evaluationProgress.completed">
+                {{ evaluationProgress.evaluatedProjects }}/{{ evaluationProgress.requiredEvaluations }} avaliações obrigatórias concluídas
+              </p>
+            }
+          }
 
           @if (competition.status === 'REGISTRATION') {
             <div class="subscribe-box">
@@ -34,12 +47,28 @@
                 @if (project.coverImageUrl) { <img [src]="project.coverImageUrl" [alt]="project.name" loading="lazy"> }
                 <div><span class="rank">{{ project.rank ? project.rank + 'º lugar' : '' }}</span><h3><a [routerLink]="['/projetos', project.id]">{{ project.name }}</a></h3><small>por {{ project.author.username }}</small></div>
                 @if (competition.status === 'VOTING') {
-                  <button [disabled]="pending() || isMyProject(project)" (click)="vote(competition, project.id)">Votar</button>
+                  @if (isMyProject(project)) {
+                    <span class="own-project">Seu projeto · você não pode avaliá-lo</span>
+                  } @else {
+                    <div class="evaluation-form">
+                      @for (criterion of competition.criteria; track criterion.id) {
+                        <label>{{ criterion.name }}
+                          <select [(ngModel)]="evaluationScores[scoreKey(competition.id, project.id, criterion.id)]">
+                            <option [ngValue]="0">Nota</option>
+                            @for (score of [1, 2, 3, 4, 5]; track score) { <option [ngValue]="score">{{ score }}</option> }
+                          </select>
+                        </label>
+                      }
+                      <button [disabled]="pending()" (click)="evaluate(competition, project.id)">Salvar avaliação</button>
+                    </div>
+                  }
                 }
                 @if (competition.status === 'REGISTRATION' && isMyProject(project)) {
                   <button class="ghost" (click)="unsubscribe(competition, project.id)">Remover</button>
                 }
-                @if (competition.status === 'RESULTS') { <strong>{{ project.votes || 0 }} votos</strong> }
+                @if (competition.status === 'RESULTS') {
+                  <div class="result-score"><strong>{{ (project.score || 0) | number:'1.2-2' }}</strong><span>{{ project.evaluationCount || 0 }} avaliações válidas</span></div>
+                }
               </article>
             } @empty { <p>Nenhum projeto inscrito ainda.</p> }
           </div>

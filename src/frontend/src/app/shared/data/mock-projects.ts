@@ -1,6 +1,11 @@
 import { ProjectDetails } from "../models/project-details";
 
-export const FEATURED_PROJECTS: ProjectDetails[] = [
+type LegacyMockProject = Omit<
+  ProjectDetails,
+  'feedbackAspects' | 'feedbackQuestion' | 'seekingFeedback' | 'currentVersion' | 'appreciations' | 'versions'
+>;
+
+const LEGACY_FEATURED_PROJECTS: LegacyMockProject[] = [
 
   {
     id: '1',
@@ -365,3 +370,15 @@ export const FEATURED_PROJECTS: ProjectDetails[] = [
     publishedAt: "2023 10 12"
   }
 ];
+
+export const FEATURED_PROJECTS: ProjectDetails[] = LEGACY_FEATURED_PROJECTS.map(
+  (project) => ({
+    ...project,
+    feedbackAspects: [],
+    feedbackQuestion: null,
+    seekingFeedback: false,
+    currentVersion: 1,
+    appreciations: [],
+    versions: [],
+  }),
+);

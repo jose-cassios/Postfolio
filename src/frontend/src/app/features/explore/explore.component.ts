@@ -39,7 +39,7 @@ export class ExploreComponent implements OnInit {
 
   selectedCategory: string | null = null;
   selectedCategoryName: string | null = null;
-  selectedSort: 'newest' | 'likes' | 'appreciates' = 'newest';
+  selectedSort: 'newest' | 'likes' | 'feedback' = 'newest';
   selectedTool: string | null = null;
   searchTerm = '';
 
@@ -99,7 +99,7 @@ export class ExploreComponent implements OnInit {
   getSortLabel(): string {
     switch (this.selectedSort) {
       case 'likes': return 'mais curtidos';
-      case 'appreciates': return 'mais apreciados';
+      case 'feedback': return 'pedindo feedback';
       default: return 'mais recentes';
     }
   }

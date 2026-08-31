@@ -1,4 +1,4 @@
-import { CompetitionContract, CreateCompetitionDTO } from "@competition/api/CompetitionDTO";
+import { CompetitionContract, CreateCompetitionDTO, EventEvaluationInput } from "@competition/api/CompetitionDTO";
 import { Competition } from "@competition/domain/entities/Competition";
 import { ICompetitionRepository } from "@competition/domain/interfaces/ICompetitionRepository";
 import { ICompetitionService } from "@competition/domain/interfaces/ICompetitionService";
@@ -59,18 +59,42 @@ export class CompetitionService implements ICompetitionService {
     await this.competitionRepository.unsubscribeProject(competitionId, projectId);
   }
 
-  async vote(competitionId: string, projectId: string, userId: string) {
+  async evaluate(
+    competitionId: string,
+    projectId: string,
+    userId: string,
+    scores: EventEvaluationInput[],
+  ) {
     const competition = await this.findContractById(competitionId);
     if (competition.status !== "VOTING") {
-      throw new Conflict("A votacao nao esta aberta.");
+      throw new Conflict("A fase de avaliacao nao esta aberta.");
     }
-    if (!competition.submissions.some((project) => project.id === projectId)) {
+    const project = competition.submissions.find((submission) => submission.id === projectId);
+    if (!project) {
       throw new NotFound("O projeto nao participa desta competicao.");
     }
-    if (competition.submissions.some((project) => project.author.id === userId)) {
-      throw new Forbidden("Participantes desta competicao nao podem votar.");
+    if (project.author.id === userId) {
+      throw new Forbidden("Voce nao pode avaliar o proprio projeto.");
     }
-    await this.competitionRepository.vote(competitionId, projectId, userId);
+    const expectedCriteria = new Set(competition.criteria.map((criterion) => criterion.id));
+    const submittedCriteria = new Set(scores.map((score) => score.criterionId));
+    if (
+      expectedCriteria.size !== submittedCriteria.size
+      || [...expectedCriteria].some((criterionId) => !submittedCriteria.has(criterionId))
+    ) {
+      throw new Conflict("Avalie todos os criterios configurados para o evento.");
+    }
+    await this.competitionRepository.upsertEvaluation(
+      competitionId,
+      projectId,
+      userId,
+      scores,
+    );
+  }
+
+  async getEvaluationProgress(competitionId: string, userId: string) {
+    await this.findContractById(competitionId);
+    return await this.competitionRepository.getEvaluationProgress(competitionId, userId);
   }
 
   findMany(): Promise<Competition[]> {

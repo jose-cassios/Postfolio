@@ -2,11 +2,16 @@
 import User from "@user/domain/entities/User";
 import { prisma } from "@infrastructure/config/Prisma";
 import { InternalServerError } from "@shared/error/HttpError";
-import { Prisma } from "@PrismaGen/client";
+import {
+  AppreciateStatus,
+  Prisma,
+  ProjectStatus,
+  ReputationAxis,
+} from "@PrismaGen/client";
 import { UserMapper } from "@user/application/UserMapper";
 import { IUserRepository } from "@user/domain/interfaces/IUserRepository";
 import Email from "@user/domain/valueObject/Email";
-import { UserAchievementContract } from "@shared/contracts/UserContracts";
+import { UserAchievementContract, UserReputationContract } from "@shared/contracts/UserContracts";
 
 export class UserRepository implements IUserRepository {
   async create(user: User): Promise<User> {
@@ -77,13 +82,12 @@ export class UserRepository implements IUserRepository {
   async findAchievements(userId: string): Promise<UserAchievementContract[]> {
     const competitions = await prisma.competition.findMany({
       where: { resultsAt: { lte: new Date() } },
-      select: {
-        id: true,
-        name: true,
+      include: {
+        criteria: true,
+        evaluations: { include: { scores: true } },
         worksDetails: {
-          orderBy: { totalReviewers: "desc" },
           select: {
-            totalReviewers: true,
+            projectId: true,
             project: { select: { portfolio: { select: { authorId: true } } } },
           },
         },
@@ -91,17 +95,101 @@ export class UserRepository implements IUserRepository {
     });
 
     return competitions.flatMap((competition) => {
-      let previousVotes: number | null = null;
+      const criteriaIds = new Set(competition.criteria.map((criterion) => criterion.id));
+      const totalWeight = competition.criteria.reduce(
+        (total, criterion) => total + criterion.weight,
+        0,
+      ) || 1;
+      const primary = [...competition.criteria].sort(
+        (left, right) => right.weight - left.weight || left.position - right.position,
+      )[0];
+      const results = competition.worksDetails.map((details) => {
+        const evaluations = competition.evaluations.filter((evaluation) => {
+          const submitted = new Set(evaluation.scores.map((score) => score.criterionId));
+          return evaluation.projectId === details.projectId
+            && submitted.size === criteriaIds.size
+            && [...criteriaIds].every((id) => submitted.has(id));
+        });
+        const weighted = evaluations.map((evaluation) =>
+          evaluation.scores.reduce((total, score) => {
+            const criterion = competition.criteria.find((item) => item.id === score.criterionId);
+            return total + score.score * (criterion?.weight ?? 0);
+          }, 0) / totalWeight
+        );
+        const primaryScores = evaluations.flatMap((evaluation) => {
+          const score = evaluation.scores.find((item) => item.criterionId === primary?.id);
+          return score ? [score.score] : [];
+        });
+        const average = (values: number[]) => values.length
+          ? values.reduce((total, value) => total + value, 0) / values.length
+          : 0;
+        return {
+          details,
+          score: average(weighted),
+          primaryScore: average(primaryScores),
+          evaluations: evaluations.length,
+        };
+      }).sort((left, right) =>
+        right.score - left.score
+        || right.primaryScore - left.primaryScore
+        || right.evaluations - left.evaluations
+      );
+
+      let previousResult: string | null = null;
       let rank = 0;
-      return competition.worksDetails.flatMap((details, index) => {
-        if (details.totalReviewers !== previousVotes) rank = index + 1;
-        previousVotes = details.totalReviewers;
-        return details.project.portfolio.authorId === userId &&
-          details.totalReviewers > 0 &&
+      return results.flatMap((result, index) => {
+        const resultKey = `${result.score}:${result.primaryScore}:${result.evaluations}`;
+        if (resultKey !== previousResult) rank = index + 1;
+        previousResult = resultKey;
+        return result.details.project.portfolio.authorId === userId &&
+          result.evaluations > 0 &&
           rank <= 3
           ? [{ competitionId: competition.id, competitionName: competition.name, rank }]
           : [];
       });
     });
+  }
+
+  async findReputation(userId: string): Promise<UserReputationContract> {
+    const [scores, publishedProjects, versionsCreated, appreciatesSent,
+      usefulFeedbacks, appliedSuggestions, recognizedContributions] = await Promise.all([
+      prisma.reputationEvent.groupBy({
+        by: ["axis"],
+        where: { userId },
+        _sum: { points: true },
+      }),
+      prisma.project.count({
+        where: {
+          status: ProjectStatus.PUBLISHED,
+          portfolio: { authorId: userId },
+        },
+      }),
+      prisma.projectVersion.count({ where: { authorId: userId } }),
+      prisma.appreciate.count({ where: { userId } }),
+      prisma.appreciate.count({
+        where: {
+          userId,
+          status: { in: [AppreciateStatus.USEFUL, AppreciateStatus.APPLIED] },
+        },
+      }),
+      prisma.appreciate.count({
+        where: { userId, status: AppreciateStatus.APPLIED },
+      }),
+      prisma.projectVersionCredit.count({ where: { contributorId: userId } }),
+    ]);
+    const score = (axis: ReputationAxis) =>
+      scores.find((item) => item.axis === axis)?._sum.points ?? 0;
+    return {
+      creatorScore: score(ReputationAxis.CREATOR),
+      contributorScore: score(ReputationAxis.CONTRIBUTOR),
+      evidence: {
+        publishedProjects,
+        versionsCreated,
+        appreciatesSent,
+        usefulFeedbacks,
+        appliedSuggestions,
+        recognizedContributions,
+      },
+    };
   }
 }

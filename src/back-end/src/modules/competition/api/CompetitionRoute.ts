@@ -2,6 +2,7 @@ import { CompetitionController } from "@competition/api/CompetitionController";
 import {
   CompetitionProjectRequest,
   CreateCompetitionRequest,
+  EventEvaluationRequest,
   competitonRouteSchema,
 } from "@competition/api/CompetitionSchema";
 import { UserMiddle } from "@infrastructure/middleware/UserMiddle";
@@ -27,10 +28,15 @@ function competitionRoutesPlugin(app: FastifyInstance, controller: CompetitionCo
     { schema: competitonRouteSchema.project, preValidation: UserMiddle.authenticate },
     (req, rep) => controller.unsubscribeProject(req as CompetitionProjectRequest, rep)
   );
-  app.post(
-    "/:competitionId/votes/:projectId",
-    { schema: competitonRouteSchema.project, preValidation: UserMiddle.authenticate },
-    (req, rep) => controller.vote(req as CompetitionProjectRequest, rep)
+  app.put(
+    "/:competitionId/evaluations/:projectId",
+    { schema: competitonRouteSchema.evaluation, preValidation: UserMiddle.authenticate },
+    (req, rep) => controller.evaluate(req as EventEvaluationRequest, rep)
+  );
+  app.get(
+    "/:competitionId/evaluation-progress",
+    { schema: competitonRouteSchema.id, preValidation: UserMiddle.authenticate },
+    (req, rep) => controller.evaluationProgress(req, rep)
   );
 }
 

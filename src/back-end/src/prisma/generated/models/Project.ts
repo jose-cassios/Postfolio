@@ -20,8 +20,18 @@ export type ProjectModel = runtime.Types.Result.DefaultSelection<Prisma.$Project
 
 export type AggregateProject = {
   _count: ProjectCountAggregateOutputType | null
+  _avg: ProjectAvgAggregateOutputType | null
+  _sum: ProjectSumAggregateOutputType | null
   _min: ProjectMinAggregateOutputType | null
   _max: ProjectMaxAggregateOutputType | null
+}
+
+export type ProjectAvgAggregateOutputType = {
+  currentVersion: number | null
+}
+
+export type ProjectSumAggregateOutputType = {
+  currentVersion: number | null
 }
 
 export type ProjectMinAggregateOutputType = {
@@ -34,6 +44,9 @@ export type ProjectMinAggregateOutputType = {
   coverImageUrl: string | null
   contentMarkdown: string | null
   status: $Enums.ProjectStatus | null
+  feedbackQuestion: string | null
+  seekingFeedback: boolean | null
+  currentVersion: number | null
   publishedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -50,6 +63,9 @@ export type ProjectMaxAggregateOutputType = {
   coverImageUrl: string | null
   contentMarkdown: string | null
   status: $Enums.ProjectStatus | null
+  feedbackQuestion: string | null
+  seekingFeedback: boolean | null
+  currentVersion: number | null
   publishedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -70,6 +86,10 @@ export type ProjectCountAggregateOutputType = {
   contentBlocks: number
   contentMarkdown: number
   status: number
+  feedbackAspects: number
+  feedbackQuestion: number
+  seekingFeedback: number
+  currentVersion: number
   publishedAt: number
   createdAt: number
   updatedAt: number
@@ -77,6 +97,14 @@ export type ProjectCountAggregateOutputType = {
   _all: number
 }
 
+
+export type ProjectAvgAggregateInputType = {
+  currentVersion?: true
+}
+
+export type ProjectSumAggregateInputType = {
+  currentVersion?: true
+}
 
 export type ProjectMinAggregateInputType = {
   id?: true
@@ -88,6 +116,9 @@ export type ProjectMinAggregateInputType = {
   coverImageUrl?: true
   contentMarkdown?: true
   status?: true
+  feedbackQuestion?: true
+  seekingFeedback?: true
+  currentVersion?: true
   publishedAt?: true
   createdAt?: true
   updatedAt?: true
@@ -104,6 +135,9 @@ export type ProjectMaxAggregateInputType = {
   coverImageUrl?: true
   contentMarkdown?: true
   status?: true
+  feedbackQuestion?: true
+  seekingFeedback?: true
+  currentVersion?: true
   publishedAt?: true
   createdAt?: true
   updatedAt?: true
@@ -124,6 +158,10 @@ export type ProjectCountAggregateInputType = {
   contentBlocks?: true
   contentMarkdown?: true
   status?: true
+  feedbackAspects?: true
+  feedbackQuestion?: true
+  seekingFeedback?: true
+  currentVersion?: true
   publishedAt?: true
   createdAt?: true
   updatedAt?: true
@@ -169,6 +207,18 @@ export type ProjectAggregateArgs<ExtArgs extends runtime.Types.Extensions.Intern
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: ProjectAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
+   * Select which fields to sum
+  **/
+  _sum?: ProjectSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
    * Select which fields to find the minimum value
   **/
   _min?: ProjectMinAggregateInputType
@@ -199,6 +249,8 @@ export type ProjectGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   _count?: ProjectCountAggregateInputType | true
+  _avg?: ProjectAvgAggregateInputType
+  _sum?: ProjectSumAggregateInputType
   _min?: ProjectMinAggregateInputType
   _max?: ProjectMaxAggregateInputType
 }
@@ -217,11 +269,17 @@ export type ProjectGroupByOutputType = {
   contentBlocks: runtime.JsonValue
   contentMarkdown: string
   status: $Enums.ProjectStatus
+  feedbackAspects: string[]
+  feedbackQuestion: string | null
+  seekingFeedback: boolean
+  currentVersion: number
   publishedAt: Date | null
   createdAt: Date
   updatedAt: Date
   portfolioId: string
   _count: ProjectCountAggregateOutputType | null
+  _avg: ProjectAvgAggregateOutputType | null
+  _sum: ProjectSumAggregateOutputType | null
   _min: ProjectMinAggregateOutputType | null
   _max: ProjectMaxAggregateOutputType | null
 }
@@ -258,6 +316,10 @@ export type ProjectWhereInput = {
   contentBlocks?: Prisma.JsonFilter<"Project">
   contentMarkdown?: Prisma.StringFilter<"Project"> | string
   status?: Prisma.EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.StringNullableListFilter<"Project">
+  feedbackQuestion?: Prisma.StringNullableFilter<"Project"> | string | null
+  seekingFeedback?: Prisma.BoolFilter<"Project"> | boolean
+  currentVersion?: Prisma.IntFilter<"Project"> | number
   publishedAt?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
@@ -271,6 +333,9 @@ export type ProjectWhereInput = {
   Feedback?: Prisma.FeedbackListRelationFilter
   likes?: Prisma.LikeListRelationFilter
   AppreciateProjectDetails?: Prisma.XOR<Prisma.PostMetricsNullableScalarRelationFilter, Prisma.PostMetricsWhereInput> | null
+  versions?: Prisma.ProjectVersionListRelationFilter
+  reputationEvents?: Prisma.ReputationEventListRelationFilter
+  eventEvaluations?: Prisma.EventEvaluationListRelationFilter
 }
 
 export type ProjectOrderByWithRelationInput = {
@@ -287,6 +352,10 @@ export type ProjectOrderByWithRelationInput = {
   contentBlocks?: Prisma.SortOrder
   contentMarkdown?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  feedbackAspects?: Prisma.SortOrder
+  feedbackQuestion?: Prisma.SortOrderInput | Prisma.SortOrder
+  seekingFeedback?: Prisma.SortOrder
+  currentVersion?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -300,6 +369,9 @@ export type ProjectOrderByWithRelationInput = {
   Feedback?: Prisma.FeedbackOrderByRelationAggregateInput
   likes?: Prisma.LikeOrderByRelationAggregateInput
   AppreciateProjectDetails?: Prisma.PostMetricsOrderByWithRelationInput
+  versions?: Prisma.ProjectVersionOrderByRelationAggregateInput
+  reputationEvents?: Prisma.ReputationEventOrderByRelationAggregateInput
+  eventEvaluations?: Prisma.EventEvaluationOrderByRelationAggregateInput
 }
 
 export type ProjectWhereUniqueInput = Prisma.AtLeast<{
@@ -319,6 +391,10 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   contentBlocks?: Prisma.JsonFilter<"Project">
   contentMarkdown?: Prisma.StringFilter<"Project"> | string
   status?: Prisma.EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.StringNullableListFilter<"Project">
+  feedbackQuestion?: Prisma.StringNullableFilter<"Project"> | string | null
+  seekingFeedback?: Prisma.BoolFilter<"Project"> | boolean
+  currentVersion?: Prisma.IntFilter<"Project"> | number
   publishedAt?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
@@ -332,6 +408,9 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   Feedback?: Prisma.FeedbackListRelationFilter
   likes?: Prisma.LikeListRelationFilter
   AppreciateProjectDetails?: Prisma.XOR<Prisma.PostMetricsNullableScalarRelationFilter, Prisma.PostMetricsWhereInput> | null
+  versions?: Prisma.ProjectVersionListRelationFilter
+  reputationEvents?: Prisma.ReputationEventListRelationFilter
+  eventEvaluations?: Prisma.EventEvaluationListRelationFilter
 }, "id">
 
 export type ProjectOrderByWithAggregationInput = {
@@ -348,13 +427,19 @@ export type ProjectOrderByWithAggregationInput = {
   contentBlocks?: Prisma.SortOrder
   contentMarkdown?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  feedbackAspects?: Prisma.SortOrder
+  feedbackQuestion?: Prisma.SortOrderInput | Prisma.SortOrder
+  seekingFeedback?: Prisma.SortOrder
+  currentVersion?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   portfolioId?: Prisma.SortOrder
   _count?: Prisma.ProjectCountOrderByAggregateInput
+  _avg?: Prisma.ProjectAvgOrderByAggregateInput
   _max?: Prisma.ProjectMaxOrderByAggregateInput
   _min?: Prisma.ProjectMinOrderByAggregateInput
+  _sum?: Prisma.ProjectSumOrderByAggregateInput
 }
 
 export type ProjectScalarWhereWithAggregatesInput = {
@@ -374,6 +459,10 @@ export type ProjectScalarWhereWithAggregatesInput = {
   contentBlocks?: Prisma.JsonWithAggregatesFilter<"Project">
   contentMarkdown?: Prisma.StringWithAggregatesFilter<"Project"> | string
   status?: Prisma.EnumProjectStatusWithAggregatesFilter<"Project"> | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.StringNullableListFilter<"Project">
+  feedbackQuestion?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
+  seekingFeedback?: Prisma.BoolWithAggregatesFilter<"Project"> | boolean
+  currentVersion?: Prisma.IntWithAggregatesFilter<"Project"> | number
   publishedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Project"> | Date | string
@@ -394,6 +483,10 @@ export type ProjectCreateInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: string
   status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -406,6 +499,9 @@ export type ProjectCreateInput = {
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutProjectInput
   likes?: Prisma.LikeCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsCreateNestedOneWithoutProjectInput
+  versions?: Prisma.ProjectVersionCreateNestedManyWithoutProjectInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutProjectInput
+  eventEvaluations?: Prisma.EventEvaluationCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateInput = {
@@ -422,6 +518,10 @@ export type ProjectUncheckedCreateInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: string
   status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -434,6 +534,9 @@ export type ProjectUncheckedCreateInput = {
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutProjectInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedCreateNestedOneWithoutProjectInput
+  versions?: Prisma.ProjectVersionUncheckedCreateNestedManyWithoutProjectInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutProjectInput
+  eventEvaluations?: Prisma.EventEvaluationUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUpdateInput = {
@@ -450,6 +553,10 @@ export type ProjectUpdateInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -462,6 +569,9 @@ export type ProjectUpdateInput = {
   Feedback?: Prisma.FeedbackUpdateManyWithoutProjectNestedInput
   likes?: Prisma.LikeUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUpdateOneWithoutProjectNestedInput
+  versions?: Prisma.ProjectVersionUpdateManyWithoutProjectNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutProjectNestedInput
+  eventEvaluations?: Prisma.EventEvaluationUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateInput = {
@@ -478,6 +588,10 @@ export type ProjectUncheckedUpdateInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -490,6 +604,9 @@ export type ProjectUncheckedUpdateInput = {
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutProjectNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedUpdateOneWithoutProjectNestedInput
+  versions?: Prisma.ProjectVersionUncheckedUpdateManyWithoutProjectNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutProjectNestedInput
+  eventEvaluations?: Prisma.EventEvaluationUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectCreateManyInput = {
@@ -506,6 +623,10 @@ export type ProjectCreateManyInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: string
   status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -526,6 +647,10 @@ export type ProjectUpdateManyMutationInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -545,6 +670,10 @@ export type ProjectUncheckedUpdateManyInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -583,10 +712,18 @@ export type ProjectCountOrderByAggregateInput = {
   contentBlocks?: Prisma.SortOrder
   contentMarkdown?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  feedbackAspects?: Prisma.SortOrder
+  feedbackQuestion?: Prisma.SortOrder
+  seekingFeedback?: Prisma.SortOrder
+  currentVersion?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   portfolioId?: Prisma.SortOrder
+}
+
+export type ProjectAvgOrderByAggregateInput = {
+  currentVersion?: Prisma.SortOrder
 }
 
 export type ProjectMaxOrderByAggregateInput = {
@@ -599,6 +736,9 @@ export type ProjectMaxOrderByAggregateInput = {
   coverImageUrl?: Prisma.SortOrder
   contentMarkdown?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  feedbackQuestion?: Prisma.SortOrder
+  seekingFeedback?: Prisma.SortOrder
+  currentVersion?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -615,15 +755,27 @@ export type ProjectMinOrderByAggregateInput = {
   coverImageUrl?: Prisma.SortOrder
   contentMarkdown?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  feedbackQuestion?: Prisma.SortOrder
+  seekingFeedback?: Prisma.SortOrder
+  currentVersion?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   portfolioId?: Prisma.SortOrder
 }
 
+export type ProjectSumOrderByAggregateInput = {
+  currentVersion?: Prisma.SortOrder
+}
+
 export type ProjectScalarRelationFilter = {
   is?: Prisma.ProjectWhereInput
   isNot?: Prisma.ProjectWhereInput
+}
+
+export type ProjectNullableScalarRelationFilter = {
+  is?: Prisma.ProjectWhereInput | null
+  isNot?: Prisma.ProjectWhereInput | null
 }
 
 export type ProjectCreateNestedManyWithoutPortfolioInput = {
@@ -680,6 +832,10 @@ export type ProjectCreatetagsInput = {
   set: string[]
 }
 
+export type ProjectCreatefeedbackAspectsInput = {
+  set: string[]
+}
+
 export type ProjectUpdategalleryUrlsInput = {
   set?: string[]
   push?: string | string[]
@@ -697,6 +853,11 @@ export type ProjectUpdatetagsInput = {
 
 export type EnumProjectStatusFieldUpdateOperationsInput = {
   set?: $Enums.ProjectStatus
+}
+
+export type ProjectUpdatefeedbackAspectsInput = {
+  set?: string[]
+  push?: string | string[]
 }
 
 export type ProjectCreateNestedOneWithoutAppreciateInput = {
@@ -811,6 +972,50 @@ export type ProjectUpdateOneRequiredWithoutProjectCompDetailsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutProjectCompDetailsInput, Prisma.ProjectUpdateWithoutProjectCompDetailsInput>, Prisma.ProjectUncheckedUpdateWithoutProjectCompDetailsInput>
 }
 
+export type ProjectCreateNestedOneWithoutVersionsInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutVersionsInput, Prisma.ProjectUncheckedCreateWithoutVersionsInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutVersionsInput
+  connect?: Prisma.ProjectWhereUniqueInput
+}
+
+export type ProjectUpdateOneRequiredWithoutVersionsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutVersionsInput, Prisma.ProjectUncheckedCreateWithoutVersionsInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutVersionsInput
+  upsert?: Prisma.ProjectUpsertWithoutVersionsInput
+  connect?: Prisma.ProjectWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutVersionsInput, Prisma.ProjectUpdateWithoutVersionsInput>, Prisma.ProjectUncheckedUpdateWithoutVersionsInput>
+}
+
+export type ProjectCreateNestedOneWithoutReputationEventsInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutReputationEventsInput, Prisma.ProjectUncheckedCreateWithoutReputationEventsInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutReputationEventsInput
+  connect?: Prisma.ProjectWhereUniqueInput
+}
+
+export type ProjectUpdateOneWithoutReputationEventsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutReputationEventsInput, Prisma.ProjectUncheckedCreateWithoutReputationEventsInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutReputationEventsInput
+  upsert?: Prisma.ProjectUpsertWithoutReputationEventsInput
+  disconnect?: Prisma.ProjectWhereInput | boolean
+  delete?: Prisma.ProjectWhereInput | boolean
+  connect?: Prisma.ProjectWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutReputationEventsInput, Prisma.ProjectUpdateWithoutReputationEventsInput>, Prisma.ProjectUncheckedUpdateWithoutReputationEventsInput>
+}
+
+export type ProjectCreateNestedOneWithoutEventEvaluationsInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutEventEvaluationsInput, Prisma.ProjectUncheckedCreateWithoutEventEvaluationsInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutEventEvaluationsInput
+  connect?: Prisma.ProjectWhereUniqueInput
+}
+
+export type ProjectUpdateOneRequiredWithoutEventEvaluationsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutEventEvaluationsInput, Prisma.ProjectUncheckedCreateWithoutEventEvaluationsInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutEventEvaluationsInput
+  upsert?: Prisma.ProjectUpsertWithoutEventEvaluationsInput
+  connect?: Prisma.ProjectWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutEventEvaluationsInput, Prisma.ProjectUpdateWithoutEventEvaluationsInput>, Prisma.ProjectUncheckedUpdateWithoutEventEvaluationsInput>
+}
+
 export type ProjectCreateWithoutPortfolioInput = {
   id?: string
   name: string
@@ -825,6 +1030,10 @@ export type ProjectCreateWithoutPortfolioInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: string
   status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -836,6 +1045,9 @@ export type ProjectCreateWithoutPortfolioInput = {
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutProjectInput
   likes?: Prisma.LikeCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsCreateNestedOneWithoutProjectInput
+  versions?: Prisma.ProjectVersionCreateNestedManyWithoutProjectInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutProjectInput
+  eventEvaluations?: Prisma.EventEvaluationCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutPortfolioInput = {
@@ -852,6 +1064,10 @@ export type ProjectUncheckedCreateWithoutPortfolioInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: string
   status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -863,6 +1079,9 @@ export type ProjectUncheckedCreateWithoutPortfolioInput = {
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutProjectInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedCreateNestedOneWithoutProjectInput
+  versions?: Prisma.ProjectVersionUncheckedCreateNestedManyWithoutProjectInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutProjectInput
+  eventEvaluations?: Prisma.EventEvaluationUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutPortfolioInput = {
@@ -908,6 +1127,10 @@ export type ProjectScalarWhereInput = {
   contentBlocks?: Prisma.JsonFilter<"Project">
   contentMarkdown?: Prisma.StringFilter<"Project"> | string
   status?: Prisma.EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.StringNullableListFilter<"Project">
+  feedbackQuestion?: Prisma.StringNullableFilter<"Project"> | string | null
+  seekingFeedback?: Prisma.BoolFilter<"Project"> | boolean
+  currentVersion?: Prisma.IntFilter<"Project"> | number
   publishedAt?: Prisma.DateTimeNullableFilter<"Project"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
@@ -928,6 +1151,10 @@ export type ProjectCreateWithoutAppreciateInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: string
   status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -939,6 +1166,9 @@ export type ProjectCreateWithoutAppreciateInput = {
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutProjectInput
   likes?: Prisma.LikeCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsCreateNestedOneWithoutProjectInput
+  versions?: Prisma.ProjectVersionCreateNestedManyWithoutProjectInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutProjectInput
+  eventEvaluations?: Prisma.EventEvaluationCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutAppreciateInput = {
@@ -955,6 +1185,10 @@ export type ProjectUncheckedCreateWithoutAppreciateInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: string
   status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -966,6 +1200,9 @@ export type ProjectUncheckedCreateWithoutAppreciateInput = {
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutProjectInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedCreateNestedOneWithoutProjectInput
+  versions?: Prisma.ProjectVersionUncheckedCreateNestedManyWithoutProjectInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutProjectInput
+  eventEvaluations?: Prisma.EventEvaluationUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutAppreciateInput = {
@@ -998,6 +1235,10 @@ export type ProjectUpdateWithoutAppreciateInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1009,6 +1250,9 @@ export type ProjectUpdateWithoutAppreciateInput = {
   Feedback?: Prisma.FeedbackUpdateManyWithoutProjectNestedInput
   likes?: Prisma.LikeUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUpdateOneWithoutProjectNestedInput
+  versions?: Prisma.ProjectVersionUpdateManyWithoutProjectNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutProjectNestedInput
+  eventEvaluations?: Prisma.EventEvaluationUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutAppreciateInput = {
@@ -1025,6 +1269,10 @@ export type ProjectUncheckedUpdateWithoutAppreciateInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1036,6 +1284,9 @@ export type ProjectUncheckedUpdateWithoutAppreciateInput = {
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutProjectNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedUpdateOneWithoutProjectNestedInput
+  versions?: Prisma.ProjectVersionUncheckedUpdateManyWithoutProjectNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutProjectNestedInput
+  eventEvaluations?: Prisma.EventEvaluationUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectCreateWithoutAppreciateProjectDetailsInput = {
@@ -1052,6 +1303,10 @@ export type ProjectCreateWithoutAppreciateProjectDetailsInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: string
   status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1063,6 +1318,9 @@ export type ProjectCreateWithoutAppreciateProjectDetailsInput = {
   Appreciate?: Prisma.AppreciateCreateNestedManyWithoutProjectInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutProjectInput
   likes?: Prisma.LikeCreateNestedManyWithoutProjectInput
+  versions?: Prisma.ProjectVersionCreateNestedManyWithoutProjectInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutProjectInput
+  eventEvaluations?: Prisma.EventEvaluationCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutAppreciateProjectDetailsInput = {
@@ -1079,6 +1337,10 @@ export type ProjectUncheckedCreateWithoutAppreciateProjectDetailsInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: string
   status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1090,6 +1352,9 @@ export type ProjectUncheckedCreateWithoutAppreciateProjectDetailsInput = {
   Appreciate?: Prisma.AppreciateUncheckedCreateNestedManyWithoutProjectInput
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutProjectInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutProjectInput
+  versions?: Prisma.ProjectVersionUncheckedCreateNestedManyWithoutProjectInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutProjectInput
+  eventEvaluations?: Prisma.EventEvaluationUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutAppreciateProjectDetailsInput = {
@@ -1122,6 +1387,10 @@ export type ProjectUpdateWithoutAppreciateProjectDetailsInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1133,6 +1402,9 @@ export type ProjectUpdateWithoutAppreciateProjectDetailsInput = {
   Appreciate?: Prisma.AppreciateUpdateManyWithoutProjectNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutProjectNestedInput
   likes?: Prisma.LikeUpdateManyWithoutProjectNestedInput
+  versions?: Prisma.ProjectVersionUpdateManyWithoutProjectNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutProjectNestedInput
+  eventEvaluations?: Prisma.EventEvaluationUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutAppreciateProjectDetailsInput = {
@@ -1149,6 +1421,10 @@ export type ProjectUncheckedUpdateWithoutAppreciateProjectDetailsInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1160,6 +1436,9 @@ export type ProjectUncheckedUpdateWithoutAppreciateProjectDetailsInput = {
   Appreciate?: Prisma.AppreciateUncheckedUpdateManyWithoutProjectNestedInput
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutProjectNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutProjectNestedInput
+  versions?: Prisma.ProjectVersionUncheckedUpdateManyWithoutProjectNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutProjectNestedInput
+  eventEvaluations?: Prisma.EventEvaluationUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectCreateWithoutFavorateProjectsInput = {
@@ -1176,6 +1455,10 @@ export type ProjectCreateWithoutFavorateProjectsInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: string
   status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1187,6 +1470,9 @@ export type ProjectCreateWithoutFavorateProjectsInput = {
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutProjectInput
   likes?: Prisma.LikeCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsCreateNestedOneWithoutProjectInput
+  versions?: Prisma.ProjectVersionCreateNestedManyWithoutProjectInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutProjectInput
+  eventEvaluations?: Prisma.EventEvaluationCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutFavorateProjectsInput = {
@@ -1203,6 +1489,10 @@ export type ProjectUncheckedCreateWithoutFavorateProjectsInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: string
   status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1214,6 +1504,9 @@ export type ProjectUncheckedCreateWithoutFavorateProjectsInput = {
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutProjectInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedCreateNestedOneWithoutProjectInput
+  versions?: Prisma.ProjectVersionUncheckedCreateNestedManyWithoutProjectInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutProjectInput
+  eventEvaluations?: Prisma.EventEvaluationUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutFavorateProjectsInput = {
@@ -1246,6 +1539,10 @@ export type ProjectUpdateWithoutFavorateProjectsInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1257,6 +1554,9 @@ export type ProjectUpdateWithoutFavorateProjectsInput = {
   Feedback?: Prisma.FeedbackUpdateManyWithoutProjectNestedInput
   likes?: Prisma.LikeUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUpdateOneWithoutProjectNestedInput
+  versions?: Prisma.ProjectVersionUpdateManyWithoutProjectNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutProjectNestedInput
+  eventEvaluations?: Prisma.EventEvaluationUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutFavorateProjectsInput = {
@@ -1273,6 +1573,10 @@ export type ProjectUncheckedUpdateWithoutFavorateProjectsInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1284,6 +1588,9 @@ export type ProjectUncheckedUpdateWithoutFavorateProjectsInput = {
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutProjectNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedUpdateOneWithoutProjectNestedInput
+  versions?: Prisma.ProjectVersionUncheckedUpdateManyWithoutProjectNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutProjectNestedInput
+  eventEvaluations?: Prisma.EventEvaluationUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectCreateWithoutCommentsInput = {
@@ -1300,6 +1607,10 @@ export type ProjectCreateWithoutCommentsInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: string
   status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1311,6 +1622,9 @@ export type ProjectCreateWithoutCommentsInput = {
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutProjectInput
   likes?: Prisma.LikeCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsCreateNestedOneWithoutProjectInput
+  versions?: Prisma.ProjectVersionCreateNestedManyWithoutProjectInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutProjectInput
+  eventEvaluations?: Prisma.EventEvaluationCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutCommentsInput = {
@@ -1327,6 +1641,10 @@ export type ProjectUncheckedCreateWithoutCommentsInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: string
   status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1338,6 +1656,9 @@ export type ProjectUncheckedCreateWithoutCommentsInput = {
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutProjectInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedCreateNestedOneWithoutProjectInput
+  versions?: Prisma.ProjectVersionUncheckedCreateNestedManyWithoutProjectInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutProjectInput
+  eventEvaluations?: Prisma.EventEvaluationUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutCommentsInput = {
@@ -1370,6 +1691,10 @@ export type ProjectUpdateWithoutCommentsInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1381,6 +1706,9 @@ export type ProjectUpdateWithoutCommentsInput = {
   Feedback?: Prisma.FeedbackUpdateManyWithoutProjectNestedInput
   likes?: Prisma.LikeUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUpdateOneWithoutProjectNestedInput
+  versions?: Prisma.ProjectVersionUpdateManyWithoutProjectNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutProjectNestedInput
+  eventEvaluations?: Prisma.EventEvaluationUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutCommentsInput = {
@@ -1397,6 +1725,10 @@ export type ProjectUncheckedUpdateWithoutCommentsInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1408,6 +1740,9 @@ export type ProjectUncheckedUpdateWithoutCommentsInput = {
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutProjectNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedUpdateOneWithoutProjectNestedInput
+  versions?: Prisma.ProjectVersionUncheckedUpdateManyWithoutProjectNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutProjectNestedInput
+  eventEvaluations?: Prisma.EventEvaluationUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectCreateWithoutLikesInput = {
@@ -1424,6 +1759,10 @@ export type ProjectCreateWithoutLikesInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: string
   status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1435,6 +1774,9 @@ export type ProjectCreateWithoutLikesInput = {
   Appreciate?: Prisma.AppreciateCreateNestedManyWithoutProjectInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsCreateNestedOneWithoutProjectInput
+  versions?: Prisma.ProjectVersionCreateNestedManyWithoutProjectInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutProjectInput
+  eventEvaluations?: Prisma.EventEvaluationCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutLikesInput = {
@@ -1451,6 +1793,10 @@ export type ProjectUncheckedCreateWithoutLikesInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: string
   status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1462,6 +1808,9 @@ export type ProjectUncheckedCreateWithoutLikesInput = {
   Appreciate?: Prisma.AppreciateUncheckedCreateNestedManyWithoutProjectInput
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedCreateNestedOneWithoutProjectInput
+  versions?: Prisma.ProjectVersionUncheckedCreateNestedManyWithoutProjectInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutProjectInput
+  eventEvaluations?: Prisma.EventEvaluationUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutLikesInput = {
@@ -1494,6 +1843,10 @@ export type ProjectUpdateWithoutLikesInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1505,6 +1858,9 @@ export type ProjectUpdateWithoutLikesInput = {
   Appreciate?: Prisma.AppreciateUpdateManyWithoutProjectNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUpdateOneWithoutProjectNestedInput
+  versions?: Prisma.ProjectVersionUpdateManyWithoutProjectNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutProjectNestedInput
+  eventEvaluations?: Prisma.EventEvaluationUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutLikesInput = {
@@ -1521,6 +1877,10 @@ export type ProjectUncheckedUpdateWithoutLikesInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1532,6 +1892,9 @@ export type ProjectUncheckedUpdateWithoutLikesInput = {
   Appreciate?: Prisma.AppreciateUncheckedUpdateManyWithoutProjectNestedInput
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedUpdateOneWithoutProjectNestedInput
+  versions?: Prisma.ProjectVersionUncheckedUpdateManyWithoutProjectNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutProjectNestedInput
+  eventEvaluations?: Prisma.EventEvaluationUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectCreateWithoutFeedbackInput = {
@@ -1548,6 +1911,10 @@ export type ProjectCreateWithoutFeedbackInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: string
   status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1559,6 +1926,9 @@ export type ProjectCreateWithoutFeedbackInput = {
   Appreciate?: Prisma.AppreciateCreateNestedManyWithoutProjectInput
   likes?: Prisma.LikeCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsCreateNestedOneWithoutProjectInput
+  versions?: Prisma.ProjectVersionCreateNestedManyWithoutProjectInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutProjectInput
+  eventEvaluations?: Prisma.EventEvaluationCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutFeedbackInput = {
@@ -1575,6 +1945,10 @@ export type ProjectUncheckedCreateWithoutFeedbackInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: string
   status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1586,6 +1960,9 @@ export type ProjectUncheckedCreateWithoutFeedbackInput = {
   Appreciate?: Prisma.AppreciateUncheckedCreateNestedManyWithoutProjectInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedCreateNestedOneWithoutProjectInput
+  versions?: Prisma.ProjectVersionUncheckedCreateNestedManyWithoutProjectInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutProjectInput
+  eventEvaluations?: Prisma.EventEvaluationUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutFeedbackInput = {
@@ -1618,6 +1995,10 @@ export type ProjectUpdateWithoutFeedbackInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1629,6 +2010,9 @@ export type ProjectUpdateWithoutFeedbackInput = {
   Appreciate?: Prisma.AppreciateUpdateManyWithoutProjectNestedInput
   likes?: Prisma.LikeUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUpdateOneWithoutProjectNestedInput
+  versions?: Prisma.ProjectVersionUpdateManyWithoutProjectNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutProjectNestedInput
+  eventEvaluations?: Prisma.EventEvaluationUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutFeedbackInput = {
@@ -1645,6 +2029,10 @@ export type ProjectUncheckedUpdateWithoutFeedbackInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1656,6 +2044,9 @@ export type ProjectUncheckedUpdateWithoutFeedbackInput = {
   Appreciate?: Prisma.AppreciateUncheckedUpdateManyWithoutProjectNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedUpdateOneWithoutProjectNestedInput
+  versions?: Prisma.ProjectVersionUncheckedUpdateManyWithoutProjectNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutProjectNestedInput
+  eventEvaluations?: Prisma.EventEvaluationUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectCreateWithoutRatingInput = {
@@ -1672,6 +2063,10 @@ export type ProjectCreateWithoutRatingInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: string
   status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1683,6 +2078,9 @@ export type ProjectCreateWithoutRatingInput = {
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutProjectInput
   likes?: Prisma.LikeCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsCreateNestedOneWithoutProjectInput
+  versions?: Prisma.ProjectVersionCreateNestedManyWithoutProjectInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutProjectInput
+  eventEvaluations?: Prisma.EventEvaluationCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutRatingInput = {
@@ -1699,6 +2097,10 @@ export type ProjectUncheckedCreateWithoutRatingInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: string
   status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1710,6 +2112,9 @@ export type ProjectUncheckedCreateWithoutRatingInput = {
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutProjectInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedCreateNestedOneWithoutProjectInput
+  versions?: Prisma.ProjectVersionUncheckedCreateNestedManyWithoutProjectInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutProjectInput
+  eventEvaluations?: Prisma.EventEvaluationUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutRatingInput = {
@@ -1742,6 +2147,10 @@ export type ProjectUpdateWithoutRatingInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1753,6 +2162,9 @@ export type ProjectUpdateWithoutRatingInput = {
   Feedback?: Prisma.FeedbackUpdateManyWithoutProjectNestedInput
   likes?: Prisma.LikeUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUpdateOneWithoutProjectNestedInput
+  versions?: Prisma.ProjectVersionUpdateManyWithoutProjectNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutProjectNestedInput
+  eventEvaluations?: Prisma.EventEvaluationUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutRatingInput = {
@@ -1769,6 +2181,10 @@ export type ProjectUncheckedUpdateWithoutRatingInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1780,6 +2196,9 @@ export type ProjectUncheckedUpdateWithoutRatingInput = {
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutProjectNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedUpdateOneWithoutProjectNestedInput
+  versions?: Prisma.ProjectVersionUncheckedUpdateManyWithoutProjectNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutProjectNestedInput
+  eventEvaluations?: Prisma.EventEvaluationUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectCreateWithoutProjectCompDetailsInput = {
@@ -1796,6 +2215,10 @@ export type ProjectCreateWithoutProjectCompDetailsInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: string
   status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1807,6 +2230,9 @@ export type ProjectCreateWithoutProjectCompDetailsInput = {
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutProjectInput
   likes?: Prisma.LikeCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsCreateNestedOneWithoutProjectInput
+  versions?: Prisma.ProjectVersionCreateNestedManyWithoutProjectInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutProjectInput
+  eventEvaluations?: Prisma.EventEvaluationCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutProjectCompDetailsInput = {
@@ -1823,6 +2249,10 @@ export type ProjectUncheckedCreateWithoutProjectCompDetailsInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: string
   status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1834,6 +2264,9 @@ export type ProjectUncheckedCreateWithoutProjectCompDetailsInput = {
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutProjectInput
   likes?: Prisma.LikeUncheckedCreateNestedManyWithoutProjectInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedCreateNestedOneWithoutProjectInput
+  versions?: Prisma.ProjectVersionUncheckedCreateNestedManyWithoutProjectInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutProjectInput
+  eventEvaluations?: Prisma.EventEvaluationUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutProjectCompDetailsInput = {
@@ -1866,6 +2299,10 @@ export type ProjectUpdateWithoutProjectCompDetailsInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1877,6 +2314,9 @@ export type ProjectUpdateWithoutProjectCompDetailsInput = {
   Feedback?: Prisma.FeedbackUpdateManyWithoutProjectNestedInput
   likes?: Prisma.LikeUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUpdateOneWithoutProjectNestedInput
+  versions?: Prisma.ProjectVersionUpdateManyWithoutProjectNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutProjectNestedInput
+  eventEvaluations?: Prisma.EventEvaluationUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutProjectCompDetailsInput = {
@@ -1893,6 +2333,10 @@ export type ProjectUncheckedUpdateWithoutProjectCompDetailsInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1904,6 +2348,465 @@ export type ProjectUncheckedUpdateWithoutProjectCompDetailsInput = {
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutProjectNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedUpdateOneWithoutProjectNestedInput
+  versions?: Prisma.ProjectVersionUncheckedUpdateManyWithoutProjectNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutProjectNestedInput
+  eventEvaluations?: Prisma.EventEvaluationUncheckedUpdateManyWithoutProjectNestedInput
+}
+
+export type ProjectCreateWithoutVersionsInput = {
+  id?: string
+  name: string
+  description: string
+  category: $Enums.ProjectCategory
+  githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  portfolio: Prisma.PortfolioCreateNestedOneWithoutWorksInput
+  Rating?: Prisma.RatingCreateNestedManyWithoutProjectInput
+  ProjectCompDetails?: Prisma.ProjectCompDetailsCreateNestedManyWithoutProjectInput
+  FavorateProjects?: Prisma.FavorateProjectsCreateNestedManyWithoutProjectInput
+  Comments?: Prisma.CommentsCreateNestedManyWithoutProjectInput
+  Appreciate?: Prisma.AppreciateCreateNestedManyWithoutProjectInput
+  Feedback?: Prisma.FeedbackCreateNestedManyWithoutProjectInput
+  likes?: Prisma.LikeCreateNestedManyWithoutProjectInput
+  AppreciateProjectDetails?: Prisma.PostMetricsCreateNestedOneWithoutProjectInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutProjectInput
+  eventEvaluations?: Prisma.EventEvaluationCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectUncheckedCreateWithoutVersionsInput = {
+  id?: string
+  name: string
+  description: string
+  category: $Enums.ProjectCategory
+  githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  portfolioId: string
+  Rating?: Prisma.RatingUncheckedCreateNestedManyWithoutProjectInput
+  ProjectCompDetails?: Prisma.ProjectCompDetailsUncheckedCreateNestedManyWithoutProjectInput
+  FavorateProjects?: Prisma.FavorateProjectsUncheckedCreateNestedManyWithoutProjectInput
+  Comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutProjectInput
+  Appreciate?: Prisma.AppreciateUncheckedCreateNestedManyWithoutProjectInput
+  Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutProjectInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutProjectInput
+  AppreciateProjectDetails?: Prisma.PostMetricsUncheckedCreateNestedOneWithoutProjectInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutProjectInput
+  eventEvaluations?: Prisma.EventEvaluationUncheckedCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectCreateOrConnectWithoutVersionsInput = {
+  where: Prisma.ProjectWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutVersionsInput, Prisma.ProjectUncheckedCreateWithoutVersionsInput>
+}
+
+export type ProjectUpsertWithoutVersionsInput = {
+  update: Prisma.XOR<Prisma.ProjectUpdateWithoutVersionsInput, Prisma.ProjectUncheckedUpdateWithoutVersionsInput>
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutVersionsInput, Prisma.ProjectUncheckedCreateWithoutVersionsInput>
+  where?: Prisma.ProjectWhereInput
+}
+
+export type ProjectUpdateToOneWithWhereWithoutVersionsInput = {
+  where?: Prisma.ProjectWhereInput
+  data: Prisma.XOR<Prisma.ProjectUpdateWithoutVersionsInput, Prisma.ProjectUncheckedUpdateWithoutVersionsInput>
+}
+
+export type ProjectUpdateWithoutVersionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
+  githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  portfolio?: Prisma.PortfolioUpdateOneRequiredWithoutWorksNestedInput
+  Rating?: Prisma.RatingUpdateManyWithoutProjectNestedInput
+  ProjectCompDetails?: Prisma.ProjectCompDetailsUpdateManyWithoutProjectNestedInput
+  FavorateProjects?: Prisma.FavorateProjectsUpdateManyWithoutProjectNestedInput
+  Comments?: Prisma.CommentsUpdateManyWithoutProjectNestedInput
+  Appreciate?: Prisma.AppreciateUpdateManyWithoutProjectNestedInput
+  Feedback?: Prisma.FeedbackUpdateManyWithoutProjectNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutProjectNestedInput
+  AppreciateProjectDetails?: Prisma.PostMetricsUpdateOneWithoutProjectNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutProjectNestedInput
+  eventEvaluations?: Prisma.EventEvaluationUpdateManyWithoutProjectNestedInput
+}
+
+export type ProjectUncheckedUpdateWithoutVersionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
+  githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  portfolioId?: Prisma.StringFieldUpdateOperationsInput | string
+  Rating?: Prisma.RatingUncheckedUpdateManyWithoutProjectNestedInput
+  ProjectCompDetails?: Prisma.ProjectCompDetailsUncheckedUpdateManyWithoutProjectNestedInput
+  FavorateProjects?: Prisma.FavorateProjectsUncheckedUpdateManyWithoutProjectNestedInput
+  Comments?: Prisma.CommentsUncheckedUpdateManyWithoutProjectNestedInput
+  Appreciate?: Prisma.AppreciateUncheckedUpdateManyWithoutProjectNestedInput
+  Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutProjectNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutProjectNestedInput
+  AppreciateProjectDetails?: Prisma.PostMetricsUncheckedUpdateOneWithoutProjectNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutProjectNestedInput
+  eventEvaluations?: Prisma.EventEvaluationUncheckedUpdateManyWithoutProjectNestedInput
+}
+
+export type ProjectCreateWithoutReputationEventsInput = {
+  id?: string
+  name: string
+  description: string
+  category: $Enums.ProjectCategory
+  githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  portfolio: Prisma.PortfolioCreateNestedOneWithoutWorksInput
+  Rating?: Prisma.RatingCreateNestedManyWithoutProjectInput
+  ProjectCompDetails?: Prisma.ProjectCompDetailsCreateNestedManyWithoutProjectInput
+  FavorateProjects?: Prisma.FavorateProjectsCreateNestedManyWithoutProjectInput
+  Comments?: Prisma.CommentsCreateNestedManyWithoutProjectInput
+  Appreciate?: Prisma.AppreciateCreateNestedManyWithoutProjectInput
+  Feedback?: Prisma.FeedbackCreateNestedManyWithoutProjectInput
+  likes?: Prisma.LikeCreateNestedManyWithoutProjectInput
+  AppreciateProjectDetails?: Prisma.PostMetricsCreateNestedOneWithoutProjectInput
+  versions?: Prisma.ProjectVersionCreateNestedManyWithoutProjectInput
+  eventEvaluations?: Prisma.EventEvaluationCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectUncheckedCreateWithoutReputationEventsInput = {
+  id?: string
+  name: string
+  description: string
+  category: $Enums.ProjectCategory
+  githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  portfolioId: string
+  Rating?: Prisma.RatingUncheckedCreateNestedManyWithoutProjectInput
+  ProjectCompDetails?: Prisma.ProjectCompDetailsUncheckedCreateNestedManyWithoutProjectInput
+  FavorateProjects?: Prisma.FavorateProjectsUncheckedCreateNestedManyWithoutProjectInput
+  Comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutProjectInput
+  Appreciate?: Prisma.AppreciateUncheckedCreateNestedManyWithoutProjectInput
+  Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutProjectInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutProjectInput
+  AppreciateProjectDetails?: Prisma.PostMetricsUncheckedCreateNestedOneWithoutProjectInput
+  versions?: Prisma.ProjectVersionUncheckedCreateNestedManyWithoutProjectInput
+  eventEvaluations?: Prisma.EventEvaluationUncheckedCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectCreateOrConnectWithoutReputationEventsInput = {
+  where: Prisma.ProjectWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutReputationEventsInput, Prisma.ProjectUncheckedCreateWithoutReputationEventsInput>
+}
+
+export type ProjectUpsertWithoutReputationEventsInput = {
+  update: Prisma.XOR<Prisma.ProjectUpdateWithoutReputationEventsInput, Prisma.ProjectUncheckedUpdateWithoutReputationEventsInput>
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutReputationEventsInput, Prisma.ProjectUncheckedCreateWithoutReputationEventsInput>
+  where?: Prisma.ProjectWhereInput
+}
+
+export type ProjectUpdateToOneWithWhereWithoutReputationEventsInput = {
+  where?: Prisma.ProjectWhereInput
+  data: Prisma.XOR<Prisma.ProjectUpdateWithoutReputationEventsInput, Prisma.ProjectUncheckedUpdateWithoutReputationEventsInput>
+}
+
+export type ProjectUpdateWithoutReputationEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
+  githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  portfolio?: Prisma.PortfolioUpdateOneRequiredWithoutWorksNestedInput
+  Rating?: Prisma.RatingUpdateManyWithoutProjectNestedInput
+  ProjectCompDetails?: Prisma.ProjectCompDetailsUpdateManyWithoutProjectNestedInput
+  FavorateProjects?: Prisma.FavorateProjectsUpdateManyWithoutProjectNestedInput
+  Comments?: Prisma.CommentsUpdateManyWithoutProjectNestedInput
+  Appreciate?: Prisma.AppreciateUpdateManyWithoutProjectNestedInput
+  Feedback?: Prisma.FeedbackUpdateManyWithoutProjectNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutProjectNestedInput
+  AppreciateProjectDetails?: Prisma.PostMetricsUpdateOneWithoutProjectNestedInput
+  versions?: Prisma.ProjectVersionUpdateManyWithoutProjectNestedInput
+  eventEvaluations?: Prisma.EventEvaluationUpdateManyWithoutProjectNestedInput
+}
+
+export type ProjectUncheckedUpdateWithoutReputationEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
+  githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  portfolioId?: Prisma.StringFieldUpdateOperationsInput | string
+  Rating?: Prisma.RatingUncheckedUpdateManyWithoutProjectNestedInput
+  ProjectCompDetails?: Prisma.ProjectCompDetailsUncheckedUpdateManyWithoutProjectNestedInput
+  FavorateProjects?: Prisma.FavorateProjectsUncheckedUpdateManyWithoutProjectNestedInput
+  Comments?: Prisma.CommentsUncheckedUpdateManyWithoutProjectNestedInput
+  Appreciate?: Prisma.AppreciateUncheckedUpdateManyWithoutProjectNestedInput
+  Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutProjectNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutProjectNestedInput
+  AppreciateProjectDetails?: Prisma.PostMetricsUncheckedUpdateOneWithoutProjectNestedInput
+  versions?: Prisma.ProjectVersionUncheckedUpdateManyWithoutProjectNestedInput
+  eventEvaluations?: Prisma.EventEvaluationUncheckedUpdateManyWithoutProjectNestedInput
+}
+
+export type ProjectCreateWithoutEventEvaluationsInput = {
+  id?: string
+  name: string
+  description: string
+  category: $Enums.ProjectCategory
+  githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  portfolio: Prisma.PortfolioCreateNestedOneWithoutWorksInput
+  Rating?: Prisma.RatingCreateNestedManyWithoutProjectInput
+  ProjectCompDetails?: Prisma.ProjectCompDetailsCreateNestedManyWithoutProjectInput
+  FavorateProjects?: Prisma.FavorateProjectsCreateNestedManyWithoutProjectInput
+  Comments?: Prisma.CommentsCreateNestedManyWithoutProjectInput
+  Appreciate?: Prisma.AppreciateCreateNestedManyWithoutProjectInput
+  Feedback?: Prisma.FeedbackCreateNestedManyWithoutProjectInput
+  likes?: Prisma.LikeCreateNestedManyWithoutProjectInput
+  AppreciateProjectDetails?: Prisma.PostMetricsCreateNestedOneWithoutProjectInput
+  versions?: Prisma.ProjectVersionCreateNestedManyWithoutProjectInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectUncheckedCreateWithoutEventEvaluationsInput = {
+  id?: string
+  name: string
+  description: string
+  category: $Enums.ProjectCategory
+  githublink?: string | null
+  externalLink?: string | null
+  coverImageUrl?: string | null
+  galleryUrls?: Prisma.ProjectCreategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectCreatetoolsInput | string[]
+  tags?: Prisma.ProjectCreatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: string
+  status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  portfolioId: string
+  Rating?: Prisma.RatingUncheckedCreateNestedManyWithoutProjectInput
+  ProjectCompDetails?: Prisma.ProjectCompDetailsUncheckedCreateNestedManyWithoutProjectInput
+  FavorateProjects?: Prisma.FavorateProjectsUncheckedCreateNestedManyWithoutProjectInput
+  Comments?: Prisma.CommentsUncheckedCreateNestedManyWithoutProjectInput
+  Appreciate?: Prisma.AppreciateUncheckedCreateNestedManyWithoutProjectInput
+  Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutProjectInput
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutProjectInput
+  AppreciateProjectDetails?: Prisma.PostMetricsUncheckedCreateNestedOneWithoutProjectInput
+  versions?: Prisma.ProjectVersionUncheckedCreateNestedManyWithoutProjectInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectCreateOrConnectWithoutEventEvaluationsInput = {
+  where: Prisma.ProjectWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutEventEvaluationsInput, Prisma.ProjectUncheckedCreateWithoutEventEvaluationsInput>
+}
+
+export type ProjectUpsertWithoutEventEvaluationsInput = {
+  update: Prisma.XOR<Prisma.ProjectUpdateWithoutEventEvaluationsInput, Prisma.ProjectUncheckedUpdateWithoutEventEvaluationsInput>
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutEventEvaluationsInput, Prisma.ProjectUncheckedCreateWithoutEventEvaluationsInput>
+  where?: Prisma.ProjectWhereInput
+}
+
+export type ProjectUpdateToOneWithWhereWithoutEventEvaluationsInput = {
+  where?: Prisma.ProjectWhereInput
+  data: Prisma.XOR<Prisma.ProjectUpdateWithoutEventEvaluationsInput, Prisma.ProjectUncheckedUpdateWithoutEventEvaluationsInput>
+}
+
+export type ProjectUpdateWithoutEventEvaluationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
+  githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  portfolio?: Prisma.PortfolioUpdateOneRequiredWithoutWorksNestedInput
+  Rating?: Prisma.RatingUpdateManyWithoutProjectNestedInput
+  ProjectCompDetails?: Prisma.ProjectCompDetailsUpdateManyWithoutProjectNestedInput
+  FavorateProjects?: Prisma.FavorateProjectsUpdateManyWithoutProjectNestedInput
+  Comments?: Prisma.CommentsUpdateManyWithoutProjectNestedInput
+  Appreciate?: Prisma.AppreciateUpdateManyWithoutProjectNestedInput
+  Feedback?: Prisma.FeedbackUpdateManyWithoutProjectNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutProjectNestedInput
+  AppreciateProjectDetails?: Prisma.PostMetricsUpdateOneWithoutProjectNestedInput
+  versions?: Prisma.ProjectVersionUpdateManyWithoutProjectNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutProjectNestedInput
+}
+
+export type ProjectUncheckedUpdateWithoutEventEvaluationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
+  githublink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  galleryUrls?: Prisma.ProjectUpdategalleryUrlsInput | string[]
+  tools?: Prisma.ProjectUpdatetoolsInput | string[]
+  tags?: Prisma.ProjectUpdatetagsInput | string[]
+  contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  portfolioId?: Prisma.StringFieldUpdateOperationsInput | string
+  Rating?: Prisma.RatingUncheckedUpdateManyWithoutProjectNestedInput
+  ProjectCompDetails?: Prisma.ProjectCompDetailsUncheckedUpdateManyWithoutProjectNestedInput
+  FavorateProjects?: Prisma.FavorateProjectsUncheckedUpdateManyWithoutProjectNestedInput
+  Comments?: Prisma.CommentsUncheckedUpdateManyWithoutProjectNestedInput
+  Appreciate?: Prisma.AppreciateUncheckedUpdateManyWithoutProjectNestedInput
+  Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutProjectNestedInput
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutProjectNestedInput
+  AppreciateProjectDetails?: Prisma.PostMetricsUncheckedUpdateOneWithoutProjectNestedInput
+  versions?: Prisma.ProjectVersionUncheckedUpdateManyWithoutProjectNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectCreateManyPortfolioInput = {
@@ -1920,6 +2823,10 @@ export type ProjectCreateManyPortfolioInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: string
   status?: $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectCreatefeedbackAspectsInput | string[]
+  feedbackQuestion?: string | null
+  seekingFeedback?: boolean
+  currentVersion?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1939,6 +2846,10 @@ export type ProjectUpdateWithoutPortfolioInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1950,6 +2861,9 @@ export type ProjectUpdateWithoutPortfolioInput = {
   Feedback?: Prisma.FeedbackUpdateManyWithoutProjectNestedInput
   likes?: Prisma.LikeUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUpdateOneWithoutProjectNestedInput
+  versions?: Prisma.ProjectVersionUpdateManyWithoutProjectNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutProjectNestedInput
+  eventEvaluations?: Prisma.EventEvaluationUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutPortfolioInput = {
@@ -1966,6 +2880,10 @@ export type ProjectUncheckedUpdateWithoutPortfolioInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1977,6 +2895,9 @@ export type ProjectUncheckedUpdateWithoutPortfolioInput = {
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutProjectNestedInput
   likes?: Prisma.LikeUncheckedUpdateManyWithoutProjectNestedInput
   AppreciateProjectDetails?: Prisma.PostMetricsUncheckedUpdateOneWithoutProjectNestedInput
+  versions?: Prisma.ProjectVersionUncheckedUpdateManyWithoutProjectNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutProjectNestedInput
+  eventEvaluations?: Prisma.EventEvaluationUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateManyWithoutPortfolioInput = {
@@ -1993,6 +2914,10 @@ export type ProjectUncheckedUpdateManyWithoutPortfolioInput = {
   contentBlocks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   contentMarkdown?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  feedbackAspects?: Prisma.ProjectUpdatefeedbackAspectsInput | string[]
+  feedbackQuestion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seekingFeedback?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2011,6 +2936,9 @@ export type ProjectCountOutputType = {
   Appreciate: number
   Feedback: number
   likes: number
+  versions: number
+  reputationEvents: number
+  eventEvaluations: number
 }
 
 export type ProjectCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2021,6 +2949,9 @@ export type ProjectCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   Appreciate?: boolean | ProjectCountOutputTypeCountAppreciateArgs
   Feedback?: boolean | ProjectCountOutputTypeCountFeedbackArgs
   likes?: boolean | ProjectCountOutputTypeCountLikesArgs
+  versions?: boolean | ProjectCountOutputTypeCountVersionsArgs
+  reputationEvents?: boolean | ProjectCountOutputTypeCountReputationEventsArgs
+  eventEvaluations?: boolean | ProjectCountOutputTypeCountEventEvaluationsArgs
 }
 
 /**
@@ -2082,6 +3013,27 @@ export type ProjectCountOutputTypeCountLikesArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.LikeWhereInput
 }
 
+/**
+ * ProjectCountOutputType without action
+ */
+export type ProjectCountOutputTypeCountVersionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProjectVersionWhereInput
+}
+
+/**
+ * ProjectCountOutputType without action
+ */
+export type ProjectCountOutputTypeCountReputationEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReputationEventWhereInput
+}
+
+/**
+ * ProjectCountOutputType without action
+ */
+export type ProjectCountOutputTypeCountEventEvaluationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EventEvaluationWhereInput
+}
+
 
 export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2097,6 +3049,10 @@ export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   contentBlocks?: boolean
   contentMarkdown?: boolean
   status?: boolean
+  feedbackAspects?: boolean
+  feedbackQuestion?: boolean
+  seekingFeedback?: boolean
+  currentVersion?: boolean
   publishedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -2110,6 +3066,9 @@ export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   Feedback?: boolean | Prisma.Project$FeedbackArgs<ExtArgs>
   likes?: boolean | Prisma.Project$likesArgs<ExtArgs>
   AppreciateProjectDetails?: boolean | Prisma.Project$AppreciateProjectDetailsArgs<ExtArgs>
+  versions?: boolean | Prisma.Project$versionsArgs<ExtArgs>
+  reputationEvents?: boolean | Prisma.Project$reputationEventsArgs<ExtArgs>
+  eventEvaluations?: boolean | Prisma.Project$eventEvaluationsArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["project"]>
 
@@ -2127,6 +3086,10 @@ export type ProjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   contentBlocks?: boolean
   contentMarkdown?: boolean
   status?: boolean
+  feedbackAspects?: boolean
+  feedbackQuestion?: boolean
+  seekingFeedback?: boolean
+  currentVersion?: boolean
   publishedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -2148,6 +3111,10 @@ export type ProjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   contentBlocks?: boolean
   contentMarkdown?: boolean
   status?: boolean
+  feedbackAspects?: boolean
+  feedbackQuestion?: boolean
+  seekingFeedback?: boolean
+  currentVersion?: boolean
   publishedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -2169,13 +3136,17 @@ export type ProjectSelectScalar = {
   contentBlocks?: boolean
   contentMarkdown?: boolean
   status?: boolean
+  feedbackAspects?: boolean
+  feedbackQuestion?: boolean
+  seekingFeedback?: boolean
+  currentVersion?: boolean
   publishedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   portfolioId?: boolean
 }
 
-export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "category" | "githublink" | "externalLink" | "coverImageUrl" | "galleryUrls" | "tools" | "tags" | "contentBlocks" | "contentMarkdown" | "status" | "publishedAt" | "createdAt" | "updatedAt" | "portfolioId", ExtArgs["result"]["project"]>
+export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "category" | "githublink" | "externalLink" | "coverImageUrl" | "galleryUrls" | "tools" | "tags" | "contentBlocks" | "contentMarkdown" | "status" | "feedbackAspects" | "feedbackQuestion" | "seekingFeedback" | "currentVersion" | "publishedAt" | "createdAt" | "updatedAt" | "portfolioId", ExtArgs["result"]["project"]>
 export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   portfolio?: boolean | Prisma.PortfolioDefaultArgs<ExtArgs>
   Rating?: boolean | Prisma.Project$RatingArgs<ExtArgs>
@@ -2186,6 +3157,9 @@ export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   Feedback?: boolean | Prisma.Project$FeedbackArgs<ExtArgs>
   likes?: boolean | Prisma.Project$likesArgs<ExtArgs>
   AppreciateProjectDetails?: boolean | Prisma.Project$AppreciateProjectDetailsArgs<ExtArgs>
+  versions?: boolean | Prisma.Project$versionsArgs<ExtArgs>
+  reputationEvents?: boolean | Prisma.Project$reputationEventsArgs<ExtArgs>
+  eventEvaluations?: boolean | Prisma.Project$eventEvaluationsArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProjectIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2207,6 +3181,9 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     Feedback: Prisma.$FeedbackPayload<ExtArgs>[]
     likes: Prisma.$LikePayload<ExtArgs>[]
     AppreciateProjectDetails: Prisma.$PostMetricsPayload<ExtArgs> | null
+    versions: Prisma.$ProjectVersionPayload<ExtArgs>[]
+    reputationEvents: Prisma.$ReputationEventPayload<ExtArgs>[]
+    eventEvaluations: Prisma.$EventEvaluationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2222,6 +3199,10 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     contentBlocks: runtime.JsonValue
     contentMarkdown: string
     status: $Enums.ProjectStatus
+    feedbackAspects: string[]
+    feedbackQuestion: string | null
+    seekingFeedback: boolean
+    currentVersion: number
     publishedAt: Date | null
     createdAt: Date
     updatedAt: Date
@@ -2629,6 +3610,9 @@ export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends runtime.
   Feedback<T extends Prisma.Project$FeedbackArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$FeedbackArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   likes<T extends Prisma.Project$likesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$likesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   AppreciateProjectDetails<T extends Prisma.Project$AppreciateProjectDetailsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$AppreciateProjectDetailsArgs<ExtArgs>>): Prisma.Prisma__PostMetricsClient<runtime.Types.Result.GetResult<Prisma.$PostMetricsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  versions<T extends Prisma.Project$versionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$versionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectVersionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reputationEvents<T extends Prisma.Project$reputationEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$reputationEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReputationEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  eventEvaluations<T extends Prisma.Project$eventEvaluationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$eventEvaluationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventEvaluationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2671,6 +3655,10 @@ export interface ProjectFieldRefs {
   readonly contentBlocks: Prisma.FieldRef<"Project", 'Json'>
   readonly contentMarkdown: Prisma.FieldRef<"Project", 'String'>
   readonly status: Prisma.FieldRef<"Project", 'ProjectStatus'>
+  readonly feedbackAspects: Prisma.FieldRef<"Project", 'String[]'>
+  readonly feedbackQuestion: Prisma.FieldRef<"Project", 'String'>
+  readonly seekingFeedback: Prisma.FieldRef<"Project", 'Boolean'>
+  readonly currentVersion: Prisma.FieldRef<"Project", 'Int'>
   readonly publishedAt: Prisma.FieldRef<"Project", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Project", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Project", 'DateTime'>
@@ -3260,6 +4248,78 @@ export type Project$AppreciateProjectDetailsArgs<ExtArgs extends runtime.Types.E
    */
   include?: Prisma.PostMetricsInclude<ExtArgs> | null
   where?: Prisma.PostMetricsWhereInput
+}
+
+/**
+ * Project.versions
+ */
+export type Project$versionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProjectVersion
+   */
+  select?: Prisma.ProjectVersionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProjectVersion
+   */
+  omit?: Prisma.ProjectVersionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectVersionInclude<ExtArgs> | null
+  where?: Prisma.ProjectVersionWhereInput
+  orderBy?: Prisma.ProjectVersionOrderByWithRelationInput | Prisma.ProjectVersionOrderByWithRelationInput[]
+  cursor?: Prisma.ProjectVersionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProjectVersionScalarFieldEnum | Prisma.ProjectVersionScalarFieldEnum[]
+}
+
+/**
+ * Project.reputationEvents
+ */
+export type Project$reputationEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ReputationEvent
+   */
+  select?: Prisma.ReputationEventSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ReputationEvent
+   */
+  omit?: Prisma.ReputationEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReputationEventInclude<ExtArgs> | null
+  where?: Prisma.ReputationEventWhereInput
+  orderBy?: Prisma.ReputationEventOrderByWithRelationInput | Prisma.ReputationEventOrderByWithRelationInput[]
+  cursor?: Prisma.ReputationEventWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReputationEventScalarFieldEnum | Prisma.ReputationEventScalarFieldEnum[]
+}
+
+/**
+ * Project.eventEvaluations
+ */
+export type Project$eventEvaluationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EventEvaluation
+   */
+  select?: Prisma.EventEvaluationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EventEvaluation
+   */
+  omit?: Prisma.EventEvaluationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EventEvaluationInclude<ExtArgs> | null
+  where?: Prisma.EventEvaluationWhereInput
+  orderBy?: Prisma.EventEvaluationOrderByWithRelationInput | Prisma.EventEvaluationOrderByWithRelationInput[]
+  cursor?: Prisma.EventEvaluationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EventEvaluationScalarFieldEnum | Prisma.EventEvaluationScalarFieldEnum[]
 }
 
 /**

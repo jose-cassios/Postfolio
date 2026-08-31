@@ -1,5 +1,5 @@
 import { Competition } from "@competition/domain/entities/Competition";
-import { CompetitionContract } from "@competition/api/CompetitionDTO";
+import { CompetitionContract, EvaluationProgressContract, EventEvaluationInput } from "@competition/api/CompetitionDTO";
 
 export interface ICompetitionRepository {
   create(competition: Competition): Promise<Competition>;
@@ -12,7 +12,16 @@ export interface ICompetitionRepository {
   findContractById(id: string): Promise<CompetitionContract | null>;
   subscribeProject(competitionId: string, projectId: string): Promise<void>;
   unsubscribeProject(competitionId: string, projectId: string): Promise<void>;
-  vote(competitionId: string, projectId: string, userId: string): Promise<void>;
+  upsertEvaluation(
+    competitionId: string,
+    projectId: string,
+    userId: string,
+    scores: EventEvaluationInput[],
+  ): Promise<void>;
+  getEvaluationProgress(
+    competitionId: string,
+    userId: string,
+  ): Promise<EvaluationProgressContract>;
 
   // createProjectCompDetails(
   //   workCompDetails: WorkCompDetails

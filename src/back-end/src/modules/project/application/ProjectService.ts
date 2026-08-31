@@ -8,6 +8,8 @@ import { IPortfolioPort } from "@portfolio/domain/interfaces/PortfolioPort";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@compositionRoot/Types";
 import { ProjectStatus } from "@project/domain/valueObject/ProjectContent";
+import { AppreciateStatus } from "@shared/contracts/ProjectContracts";
+import { CreateAppreciationInput } from "@project/domain/interfaces/IProjectRepository";
 
 @injectable()
 export class ProjectService implements IProjectService {
@@ -68,7 +70,14 @@ export class ProjectService implements IProjectService {
     ) {
       throw new BadRequest("Adicione um titulo e pelo menos um bloco antes de publicar.");
     }
-    return await this.repository.update(project);
+    const publication = updateProjectDto.status === ProjectStatus.PUBLISHED
+      ? {
+          authorId: userId,
+          changelog: updateProjectDto.changelog?.trim() || "Nova versao publicada",
+          appreciationIds: [...new Set(updateProjectDto.appreciationIds ?? [])],
+        }
+      : undefined;
+    return await this.repository.update(project, publication);
   }
 
   async delete(id: string, userId: string): Promise<Project | null> {
@@ -129,22 +138,47 @@ export class ProjectService implements IProjectService {
     return await this.repository.setLike(id, userId, liked);
   }
 
-  async setAppreciation(
+  async createAppreciation(
     id: string,
     userId: string,
-    appreciated: boolean,
-    feedback?: { content: string; type: "PUBLIC" | "PRIVATE" }
+    input: CreateAppreciationInput,
   ) {
     const project = await this.repository.findById(id);
     if (!project || project.getStatus() !== ProjectStatus.PUBLISHED) {
       throw new NotFound("O projeto nao existe");
     }
-    return await this.repository.setAppreciation(
-      id,
-      userId,
-      appreciated,
-      feedback
+    if (await this.portfolioPort.isOwnedBy(project.getPortfolioId(), userId)) {
+      throw new Forbidden("Voce nao pode enviar Appreciate para o proprio projeto.");
+    }
+    const requestedAspects = project.getFeedbackAspects();
+    if (requestedAspects.length && !requestedAspects.includes(input.aspect)) {
+      throw new BadRequest("Escolha um dos aspectos de feedback pedidos pelo autor.");
+    }
+    return await this.repository.createAppreciation(id, userId, input);
+  }
+
+  async updateAppreciationStatus(
+    projectId: string,
+    appreciationId: string,
+    userId: string,
+    status: AppreciateStatus,
+  ) {
+    if (!(await this.repository.isOwnedBy(projectId, userId))) {
+      throw new Forbidden("Apenas o autor pode classificar este Appreciate.");
+    }
+    return await this.repository.updateAppreciationStatus(
+      projectId,
+      appreciationId,
+      status,
     );
+  }
+
+  async findAppreciations(projectId: string) {
+    const project = await this.repository.findById(projectId);
+    if (!project || project.getStatus() !== ProjectStatus.PUBLISHED) {
+      throw new NotFound("O projeto nao existe");
+    }
+    return await this.repository.findAppreciations(projectId);
   }
 
   async getInteraction(id: string, userId: string) {

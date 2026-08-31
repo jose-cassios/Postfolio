@@ -74,6 +74,26 @@
       }
     </header>
 
+    @if (user.reputation; as reputation) {
+      <section class="reputation-section" aria-labelledby="reputation-title">
+        <div class="reputation-heading">
+          <div><span class="eyebrow">Trajetória verificável</span><h2 id="reputation-title">Evidências da comunidade</h2></div>
+          <div class="reputation-scores">
+            <span><strong>{{ reputation.creatorScore }}</strong>Creator</span>
+            <span><strong>{{ reputation.contributorScore }}</strong>Contributor</span>
+          </div>
+        </div>
+        <div class="evidence-grid">
+          <div><strong>{{ reputation.evidence.publishedProjects }}</strong><span>Projetos publicados</span></div>
+          <div><strong>{{ reputation.evidence.versionsCreated }}</strong><span>Versões criadas</span></div>
+          <div><strong>{{ reputation.evidence.appreciatesSent }}</strong><span>Appreciates enviados</span></div>
+          <div><strong>{{ reputation.evidence.usefulFeedbacks }}</strong><span>Feedbacks úteis</span></div>
+          <div><strong>{{ reputation.evidence.appliedSuggestions }}</strong><span>Sugestões aplicadas</span></div>
+          <div><strong>{{ reputation.evidence.recognizedContributions }}</strong><span>Contribuições reconhecidas</span></div>
+        </div>
+      </section>
+    }
+
     <section class="projects-section" aria-labelledby="projects-title">
       <div class="section-heading">
         <div>

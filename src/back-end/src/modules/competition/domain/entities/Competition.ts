@@ -14,7 +14,9 @@ export class Competition {
     public registrationEndsAt: Date | null = null,
     public votingStartsAt: Date | null = null,
     public votingEndsAt: Date | null = null,
-    public resultsAt: Date | null = null
+    public resultsAt: Date | null = null,
+    public minimumEvaluations: number = 3,
+    public criteria: Array<{ name: string; weight: number }> = [],
   ) { }
 
   static create(dto: CreateCompetitionDTO): Competition {
@@ -30,7 +32,9 @@ export class Competition {
       dto.registrationEndsAt,
       dto.votingStartsAt,
       dto.votingEndsAt,
-      dto.resultsAt
+      dto.resultsAt,
+      dto.minimumEvaluations,
+      dto.criteria,
     );
   }
 

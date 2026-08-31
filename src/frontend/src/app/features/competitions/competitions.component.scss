@@ -14,4 +14,15 @@ button { cursor: pointer; background: $color-primary-500; color: white; border: 
 .submissions { display: grid; gap: 10px; margin-top: 22px; }
 .submission { justify-content: flex-start; padding: 12px; border: 1px solid $color-border-default; border-radius: 12px; img { width: 90px; height: 64px; border-radius: 8px; object-fit: cover; } div { flex: 1; } h3 { margin: 2px 0; } a { color: inherit; } &.winner { border-color: $color-primary-500; } }
 .rank { color: $color-primary-500; font-weight: 700; font-size: .75rem; }
+.criteria-summary { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.criteria-summary span { padding: 6px 9px; border-radius: 6px; background: #f3f3f6; color: $color-text-secondary; font-size: .76rem; }
+.evaluation-progress { margin: 14px 0; padding-left: 10px; border-left: 3px solid #d39522; color: $color-text-secondary; font-size: .84rem; }
+.evaluation-progress.complete { border-color: #168454; color: #168454; }
+.evaluation-form { display: grid; grid-template-columns: repeat(2, minmax(100px, 1fr)); gap: 7px; flex: 0 1 420px !important; }
+.evaluation-form label { display: grid; gap: 3px; color: $color-text-secondary; font-size: .72rem; }
+.evaluation-form button { grid-column: 1 / -1; }
+.own-project { margin-left: auto; color: $color-text-secondary; font-size: .76rem; }
+.result-score { display: grid; flex: 0 0 auto !important; margin-left: auto; text-align: right; }
+.result-score strong { font-size: 1.1rem; }
+.result-score span { color: $color-text-secondary; font-size: .7rem; }
 @media (max-width: 650px) { .event-heading, .subscribe-box, .submission { align-items: stretch; flex-direction: column; } }

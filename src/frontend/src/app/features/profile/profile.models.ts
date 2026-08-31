@@ -14,6 +14,7 @@ export interface ProfileUser {
   coverPhoto?: string | null;
   availableForHire?: boolean;
   achievements?: Array<{ competitionId: string; competitionName: string; rank: number }>;
+  reputation?: UserReputation;
   usertype: UserType;
 }
 
@@ -52,4 +53,17 @@ export interface ProfileProject {
   createdAt: string;
   updatedAt: string;
   portfolioId: string;
+}
+
+export interface UserReputation {
+  creatorScore: number;
+  contributorScore: number;
+  evidence: {
+    publishedProjects: number;
+    versionsCreated: number;
+    appreciatesSent: number;
+    usefulFeedbacks: number;
+    appliedSuggestions: number;
+    recognizedContributions: number;
+  };
 }

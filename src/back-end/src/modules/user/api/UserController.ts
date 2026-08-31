@@ -186,6 +186,10 @@ export class UserController {
     if (!user) throw new BadRequest("Id do usuario não existe");
 
     const userType = user.getUserType();
+    const [achievements, reputation] = await Promise.all([
+      this.userService.findAchievements(user.getId()),
+      this.userService.findReputation(user.getId()),
+    ]);
 
     reply.send({
       msg: "Perfil do usuário",
@@ -201,7 +205,8 @@ export class UserController {
         coverPhoto: user.getCoverPhoto(),
         availableForHire: user.isAvailableForHire(),
         usertype: userType ? UserTypeMapper.fromDomainToPrisma(userType) : null,
-        achievements: await this.userService.findAchievements(user.getId()),
+        achievements,
+        reputation,
       },
     });
   }
@@ -212,6 +217,10 @@ export class UserController {
     if (!user) throw new NotFound("Perfil nao encontrado.");
 
     const userType = user.getUserType();
+    const [achievements, reputation] = await Promise.all([
+      this.userService.findAchievements(user.getId()),
+      this.userService.findReputation(user.getId()),
+    ]);
     reply.send({
       data: {
         id: user.getId(),
@@ -224,7 +233,8 @@ export class UserController {
         coverPhoto: user.getCoverPhoto(),
         availableForHire: user.isAvailableForHire(),
         usertype: userType ? UserTypeMapper.fromDomainToPrisma(userType) : null,
-        achievements: await this.userService.findAchievements(user.getId()),
+        achievements,
+        reputation,
       },
     });
   }

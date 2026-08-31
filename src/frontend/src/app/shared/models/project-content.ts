@@ -59,6 +59,10 @@ export interface ProjectDocument {
   contentBlocks: ProjectBlock[];
   contentMarkdown: string;
   status: ProjectStatus;
+  feedbackAspects: string[];
+  feedbackQuestion: string | null;
+  seekingFeedback: boolean;
+  currentVersion: number;
   publishedAt: string | null;
   createdAt: string;
   updatedAt: string;
@@ -77,4 +81,9 @@ export interface ProjectEditorPayload {
   tags: string[];
   contentBlocks: ProjectBlock[];
   status: ProjectStatus;
+  feedbackAspects: string[];
+  feedbackQuestion: string | null;
+  seekingFeedback: boolean;
+  changelog?: string;
+  appreciationIds?: string[];
 }

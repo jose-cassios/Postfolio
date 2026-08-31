@@ -137,7 +137,7 @@ export class AppComposer {
     CompetitionRoute.register(app, this.controllers.competitionController);
     // ChatRoute.register(app, this.controllers.chatController);
     EmailRoute.register(app, this.controllers.emailController);
-    // O fluxo legado de notas foi substituido pelo voto unico por competicao.
+    // O fluxo legado de Rating permanece sem rota; eventos usam avaliacao por criterios.
     FavorateProjectsRoute.register(
       app,
       this.controllers.favorateProjectsController

@@ -1,6 +1,7 @@
 import { Project } from "@project/domain/entities/Project";
 import { CreateProjectDTO, ProjectListQuery, UpdateProjectDTO } from "@project/api/ProjectDTO";
-import { PaginatedProjectsContract, ProjectContactContract, ProjectContract, ProjectFeedbackContract, ProjectInteractionContract } from "@shared/contracts/ProjectContracts";
+import { AppreciateStatus, PaginatedProjectsContract, ProjectAppreciationContract, ProjectContactContract, ProjectContract, ProjectFeedbackContract, ProjectInteractionContract } from "@shared/contracts/ProjectContracts";
+import { CreateAppreciationInput } from "@project/domain/interfaces/IProjectRepository";
 
 export interface IProjectService {
   create(createWorkDto: Omit<CreateProjectDTO, "portfolioId">, userId: string): Promise<Project>;
@@ -15,12 +16,18 @@ export interface IProjectService {
   findForEditor(id: string, userId: string): Promise<ProjectContract>;
   findOwnerContact(id: string): Promise<ProjectContactContract>;
   setLike(id: string, userId: string, liked: boolean): Promise<ProjectInteractionContract>;
-  setAppreciation(
+  createAppreciation(
     id: string,
     userId: string,
-    appreciated: boolean,
-    feedback?: { content: string; type: "PUBLIC" | "PRIVATE" }
-  ): Promise<ProjectInteractionContract>;
+    input: CreateAppreciationInput,
+  ): Promise<ProjectAppreciationContract>;
+  updateAppreciationStatus(
+    projectId: string,
+    appreciationId: string,
+    userId: string,
+    status: AppreciateStatus,
+  ): Promise<ProjectAppreciationContract>;
+  findAppreciations(projectId: string): Promise<ProjectAppreciationContract[]>;
   getInteraction(id: string, userId: string): Promise<ProjectInteractionContract>;
   findPrivateFeedback(id: string, userId: string): Promise<ProjectFeedbackContract[]>;
 }

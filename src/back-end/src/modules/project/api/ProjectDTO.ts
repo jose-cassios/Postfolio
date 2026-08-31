@@ -13,6 +13,9 @@ interface CreateProjectDTO {
   tags?: string[];
   contentBlocks?: ProjectBlock[];
   status?: ProjectStatus;
+  feedbackAspects?: string[];
+  feedbackQuestion?: string | null;
+  seekingFeedback?: boolean;
   portfolioId: string;
 }
 
@@ -29,6 +32,11 @@ interface UpdateProjectDTO {
   tags?: string[];
   contentBlocks?: ProjectBlock[];
   status?: ProjectStatus;
+  feedbackAspects?: string[];
+  feedbackQuestion?: string | null;
+  seekingFeedback?: boolean;
+  changelog?: string;
+  appreciationIds?: string[];
 }
 
 export interface ProjectListQuery {
@@ -36,7 +44,8 @@ export interface ProjectListQuery {
   category?: ProjectCategory;
   tool?: string;
   tag?: string;
-  sort: "newest" | "likes" | "appreciates";
+  sort: "newest" | "likes" | "feedback";
+  seekingFeedback?: boolean;
   page: number;
   limit: number;
 }

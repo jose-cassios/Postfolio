@@ -29,6 +29,14 @@ export type AppreciateMinAggregateOutputType = {
   userId: string | null
   projectId: string | null
   postMetricsId: string | null
+  aspect: string | null
+  strength: string | null
+  improvement: string | null
+  additionalComment: string | null
+  status: $Enums.AppreciateStatus | null
+  createdAt: Date | null
+  updatedAt: Date | null
+  resolvedAt: Date | null
 }
 
 export type AppreciateMaxAggregateOutputType = {
@@ -36,6 +44,14 @@ export type AppreciateMaxAggregateOutputType = {
   userId: string | null
   projectId: string | null
   postMetricsId: string | null
+  aspect: string | null
+  strength: string | null
+  improvement: string | null
+  additionalComment: string | null
+  status: $Enums.AppreciateStatus | null
+  createdAt: Date | null
+  updatedAt: Date | null
+  resolvedAt: Date | null
 }
 
 export type AppreciateCountAggregateOutputType = {
@@ -43,6 +59,14 @@ export type AppreciateCountAggregateOutputType = {
   userId: number
   projectId: number
   postMetricsId: number
+  aspect: number
+  strength: number
+  improvement: number
+  additionalComment: number
+  status: number
+  createdAt: number
+  updatedAt: number
+  resolvedAt: number
   _all: number
 }
 
@@ -52,6 +76,14 @@ export type AppreciateMinAggregateInputType = {
   userId?: true
   projectId?: true
   postMetricsId?: true
+  aspect?: true
+  strength?: true
+  improvement?: true
+  additionalComment?: true
+  status?: true
+  createdAt?: true
+  updatedAt?: true
+  resolvedAt?: true
 }
 
 export type AppreciateMaxAggregateInputType = {
@@ -59,6 +91,14 @@ export type AppreciateMaxAggregateInputType = {
   userId?: true
   projectId?: true
   postMetricsId?: true
+  aspect?: true
+  strength?: true
+  improvement?: true
+  additionalComment?: true
+  status?: true
+  createdAt?: true
+  updatedAt?: true
+  resolvedAt?: true
 }
 
 export type AppreciateCountAggregateInputType = {
@@ -66,6 +106,14 @@ export type AppreciateCountAggregateInputType = {
   userId?: true
   projectId?: true
   postMetricsId?: true
+  aspect?: true
+  strength?: true
+  improvement?: true
+  additionalComment?: true
+  status?: true
+  createdAt?: true
+  updatedAt?: true
+  resolvedAt?: true
   _all?: true
 }
 
@@ -146,6 +194,14 @@ export type AppreciateGroupByOutputType = {
   userId: string
   projectId: string
   postMetricsId: string
+  aspect: string
+  strength: string
+  improvement: string
+  additionalComment: string | null
+  status: $Enums.AppreciateStatus
+  createdAt: Date
+  updatedAt: Date
+  resolvedAt: Date | null
   _count: AppreciateCountAggregateOutputType | null
   _min: AppreciateMinAggregateOutputType | null
   _max: AppreciateMaxAggregateOutputType | null
@@ -174,10 +230,20 @@ export type AppreciateWhereInput = {
   userId?: Prisma.StringFilter<"Appreciate"> | string
   projectId?: Prisma.StringFilter<"Appreciate"> | string
   postMetricsId?: Prisma.StringFilter<"Appreciate"> | string
+  aspect?: Prisma.StringFilter<"Appreciate"> | string
+  strength?: Prisma.StringFilter<"Appreciate"> | string
+  improvement?: Prisma.StringFilter<"Appreciate"> | string
+  additionalComment?: Prisma.StringNullableFilter<"Appreciate"> | string | null
+  status?: Prisma.EnumAppreciateStatusFilter<"Appreciate"> | $Enums.AppreciateStatus
+  createdAt?: Prisma.DateTimeFilter<"Appreciate"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Appreciate"> | Date | string
+  resolvedAt?: Prisma.DateTimeNullableFilter<"Appreciate"> | Date | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
   postMetrics?: Prisma.XOR<Prisma.PostMetricsScalarRelationFilter, Prisma.PostMetricsWhereInput>
   Feedback?: Prisma.FeedbackListRelationFilter
+  versionCredits?: Prisma.ProjectVersionCreditListRelationFilter
+  reputationEvents?: Prisma.ReputationEventListRelationFilter
 }
 
 export type AppreciateOrderByWithRelationInput = {
@@ -185,10 +251,20 @@ export type AppreciateOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
   postMetricsId?: Prisma.SortOrder
+  aspect?: Prisma.SortOrder
+  strength?: Prisma.SortOrder
+  improvement?: Prisma.SortOrder
+  additionalComment?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  resolvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   project?: Prisma.ProjectOrderByWithRelationInput
   postMetrics?: Prisma.PostMetricsOrderByWithRelationInput
   Feedback?: Prisma.FeedbackOrderByRelationAggregateInput
+  versionCredits?: Prisma.ProjectVersionCreditOrderByRelationAggregateInput
+  reputationEvents?: Prisma.ReputationEventOrderByRelationAggregateInput
 }
 
 export type AppreciateWhereUniqueInput = Prisma.AtLeast<{
@@ -200,10 +276,20 @@ export type AppreciateWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.StringFilter<"Appreciate"> | string
   projectId?: Prisma.StringFilter<"Appreciate"> | string
   postMetricsId?: Prisma.StringFilter<"Appreciate"> | string
+  aspect?: Prisma.StringFilter<"Appreciate"> | string
+  strength?: Prisma.StringFilter<"Appreciate"> | string
+  improvement?: Prisma.StringFilter<"Appreciate"> | string
+  additionalComment?: Prisma.StringNullableFilter<"Appreciate"> | string | null
+  status?: Prisma.EnumAppreciateStatusFilter<"Appreciate"> | $Enums.AppreciateStatus
+  createdAt?: Prisma.DateTimeFilter<"Appreciate"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Appreciate"> | Date | string
+  resolvedAt?: Prisma.DateTimeNullableFilter<"Appreciate"> | Date | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
   postMetrics?: Prisma.XOR<Prisma.PostMetricsScalarRelationFilter, Prisma.PostMetricsWhereInput>
   Feedback?: Prisma.FeedbackListRelationFilter
+  versionCredits?: Prisma.ProjectVersionCreditListRelationFilter
+  reputationEvents?: Prisma.ReputationEventListRelationFilter
 }, "id" | "userId_projectId">
 
 export type AppreciateOrderByWithAggregationInput = {
@@ -211,6 +297,14 @@ export type AppreciateOrderByWithAggregationInput = {
   userId?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
   postMetricsId?: Prisma.SortOrder
+  aspect?: Prisma.SortOrder
+  strength?: Prisma.SortOrder
+  improvement?: Prisma.SortOrder
+  additionalComment?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  resolvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.AppreciateCountOrderByAggregateInput
   _max?: Prisma.AppreciateMaxOrderByAggregateInput
   _min?: Prisma.AppreciateMinOrderByAggregateInput
@@ -224,14 +318,32 @@ export type AppreciateScalarWhereWithAggregatesInput = {
   userId?: Prisma.StringWithAggregatesFilter<"Appreciate"> | string
   projectId?: Prisma.StringWithAggregatesFilter<"Appreciate"> | string
   postMetricsId?: Prisma.StringWithAggregatesFilter<"Appreciate"> | string
+  aspect?: Prisma.StringWithAggregatesFilter<"Appreciate"> | string
+  strength?: Prisma.StringWithAggregatesFilter<"Appreciate"> | string
+  improvement?: Prisma.StringWithAggregatesFilter<"Appreciate"> | string
+  additionalComment?: Prisma.StringNullableWithAggregatesFilter<"Appreciate"> | string | null
+  status?: Prisma.EnumAppreciateStatusWithAggregatesFilter<"Appreciate"> | $Enums.AppreciateStatus
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"Appreciate"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Appreciate"> | Date | string
+  resolvedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Appreciate"> | Date | string | null
 }
 
 export type AppreciateCreateInput = {
   id?: string
+  aspect?: string
+  strength?: string
+  improvement?: string
+  additionalComment?: string | null
+  status?: $Enums.AppreciateStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  resolvedAt?: Date | string | null
   user: Prisma.UserCreateNestedOneWithoutAppreciateInput
   project: Prisma.ProjectCreateNestedOneWithoutAppreciateInput
   postMetrics: Prisma.PostMetricsCreateNestedOneWithoutAppreciateInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutAppreciateInput
+  versionCredits?: Prisma.ProjectVersionCreditCreateNestedManyWithoutAppreciationInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutAppreciationInput
 }
 
 export type AppreciateUncheckedCreateInput = {
@@ -239,15 +351,35 @@ export type AppreciateUncheckedCreateInput = {
   userId: string
   projectId: string
   postMetricsId: string
+  aspect?: string
+  strength?: string
+  improvement?: string
+  additionalComment?: string | null
+  status?: $Enums.AppreciateStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  resolvedAt?: Date | string | null
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAppreciateInput
+  versionCredits?: Prisma.ProjectVersionCreditUncheckedCreateNestedManyWithoutAppreciationInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutAppreciationInput
 }
 
 export type AppreciateUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  aspect?: Prisma.StringFieldUpdateOperationsInput | string
+  strength?: Prisma.StringFieldUpdateOperationsInput | string
+  improvement?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumAppreciateStatusFieldUpdateOperationsInput | $Enums.AppreciateStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutAppreciateNestedInput
   project?: Prisma.ProjectUpdateOneRequiredWithoutAppreciateNestedInput
   postMetrics?: Prisma.PostMetricsUpdateOneRequiredWithoutAppreciateNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutAppreciateNestedInput
+  versionCredits?: Prisma.ProjectVersionCreditUpdateManyWithoutAppreciationNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutAppreciationNestedInput
 }
 
 export type AppreciateUncheckedUpdateInput = {
@@ -255,7 +387,17 @@ export type AppreciateUncheckedUpdateInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
   postMetricsId?: Prisma.StringFieldUpdateOperationsInput | string
+  aspect?: Prisma.StringFieldUpdateOperationsInput | string
+  strength?: Prisma.StringFieldUpdateOperationsInput | string
+  improvement?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumAppreciateStatusFieldUpdateOperationsInput | $Enums.AppreciateStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutAppreciateNestedInput
+  versionCredits?: Prisma.ProjectVersionCreditUncheckedUpdateManyWithoutAppreciationNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutAppreciationNestedInput
 }
 
 export type AppreciateCreateManyInput = {
@@ -263,10 +405,26 @@ export type AppreciateCreateManyInput = {
   userId: string
   projectId: string
   postMetricsId: string
+  aspect?: string
+  strength?: string
+  improvement?: string
+  additionalComment?: string | null
+  status?: $Enums.AppreciateStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  resolvedAt?: Date | string | null
 }
 
 export type AppreciateUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  aspect?: Prisma.StringFieldUpdateOperationsInput | string
+  strength?: Prisma.StringFieldUpdateOperationsInput | string
+  improvement?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumAppreciateStatusFieldUpdateOperationsInput | $Enums.AppreciateStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type AppreciateUncheckedUpdateManyInput = {
@@ -274,6 +432,14 @@ export type AppreciateUncheckedUpdateManyInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
   postMetricsId?: Prisma.StringFieldUpdateOperationsInput | string
+  aspect?: Prisma.StringFieldUpdateOperationsInput | string
+  strength?: Prisma.StringFieldUpdateOperationsInput | string
+  improvement?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumAppreciateStatusFieldUpdateOperationsInput | $Enums.AppreciateStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type AppreciateListRelationFilter = {
@@ -296,6 +462,14 @@ export type AppreciateCountOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
   postMetricsId?: Prisma.SortOrder
+  aspect?: Prisma.SortOrder
+  strength?: Prisma.SortOrder
+  improvement?: Prisma.SortOrder
+  additionalComment?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  resolvedAt?: Prisma.SortOrder
 }
 
 export type AppreciateMaxOrderByAggregateInput = {
@@ -303,6 +477,14 @@ export type AppreciateMaxOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
   postMetricsId?: Prisma.SortOrder
+  aspect?: Prisma.SortOrder
+  strength?: Prisma.SortOrder
+  improvement?: Prisma.SortOrder
+  additionalComment?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  resolvedAt?: Prisma.SortOrder
 }
 
 export type AppreciateMinOrderByAggregateInput = {
@@ -310,11 +492,24 @@ export type AppreciateMinOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
   postMetricsId?: Prisma.SortOrder
+  aspect?: Prisma.SortOrder
+  strength?: Prisma.SortOrder
+  improvement?: Prisma.SortOrder
+  additionalComment?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+  resolvedAt?: Prisma.SortOrder
 }
 
 export type AppreciateScalarRelationFilter = {
   is?: Prisma.AppreciateWhereInput
   isNot?: Prisma.AppreciateWhereInput
+}
+
+export type AppreciateNullableScalarRelationFilter = {
+  is?: Prisma.AppreciateWhereInput | null
+  isNot?: Prisma.AppreciateWhereInput | null
 }
 
 export type AppreciateCreateNestedManyWithoutUserInput = {
@@ -401,6 +596,10 @@ export type AppreciateUncheckedUpdateManyWithoutProjectNestedInput = {
   deleteMany?: Prisma.AppreciateScalarWhereInput | Prisma.AppreciateScalarWhereInput[]
 }
 
+export type EnumAppreciateStatusFieldUpdateOperationsInput = {
+  set?: $Enums.AppreciateStatus
+}
+
 export type AppreciateCreateNestedManyWithoutPostMetricsInput = {
   create?: Prisma.XOR<Prisma.AppreciateCreateWithoutPostMetricsInput, Prisma.AppreciateUncheckedCreateWithoutPostMetricsInput> | Prisma.AppreciateCreateWithoutPostMetricsInput[] | Prisma.AppreciateUncheckedCreateWithoutPostMetricsInput[]
   connectOrCreate?: Prisma.AppreciateCreateOrConnectWithoutPostMetricsInput | Prisma.AppreciateCreateOrConnectWithoutPostMetricsInput[]
@@ -457,18 +656,68 @@ export type AppreciateUpdateOneRequiredWithoutFeedbackNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AppreciateUpdateToOneWithWhereWithoutFeedbackInput, Prisma.AppreciateUpdateWithoutFeedbackInput>, Prisma.AppreciateUncheckedUpdateWithoutFeedbackInput>
 }
 
+export type AppreciateCreateNestedOneWithoutVersionCreditsInput = {
+  create?: Prisma.XOR<Prisma.AppreciateCreateWithoutVersionCreditsInput, Prisma.AppreciateUncheckedCreateWithoutVersionCreditsInput>
+  connectOrCreate?: Prisma.AppreciateCreateOrConnectWithoutVersionCreditsInput
+  connect?: Prisma.AppreciateWhereUniqueInput
+}
+
+export type AppreciateUpdateOneRequiredWithoutVersionCreditsNestedInput = {
+  create?: Prisma.XOR<Prisma.AppreciateCreateWithoutVersionCreditsInput, Prisma.AppreciateUncheckedCreateWithoutVersionCreditsInput>
+  connectOrCreate?: Prisma.AppreciateCreateOrConnectWithoutVersionCreditsInput
+  upsert?: Prisma.AppreciateUpsertWithoutVersionCreditsInput
+  connect?: Prisma.AppreciateWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AppreciateUpdateToOneWithWhereWithoutVersionCreditsInput, Prisma.AppreciateUpdateWithoutVersionCreditsInput>, Prisma.AppreciateUncheckedUpdateWithoutVersionCreditsInput>
+}
+
+export type AppreciateCreateNestedOneWithoutReputationEventsInput = {
+  create?: Prisma.XOR<Prisma.AppreciateCreateWithoutReputationEventsInput, Prisma.AppreciateUncheckedCreateWithoutReputationEventsInput>
+  connectOrCreate?: Prisma.AppreciateCreateOrConnectWithoutReputationEventsInput
+  connect?: Prisma.AppreciateWhereUniqueInput
+}
+
+export type AppreciateUpdateOneWithoutReputationEventsNestedInput = {
+  create?: Prisma.XOR<Prisma.AppreciateCreateWithoutReputationEventsInput, Prisma.AppreciateUncheckedCreateWithoutReputationEventsInput>
+  connectOrCreate?: Prisma.AppreciateCreateOrConnectWithoutReputationEventsInput
+  upsert?: Prisma.AppreciateUpsertWithoutReputationEventsInput
+  disconnect?: Prisma.AppreciateWhereInput | boolean
+  delete?: Prisma.AppreciateWhereInput | boolean
+  connect?: Prisma.AppreciateWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AppreciateUpdateToOneWithWhereWithoutReputationEventsInput, Prisma.AppreciateUpdateWithoutReputationEventsInput>, Prisma.AppreciateUncheckedUpdateWithoutReputationEventsInput>
+}
+
 export type AppreciateCreateWithoutUserInput = {
   id?: string
+  aspect?: string
+  strength?: string
+  improvement?: string
+  additionalComment?: string | null
+  status?: $Enums.AppreciateStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  resolvedAt?: Date | string | null
   project: Prisma.ProjectCreateNestedOneWithoutAppreciateInput
   postMetrics: Prisma.PostMetricsCreateNestedOneWithoutAppreciateInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutAppreciateInput
+  versionCredits?: Prisma.ProjectVersionCreditCreateNestedManyWithoutAppreciationInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutAppreciationInput
 }
 
 export type AppreciateUncheckedCreateWithoutUserInput = {
   id?: string
   projectId: string
   postMetricsId: string
+  aspect?: string
+  strength?: string
+  improvement?: string
+  additionalComment?: string | null
+  status?: $Enums.AppreciateStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  resolvedAt?: Date | string | null
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAppreciateInput
+  versionCredits?: Prisma.ProjectVersionCreditUncheckedCreateNestedManyWithoutAppreciationInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutAppreciationInput
 }
 
 export type AppreciateCreateOrConnectWithoutUserInput = {
@@ -505,20 +754,48 @@ export type AppreciateScalarWhereInput = {
   userId?: Prisma.StringFilter<"Appreciate"> | string
   projectId?: Prisma.StringFilter<"Appreciate"> | string
   postMetricsId?: Prisma.StringFilter<"Appreciate"> | string
+  aspect?: Prisma.StringFilter<"Appreciate"> | string
+  strength?: Prisma.StringFilter<"Appreciate"> | string
+  improvement?: Prisma.StringFilter<"Appreciate"> | string
+  additionalComment?: Prisma.StringNullableFilter<"Appreciate"> | string | null
+  status?: Prisma.EnumAppreciateStatusFilter<"Appreciate"> | $Enums.AppreciateStatus
+  createdAt?: Prisma.DateTimeFilter<"Appreciate"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Appreciate"> | Date | string
+  resolvedAt?: Prisma.DateTimeNullableFilter<"Appreciate"> | Date | string | null
 }
 
 export type AppreciateCreateWithoutProjectInput = {
   id?: string
+  aspect?: string
+  strength?: string
+  improvement?: string
+  additionalComment?: string | null
+  status?: $Enums.AppreciateStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  resolvedAt?: Date | string | null
   user: Prisma.UserCreateNestedOneWithoutAppreciateInput
   postMetrics: Prisma.PostMetricsCreateNestedOneWithoutAppreciateInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutAppreciateInput
+  versionCredits?: Prisma.ProjectVersionCreditCreateNestedManyWithoutAppreciationInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutAppreciationInput
 }
 
 export type AppreciateUncheckedCreateWithoutProjectInput = {
   id?: string
   userId: string
   postMetricsId: string
+  aspect?: string
+  strength?: string
+  improvement?: string
+  additionalComment?: string | null
+  status?: $Enums.AppreciateStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  resolvedAt?: Date | string | null
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAppreciateInput
+  versionCredits?: Prisma.ProjectVersionCreditUncheckedCreateNestedManyWithoutAppreciationInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutAppreciationInput
 }
 
 export type AppreciateCreateOrConnectWithoutProjectInput = {
@@ -549,16 +826,36 @@ export type AppreciateUpdateManyWithWhereWithoutProjectInput = {
 
 export type AppreciateCreateWithoutPostMetricsInput = {
   id?: string
+  aspect?: string
+  strength?: string
+  improvement?: string
+  additionalComment?: string | null
+  status?: $Enums.AppreciateStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  resolvedAt?: Date | string | null
   user: Prisma.UserCreateNestedOneWithoutAppreciateInput
   project: Prisma.ProjectCreateNestedOneWithoutAppreciateInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutAppreciateInput
+  versionCredits?: Prisma.ProjectVersionCreditCreateNestedManyWithoutAppreciationInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutAppreciationInput
 }
 
 export type AppreciateUncheckedCreateWithoutPostMetricsInput = {
   id?: string
   userId: string
   projectId: string
+  aspect?: string
+  strength?: string
+  improvement?: string
+  additionalComment?: string | null
+  status?: $Enums.AppreciateStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  resolvedAt?: Date | string | null
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAppreciateInput
+  versionCredits?: Prisma.ProjectVersionCreditUncheckedCreateNestedManyWithoutAppreciationInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutAppreciationInput
 }
 
 export type AppreciateCreateOrConnectWithoutPostMetricsInput = {
@@ -589,9 +886,19 @@ export type AppreciateUpdateManyWithWhereWithoutPostMetricsInput = {
 
 export type AppreciateCreateWithoutFeedbackInput = {
   id?: string
+  aspect?: string
+  strength?: string
+  improvement?: string
+  additionalComment?: string | null
+  status?: $Enums.AppreciateStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  resolvedAt?: Date | string | null
   user: Prisma.UserCreateNestedOneWithoutAppreciateInput
   project: Prisma.ProjectCreateNestedOneWithoutAppreciateInput
   postMetrics: Prisma.PostMetricsCreateNestedOneWithoutAppreciateInput
+  versionCredits?: Prisma.ProjectVersionCreditCreateNestedManyWithoutAppreciationInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutAppreciationInput
 }
 
 export type AppreciateUncheckedCreateWithoutFeedbackInput = {
@@ -599,6 +906,16 @@ export type AppreciateUncheckedCreateWithoutFeedbackInput = {
   userId: string
   projectId: string
   postMetricsId: string
+  aspect?: string
+  strength?: string
+  improvement?: string
+  additionalComment?: string | null
+  status?: $Enums.AppreciateStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  resolvedAt?: Date | string | null
+  versionCredits?: Prisma.ProjectVersionCreditUncheckedCreateNestedManyWithoutAppreciationInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutAppreciationInput
 }
 
 export type AppreciateCreateOrConnectWithoutFeedbackInput = {
@@ -619,9 +936,19 @@ export type AppreciateUpdateToOneWithWhereWithoutFeedbackInput = {
 
 export type AppreciateUpdateWithoutFeedbackInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  aspect?: Prisma.StringFieldUpdateOperationsInput | string
+  strength?: Prisma.StringFieldUpdateOperationsInput | string
+  improvement?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumAppreciateStatusFieldUpdateOperationsInput | $Enums.AppreciateStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutAppreciateNestedInput
   project?: Prisma.ProjectUpdateOneRequiredWithoutAppreciateNestedInput
   postMetrics?: Prisma.PostMetricsUpdateOneRequiredWithoutAppreciateNestedInput
+  versionCredits?: Prisma.ProjectVersionCreditUpdateManyWithoutAppreciationNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutAppreciationNestedInput
 }
 
 export type AppreciateUncheckedUpdateWithoutFeedbackInput = {
@@ -629,84 +956,370 @@ export type AppreciateUncheckedUpdateWithoutFeedbackInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
   postMetricsId?: Prisma.StringFieldUpdateOperationsInput | string
+  aspect?: Prisma.StringFieldUpdateOperationsInput | string
+  strength?: Prisma.StringFieldUpdateOperationsInput | string
+  improvement?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumAppreciateStatusFieldUpdateOperationsInput | $Enums.AppreciateStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  versionCredits?: Prisma.ProjectVersionCreditUncheckedUpdateManyWithoutAppreciationNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutAppreciationNestedInput
+}
+
+export type AppreciateCreateWithoutVersionCreditsInput = {
+  id?: string
+  aspect?: string
+  strength?: string
+  improvement?: string
+  additionalComment?: string | null
+  status?: $Enums.AppreciateStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  resolvedAt?: Date | string | null
+  user: Prisma.UserCreateNestedOneWithoutAppreciateInput
+  project: Prisma.ProjectCreateNestedOneWithoutAppreciateInput
+  postMetrics: Prisma.PostMetricsCreateNestedOneWithoutAppreciateInput
+  Feedback?: Prisma.FeedbackCreateNestedManyWithoutAppreciateInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutAppreciationInput
+}
+
+export type AppreciateUncheckedCreateWithoutVersionCreditsInput = {
+  id?: string
+  userId: string
+  projectId: string
+  postMetricsId: string
+  aspect?: string
+  strength?: string
+  improvement?: string
+  additionalComment?: string | null
+  status?: $Enums.AppreciateStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  resolvedAt?: Date | string | null
+  Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAppreciateInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutAppreciationInput
+}
+
+export type AppreciateCreateOrConnectWithoutVersionCreditsInput = {
+  where: Prisma.AppreciateWhereUniqueInput
+  create: Prisma.XOR<Prisma.AppreciateCreateWithoutVersionCreditsInput, Prisma.AppreciateUncheckedCreateWithoutVersionCreditsInput>
+}
+
+export type AppreciateUpsertWithoutVersionCreditsInput = {
+  update: Prisma.XOR<Prisma.AppreciateUpdateWithoutVersionCreditsInput, Prisma.AppreciateUncheckedUpdateWithoutVersionCreditsInput>
+  create: Prisma.XOR<Prisma.AppreciateCreateWithoutVersionCreditsInput, Prisma.AppreciateUncheckedCreateWithoutVersionCreditsInput>
+  where?: Prisma.AppreciateWhereInput
+}
+
+export type AppreciateUpdateToOneWithWhereWithoutVersionCreditsInput = {
+  where?: Prisma.AppreciateWhereInput
+  data: Prisma.XOR<Prisma.AppreciateUpdateWithoutVersionCreditsInput, Prisma.AppreciateUncheckedUpdateWithoutVersionCreditsInput>
+}
+
+export type AppreciateUpdateWithoutVersionCreditsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  aspect?: Prisma.StringFieldUpdateOperationsInput | string
+  strength?: Prisma.StringFieldUpdateOperationsInput | string
+  improvement?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumAppreciateStatusFieldUpdateOperationsInput | $Enums.AppreciateStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  user?: Prisma.UserUpdateOneRequiredWithoutAppreciateNestedInput
+  project?: Prisma.ProjectUpdateOneRequiredWithoutAppreciateNestedInput
+  postMetrics?: Prisma.PostMetricsUpdateOneRequiredWithoutAppreciateNestedInput
+  Feedback?: Prisma.FeedbackUpdateManyWithoutAppreciateNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutAppreciationNestedInput
+}
+
+export type AppreciateUncheckedUpdateWithoutVersionCreditsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  projectId?: Prisma.StringFieldUpdateOperationsInput | string
+  postMetricsId?: Prisma.StringFieldUpdateOperationsInput | string
+  aspect?: Prisma.StringFieldUpdateOperationsInput | string
+  strength?: Prisma.StringFieldUpdateOperationsInput | string
+  improvement?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumAppreciateStatusFieldUpdateOperationsInput | $Enums.AppreciateStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutAppreciateNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutAppreciationNestedInput
+}
+
+export type AppreciateCreateWithoutReputationEventsInput = {
+  id?: string
+  aspect?: string
+  strength?: string
+  improvement?: string
+  additionalComment?: string | null
+  status?: $Enums.AppreciateStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  resolvedAt?: Date | string | null
+  user: Prisma.UserCreateNestedOneWithoutAppreciateInput
+  project: Prisma.ProjectCreateNestedOneWithoutAppreciateInput
+  postMetrics: Prisma.PostMetricsCreateNestedOneWithoutAppreciateInput
+  Feedback?: Prisma.FeedbackCreateNestedManyWithoutAppreciateInput
+  versionCredits?: Prisma.ProjectVersionCreditCreateNestedManyWithoutAppreciationInput
+}
+
+export type AppreciateUncheckedCreateWithoutReputationEventsInput = {
+  id?: string
+  userId: string
+  projectId: string
+  postMetricsId: string
+  aspect?: string
+  strength?: string
+  improvement?: string
+  additionalComment?: string | null
+  status?: $Enums.AppreciateStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  resolvedAt?: Date | string | null
+  Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAppreciateInput
+  versionCredits?: Prisma.ProjectVersionCreditUncheckedCreateNestedManyWithoutAppreciationInput
+}
+
+export type AppreciateCreateOrConnectWithoutReputationEventsInput = {
+  where: Prisma.AppreciateWhereUniqueInput
+  create: Prisma.XOR<Prisma.AppreciateCreateWithoutReputationEventsInput, Prisma.AppreciateUncheckedCreateWithoutReputationEventsInput>
+}
+
+export type AppreciateUpsertWithoutReputationEventsInput = {
+  update: Prisma.XOR<Prisma.AppreciateUpdateWithoutReputationEventsInput, Prisma.AppreciateUncheckedUpdateWithoutReputationEventsInput>
+  create: Prisma.XOR<Prisma.AppreciateCreateWithoutReputationEventsInput, Prisma.AppreciateUncheckedCreateWithoutReputationEventsInput>
+  where?: Prisma.AppreciateWhereInput
+}
+
+export type AppreciateUpdateToOneWithWhereWithoutReputationEventsInput = {
+  where?: Prisma.AppreciateWhereInput
+  data: Prisma.XOR<Prisma.AppreciateUpdateWithoutReputationEventsInput, Prisma.AppreciateUncheckedUpdateWithoutReputationEventsInput>
+}
+
+export type AppreciateUpdateWithoutReputationEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  aspect?: Prisma.StringFieldUpdateOperationsInput | string
+  strength?: Prisma.StringFieldUpdateOperationsInput | string
+  improvement?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumAppreciateStatusFieldUpdateOperationsInput | $Enums.AppreciateStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  user?: Prisma.UserUpdateOneRequiredWithoutAppreciateNestedInput
+  project?: Prisma.ProjectUpdateOneRequiredWithoutAppreciateNestedInput
+  postMetrics?: Prisma.PostMetricsUpdateOneRequiredWithoutAppreciateNestedInput
+  Feedback?: Prisma.FeedbackUpdateManyWithoutAppreciateNestedInput
+  versionCredits?: Prisma.ProjectVersionCreditUpdateManyWithoutAppreciationNestedInput
+}
+
+export type AppreciateUncheckedUpdateWithoutReputationEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  projectId?: Prisma.StringFieldUpdateOperationsInput | string
+  postMetricsId?: Prisma.StringFieldUpdateOperationsInput | string
+  aspect?: Prisma.StringFieldUpdateOperationsInput | string
+  strength?: Prisma.StringFieldUpdateOperationsInput | string
+  improvement?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumAppreciateStatusFieldUpdateOperationsInput | $Enums.AppreciateStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutAppreciateNestedInput
+  versionCredits?: Prisma.ProjectVersionCreditUncheckedUpdateManyWithoutAppreciationNestedInput
 }
 
 export type AppreciateCreateManyUserInput = {
   id?: string
   projectId: string
   postMetricsId: string
+  aspect?: string
+  strength?: string
+  improvement?: string
+  additionalComment?: string | null
+  status?: $Enums.AppreciateStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  resolvedAt?: Date | string | null
 }
 
 export type AppreciateUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  aspect?: Prisma.StringFieldUpdateOperationsInput | string
+  strength?: Prisma.StringFieldUpdateOperationsInput | string
+  improvement?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumAppreciateStatusFieldUpdateOperationsInput | $Enums.AppreciateStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   project?: Prisma.ProjectUpdateOneRequiredWithoutAppreciateNestedInput
   postMetrics?: Prisma.PostMetricsUpdateOneRequiredWithoutAppreciateNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutAppreciateNestedInput
+  versionCredits?: Prisma.ProjectVersionCreditUpdateManyWithoutAppreciationNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutAppreciationNestedInput
 }
 
 export type AppreciateUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
   postMetricsId?: Prisma.StringFieldUpdateOperationsInput | string
+  aspect?: Prisma.StringFieldUpdateOperationsInput | string
+  strength?: Prisma.StringFieldUpdateOperationsInput | string
+  improvement?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumAppreciateStatusFieldUpdateOperationsInput | $Enums.AppreciateStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutAppreciateNestedInput
+  versionCredits?: Prisma.ProjectVersionCreditUncheckedUpdateManyWithoutAppreciationNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutAppreciationNestedInput
 }
 
 export type AppreciateUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
   postMetricsId?: Prisma.StringFieldUpdateOperationsInput | string
+  aspect?: Prisma.StringFieldUpdateOperationsInput | string
+  strength?: Prisma.StringFieldUpdateOperationsInput | string
+  improvement?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumAppreciateStatusFieldUpdateOperationsInput | $Enums.AppreciateStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type AppreciateCreateManyProjectInput = {
   id?: string
   userId: string
   postMetricsId: string
+  aspect?: string
+  strength?: string
+  improvement?: string
+  additionalComment?: string | null
+  status?: $Enums.AppreciateStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  resolvedAt?: Date | string | null
 }
 
 export type AppreciateUpdateWithoutProjectInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  aspect?: Prisma.StringFieldUpdateOperationsInput | string
+  strength?: Prisma.StringFieldUpdateOperationsInput | string
+  improvement?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumAppreciateStatusFieldUpdateOperationsInput | $Enums.AppreciateStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutAppreciateNestedInput
   postMetrics?: Prisma.PostMetricsUpdateOneRequiredWithoutAppreciateNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutAppreciateNestedInput
+  versionCredits?: Prisma.ProjectVersionCreditUpdateManyWithoutAppreciationNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutAppreciationNestedInput
 }
 
 export type AppreciateUncheckedUpdateWithoutProjectInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   postMetricsId?: Prisma.StringFieldUpdateOperationsInput | string
+  aspect?: Prisma.StringFieldUpdateOperationsInput | string
+  strength?: Prisma.StringFieldUpdateOperationsInput | string
+  improvement?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumAppreciateStatusFieldUpdateOperationsInput | $Enums.AppreciateStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutAppreciateNestedInput
+  versionCredits?: Prisma.ProjectVersionCreditUncheckedUpdateManyWithoutAppreciationNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutAppreciationNestedInput
 }
 
 export type AppreciateUncheckedUpdateManyWithoutProjectInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   postMetricsId?: Prisma.StringFieldUpdateOperationsInput | string
+  aspect?: Prisma.StringFieldUpdateOperationsInput | string
+  strength?: Prisma.StringFieldUpdateOperationsInput | string
+  improvement?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumAppreciateStatusFieldUpdateOperationsInput | $Enums.AppreciateStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type AppreciateCreateManyPostMetricsInput = {
   id?: string
   userId: string
   projectId: string
+  aspect?: string
+  strength?: string
+  improvement?: string
+  additionalComment?: string | null
+  status?: $Enums.AppreciateStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  resolvedAt?: Date | string | null
 }
 
 export type AppreciateUpdateWithoutPostMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  aspect?: Prisma.StringFieldUpdateOperationsInput | string
+  strength?: Prisma.StringFieldUpdateOperationsInput | string
+  improvement?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumAppreciateStatusFieldUpdateOperationsInput | $Enums.AppreciateStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutAppreciateNestedInput
   project?: Prisma.ProjectUpdateOneRequiredWithoutAppreciateNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutAppreciateNestedInput
+  versionCredits?: Prisma.ProjectVersionCreditUpdateManyWithoutAppreciationNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutAppreciationNestedInput
 }
 
 export type AppreciateUncheckedUpdateWithoutPostMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
+  aspect?: Prisma.StringFieldUpdateOperationsInput | string
+  strength?: Prisma.StringFieldUpdateOperationsInput | string
+  improvement?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumAppreciateStatusFieldUpdateOperationsInput | $Enums.AppreciateStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutAppreciateNestedInput
+  versionCredits?: Prisma.ProjectVersionCreditUncheckedUpdateManyWithoutAppreciationNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutAppreciationNestedInput
 }
 
 export type AppreciateUncheckedUpdateManyWithoutPostMetricsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
+  aspect?: Prisma.StringFieldUpdateOperationsInput | string
+  strength?: Prisma.StringFieldUpdateOperationsInput | string
+  improvement?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumAppreciateStatusFieldUpdateOperationsInput | $Enums.AppreciateStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -716,10 +1329,14 @@ export type AppreciateUncheckedUpdateManyWithoutPostMetricsInput = {
 
 export type AppreciateCountOutputType = {
   Feedback: number
+  versionCredits: number
+  reputationEvents: number
 }
 
 export type AppreciateCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   Feedback?: boolean | AppreciateCountOutputTypeCountFeedbackArgs
+  versionCredits?: boolean | AppreciateCountOutputTypeCountVersionCreditsArgs
+  reputationEvents?: boolean | AppreciateCountOutputTypeCountReputationEventsArgs
 }
 
 /**
@@ -739,16 +1356,40 @@ export type AppreciateCountOutputTypeCountFeedbackArgs<ExtArgs extends runtime.T
   where?: Prisma.FeedbackWhereInput
 }
 
+/**
+ * AppreciateCountOutputType without action
+ */
+export type AppreciateCountOutputTypeCountVersionCreditsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProjectVersionCreditWhereInput
+}
+
+/**
+ * AppreciateCountOutputType without action
+ */
+export type AppreciateCountOutputTypeCountReputationEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReputationEventWhereInput
+}
+
 
 export type AppreciateSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
   projectId?: boolean
   postMetricsId?: boolean
+  aspect?: boolean
+  strength?: boolean
+  improvement?: boolean
+  additionalComment?: boolean
+  status?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  resolvedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
   postMetrics?: boolean | Prisma.PostMetricsDefaultArgs<ExtArgs>
   Feedback?: boolean | Prisma.Appreciate$FeedbackArgs<ExtArgs>
+  versionCredits?: boolean | Prisma.Appreciate$versionCreditsArgs<ExtArgs>
+  reputationEvents?: boolean | Prisma.Appreciate$reputationEventsArgs<ExtArgs>
   _count?: boolean | Prisma.AppreciateCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["appreciate"]>
 
@@ -757,6 +1398,14 @@ export type AppreciateSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   userId?: boolean
   projectId?: boolean
   postMetricsId?: boolean
+  aspect?: boolean
+  strength?: boolean
+  improvement?: boolean
+  additionalComment?: boolean
+  status?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  resolvedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
   postMetrics?: boolean | Prisma.PostMetricsDefaultArgs<ExtArgs>
@@ -767,6 +1416,14 @@ export type AppreciateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   userId?: boolean
   projectId?: boolean
   postMetricsId?: boolean
+  aspect?: boolean
+  strength?: boolean
+  improvement?: boolean
+  additionalComment?: boolean
+  status?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  resolvedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
   postMetrics?: boolean | Prisma.PostMetricsDefaultArgs<ExtArgs>
@@ -777,14 +1434,24 @@ export type AppreciateSelectScalar = {
   userId?: boolean
   projectId?: boolean
   postMetricsId?: boolean
+  aspect?: boolean
+  strength?: boolean
+  improvement?: boolean
+  additionalComment?: boolean
+  status?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  resolvedAt?: boolean
 }
 
-export type AppreciateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "projectId" | "postMetricsId", ExtArgs["result"]["appreciate"]>
+export type AppreciateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "projectId" | "postMetricsId" | "aspect" | "strength" | "improvement" | "additionalComment" | "status" | "createdAt" | "updatedAt" | "resolvedAt", ExtArgs["result"]["appreciate"]>
 export type AppreciateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
   postMetrics?: boolean | Prisma.PostMetricsDefaultArgs<ExtArgs>
   Feedback?: boolean | Prisma.Appreciate$FeedbackArgs<ExtArgs>
+  versionCredits?: boolean | Prisma.Appreciate$versionCreditsArgs<ExtArgs>
+  reputationEvents?: boolean | Prisma.Appreciate$reputationEventsArgs<ExtArgs>
   _count?: boolean | Prisma.AppreciateCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AppreciateIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -805,12 +1472,22 @@ export type $AppreciatePayload<ExtArgs extends runtime.Types.Extensions.Internal
     project: Prisma.$ProjectPayload<ExtArgs>
     postMetrics: Prisma.$PostMetricsPayload<ExtArgs>
     Feedback: Prisma.$FeedbackPayload<ExtArgs>[]
+    versionCredits: Prisma.$ProjectVersionCreditPayload<ExtArgs>[]
+    reputationEvents: Prisma.$ReputationEventPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     userId: string
     projectId: string
     postMetricsId: string
+    aspect: string
+    strength: string
+    improvement: string
+    additionalComment: string | null
+    status: $Enums.AppreciateStatus
+    createdAt: Date
+    updatedAt: Date
+    resolvedAt: Date | null
   }, ExtArgs["result"]["appreciate"]>
   composites: {}
 }
@@ -1209,6 +1886,8 @@ export interface Prisma__AppreciateClient<T, Null = never, ExtArgs extends runti
   project<T extends Prisma.ProjectDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProjectDefaultArgs<ExtArgs>>): Prisma.Prisma__ProjectClient<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   postMetrics<T extends Prisma.PostMetricsDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PostMetricsDefaultArgs<ExtArgs>>): Prisma.Prisma__PostMetricsClient<runtime.Types.Result.GetResult<Prisma.$PostMetricsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   Feedback<T extends Prisma.Appreciate$FeedbackArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Appreciate$FeedbackArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FeedbackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  versionCredits<T extends Prisma.Appreciate$versionCreditsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Appreciate$versionCreditsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectVersionCreditPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reputationEvents<T extends Prisma.Appreciate$reputationEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Appreciate$reputationEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReputationEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1242,6 +1921,14 @@ export interface AppreciateFieldRefs {
   readonly userId: Prisma.FieldRef<"Appreciate", 'String'>
   readonly projectId: Prisma.FieldRef<"Appreciate", 'String'>
   readonly postMetricsId: Prisma.FieldRef<"Appreciate", 'String'>
+  readonly aspect: Prisma.FieldRef<"Appreciate", 'String'>
+  readonly strength: Prisma.FieldRef<"Appreciate", 'String'>
+  readonly improvement: Prisma.FieldRef<"Appreciate", 'String'>
+  readonly additionalComment: Prisma.FieldRef<"Appreciate", 'String'>
+  readonly status: Prisma.FieldRef<"Appreciate", 'AppreciateStatus'>
+  readonly createdAt: Prisma.FieldRef<"Appreciate", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"Appreciate", 'DateTime'>
+  readonly resolvedAt: Prisma.FieldRef<"Appreciate", 'DateTime'>
 }
     
 
@@ -1664,6 +2351,54 @@ export type Appreciate$FeedbackArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.FeedbackScalarFieldEnum | Prisma.FeedbackScalarFieldEnum[]
+}
+
+/**
+ * Appreciate.versionCredits
+ */
+export type Appreciate$versionCreditsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProjectVersionCredit
+   */
+  select?: Prisma.ProjectVersionCreditSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProjectVersionCredit
+   */
+  omit?: Prisma.ProjectVersionCreditOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectVersionCreditInclude<ExtArgs> | null
+  where?: Prisma.ProjectVersionCreditWhereInput
+  orderBy?: Prisma.ProjectVersionCreditOrderByWithRelationInput | Prisma.ProjectVersionCreditOrderByWithRelationInput[]
+  cursor?: Prisma.ProjectVersionCreditWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProjectVersionCreditScalarFieldEnum | Prisma.ProjectVersionCreditScalarFieldEnum[]
+}
+
+/**
+ * Appreciate.reputationEvents
+ */
+export type Appreciate$reputationEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ReputationEvent
+   */
+  select?: Prisma.ReputationEventSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ReputationEvent
+   */
+  omit?: Prisma.ReputationEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReputationEventInclude<ExtArgs> | null
+  where?: Prisma.ReputationEventWhereInput
+  orderBy?: Prisma.ReputationEventOrderByWithRelationInput | Prisma.ReputationEventOrderByWithRelationInput[]
+  cursor?: Prisma.ReputationEventWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReputationEventScalarFieldEnum | Prisma.ReputationEventScalarFieldEnum[]
 }
 
 /**

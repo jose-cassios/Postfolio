@@ -7,7 +7,8 @@ import {
   projectRouteSchema,
   ProjectListRequest,
   SetLikeRequest,
-  SetAppreciationRequest,
+  CreateAppreciationRequest,
+  UpdateAppreciationStatusRequest,
 } from "@project/api/ProjectSchema";
 
 function projectRoutesPlugin(app: FastifyInstance, controller: WorkController) {
@@ -61,13 +62,31 @@ function projectRoutesPlugin(app: FastifyInstance, controller: WorkController) {
     (req, rep) => controller.setLike(req as SetLikeRequest, rep)
   );
 
-  app.put(
-    "/:projectId/appreciate",
+  app.post(
+    "/:projectId/appreciations",
     {
-      schema: projectRouteSchema.setAppreciation,
+      schema: projectRouteSchema.createAppreciation,
       preValidation: UserMiddle.authenticate,
     },
-    (req, rep) => controller.setAppreciation(req as SetAppreciationRequest, rep)
+    (req, rep) => controller.createAppreciation(req as CreateAppreciationRequest, rep)
+  );
+
+  app.get(
+    "/:projectId/appreciations",
+    { schema: projectRouteSchema.interaction },
+    (req, rep) => controller.getAppreciations(req, rep)
+  );
+
+  app.patch(
+    "/:projectId/appreciations/:appreciationId/status",
+    {
+      schema: projectRouteSchema.appreciationStatus,
+      preValidation: UserMiddle.authenticate,
+    },
+    (req, rep) => controller.updateAppreciationStatus(
+      req as UpdateAppreciationStatusRequest,
+      rep,
+    )
   );
 
   app.get(

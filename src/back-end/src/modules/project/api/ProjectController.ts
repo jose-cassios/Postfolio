@@ -5,7 +5,8 @@ import {
   UpdateProjectRequest,
   ProjectListRequest,
   SetLikeRequest,
-  SetAppreciationRequest,
+  CreateAppreciationRequest,
+  UpdateAppreciationStatusRequest,
 } from "@project/api/ProjectSchema";
 import { CreateProjectDTO, UpdateProjectDTO } from "@project/api/ProjectDTO";
 import { BadRequest } from "@shared/error/HttpError";
@@ -111,17 +112,36 @@ export class WorkController {
     );
   }
 
-  async setAppreciation(req: SetAppreciationRequest, reply: FastifyReply) {
+  async createAppreciation(req: CreateAppreciationRequest, reply: FastifyReply) {
     const userId = req.user?.id;
     if (!userId) throw new BadRequest("Usuario autenticado e obrigatorio");
-    reply.send(
-      await this.workService.setAppreciation(
+    reply.code(201).send(
+      await this.workService.createAppreciation(
         req.params.projectId,
         userId,
-        req.body.appreciated,
-        req.body.feedback
+        req.body,
       )
     );
+  }
+
+  async updateAppreciationStatus(
+    req: UpdateAppreciationStatusRequest,
+    reply: FastifyReply,
+  ) {
+    const userId = req.user?.id;
+    if (!userId) throw new BadRequest("Usuario autenticado e obrigatorio");
+    reply.send(await this.workService.updateAppreciationStatus(
+      req.params.projectId,
+      req.params.appreciationId,
+      userId,
+      req.body.status,
+    ));
+  }
+
+  async getAppreciations(req: FastifyRequest, reply: FastifyReply) {
+    const { projectId } = req.params as { projectId?: string };
+    if (!projectId) throw new BadRequest("ID do projeto e necessario");
+    reply.send(await this.workService.findAppreciations(projectId));
   }
 
   async getInteraction(req: FastifyRequest, reply: FastifyReply) {

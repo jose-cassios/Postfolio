@@ -35,8 +35,8 @@
               <mat-icon>{{ interaction().liked ? 'favorite' : 'favorite_border' }}</mat-icon>
               Curtir ({{ interaction().likes }})
             </button>
-            <button [class.active]="interaction().appreciated" [disabled]="actionPending()" (click)="toggleAppreciation()">
-              <mat-icon>thumb_up</mat-icon> Apreciar ({{ interaction().appreciates }})
+            <button [class.active]="interaction().appreciated" [disabled]="actionPending() || isOwner()" (click)="openAppreciation()">
+              <mat-icon>tips_and_updates</mat-icon> Improve ({{ interaction().appreciates }})
             </button>
             <button [class.active]="interaction().saved" [disabled]="actionPending()" (click)="toggleSaved()">
               <mat-icon>{{ interaction().saved ? 'bookmark' : 'bookmark_border' }}</mat-icon> Salvar
@@ -52,8 +52,24 @@
             <button (click)="share()"><mat-icon>share</mat-icon> Compartilhar</button>
           </div>
 
-          <div class="meta"><span>Publicado em {{ p.publishedAt | date:'dd/MM/yyyy' }}</span></div>
+          <div class="meta">
+            <span>Publicado em {{ p.publishedAt | date:'dd/MM/yyyy' }}</span>
+            <span>Versão atual v{{ p.currentVersion || 1 }}</span>
+            @if (p.seekingFeedback) { <span class="reviewing">Em revisão · buscando feedback</span> }
+          </div>
           <hr />
+
+          @if (p.seekingFeedback || p.feedbackAspects.length || p.feedbackQuestion) {
+            <section class="feedback-request">
+              <span class="eyebrow">Feedback desejado</span>
+              @if (p.feedbackQuestion) { <h2>{{ p.feedbackQuestion }}</h2> }
+              <div class="chips">
+                @for (aspect of p.feedbackAspects; track aspect) {
+                  <span class="chip">{{ aspectLabel(aspect) }}</span>
+                }
+              </div>
+            </section>
+          }
 
           @if (p.contentBlocks?.length) {
             <section class="project-story" aria-label="Conteúdo do projeto">
@@ -140,30 +156,88 @@
             </div></section>
           }
 
-          <section class="section feedback-box">
-            <h2>Aprecie com feedback</h2>
-            <p>Um feedback é opcional e pode ser público ou visível apenas para o autor.</p>
-            <textarea [(ngModel)]="feedbackText" maxlength="500" rows="3" placeholder="O que chamou sua atenção?"></textarea>
-            <label><input type="checkbox" [(ngModel)]="feedbackPrivate"> Feedback privado</label>
-            <button class="primary-action" [disabled]="!feedbackText.trim() || actionPending()" (click)="toggleAppreciation(true)">
-              Enviar apreciação
-            </button>
-          </section>
+          @if (p.versions.length) {
+            <section class="section version-history">
+              <div class="section-title"><span class="eyebrow">Evolução</span><h2>Histórico de versões</h2></div>
+              <ol>
+                @for (version of p.versions; track version.id) {
+                  <li>
+                    <span class="version-dot">v{{ version.versionNumber }}</span>
+                    <div>
+                      <strong>{{ version.changelog }}</strong>
+                      <small>{{ version.createdAt | date:'dd/MM/yyyy HH:mm' }}</small>
+                      @for (credit of version.credits; track credit.appreciationId) {
+                        <p>Incorporou uma sugestão de
+                          <a [routerLink]="['/perfil', credit.contributor.username]">&#64;{{ credit.contributor.username }}</a>
+                          sobre {{ aspectLabel(credit.aspect) }}.
+                        </p>
+                      }
+                    </div>
+                  </li>
+                }
+              </ol>
+            </section>
+          }
 
-          @if (p.publicFeedback?.length) {
-            <section class="section public-feedback">
-              <h2>Feedbacks da comunidade</h2>
-              @for (feedback of p.publicFeedback ?? []; track feedback.id) {
-                <blockquote><p>{{ feedback.content }}</p><footer>— {{ feedback.username }}</footer></blockquote>
+          @if (!isOwner()) {
+            <section class="section feedback-box">
+              <div class="section-title"><span class="eyebrow">Improve</span><h2>Ajude este projeto a evoluir</h2></div>
+              <p>Envie um ponto forte e uma sugestão objetiva. Likes e Saves continuam independentes.</p>
+              @if (!showAppreciateForm()) {
+                <button class="primary-action" (click)="openAppreciation()">
+                  {{ interaction().appreciated ? 'Editar feedback pendente' : 'Enviar Improve' }}
+                </button>
+              } @else {
+                <div class="structured-feedback-form">
+                  <label>Aspecto
+                    <select [(ngModel)]="selectedAspect">
+                      @for (aspect of feedbackAspectOptions(p); track aspect) {
+                        <option [value]="aspect">{{ aspectLabel(aspect) }}</option>
+                      }
+                    </select>
+                  </label>
+                  <label>Ponto forte
+                    <textarea [(ngModel)]="appreciationStrength" maxlength="500" rows="3" placeholder="O que já funciona bem?"></textarea>
+                  </label>
+                  <label>Sugestão de melhoria
+                    <textarea [(ngModel)]="appreciationImprovement" maxlength="500" rows="3" placeholder="O que pode ser melhorado e como?"></textarea>
+                  </label>
+                  <label>Comentário complementar <small>opcional</small>
+                    <textarea [(ngModel)]="appreciationComment" maxlength="500" rows="2"></textarea>
+                  </label>
+                  <div class="form-actions">
+                    <button type="button" (click)="showAppreciateForm.set(false)">Cancelar</button>
+                    <button class="primary-action" [disabled]="appreciationStrength.trim().length < 3 || appreciationImprovement.trim().length < 3 || actionPending()" (click)="submitAppreciation()">Enviar Improve</button>
+                  </div>
+                </div>
               }
             </section>
           }
 
-          @if (privateFeedback().length) {
-            <section class="section public-feedback private-feedback">
-              <h2>Feedbacks privados para você</h2>
-              @for (feedback of privateFeedback(); track feedback.id) {
-                <blockquote><p>{{ feedback.content }}</p><footer>— {{ feedback.username }}</footer></blockquote>
+          @if (p.appreciations.length) {
+            <section class="section improvements">
+              <div class="section-title"><span class="eyebrow">Comunidade</span><h2>Appreciates e melhorias</h2></div>
+              @for (appreciation of p.appreciations; track appreciation.id) {
+                <article class="improvement-card" [attr.data-status]="appreciation.status">
+                  <header>
+                    <a [routerLink]="['/perfil', appreciation.author.username]">&#64;{{ appreciation.author.username }}</a>
+                    <span>{{ aspectLabel(appreciation.aspect) }}</span>
+                    <span class="feedback-status">{{ appreciationStatusLabel(appreciation.status) }}</span>
+                  </header>
+                  <p><strong>Ponto forte</strong>{{ appreciation.strength }}</p>
+                  <p><strong>Sugestão</strong>{{ appreciation.improvement }}</p>
+                  @if (appreciation.additionalComment) { <p>{{ appreciation.additionalComment }}</p> }
+                  @if (appreciation.creditedInVersion) {
+                    <small>Incorporado com crédito na v{{ appreciation.creditedInVersion }}.</small>
+                  }
+                  @if (isOwner() && !appreciation.creditedInVersion) {
+                    <div class="status-actions">
+                      <button [disabled]="actionPending()" (click)="updateAppreciationStatus(appreciation, 'USEFUL')">Marcar útil</button>
+                      <button [disabled]="actionPending()" (click)="updateAppreciationStatus(appreciation, 'APPLIED')">Marcar aplicado</button>
+                      <button [disabled]="actionPending()" (click)="updateAppreciationStatus(appreciation, 'DISMISSED')">Arquivar</button>
+                    </div>
+                  }
+                </article>
               }
             </section>
           }
