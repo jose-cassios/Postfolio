@@ -9,6 +9,7 @@ import {
 } from "fastify-type-provider-zod";
 import { AppComposer } from "@compositionRoot/appComposer";
 import { configureProvaders } from "@infrastructure/fastify/Providers";
+import { ensureDevelopmentAdmin } from "@infrastructure/bootstrap/ensureDevelopmentAdmin";
 import dotenv from "dotenv";
 import { pathToFileURL } from "node:url";
 
@@ -66,6 +67,7 @@ export default async function handler(req: any, res: any) {
 
 async function startServer(): Promise<void> {
   const port = Number(process.env.PORT || 8080);
+  await ensureDevelopmentAdmin();
   await app.listen({ port, host: "0.0.0.0" });
   console.log(`Servidor rodando em http://localhost:${port}`);
   console.log("NODE_ENV debug:", JSON.stringify(process.env.NODE_ENV));
