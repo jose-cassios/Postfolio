@@ -10,6 +10,8 @@ export interface ProfileUser {
   linkedin?: string | null;
   github?: string | null;
   website?: string | null;
+  profilePhoto?: string | null;
+  coverPhoto?: string | null;
   availableForHire?: boolean;
   achievements?: Array<{ competitionId: string; competitionName: string; rank: number }>;
   usertype: UserType;

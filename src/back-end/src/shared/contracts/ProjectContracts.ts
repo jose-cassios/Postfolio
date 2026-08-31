@@ -22,6 +22,7 @@ export interface ProjectContract {
     id: string;
     username: string;
     bio: string;
+    profilePhoto: string | null;
     availableForHire: boolean;
   };
   metrics?: {

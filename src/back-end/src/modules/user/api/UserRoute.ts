@@ -63,6 +63,18 @@ function userRoutesPlugin(
   );
 
   app.get(
+    "/me",
+    { preValidation: UserMiddle.authenticate },
+    (req, reply) => userController.getProfile(req, reply)
+  );
+
+  app.get(
+    "/profile",
+    { preValidation: UserMiddle.authenticate },
+    (req, reply) => userController.getProfile(req, reply)
+  );
+
+  app.get(
     "/profile/:username",
     { schema: userRouteSchema.publicProfile },
     (req, reply) =>

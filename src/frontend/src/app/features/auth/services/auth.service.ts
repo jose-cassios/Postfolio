@@ -72,9 +72,9 @@ export class AuthService {
       return throwError(() => new Error('NOT_AUTHENTICATED'));
     }
 
-    return this.api.post<ProfileResponse>(
-      'user/profile',
-      {},
+    return this.api.get<ProfileResponse>(
+      'user/me',
+      undefined,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -160,6 +160,8 @@ export class AuthService {
       linkedin: userData.linkedin || null,
       github: userData.github || null,
       website: userData.website || null,
+      profilePhoto: userData.profilePhoto || null,
+      coverPhoto: userData.coverPhoto || null,
       availableForHire: userData.availableForHire ?? false,
     };
 

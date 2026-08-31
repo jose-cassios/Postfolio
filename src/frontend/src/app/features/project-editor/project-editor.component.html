@@ -173,7 +173,11 @@
               </div>
             }
             @case ('IMAGE') {
-              <label>URL da imagem<input type="url" [ngModel]="block.url" (ngModelChange)="updateBlock(block.id, { url: $event })" placeholder="https://…" /></label>
+              <app-image-upload-field
+                label="Imagem do bloco"
+                [value]="block.url"
+                (valueChange)="updateBlock(block.id, { url: $event })"
+              />
               <label>Texto alternativo<input type="text" [ngModel]="block.alt" (ngModelChange)="updateBlock(block.id, { alt: $event })" maxlength="160" /></label>
               <label>Legenda<input type="text" [ngModel]="block.caption" (ngModelChange)="updateBlock(block.id, { caption: $event })" maxlength="240" /></label>
               <ng-container *ngTemplateOutlet="mediaWidth; context: { $implicit: block }"></ng-container>
@@ -181,7 +185,11 @@
             @case ('VIDEO') {
               <p class="inspector-help">Use um link direto para MP4 ou WebM, com duração máxima de 90 segundos.</p>
               <label>URL do vídeo<input type="url" [ngModel]="block.url" (ngModelChange)="updateBlock(block.id, { url: $event })" placeholder="https://…/video.mp4" /></label>
-              <label>Imagem de capa<input type="url" [ngModel]="block.posterUrl" (ngModelChange)="updateBlock(block.id, { posterUrl: $event || null })" placeholder="Opcional" /></label>
+              <app-image-upload-field
+                label="Capa do vídeo"
+                [value]="block.posterUrl"
+                (valueChange)="updateBlock(block.id, { posterUrl: $event || null })"
+              />
               <label>Legenda<input type="text" [ngModel]="block.caption" (ngModelChange)="updateBlock(block.id, { caption: $event })" maxlength="240" /></label>
               <ng-container *ngTemplateOutlet="mediaWidth; context: { $implicit: block }"></ng-container>
             }
@@ -192,7 +200,12 @@
                   <div class="carousel-field">
                     <span>Imagem {{ $index + 1 }}</span>
                     <button type="button" aria-label="Remover imagem" (click)="removeCarouselItem(block, $index)"><mat-icon>close</mat-icon></button>
-                    <input type="url" [ngModel]="item.url" (ngModelChange)="updateCarouselItem(block, $index, { url: $event })" placeholder="URL da imagem" />
+                    <app-image-upload-field
+                      label="Arquivo ou URL"
+                      [value]="item.url"
+                      [compact]="true"
+                      (valueChange)="updateCarouselItem(block, $index, { url: $event })"
+                    />
                     <input type="text" [ngModel]="item.alt" (ngModelChange)="updateCarouselItem(block, $index, { alt: $event })" placeholder="Descrição acessível" maxlength="160" />
                   </div>
                 }
@@ -206,7 +219,11 @@
           <form [formGroup]="projectForm">
             <div class="inspector-heading"><span>Configurações</span><h2>Detalhes do projeto</h2></div>
             <label>Categoria<select formControlName="category">@for (category of categories; track category.value) { <option [value]="category.value">{{ category.label }}</option> }</select></label>
-            <label>Imagem de capa<input type="url" formControlName="coverImageUrl" placeholder="https://…" /></label>
+            <app-image-upload-field
+              label="Imagem de capa"
+              [value]="projectForm.controls.coverImageUrl.value"
+              (valueChange)="projectForm.controls.coverImageUrl.setValue($event)"
+            />
             <label>Projeto online<input type="url" formControlName="externalLink" placeholder="https://…" /></label>
             <label>Repositório<input type="url" formControlName="githublink" placeholder="https://github.com/…" /></label>
             <label>Ferramentas<input type="text" formControlName="tools" placeholder="Angular, Figma, Node.js" /></label>

@@ -1,5 +1,6 @@
 import Fastify, { FastifyInstance } from "fastify";
 import fastifyCors from "@fastify/cors";
+import fastifyMultipart from "@fastify/multipart";
 import "@infrastructure/types/fastify";
 import {
   serializerCompiler,
@@ -9,8 +10,11 @@ import {
 import { AppComposer } from "@compositionRoot/appComposer";
 import { configureProvaders } from "@infrastructure/fastify/Providers";
 import dotenv from "dotenv";
+import { pathToFileURL } from "node:url";
 
-function createApp(): FastifyInstance {
+dotenv.config();
+
+export function createApp(): FastifyInstance {
   const app = Fastify({
     logger: false,
   }).withTypeProvider<ZodTypeProvider>();
@@ -24,14 +28,22 @@ function createApp(): FastifyInstance {
     allowedHeaders: ["Content-Type", "Authorization"],
   });
 
+  app.register(fastifyMultipart, {
+    limits: {
+      files: 1,
+      fields: 0,
+      parts: 1,
+      fileSize: 8 * 1024 * 1024,
+    },
+    throwFileSizeLimit: true,
+  });
+
   const appCompose = new AppComposer();
   appCompose.registerRoutes(app);
   appCompose.configureFastify(app);
   appCompose.registerHandlers();
 
   configureProvaders(app);
-
-  dotenv.config();
 
   app.get("/", async () => {
     return { message: "Bem-vindo ao Postfolio API" };
@@ -52,14 +64,20 @@ export default async function handler(req: any, res: any) {
   }
 }
 
-// Descomentar quando for para o docker
-const PORT = 8080;
-console.log("Executando...");
-app.listen({ port: PORT, host: "0.0.0.0" }).then(() => {
-  console.log(`Servidor rodando em http://localhost:${PORT}`);
-});
+async function startServer(): Promise<void> {
+  const port = Number(process.env.PORT || 8080);
+  await app.listen({ port, host: "0.0.0.0" });
+  console.log(`Servidor rodando em http://localhost:${port}`);
+  console.log("NODE_ENV debug:", JSON.stringify(process.env.NODE_ENV));
+  if (process.env.NODE_ENV !== "production") console.log(app.printRoutes());
+}
 
-console.log("NODE_ENV debug:", JSON.stringify(process.env.NODE_ENV));
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  startServer().catch((error) => {
+    console.error("Falha ao iniciar o servidor:", error);
+    process.exitCode = 1;
+  });
+}
 
 // Rodar localmente fora da Vercel
 // if (process.env.NODE_ENV === "development") {

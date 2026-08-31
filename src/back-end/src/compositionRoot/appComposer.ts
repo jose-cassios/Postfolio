@@ -15,6 +15,7 @@ import { EmailController } from "@email/api/EmailController";
 import { RatingController } from "@rating/api/RatingController";
 import { FavorateProjectsController } from "@favorateProjects/api/FavorateProjectsController";
 import { CommentsController } from "@comments/api/CommentsController";
+import { StorageController } from "@storage/api/StorageController";
 
 // Rotas
 import { UserRoute } from "@user/api/UserRoute";
@@ -25,6 +26,7 @@ import { CompetitionRoute } from "@competition/api/CompetitionRoute";
 import { EmailRoute } from "@email/api/EmailRoute";
 import { FavorateProjectsRoute } from "@favorateProjects/api/FavorateProjectsRoutes";
 import { CommentsRoute } from "@comments/api/CommentsRoutes";
+import { StorageRoute } from "@storage/api/StorageRoute";
 
 // Handlers
 import { PortfolioUserCreatedHandler } from "@portfolio/handler/PortfolioUserCreatedHandler";
@@ -43,6 +45,7 @@ import { projectCompDetailsComposeModule } from "@projectCompDetails/composition
 import { favorateProjectsComposer } from "@favorateProjects/composition/FavorateProjectsComposer";
 import { commentsComposerModule } from "@comments/composition/CommentsComposer";
 import { postMetricsComposeModule } from "@postMetrics/composition/PostMetricsComposer";
+import { storageComposeModule } from "@storage/composition/StorageComposer";
 
 const container = new Container();
 
@@ -57,6 +60,7 @@ projectCompDetailsComposeModule(container);
 favorateProjectsComposer(container);
 commentsComposerModule(container);
 postMetricsComposeModule(container);
+storageComposeModule(container);
 
 interface IApplicationControllers {
   userController: UserController;
@@ -68,6 +72,7 @@ interface IApplicationControllers {
   ratingController: RatingController;
   favorateProjectsController: FavorateProjectsController;
   commentsController: CommentsController;
+  storageController: StorageController;
   // ... outros controladores
 }
 
@@ -105,6 +110,9 @@ export class AppComposer {
     const commentsController = container.get<CommentsController>(
       TYPES.CommentsController
     );
+    const storageController = container.get<StorageController>(
+      TYPES.StorageController
+    );
 
     return {
       userController,
@@ -116,6 +124,7 @@ export class AppComposer {
       ratingController,
       favorateProjectsController,
       commentsController,
+      storageController,
       // ... retorne outras instâncias de controlador
     };
   }
@@ -134,6 +143,7 @@ export class AppComposer {
       this.controllers.favorateProjectsController
     );
     CommentsRoute.register(app, this.controllers.commentsController);
+    StorageRoute.register(app, this.controllers.storageController);
   }
 
   public registerHandlers(): void {

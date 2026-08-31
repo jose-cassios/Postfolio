@@ -23,7 +23,7 @@ export class ProfileService {
   }
 
   getPortfolio(username: string) {
-    return this.api.get<Portfolio>(
+    return this.api.get<Portfolio | null>(
       `portfolio/user/${encodeURIComponent(username)}`,
     );
   }

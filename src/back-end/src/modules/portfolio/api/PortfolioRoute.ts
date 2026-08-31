@@ -27,6 +27,10 @@ function portfolioRoutesPlugin(
     portfolioController.findByUser(req, rep)
   );
 
+  app.get("/user/me", { preValidation: UserMiddle.authenticate }, (req, rep) =>
+    portfolioController.findByUser(req, rep)
+  );
+
   app.get("/user/:username", (req, rep) =>
     portfolioController.findByUsername(req, rep)
   );
@@ -36,6 +40,11 @@ function portfolioRoutesPlugin(
   );
 
   app.post(
+    "/:id/projects",
+    (req, rep) => portfolioController.getProjects(req, rep)
+  );
+
+  app.get(
     "/:id/projects",
     (req, rep) => portfolioController.getProjects(req, rep)
   );
@@ -50,6 +59,10 @@ function portfolioRoutesPlugin(
   );
 
   app.delete("", { preValidation: UserMiddle.authenticate }, (req, rep) =>
+    portfolioController.deleteById(req, rep)
+  );
+
+  app.delete("/:id", { preValidation: UserMiddle.authenticate }, (req, rep) =>
     portfolioController.deleteById(req, rep)
   );
 }

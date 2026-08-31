@@ -19,6 +19,7 @@ import {
   ProjectCategory,
 } from './profile.models';
 import { ProfileService } from './profile.service';
+import { ImageUploadFieldComponent } from '../../shared/components/image-upload-field/image-upload-field.component';
 
 interface Feedback {
   type: 'success' | 'error';
@@ -30,7 +31,7 @@ const PROFILE_URL_PATTERN = /^(https?:\/\/)?\S+$/i;
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, ImageUploadFieldComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
 })
@@ -91,6 +92,8 @@ export class ProfileComponent {
     linkedin: ['', [Validators.pattern(PROFILE_URL_PATTERN)]],
     github: ['', [Validators.pattern(PROFILE_URL_PATTERN)]],
     website: ['', [Validators.pattern(PROFILE_URL_PATTERN)]],
+    profilePhoto: [''],
+    coverPhoto: [''],
     availableForHire: [false],
   });
 
@@ -168,6 +171,8 @@ export class ProfileComponent {
       linkedin: user.linkedin ?? '',
       github: user.github ?? '',
       website: user.website ?? '',
+      profilePhoto: user.profilePhoto ?? '',
+      coverPhoto: user.coverPhoto ?? '',
       availableForHire: user.availableForHire ?? false,
     });
     this.feedback.set(null);

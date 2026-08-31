@@ -92,6 +92,8 @@ export const UserScalarFieldEnum = {
   linkedin: 'linkedin',
   github: 'github',
   website: 'website',
+  profilePhoto: 'profilePhoto',
+  coverPhoto: 'coverPhoto',
   availableForHire: 'availableForHire',
   active: 'active',
   userType: 'userType'

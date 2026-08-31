@@ -15,6 +15,8 @@ export default class User {
     private linkedin: string | null = null,
     private github: string | null = null,
     private website: string | null = null,
+    private profilePhoto: string | null = null,
+    private coverPhoto: string | null = null,
     private userType: UserType | null = UserType.USER,
     private availableForHire: boolean = false,
     private active: boolean = true,
@@ -34,6 +36,8 @@ export default class User {
       dto.linkedin,
       dto.github,
       dto.website,
+      dto.profilePhoto,
+      dto.coverPhoto,
       dto.userType,
       dto.availableForHire
     );
@@ -65,6 +69,14 @@ export default class User {
 
     if (dto.website !== undefined) {
       this.website = dto.website;
+    }
+
+    if (dto.profilePhoto !== undefined) {
+      this.profilePhoto = dto.profilePhoto;
+    }
+
+    if (dto.coverPhoto !== undefined) {
+      this.coverPhoto = dto.coverPhoto;
     }
 
     if (dto.availableForHire !== undefined) {
@@ -116,6 +128,14 @@ export default class User {
 
   public getWebsite(): string | null {
     return this.website;
+  }
+
+  public getProfilePhoto(): string | null {
+    return this.profilePhoto;
+  }
+
+  public getCoverPhoto(): string | null {
+    return this.coverPhoto;
   }
 
   public getUserType(): UserType | null {

@@ -19,7 +19,13 @@
 
           @if (p.author) {
             <a class="author-row" [routerLink]="['/perfil', p.author.username]">
-              <span class="avatar">{{ p.author.name.charAt(0).toUpperCase() }}</span>
+              <span class="avatar">
+                @if (p.author.avatar) {
+                  <img [src]="p.author.avatar" [alt]="p.author.name" />
+                } @else {
+                  {{ p.author.name.charAt(0).toUpperCase() }}
+                }
+              </span>
               <div><strong>{{ p.author.name }}</strong><p>{{ p.author.bio }}</p></div>
             </a>
           }

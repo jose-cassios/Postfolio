@@ -33,6 +33,8 @@ export type UserMinAggregateOutputType = {
   linkedin: string | null
   github: string | null
   website: string | null
+  profilePhoto: string | null
+  coverPhoto: string | null
   availableForHire: boolean | null
   active: boolean | null
   userType: $Enums.UserType | null
@@ -47,6 +49,8 @@ export type UserMaxAggregateOutputType = {
   linkedin: string | null
   github: string | null
   website: string | null
+  profilePhoto: string | null
+  coverPhoto: string | null
   availableForHire: boolean | null
   active: boolean | null
   userType: $Enums.UserType | null
@@ -61,6 +65,8 @@ export type UserCountAggregateOutputType = {
   linkedin: number
   github: number
   website: number
+  profilePhoto: number
+  coverPhoto: number
   availableForHire: number
   active: number
   userType: number
@@ -77,6 +83,8 @@ export type UserMinAggregateInputType = {
   linkedin?: true
   github?: true
   website?: true
+  profilePhoto?: true
+  coverPhoto?: true
   availableForHire?: true
   active?: true
   userType?: true
@@ -91,6 +99,8 @@ export type UserMaxAggregateInputType = {
   linkedin?: true
   github?: true
   website?: true
+  profilePhoto?: true
+  coverPhoto?: true
   availableForHire?: true
   active?: true
   userType?: true
@@ -105,6 +115,8 @@ export type UserCountAggregateInputType = {
   linkedin?: true
   github?: true
   website?: true
+  profilePhoto?: true
+  coverPhoto?: true
   availableForHire?: true
   active?: true
   userType?: true
@@ -192,6 +204,8 @@ export type UserGroupByOutputType = {
   linkedin: string | null
   github: string | null
   website: string | null
+  profilePhoto: string | null
+  coverPhoto: string | null
   availableForHire: boolean
   active: boolean
   userType: $Enums.UserType | null
@@ -227,6 +241,8 @@ export type UserWhereInput = {
   linkedin?: Prisma.StringNullableFilter<"User"> | string | null
   github?: Prisma.StringNullableFilter<"User"> | string | null
   website?: Prisma.StringNullableFilter<"User"> | string | null
+  profilePhoto?: Prisma.StringNullableFilter<"User"> | string | null
+  coverPhoto?: Prisma.StringNullableFilter<"User"> | string | null
   availableForHire?: Prisma.BoolFilter<"User"> | boolean
   active?: Prisma.BoolFilter<"User"> | boolean
   userType?: Prisma.EnumUserTypeNullableFilter<"User"> | $Enums.UserType | null
@@ -251,6 +267,8 @@ export type UserOrderByWithRelationInput = {
   linkedin?: Prisma.SortOrderInput | Prisma.SortOrder
   github?: Prisma.SortOrderInput | Prisma.SortOrder
   website?: Prisma.SortOrderInput | Prisma.SortOrder
+  profilePhoto?: Prisma.SortOrderInput | Prisma.SortOrder
+  coverPhoto?: Prisma.SortOrderInput | Prisma.SortOrder
   availableForHire?: Prisma.SortOrder
   active?: Prisma.SortOrder
   userType?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -278,6 +296,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   linkedin?: Prisma.StringNullableFilter<"User"> | string | null
   github?: Prisma.StringNullableFilter<"User"> | string | null
   website?: Prisma.StringNullableFilter<"User"> | string | null
+  profilePhoto?: Prisma.StringNullableFilter<"User"> | string | null
+  coverPhoto?: Prisma.StringNullableFilter<"User"> | string | null
   availableForHire?: Prisma.BoolFilter<"User"> | boolean
   active?: Prisma.BoolFilter<"User"> | boolean
   userType?: Prisma.EnumUserTypeNullableFilter<"User"> | $Enums.UserType | null
@@ -302,6 +322,8 @@ export type UserOrderByWithAggregationInput = {
   linkedin?: Prisma.SortOrderInput | Prisma.SortOrder
   github?: Prisma.SortOrderInput | Prisma.SortOrder
   website?: Prisma.SortOrderInput | Prisma.SortOrder
+  profilePhoto?: Prisma.SortOrderInput | Prisma.SortOrder
+  coverPhoto?: Prisma.SortOrderInput | Prisma.SortOrder
   availableForHire?: Prisma.SortOrder
   active?: Prisma.SortOrder
   userType?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -322,6 +344,8 @@ export type UserScalarWhereWithAggregatesInput = {
   linkedin?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   github?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   website?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  profilePhoto?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  coverPhoto?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   availableForHire?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   active?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   userType?: Prisma.EnumUserTypeNullableWithAggregatesFilter<"User"> | $Enums.UserType | null
@@ -336,6 +360,8 @@ export type UserCreateInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  profilePhoto?: string | null
+  coverPhoto?: string | null
   availableForHire?: boolean
   active?: boolean
   userType?: $Enums.UserType | null
@@ -360,6 +386,8 @@ export type UserUncheckedCreateInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  profilePhoto?: string | null
+  coverPhoto?: string | null
   availableForHire?: boolean
   active?: boolean
   userType?: $Enums.UserType | null
@@ -384,6 +412,8 @@ export type UserUpdateInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
@@ -408,6 +438,8 @@ export type UserUncheckedUpdateInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
@@ -432,6 +464,8 @@ export type UserCreateManyInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  profilePhoto?: string | null
+  coverPhoto?: string | null
   availableForHire?: boolean
   active?: boolean
   userType?: $Enums.UserType | null
@@ -446,6 +480,8 @@ export type UserUpdateManyMutationInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
@@ -460,6 +496,8 @@ export type UserUncheckedUpdateManyInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
@@ -474,6 +512,8 @@ export type UserCountOrderByAggregateInput = {
   linkedin?: Prisma.SortOrder
   github?: Prisma.SortOrder
   website?: Prisma.SortOrder
+  profilePhoto?: Prisma.SortOrder
+  coverPhoto?: Prisma.SortOrder
   availableForHire?: Prisma.SortOrder
   active?: Prisma.SortOrder
   userType?: Prisma.SortOrder
@@ -488,6 +528,8 @@ export type UserMaxOrderByAggregateInput = {
   linkedin?: Prisma.SortOrder
   github?: Prisma.SortOrder
   website?: Prisma.SortOrder
+  profilePhoto?: Prisma.SortOrder
+  coverPhoto?: Prisma.SortOrder
   availableForHire?: Prisma.SortOrder
   active?: Prisma.SortOrder
   userType?: Prisma.SortOrder
@@ -502,6 +544,8 @@ export type UserMinOrderByAggregateInput = {
   linkedin?: Prisma.SortOrder
   github?: Prisma.SortOrder
   website?: Prisma.SortOrder
+  profilePhoto?: Prisma.SortOrder
+  coverPhoto?: Prisma.SortOrder
   availableForHire?: Prisma.SortOrder
   active?: Prisma.SortOrder
   userType?: Prisma.SortOrder
@@ -677,6 +721,8 @@ export type UserCreateWithoutProviderOAuthInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  profilePhoto?: string | null
+  coverPhoto?: string | null
   availableForHire?: boolean
   active?: boolean
   userType?: $Enums.UserType | null
@@ -700,6 +746,8 @@ export type UserUncheckedCreateWithoutProviderOAuthInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  profilePhoto?: string | null
+  coverPhoto?: string | null
   availableForHire?: boolean
   active?: boolean
   userType?: $Enums.UserType | null
@@ -739,6 +787,8 @@ export type UserUpdateWithoutProviderOAuthInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
@@ -762,6 +812,8 @@ export type UserUncheckedUpdateWithoutProviderOAuthInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
@@ -785,6 +837,8 @@ export type UserCreateWithoutMessageSentInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  profilePhoto?: string | null
+  coverPhoto?: string | null
   availableForHire?: boolean
   active?: boolean
   userType?: $Enums.UserType | null
@@ -808,6 +862,8 @@ export type UserUncheckedCreateWithoutMessageSentInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  profilePhoto?: string | null
+  coverPhoto?: string | null
   availableForHire?: boolean
   active?: boolean
   userType?: $Enums.UserType | null
@@ -836,6 +892,8 @@ export type UserCreateWithoutMessageReceivedInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  profilePhoto?: string | null
+  coverPhoto?: string | null
   availableForHire?: boolean
   active?: boolean
   userType?: $Enums.UserType | null
@@ -859,6 +917,8 @@ export type UserUncheckedCreateWithoutMessageReceivedInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  profilePhoto?: string | null
+  coverPhoto?: string | null
   availableForHire?: boolean
   active?: boolean
   userType?: $Enums.UserType | null
@@ -898,6 +958,8 @@ export type UserUpdateWithoutMessageSentInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
@@ -921,6 +983,8 @@ export type UserUncheckedUpdateWithoutMessageSentInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
@@ -955,6 +1019,8 @@ export type UserUpdateWithoutMessageReceivedInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
@@ -978,6 +1044,8 @@ export type UserUncheckedUpdateWithoutMessageReceivedInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
@@ -1001,6 +1069,8 @@ export type UserCreateWithoutPortfoliosInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  profilePhoto?: string | null
+  coverPhoto?: string | null
   availableForHire?: boolean
   active?: boolean
   userType?: $Enums.UserType | null
@@ -1024,6 +1094,8 @@ export type UserUncheckedCreateWithoutPortfoliosInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  profilePhoto?: string | null
+  coverPhoto?: string | null
   availableForHire?: boolean
   active?: boolean
   userType?: $Enums.UserType | null
@@ -1063,6 +1135,8 @@ export type UserUpdateWithoutPortfoliosInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
@@ -1086,6 +1160,8 @@ export type UserUncheckedUpdateWithoutPortfoliosInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
@@ -1109,6 +1185,8 @@ export type UserCreateWithoutAppreciateInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  profilePhoto?: string | null
+  coverPhoto?: string | null
   availableForHire?: boolean
   active?: boolean
   userType?: $Enums.UserType | null
@@ -1132,6 +1210,8 @@ export type UserUncheckedCreateWithoutAppreciateInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  profilePhoto?: string | null
+  coverPhoto?: string | null
   availableForHire?: boolean
   active?: boolean
   userType?: $Enums.UserType | null
@@ -1171,6 +1251,8 @@ export type UserUpdateWithoutAppreciateInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
@@ -1194,6 +1276,8 @@ export type UserUncheckedUpdateWithoutAppreciateInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
@@ -1217,6 +1301,8 @@ export type UserCreateWithoutFavorateProjectsInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  profilePhoto?: string | null
+  coverPhoto?: string | null
   availableForHire?: boolean
   active?: boolean
   userType?: $Enums.UserType | null
@@ -1240,6 +1326,8 @@ export type UserUncheckedCreateWithoutFavorateProjectsInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  profilePhoto?: string | null
+  coverPhoto?: string | null
   availableForHire?: boolean
   active?: boolean
   userType?: $Enums.UserType | null
@@ -1279,6 +1367,8 @@ export type UserUpdateWithoutFavorateProjectsInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
@@ -1302,6 +1392,8 @@ export type UserUncheckedUpdateWithoutFavorateProjectsInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
@@ -1325,6 +1417,8 @@ export type UserCreateWithoutCommentsInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  profilePhoto?: string | null
+  coverPhoto?: string | null
   availableForHire?: boolean
   active?: boolean
   userType?: $Enums.UserType | null
@@ -1348,6 +1442,8 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  profilePhoto?: string | null
+  coverPhoto?: string | null
   availableForHire?: boolean
   active?: boolean
   userType?: $Enums.UserType | null
@@ -1387,6 +1483,8 @@ export type UserUpdateWithoutCommentsInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
@@ -1410,6 +1508,8 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
@@ -1433,6 +1533,8 @@ export type UserCreateWithoutLikesInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  profilePhoto?: string | null
+  coverPhoto?: string | null
   availableForHire?: boolean
   active?: boolean
   userType?: $Enums.UserType | null
@@ -1456,6 +1558,8 @@ export type UserUncheckedCreateWithoutLikesInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  profilePhoto?: string | null
+  coverPhoto?: string | null
   availableForHire?: boolean
   active?: boolean
   userType?: $Enums.UserType | null
@@ -1495,6 +1599,8 @@ export type UserUpdateWithoutLikesInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
@@ -1518,6 +1624,8 @@ export type UserUncheckedUpdateWithoutLikesInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
@@ -1541,6 +1649,8 @@ export type UserCreateWithoutFeedbackInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  profilePhoto?: string | null
+  coverPhoto?: string | null
   availableForHire?: boolean
   active?: boolean
   userType?: $Enums.UserType | null
@@ -1564,6 +1674,8 @@ export type UserUncheckedCreateWithoutFeedbackInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  profilePhoto?: string | null
+  coverPhoto?: string | null
   availableForHire?: boolean
   active?: boolean
   userType?: $Enums.UserType | null
@@ -1603,6 +1715,8 @@ export type UserUpdateWithoutFeedbackInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
@@ -1626,6 +1740,8 @@ export type UserUncheckedUpdateWithoutFeedbackInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
@@ -1649,6 +1765,8 @@ export type UserCreateWithoutRatingsInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  profilePhoto?: string | null
+  coverPhoto?: string | null
   availableForHire?: boolean
   active?: boolean
   userType?: $Enums.UserType | null
@@ -1672,6 +1790,8 @@ export type UserUncheckedCreateWithoutRatingsInput = {
   linkedin?: string | null
   github?: string | null
   website?: string | null
+  profilePhoto?: string | null
+  coverPhoto?: string | null
   availableForHire?: boolean
   active?: boolean
   userType?: $Enums.UserType | null
@@ -1711,6 +1831,8 @@ export type UserUpdateWithoutRatingsInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
@@ -1734,6 +1856,8 @@ export type UserUncheckedUpdateWithoutRatingsInput = {
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForHire?: Prisma.BoolFieldUpdateOperationsInput | boolean
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableEnumUserTypeFieldUpdateOperationsInput | $Enums.UserType | null
@@ -1860,6 +1984,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   linkedin?: boolean
   github?: boolean
   website?: boolean
+  profilePhoto?: boolean
+  coverPhoto?: boolean
   availableForHire?: boolean
   active?: boolean
   userType?: boolean
@@ -1885,6 +2011,8 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   linkedin?: boolean
   github?: boolean
   website?: boolean
+  profilePhoto?: boolean
+  coverPhoto?: boolean
   availableForHire?: boolean
   active?: boolean
   userType?: boolean
@@ -1899,6 +2027,8 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   linkedin?: boolean
   github?: boolean
   website?: boolean
+  profilePhoto?: boolean
+  coverPhoto?: boolean
   availableForHire?: boolean
   active?: boolean
   userType?: boolean
@@ -1913,12 +2043,14 @@ export type UserSelectScalar = {
   linkedin?: boolean
   github?: boolean
   website?: boolean
+  profilePhoto?: boolean
+  coverPhoto?: boolean
   availableForHire?: boolean
   active?: boolean
   userType?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "username" | "email" | "password" | "bio" | "linkedin" | "github" | "website" | "availableForHire" | "active" | "userType", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "username" | "email" | "password" | "bio" | "linkedin" | "github" | "website" | "profilePhoto" | "coverPhoto" | "availableForHire" | "active" | "userType", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   ProviderOAuth?: boolean | Prisma.User$ProviderOAuthArgs<ExtArgs>
   portfolios?: boolean | Prisma.User$portfoliosArgs<ExtArgs>
@@ -1958,6 +2090,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     linkedin: string | null
     github: string | null
     website: string | null
+    profilePhoto: string | null
+    coverPhoto: string | null
     availableForHire: boolean
     active: boolean
     userType: $Enums.UserType | null
@@ -2402,6 +2536,8 @@ export interface UserFieldRefs {
   readonly linkedin: Prisma.FieldRef<"User", 'String'>
   readonly github: Prisma.FieldRef<"User", 'String'>
   readonly website: Prisma.FieldRef<"User", 'String'>
+  readonly profilePhoto: Prisma.FieldRef<"User", 'String'>
+  readonly coverPhoto: Prisma.FieldRef<"User", 'String'>
   readonly availableForHire: Prisma.FieldRef<"User", 'Boolean'>
   readonly active: Prisma.FieldRef<"User", 'Boolean'>
   readonly userType: Prisma.FieldRef<"User", 'UserType'>

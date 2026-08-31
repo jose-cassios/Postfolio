@@ -17,6 +17,8 @@ model User {
   linkedin      String?
   github        String?
   website       String?
+  profilePhoto  String?
+  coverPhoto    String?
   availableForHire Boolean @default(false)
   active        Boolean         @default(true)
   userType      UserType?

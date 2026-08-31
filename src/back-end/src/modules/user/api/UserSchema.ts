@@ -39,6 +39,8 @@ const CreateUserBodySchema = z.object({
   linkedin: optionalHttpUrl("LinkedIn"),
   github: optionalHttpUrl("GitHub"),
   website: optionalHttpUrl("website"),
+  profilePhoto: optionalHttpUrl("foto de perfil"),
+  coverPhoto: optionalHttpUrl("imagem de capa"),
   availableForHire: z.boolean().optional(),
   usertype: z.literal("USER"),
 });
@@ -66,6 +68,8 @@ const UpdateUserBodySchema = CreateUserBodySchema.omit({
     linkedin: optionalHttpUrl("LinkedIn"),
     github: optionalHttpUrl("GitHub"),
     website: optionalHttpUrl("website"),
+    profilePhoto: optionalHttpUrl("foto de perfil"),
+    coverPhoto: optionalHttpUrl("imagem de capa"),
     availableForHire: z.boolean(),
   })
   .partial();

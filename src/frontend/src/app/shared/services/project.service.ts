@@ -11,6 +11,7 @@ interface ProjectApiContract extends ProjectDocument {
     id: string;
     username: string;
     bio: string;
+    profilePhoto: string | null;
     availableForHire: boolean;
   };
   metrics?: { likes: number; appreciates: number; comments: number; saves: number };
@@ -209,6 +210,7 @@ export class ProjectService {
             name: project.author.username,
             username: project.author.username,
             bio: project.author.bio,
+            avatar: project.author.profilePhoto ?? undefined,
             availableForHire: project.author.availableForHire,
           }
         : undefined,

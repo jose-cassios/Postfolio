@@ -1,0 +1,16 @@
+:host { display: block; }
+.image-field { display: grid; gap: .55rem; }
+.field-label { font-size: .8rem; font-weight: 650; }
+.preview { position: relative; overflow: hidden; min-height: 120px; border: 1px solid #ded9d0; border-radius: 12px; background: #f5f3ef; }
+.preview img { display: block; width: 100%; max-height: 230px; object-fit: contain; }
+.preview button { position: absolute; top: .5rem; right: .5rem; padding: .35rem .55rem; border: 0; border-radius: 8px; background: rgba(20, 18, 24, .78); color: white; cursor: pointer; }
+.image-actions { display: grid; grid-template-columns: auto auto minmax(0, 1fr); align-items: center; gap: .55rem; }
+.image-actions > span, small { color: #706b76; font-size: .72rem; }
+.upload-button { padding: .65rem .8rem; border: 1px solid #d8d2df; border-radius: 9px; background: #faf8ff; color: #6636b8; font-size: .78rem; font-weight: 700; text-align: center; cursor: pointer; }
+.upload-button input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.upload-button.disabled { cursor: wait; opacity: .6; }
+.url-input { min-width: 0; width: 100%; box-sizing: border-box; padding: .65rem .75rem; border: 1px solid #dcd8d0; border-radius: 9px; font: inherit; }
+.upload-error { margin: 0; color: #b32626; font-size: .76rem; }
+.compact .preview { min-height: 80px; }
+.compact .preview img { max-height: 150px; }
+@media (max-width: 540px) { .image-actions { grid-template-columns: 1fr; } .image-actions > span { text-align: center; } }

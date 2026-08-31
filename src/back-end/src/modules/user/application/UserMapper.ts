@@ -60,6 +60,8 @@ export const UserMapper = {
       prismaUser.linkedin,
       prismaUser.github,
       prismaUser.website,
+      prismaUser.profilePhoto,
+      prismaUser.coverPhoto,
       UserTypeMapper.fromPrismaToDomain(prismaUser.userType),
       prismaUser.availableForHire,
       prismaUser.active
@@ -75,6 +77,8 @@ export const UserMapper = {
       linkedin: user.getLinkedin(),
       github: user.getGithub(),
       website: user.getWebsite(),
+      profilePhoto: user.getProfilePhoto(),
+      coverPhoto: user.getCoverPhoto(),
       userType: UserTypeMapper.fromDomainToPrisma(user.getUserType()),
       availableForHire: user.isAvailableForHire(),
       active: user.isActive(),

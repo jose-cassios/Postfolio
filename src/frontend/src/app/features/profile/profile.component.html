@@ -19,10 +19,17 @@
       </button>
     </div>
   } @else if (displayedProfile(); as user) {
-    <header class="profile-hero">
+    <header class="profile-hero" [class.has-cover]="user.coverPhoto">
+      @if (user.coverPhoto) {
+        <img class="profile-cover-image" [src]="user.coverPhoto" alt="" />
+      }
       <div class="profile-identity">
         <div class="profile-avatar" aria-hidden="true">
-          {{ user.username.charAt(0).toUpperCase() }}
+          @if (user.profilePhoto) {
+            <img [src]="user.profilePhoto" [alt]="user.username" />
+          } @else {
+            {{ user.username.charAt(0).toUpperCase() }}
+          }
         </div>
         <div>
           @if (user.usertype !== 'USER') {
@@ -196,6 +203,18 @@
             <textarea formControlName="bio" rows="4" maxlength="200"></textarea>
             <small class="counter">{{ profileForm.controls.bio.value.length }}/200</small>
           </label>
+          <app-image-upload-field
+            class="full-width"
+            label="Foto de perfil"
+            [value]="profileForm.controls.profilePhoto.value"
+            (valueChange)="profileForm.controls.profilePhoto.setValue($event)"
+          />
+          <app-image-upload-field
+            class="full-width"
+            label="Imagem de capa"
+            [value]="profileForm.controls.coverPhoto.value"
+            (valueChange)="profileForm.controls.coverPhoto.setValue($event)"
+          />
           <label>
             <span>LinkedIn</span>
             <input type="url" formControlName="linkedin" placeholder="https://linkedin.com/in/..." />

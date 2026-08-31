@@ -14,13 +14,20 @@ import {
 } from '../../shared/models/project-content';
 import { ProjectService } from '../../shared/services/project.service';
 import { AuthService } from '../auth/services/auth.service';
+import { ImageUploadFieldComponent } from '../../shared/components/image-upload-field/image-upload-field.component';
 
 type BlockType = ProjectBlock['type'];
 
 @Component({
   selector: 'app-project-editor',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatIconModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatIconModule,
+    ImageUploadFieldComponent,
+  ],
   templateUrl: './project-editor.component.html',
   styleUrl: './project-editor.component.scss',
 })

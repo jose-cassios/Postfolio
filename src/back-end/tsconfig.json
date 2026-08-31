@@ -20,6 +20,7 @@
       "@favorateProjects/*": ["./src/modules/favorateProjects/*"],
       "@comments/*": ["./src/modules/comments/*"],
       "@postMetrics/*": ["./src/modules/postMetrics/*"],
+      "@storage/*": ["./src/modules/storage/*"],
       "@shared/*": ["./src/shared/*"],
       "@compositionRoot/*": ["./src/compositionRoot/*"],
       "@infrastructure/*": ["./src/infrastructure/*"]
