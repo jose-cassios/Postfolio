@@ -77,16 +77,16 @@
     @if (user.reputation; as reputation) {
       <section class="reputation-overview" aria-label="Atuação na comunidade">
         <div class="reputation-visuals" aria-label="Resumo de reputação">
-          <div class="score-chart creator-score" [style.--score-progress]="reputationProgress(reputation.creatorXp, reputation.contributorXp) + '%'">
+          <div class="score-chart creator-score" [style.--score-progress]="reputation.creator.progressPercent + '%'">
             <div class="score-chart-center">
-              <strong>{{ reputation.creatorXp }}</strong>
-              <span>Creator · {{ reputation.creatorRank }}</span>
+              <strong>{{ reputation.creator.xp }}</strong>
+              <span>Creator · {{ reputation.creator.rank }}</span>
             </div>
           </div>
-          <div class="score-chart contributor-score" [style.--score-progress]="reputationProgress(reputation.contributorXp, reputation.creatorXp) + '%'">
+          <div class="score-chart contributor-score" [style.--score-progress]="reputation.contributor.progressPercent + '%'">
             <div class="score-chart-center">
-              <strong>{{ reputation.contributorXp }}</strong>
-              <span>Contributor · {{ reputation.contributorRank }}</span>
+              <strong>{{ reputation.contributor.xp }}</strong>
+              <span>Contributor · {{ reputation.contributor.rank }}</span>
             </div>
           </div>
         </div>

@@ -7,9 +7,10 @@ import {
   Prisma,
   ProjectStatus,
   ReputationAxis,
+  ReputationEventType,
 } from "@PrismaGen/client";
 import { UserMapper } from "@user/application/UserMapper";
-import { resolveReputationRank } from "@user/application/ReputationRanks";
+import { resolveReputationRankProgress } from "@user/application/ReputationRankProgressService";
 import { IUserRepository } from "@user/domain/interfaces/IUserRepository";
 import Email from "@user/domain/valueObject/Email";
 import { UserAchievementContract, UserReputationContract } from "@shared/contracts/UserContracts";
@@ -152,8 +153,10 @@ export class UserRepository implements IUserRepository {
   }
 
   async findReputation(userId: string): Promise<UserReputationContract> {
-    const [scores, rankThresholds, publishedProjects, versionsCreated, postmarksSent,
-      usefulFeedbacks, appliedSuggestions, recognizedContributions] = await Promise.all([
+    const [scores, rankThresholds, publishedProjects, versionsCreated, newVersions,
+      eventParticipations, topThreeFinishes, eventWins, validEventEvaluations,
+      postmarksSent, usefulFeedbacks, appliedSuggestions,
+      recognizedContributions] = await Promise.all([
       prisma.reputationEvent.groupBy({
         by: ["axis"],
         where: { userId },
@@ -169,6 +172,43 @@ export class UserRepository implements IUserRepository {
         },
       }),
       prisma.projectVersion.count({ where: { authorId: userId } }),
+      prisma.projectVersion.count({ where: { authorId: userId, versionNumber: { gt: 1 } } }),
+      prisma.projectCompDetails.findMany({
+        where: { project: { portfolio: { authorId: userId } } },
+        distinct: ["competitionId"],
+        select: { competitionId: true },
+      }),
+      prisma.reputationEvent.findMany({
+        where: {
+          userId,
+          eventId: { not: null },
+          type: {
+            in: [
+              ReputationEventType.EVENT_FIRST_PLACE,
+              ReputationEventType.EVENT_SECOND_PLACE,
+              ReputationEventType.EVENT_THIRD_PLACE,
+            ],
+          },
+        },
+        distinct: ["eventId"],
+        select: { eventId: true },
+      }),
+      prisma.reputationEvent.findMany({
+        where: {
+          userId,
+          eventId: { not: null },
+          type: ReputationEventType.EVENT_FIRST_PLACE,
+        },
+        distinct: ["eventId"],
+        select: { eventId: true },
+      }),
+      prisma.eventEvaluation.findMany({
+        where: { evaluatorId: userId },
+        select: {
+          scores: { select: { criterionId: true } },
+          competition: { select: { criteria: { select: { id: true } } } },
+        },
+      }),
       prisma.appreciate.count({ where: { userId } }),
       prisma.appreciate.count({
         where: {
@@ -185,11 +225,37 @@ export class UserRepository implements IUserRepository {
       scores.find((item) => item.axis === axis)?._sum.points ?? 0;
     const creatorXp = xp(ReputationAxis.CREATOR);
     const contributorXp = xp(ReputationAxis.CONTRIBUTOR);
+    const validEvaluationCount = validEventEvaluations.filter((evaluation) => {
+      const criterionIds = new Set(evaluation.competition.criteria.map((criterion) => criterion.id));
+      const submittedIds = new Set(evaluation.scores.map((score) => score.criterionId));
+      return criterionIds.size > 0
+        && criterionIds.size === submittedIds.size
+        && [...criterionIds].every((criterionId) => submittedIds.has(criterionId));
+    }).length;
+    const missionEvidence = {
+      publishedProjects,
+      newVersions,
+      eventParticipations: eventParticipations.length,
+      topThreeFinishes: topThreeFinishes.length,
+      eventWins: eventWins.length,
+      postmarksSent,
+      usefulFeedbacks,
+      appliedSuggestions,
+      validEventEvaluations: validEvaluationCount,
+    };
     return {
-      creatorXp,
-      contributorXp,
-      creatorRank: resolveReputationRank(creatorXp, rankThresholds),
-      contributorRank: resolveReputationRank(contributorXp, rankThresholds),
+      creator: resolveReputationRankProgress(
+        "CREATOR",
+        creatorXp,
+        rankThresholds,
+        missionEvidence,
+      ),
+      contributor: resolveReputationRankProgress(
+        "CONTRIBUTOR",
+        contributorXp,
+        rankThresholds,
+        missionEvidence,
+      ),
       evidence: {
         publishedProjects,
         versionsCreated,

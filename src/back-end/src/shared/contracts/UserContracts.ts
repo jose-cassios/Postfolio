@@ -25,11 +25,22 @@ export interface ReputationRankConfigContract {
   requiredXp: number;
 }
 
+export interface ReputationRankProgressContract {
+  rank: ReputationRankContract;
+  xp: number;
+  nextRank: ReputationRankContract | null;
+  xpRequired: number | null;
+  xpRemaining: number;
+  progressPercent: number;
+  mission: string | null;
+  missionCurrentValue: number | null;
+  missionRequiredValue: number | null;
+  missionCompleted: boolean;
+}
+
 export interface UserReputationContract {
-  creatorXp: number;
-  contributorXp: number;
-  creatorRank: ReputationRankContract;
-  contributorRank: ReputationRankContract;
+  creator: ReputationRankProgressContract;
+  contributor: ReputationRankProgressContract;
   evidence: {
     publishedProjects: number;
     versionsCreated: number;

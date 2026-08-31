@@ -79,7 +79,7 @@ export class ProfileComponent {
     const { evidence } = reputation;
     const badges: string[] = [];
 
-    if (reputation.creatorXp > 0) badges.push('Criador em evolução');
+    if (reputation.creator.xp > 0) badges.push('Criador em evolução');
     if (evidence.postmarksSent > 0) badges.push('Postmarker');
     if (evidence.usefulFeedbacks > 0) badges.push('Feedback útil');
     if (evidence.appliedSuggestions > 0) badges.push('Sugestão aplicada');
@@ -292,11 +292,6 @@ export class ProfileComponent {
 
   categoryLabel(category: ProjectCategory): string {
     return this.categories.find((item) => item.value === category)?.label ?? category;
-  }
-
-  reputationProgress(score: number, comparisonScore: number): number {
-    const reference = Math.max(10, score, comparisonScore);
-    return Math.round((score / reference) * 100);
   }
 
   private openRequestedModal(): void {

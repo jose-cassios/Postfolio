@@ -44,10 +44,16 @@ describe('ProfileComponent', () => {
       username: 'ana',
       usertype: 'USER',
       reputation: {
-        creatorXp: 3,
-        contributorXp: 7,
-        creatorRank: 'F',
-        contributorRank: 'F',
+        creator: {
+          rank: 'F', xp: 3, nextRank: 'F+', xpRequired: 20, xpRemaining: 17,
+          progressPercent: 15, mission: 'Publique 1 projeto', missionCurrentValue: 0,
+          missionRequiredValue: 1, missionCompleted: false,
+        },
+        contributor: {
+          rank: 'F', xp: 7, nextRank: 'F+', xpRequired: 20, xpRemaining: 13,
+          progressPercent: 35, mission: 'Envie 3 Postmarks', missionCurrentValue: 0,
+          missionRequiredValue: 3, missionCompleted: false,
+        },
         evidence: {
           publishedProjects: 2,
           versionsCreated: 4,

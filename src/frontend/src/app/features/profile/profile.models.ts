@@ -56,10 +56,8 @@ export interface ProfileProject {
 }
 
 export interface UserReputation {
-  creatorXp: number;
-  contributorXp: number;
-  creatorRank: ReputationRank;
-  contributorRank: ReputationRank;
+  creator: ReputationRankProgress;
+  contributor: ReputationRankProgress;
   evidence: {
     publishedProjects: number;
     versionsCreated: number;
@@ -68,6 +66,19 @@ export interface UserReputation {
     appliedSuggestions: number;
     recognizedContributions: number;
   };
+}
+
+export interface ReputationRankProgress {
+  rank: ReputationRank;
+  xp: number;
+  nextRank: ReputationRank | null;
+  xpRequired: number | null;
+  xpRemaining: number;
+  progressPercent: number;
+  mission: string | null;
+  missionCurrentValue: number | null;
+  missionRequiredValue: number | null;
+  missionCompleted: boolean;
 }
 
 export type ReputationRank =
