@@ -76,4 +76,49 @@ describe('ProfileComponent', () => {
     expect(statistics.open).toBe(false);
     expect(statistics.textContent).toContain('Postmarks enviados');
   });
+
+  it('makes Creator and Contributor ranks the primary progress indicators', () => {
+    component.isLoading.set(false);
+    component.profile.set({
+      id: 'user-1',
+      username: 'ana',
+      usertype: 'USER',
+      reputation: {
+        creator: {
+          rank: 'C+', xp: 620, nextRank: 'B', xpRequired: 1100, xpRemaining: 480,
+          progressPercent: 50, mission: 'Publicar 10 projetos', missionCurrentValue: 7,
+          missionRequiredValue: 10, missionCompleted: false,
+        },
+        contributor: {
+          rank: 'E', xp: 60, nextRank: 'E+', xpRequired: 100, xpRemaining: 40,
+          progressPercent: 60, mission: 'Enviar 10 Postmarks', missionCurrentValue: 10,
+          missionRequiredValue: 10, missionCompleted: true,
+        },
+        evidence: {
+          publishedProjects: 7,
+          versionsCreated: 0,
+          postmarksSent: 10,
+          usefulFeedbacks: 0,
+          appliedSuggestions: 0,
+          recognizedContributions: 0,
+        },
+      },
+    });
+    fixture.detectChanges();
+
+    const creator = fixture.nativeElement.querySelector('.creator-rank') as HTMLElement;
+    const trigger = creator.querySelector('button') as HTMLButtonElement;
+
+    expect(creator.textContent).toContain('C+');
+    expect(creator.textContent).toContain('Creator');
+
+    trigger.click();
+    fixture.detectChanges();
+
+    expect(creator.classList).toContain('is-open');
+    expect(creator.textContent).toContain('Creator C+');
+    expect(creator.textContent).toContain('620 / 1100 XP');
+    expect(creator.textContent).toContain('Publicar 10 projetos');
+    expect(creator.textContent).toContain('Missão ainda incompleta');
+  });
 });

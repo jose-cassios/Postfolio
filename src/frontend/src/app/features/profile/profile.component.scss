@@ -566,33 +566,57 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.5rem;
-  margin: 1.35rem 0 1.5rem;
-  padding: 0 0 1.35rem;
-  border-bottom: 1px solid $color-border-default;
+  gap: 2rem;
+  margin: 1.5rem 0;
+  padding: 1.35rem 1.5rem;
+  border: 1px solid $color-border-default;
+  border-radius: 22px;
+  background: $color-bg-surface;
 }
 
 .reputation-visuals {
   display: flex;
   align-items: center;
-  gap: .75rem;
+  gap: 1.25rem;
   flex: 0 0 auto;
 }
 
-.score-chart {
+.rank-indicator {
   --score-color: #7b2ff7;
-  display: grid;
-  place-items: center;
-  width: 76px;
-  height: 76px;
-  padding: 6px;
-  border-radius: 50%;
-  background: conic-gradient(var(--score-color) var(--score-progress), #ede9fe 0);
+  position: relative;
 
-  &.contributor-score { --score-color: #0f766e; }
+  &.contributor-rank { --score-color: #0f766e; }
 }
 
-.score-chart-center {
+.rank-trigger {
+  display: grid;
+  justify-items: center;
+  gap: .45rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: $color-text-primary;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 3px solid rgba(123, 47, 247, .32);
+    outline-offset: 5px;
+    border-radius: 20px;
+  }
+}
+
+.rank-circle {
+  display: grid;
+  place-items: center;
+  width: 104px;
+  height: 104px;
+  padding: 7px;
+  border-radius: 50%;
+  background: conic-gradient(var(--score-color) var(--score-progress), #e9e8ef 0);
+  box-shadow: 0 9px 18px rgba(15, 23, 42, .13);
+}
+
+.rank-circle-center {
   display: grid;
   place-items: center;
   width: 100%;
@@ -602,17 +626,91 @@
 
   strong {
     color: $color-text-primary;
-    font-size: 1.05rem;
+    font-size: 2rem;
     line-height: 1;
+    letter-spacing: -.07em;
   }
 
   span {
-    margin-top: .2rem;
+    margin-top: .22rem;
     color: $color-text-secondary;
-    font-size: .62rem;
+    font-size: .67rem;
     font-weight: 700;
   }
 }
+
+.rank-popover {
+  position: absolute;
+  z-index: 4;
+  top: calc(100% + 12px);
+  left: 50%;
+  display: grid;
+  width: min(300px, calc(100vw - 40px));
+  gap: .8rem;
+  padding: 1rem;
+  border: 1px solid $color-border-default;
+  border-radius: 16px;
+  background: $color-bg-surface;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -4px);
+
+  .rank-indicator:hover &,
+  .rank-indicator:focus-within &,
+  .rank-indicator.is-open & {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, 0);
+  }
+}
+
+.rank-popover-heading {
+  display: grid;
+  gap: .2rem;
+
+  strong { color: $color-text-primary; }
+  strong span { color: var(--score-color); }
+  > span { color: $color-text-secondary; font-size: .78rem; }
+}
+
+.rank-progress-bar {
+  height: 7px;
+  border-radius: 999px;
+  background: #eeedf3;
+  overflow: hidden;
+
+  span {
+    display: block;
+    width: var(--score-progress);
+    height: 100%;
+    border-radius: inherit;
+    background: var(--score-color);
+  }
+}
+
+.rank-mission {
+  display: grid;
+
+  > span { color: $color-text-secondary; font-size: .7rem; font-weight: 700; }
+  strong { color: $color-text-primary; font-size: .82rem; line-height: 1.35; }
+  small { color: $color-text-secondary; font-size: .76rem; }
+}
+
+.rank-requirements {
+  display: grid;
+  gap: .3rem;
+
+  p {
+    display: flex;
+    margin: 0;
+    color: $color-text-secondary;
+    font-size: .77rem;
+  }
+
+  p.complete { color: #168454; }
+}
+
+.rank-max { margin: 0; color: #168454; font-size: .78rem; font-weight: 650; }
 
 .contribution-badges {
   display: grid;
@@ -684,7 +782,13 @@
 }
 
 @media (max-width: 560px) {
-  .reputation-overview { align-items: flex-start; flex-direction: column; }
+  .reputation-overview { align-items: stretch; flex-direction: column; padding: 1.25rem; }
+  .reputation-visuals { justify-content: space-evenly; width: 100%; gap: .75rem; }
+  .rank-circle { width: 94px; height: 94px; }
+  .rank-popover { position: fixed; right: 16px; bottom: 16px; left: 16px; width: auto; transform: translateY(4px); }
+  .rank-indicator:hover .rank-popover,
+  .rank-indicator:focus-within .rank-popover,
+  .rank-indicator.is-open .rank-popover { transform: translateY(0); }
   .contribution-badges { justify-content: start; }
   .statistics-grid { grid-template-columns: repeat(2, 1fr); }
 }

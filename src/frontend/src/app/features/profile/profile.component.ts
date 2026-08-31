@@ -17,6 +17,7 @@ import {
   ProfileProject,
   ProfileUser,
   ProjectCategory,
+  ReputationRankProgress,
 } from './profile.models';
 import { ProfileService } from './profile.service';
 import { ImageUploadFieldComponent } from '../../shared/components/image-upload-field/image-upload-field.component';
@@ -24,6 +25,14 @@ import { ImageUploadFieldComponent } from '../../shared/components/image-upload-
 interface Feedback {
   type: 'success' | 'error';
   message: string;
+}
+
+type ReputationAxis = 'creator' | 'contributor';
+
+interface RankIndicator {
+  axis: ReputationAxis;
+  label: 'Creator' | 'Contributor';
+  progress: ReputationRankProgress;
 }
 
 const PROFILE_URL_PATTERN = /^(https?:\/\/)?\S+$/i;
@@ -54,6 +63,7 @@ export class ProfileComponent {
   readonly showEditModal = signal(false);
   readonly isSavingProfile = signal(false);
   readonly deletingProjectId = signal<string | null>(null);
+  readonly openRankPopover = signal<ReputationAxis | null>(null);
 
   private requestedEdit = false;
   private requestedProject = false;
@@ -86,6 +96,15 @@ export class ProfileComponent {
     if (evidence.recognizedContributions > 0) badges.push('Contribuição reconhecida');
 
     return badges.slice(0, 4);
+  });
+  readonly rankIndicators = computed<RankIndicator[]>(() => {
+    const reputation = this.displayedProfile()?.reputation;
+    if (!reputation) return [];
+
+    return [
+      { axis: 'creator', label: 'Creator', progress: reputation.creator },
+      { axis: 'contributor', label: 'Contributor', progress: reputation.contributor },
+    ];
   });
   readonly categories: ReadonlyArray<{
     value: ProjectCategory;
@@ -292,6 +311,22 @@ export class ProfileComponent {
 
   categoryLabel(category: ProjectCategory): string {
     return this.categories.find((item) => item.value === category)?.label ?? category;
+  }
+
+  toggleRankPopover(axis: ReputationAxis): void {
+    this.openRankPopover.update((current) => current === axis ? null : axis);
+  }
+
+  isRankPopoverOpen(axis: ReputationAxis): boolean {
+    return this.openRankPopover() === axis;
+  }
+
+  rankPopoverId(axis: ReputationAxis): string {
+    return `rank-progress-${axis}`;
+  }
+
+  isXpRequirementComplete(progress: ReputationRankProgress): boolean {
+    return progress.xpRequired === null || progress.xp >= progress.xpRequired;
   }
 
   private openRequestedModal(): void {

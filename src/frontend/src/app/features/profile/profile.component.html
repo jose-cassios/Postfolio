@@ -76,19 +76,77 @@
 
     @if (user.reputation; as reputation) {
       <section class="reputation-overview" aria-label="Atuação na comunidade">
-        <div class="reputation-visuals" aria-label="Resumo de reputação">
-          <div class="score-chart creator-score" [style.--score-progress]="reputation.creator.progressPercent + '%'">
-            <div class="score-chart-center">
-              <strong>{{ reputation.creator.xp }}</strong>
-              <span>Creator · {{ reputation.creator.rank }}</span>
-            </div>
-          </div>
-          <div class="score-chart contributor-score" [style.--score-progress]="reputation.contributor.progressPercent + '%'">
-            <div class="score-chart-center">
-              <strong>{{ reputation.contributor.xp }}</strong>
-              <span>Contributor · {{ reputation.contributor.rank }}</span>
-            </div>
-          </div>
+        <div class="reputation-visuals" aria-label="Ranks de reputação">
+          @for (indicator of rankIndicators(); track indicator.axis) {
+            <article
+              class="rank-indicator"
+              [class.creator-rank]="indicator.axis === 'creator'"
+              [class.contributor-rank]="indicator.axis === 'contributor'"
+              [class.is-open]="isRankPopoverOpen(indicator.axis)"
+            >
+              <button
+                class="rank-trigger"
+                type="button"
+                [attr.aria-label]="'Ver progresso do rank ' + indicator.label"
+                [attr.aria-controls]="rankPopoverId(indicator.axis)"
+                [attr.aria-expanded]="isRankPopoverOpen(indicator.axis)"
+                (click)="toggleRankPopover(indicator.axis)"
+              >
+                <span class="rank-circle" [style.--score-progress]="indicator.progress.progressPercent + '%'">
+                  <span class="rank-circle-center">
+                    <strong>{{ indicator.progress.rank }}</strong>
+                    <span>{{ indicator.label }}</span>
+                  </span>
+                </span>
+              </button>
+
+              <div class="rank-popover" [id]="rankPopoverId(indicator.axis)" role="tooltip">
+                <div class="rank-popover-heading">
+                  <strong>
+                    {{ indicator.label }} {{ indicator.progress.rank }}
+                    @if (indicator.progress.nextRank) { <span>→ {{ indicator.progress.nextRank }}</span> }
+                  </strong>
+                  <span>
+                    {{ indicator.progress.nextRank
+                      ? indicator.progress.xp + ' / ' + indicator.progress.xpRequired + ' XP'
+                      : indicator.progress.xp + ' XP · Rank máximo' }}
+                  </span>
+                </div>
+
+                @if (indicator.progress.nextRank) {
+                  <div
+                    class="rank-progress-bar"
+                    role="progressbar"
+                    [attr.aria-valuemin]="0"
+                    [attr.aria-valuemax]="100"
+                    [attr.aria-valuenow]="indicator.progress.progressPercent"
+                    [style.--score-progress]="indicator.progress.progressPercent + '%'"
+                  ><span></span></div>
+
+                  <div class="rank-mission">
+                    <span>Missão</span>
+                    <strong>{{ indicator.progress.mission }}</strong>
+                    <small>{{ indicator.progress.missionCurrentValue }} / {{ indicator.progress.missionRequiredValue }}</small>
+                  </div>
+
+                  <div class="rank-requirements" aria-label="Requisitos para o próximo rank">
+                    <p [class.complete]="isXpRequirementComplete(indicator.progress)">
+                      <span aria-hidden="true">{{ isXpRequirementComplete(indicator.progress) ? '✓' : '○' }}</span>
+                      {{ isXpRequirementComplete(indicator.progress)
+                        ? 'XP necessário atingido'
+                        : indicator.progress.xp + ' / ' + indicator.progress.xpRequired + ' XP' }}
+                    </p>
+                    <p [class.complete]="indicator.progress.missionCompleted">
+                      <span aria-hidden="true">{{ indicator.progress.missionCompleted ? '✓' : '○' }}</span>
+                      {{ indicator.progress.missionCompleted ? 'Missão concluída' : 'Missão ainda incompleta' }}
+                    </p>
+                  </div>
+                } @else {
+                  <p class="rank-max">✓ Todos os requisitos deste eixo foram concluídos.</p>
+                }
+              </div>
+            </article>
+          }
         </div>
 
         <div class="contribution-badges" aria-label="Reconhecimentos da comunidade">
