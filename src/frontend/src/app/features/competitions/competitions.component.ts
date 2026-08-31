@@ -108,6 +108,18 @@ export class CompetitionsComponent {
     );
   }
 
+  finalizeResults(competition: Competition) {
+    if (!this.canManageCompetitions()) return;
+    this.run(
+      () => this.service.finalizeResults(competition.id),
+      'Resultados encerrados e reputação distribuída.',
+    );
+  }
+
+  canFinalizeResults(competition: Competition) {
+    return Boolean(competition.resultsAt && new Date(competition.resultsAt) <= new Date());
+  }
+
   addCriterion() {
     if (this.criteriaControls.length < 8) {
       this.creationForm.controls.criteria.push(this.createCriterion('', 1));

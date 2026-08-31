@@ -10,6 +10,7 @@ export interface ICompetitionRepository {
   findMany(): Promise<Competition[]>;
   findContracts(): Promise<CompetitionContract[]>;
   findContractById(id: string): Promise<CompetitionContract | null>;
+  finalizeResults(competitionId: string): Promise<CompetitionContract>;
   subscribeProject(competitionId: string, projectId: string, userId: string): Promise<void>;
   unsubscribeProject(competitionId: string, projectId: string): Promise<void>;
   upsertEvaluation(

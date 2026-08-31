@@ -2097,6 +2097,7 @@ export const CompetitionScalarFieldEnum = {
   votingStartsAt: 'votingStartsAt',
   votingEndsAt: 'votingEndsAt',
   resultsAt: 'resultsAt',
+  resultsFinalizedAt: 'resultsFinalizedAt',
   minimumEvaluations: 'minimumEvaluations'
 } as const
 

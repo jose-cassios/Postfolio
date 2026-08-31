@@ -27,6 +27,7 @@ export interface Competition {
   votingStartsAt: string | null;
   votingEndsAt: string | null;
   resultsAt: string | null;
+  resultsFinalizedAt: string | null;
   status: CompetitionStatus;
   minimumEvaluations: number;
   criteria: Array<{ id: string; name: string; weight: number; position: number }>;
@@ -95,6 +96,14 @@ export class CompetitionService {
     return this.api.get<EvaluationProgress>(
       `competition/${competitionId}/evaluation-progress`,
       undefined,
+      this.auth.authOptions(),
+    );
+  }
+
+  finalizeResults(competitionId: string) {
+    return this.api.post<Competition>(
+      `competition/${competitionId}/finalize-results`,
+      {},
       this.auth.authOptions(),
     );
   }

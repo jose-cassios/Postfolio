@@ -19,6 +19,7 @@ export interface ICompetitionService {
     competitionId: string,
     userId: string,
   ): Promise<EvaluationProgressContract>;
+  finalizeResults(competitionId: string, userId: string): Promise<CompetitionContract>;
 
   findMany(): Promise<Competition[]>;
   findById(id: string): Promise<Competition | null>;

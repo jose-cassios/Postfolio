@@ -16,6 +16,13 @@ interface ManagedUser {
   active: boolean;
 }
 
+type ReputationRank = 'F' | 'F+' | 'E' | 'E+' | 'D' | 'D+' | 'C' | 'C+' | 'B' | 'B+' | 'A' | 'A+' | 'S' | 'SS';
+
+interface ReputationRankConfig {
+  rank: ReputationRank;
+  requiredXp: number;
+}
+
 @Component({
   selector: 'app-admin',
   imports: [CommonModule, FormsModule, RouterLink],
@@ -30,7 +37,18 @@ export class AdminComponent {
   readonly loading = signal(true);
   readonly pendingUserId = signal<string | null>(null);
   readonly notice = signal('');
+  readonly rankConfigOpen = signal(false);
+  readonly rankConfigLoading = signal(false);
+  readonly rankConfigSaving = signal(false);
+  readonly rankConfigError = signal('');
   readonly selectedRoles: Record<string, UserRole> = {};
+  readonly rankValues: Record<ReputationRank, number> = {
+    F: 0, 'F+': 20, E: 50, 'E+': 100, D: 180, 'D+': 300, C: 500,
+    'C+': 750, B: 1100, 'B+': 1550, A: 2100, 'A+': 2800, S: 3800, SS: 5000,
+  };
+  readonly ranks: readonly ReputationRank[] = [
+    'F', 'F+', 'E', 'E+', 'D', 'D+', 'C', 'C+', 'B', 'B+', 'A', 'A+', 'S', 'SS',
+  ];
   readonly roles: ReadonlyArray<{ value: UserRole; label: string }> = [
     { value: 'USER', label: 'User' },
     { value: 'MODERATOR', label: 'Moderator' },
@@ -81,6 +99,58 @@ export class AdminComponent {
 
   roleLabel(role: UserRole) {
     return this.roles.find((item) => item.value === role)?.label ?? role;
+  }
+
+  openRankConfig() {
+    if (!this.isAdmin()) return;
+
+    this.rankConfigOpen.set(true);
+    this.rankConfigLoading.set(true);
+    this.rankConfigError.set('');
+    this.api.get<ReputationRankConfig[]>('user/admin/rank-config', undefined, this.auth.authOptions())
+      .pipe(finalize(() => this.rankConfigLoading.set(false)))
+      .subscribe({
+        next: (config) => config.forEach((item) => { this.rankValues[item.rank] = item.requiredXp; }),
+        error: (error) => this.rankConfigError.set(error?.error?.message || 'Não foi possível carregar a configuração de ranks.'),
+      });
+  }
+
+  closeRankConfig() {
+    if (!this.rankConfigSaving()) this.rankConfigOpen.set(false);
+  }
+
+  isRankConfigValid() {
+    let previous = -1;
+    for (const rank of this.ranks) {
+      const value = Number(this.rankValues[rank]);
+      if (!Number.isInteger(value) || value < 0 || (rank === 'F' && value !== 0) || value <= previous) {
+        return false;
+      }
+      previous = value;
+    }
+    return true;
+  }
+
+  saveRankConfig() {
+    if (this.rankConfigSaving()) return;
+    if (!this.isRankConfigValid()) {
+      this.rankConfigError.set('F deve ser 0 e cada rank seguinte precisa exigir um XP maior que o anterior.');
+      return;
+    }
+
+    this.rankConfigSaving.set(true);
+    this.rankConfigError.set('');
+    const ranks = this.ranks.map((rank) => ({ rank, requiredXp: Number(this.rankValues[rank]) }));
+    this.api.put<ReputationRankConfig[]>('user/admin/rank-config', { ranks }, this.auth.authOptions())
+      .pipe(finalize(() => this.rankConfigSaving.set(false)))
+      .subscribe({
+        next: (config) => {
+          config.forEach((item) => { this.rankValues[item.rank] = item.requiredXp; });
+          this.rankConfigOpen.set(false);
+          this.notice.set('Configuração de ranks atualizada. Os novos limites já estão em uso.');
+        },
+        error: (error) => this.rankConfigError.set(error?.error?.message || 'Não foi possível salvar a configuração de ranks.'),
+      });
   }
 
   private updateUser(id: string, url: string, body: object, message: string) {

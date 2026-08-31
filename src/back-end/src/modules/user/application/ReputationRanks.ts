@@ -1,4 +1,5 @@
 import { ReputationRank } from "@PrismaGen/client";
+import { ReputationRankConfigContract } from "@shared/contracts/UserContracts";
 
 export const REPUTATION_RANKS = [
   { value: ReputationRank.F, label: "F" },
@@ -19,9 +20,47 @@ export const REPUTATION_RANKS = [
 
 export type ReputationRankLabel = (typeof REPUTATION_RANKS)[number]["label"];
 
+export const REPUTATION_RANK_LABELS = REPUTATION_RANKS.map((rank) => rank.label);
+
 export interface ReputationRankThreshold {
   rank: ReputationRank;
   requiredXp: number;
+}
+
+export function reputationRankFromLabel(label: ReputationRankLabel): ReputationRank {
+  const rank = REPUTATION_RANKS.find((item) => item.label === label);
+  if (!rank) throw new Error(`Rank desconhecido: ${label}`);
+  return rank.value;
+}
+
+export function reputationRankLabelFromValue(rank: ReputationRank): ReputationRankLabel {
+  const item = REPUTATION_RANKS.find((candidate) => candidate.value === rank);
+  if (!item) throw new Error(`Rank desconhecido: ${rank}`);
+  return item.label;
+}
+
+/** Validates persisted thresholds independently from the HTTP form. */
+export function validateReputationRankConfig(
+  config: readonly ReputationRankConfigContract[],
+): void {
+  if (config.length !== REPUTATION_RANKS.length) {
+    throw new Error("Informe todos os ranks exatamente uma vez.");
+  }
+
+  let previousXp = -1;
+  for (const expected of REPUTATION_RANKS) {
+    const item = config.find((candidate) => candidate.rank === expected.label);
+    if (!item || !Number.isInteger(item.requiredXp) || item.requiredXp < 0) {
+      throw new Error(`O XP do rank ${expected.label} deve ser um inteiro maior ou igual a zero.`);
+    }
+    if (expected.label === "F" && item.requiredXp !== 0) {
+      throw new Error("O rank F deve permanecer com 0 XP.");
+    }
+    if (item.requiredXp <= previousXp) {
+      throw new Error("Cada rank deve exigir mais XP que o anterior.");
+    }
+    previousXp = item.requiredXp;
+  }
 }
 
 export function resolveReputationRank(

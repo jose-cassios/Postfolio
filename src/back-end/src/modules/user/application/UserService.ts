@@ -1,5 +1,5 @@
 import User from "@user/domain/entities/User";
-import { Conflict, NotFound, Unauthorized } from "@shared/error/HttpError";
+import { BadRequest, Conflict, NotFound, Unauthorized } from "@shared/error/HttpError";
 import { Token } from "@shared/util/Token";
 import { IUserRepository } from "@user/domain/interfaces/IUserRepository";
 import Email from "@user/domain/valueObject/Email";
@@ -10,6 +10,8 @@ import { TYPES } from "@compositionRoot/Types";
 import { UserCreatedEvent } from "@shared/event/UserCreatedEvent";
 import { EventListener } from "@shared/event/EventListener";
 import { UserType } from "@user/domain/enum/UserType";
+import { validateReputationRankConfig } from "@user/application/ReputationRanks";
+import { ReputationRankConfigContract } from "@shared/contracts/UserContracts";
 
 @injectable()
 export class UserService implements IUserService {
@@ -149,5 +151,18 @@ export class UserService implements IUserService {
 
   async findReputation(userId: string) {
     return await this.repository.findReputation(userId);
+  }
+
+  async findReputationRankConfig() {
+    return await this.repository.findReputationRankConfig();
+  }
+
+  async updateReputationRankConfig(config: ReputationRankConfigContract[]) {
+    try {
+      validateReputationRankConfig(config);
+    } catch (error) {
+      throw new BadRequest(error instanceof Error ? error.message : "Configuracao de ranks invalida.");
+    }
+    return await this.repository.updateReputationRankConfig(config);
   }
 }

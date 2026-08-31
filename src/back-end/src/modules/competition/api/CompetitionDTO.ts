@@ -41,6 +41,7 @@ export interface CompetitionContract {
   votingStartsAt: Date | null;
   votingEndsAt: Date | null;
   resultsAt: Date | null;
+  resultsFinalizedAt: Date | null;
   status: "UPCOMING" | "REGISTRATION" | "WAITING_VOTING" | "VOTING" | "WAITING_RESULTS" | "RESULTS";
   minimumEvaluations: number;
   criteria: EventCriterionContract[];

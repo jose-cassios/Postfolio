@@ -16,7 +16,10 @@
     <section class="panel">
       <div class="panel-heading">
         <div><h2>Usuários cadastrados</h2><p>Escolha um dos três papéis disponíveis: User, Moderator ou Admin.</p></div>
-        <a routerLink="/competicoes">Ir para Eventos</a>
+        <div class="panel-actions">
+          <button class="rank-settings-button" type="button" (click)="openRankConfig()">Configuração de Ranks</button>
+          <a routerLink="/competicoes">Ir para Eventos</a>
+        </div>
       </div>
 
       @if (loading()) { <p class="state">Carregando usuários...</p> }
@@ -44,5 +47,45 @@
         </div>
       }
     </section>
+
+    @if (rankConfigOpen()) {
+      <div class="modal-backdrop" (click)="closeRankConfig()"></div>
+      <section class="rank-modal" role="dialog" aria-modal="true" aria-labelledby="rank-config-title">
+        <header>
+          <span>Administração</span>
+          <h2 id="rank-config-title">Configuração de Ranks</h2>
+          <p>Estes limites valem igualmente para Creator XP e Contributor XP.</p>
+        </header>
+
+        @if (rankConfigLoading()) {
+          <p class="state">Carregando configuração...</p>
+        } @else {
+          <form (ngSubmit)="saveRankConfig()">
+            <div class="rank-grid">
+              @for (rank of ranks; track rank) {
+                <label>
+                  <span>Rank {{ rank }}</span>
+                  <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    [(ngModel)]="rankValues[rank]"
+                    [name]="'rank-' + rank"
+                    [disabled]="rank === 'F' || rankConfigSaving()"
+                    required
+                  />
+                  <small>XP mínimo</small>
+                </label>
+              }
+            </div>
+            @if (rankConfigError()) { <p class="rank-error" role="alert">{{ rankConfigError() }}</p> }
+            <footer>
+              <button class="cancel-button" type="button" [disabled]="rankConfigSaving()" (click)="closeRankConfig()">Cancelar</button>
+              <button type="submit" [disabled]="rankConfigSaving() || rankConfigLoading()">{{ rankConfigSaving() ? 'Salvando...' : 'Salvar configuração' }}</button>
+            </footer>
+          </form>
+        }
+      </section>
+    }
   }
 </main>

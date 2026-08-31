@@ -11,9 +11,13 @@ import {
 } from "@PrismaGen/client";
 import { UserMapper } from "@user/application/UserMapper";
 import { resolveReputationRankProgress } from "@user/application/ReputationRankProgressService";
+import {
+  REPUTATION_RANKS,
+  reputationRankFromLabel,
+} from "@user/application/ReputationRanks";
 import { IUserRepository } from "@user/domain/interfaces/IUserRepository";
 import Email from "@user/domain/valueObject/Email";
-import { UserAchievementContract, UserReputationContract } from "@shared/contracts/UserContracts";
+import { ReputationRankConfigContract, UserAchievementContract, UserReputationContract } from "@shared/contracts/UserContracts";
 
 export class UserRepository implements IUserRepository {
   async create(user: User): Promise<User> {
@@ -83,7 +87,7 @@ export class UserRepository implements IUserRepository {
 
   async findAchievements(userId: string): Promise<UserAchievementContract[]> {
     const competitions = await prisma.competition.findMany({
-      where: { resultsAt: { lte: new Date() } },
+      where: { resultsFinalizedAt: { not: null } },
       include: {
         criteria: true,
         evaluations: { include: { scores: true } },
@@ -150,6 +154,33 @@ export class UserRepository implements IUserRepository {
           : [];
       });
     });
+  }
+
+  async findReputationRankConfig(): Promise<ReputationRankConfigContract[]> {
+    const config = await prisma.reputationRankConfig.findMany({
+      select: { rank: true, requiredXp: true },
+    });
+    const byRank = new Map(config.map((item) => [item.rank, item.requiredXp]));
+    return REPUTATION_RANKS.map((rank) => ({
+      rank: rank.label,
+      requiredXp: byRank.get(rank.value) ?? 0,
+    }));
+  }
+
+  async updateReputationRankConfig(
+    config: ReputationRankConfigContract[],
+  ): Promise<ReputationRankConfigContract[]> {
+    await prisma.$transaction(async (tx) => {
+      for (const item of config) {
+        const rank = reputationRankFromLabel(item.rank);
+        await tx.reputationRankConfig.upsert({
+          where: { rank },
+          update: { requiredXp: item.requiredXp },
+          create: { rank, requiredXp: item.requiredXp },
+        });
+      }
+    });
+    return await this.findReputationRankConfig();
   }
 
   async findReputation(userId: string): Promise<UserReputationContract> {

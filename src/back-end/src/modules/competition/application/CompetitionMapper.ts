@@ -17,6 +17,7 @@ export const CompetitionMapper = {
       model.votingStartsAt,
       model.votingEndsAt,
       model.resultsAt,
+      model.resultsFinalizedAt,
       model.minimumEvaluations,
     );
   },
@@ -34,6 +35,7 @@ export const CompetitionMapper = {
       votingStartsAt: domain.votingStartsAt,
       votingEndsAt: domain.votingEndsAt,
       resultsAt: domain.resultsAt,
+      resultsFinalizedAt: domain.resultsFinalizedAt,
       minimumEvaluations: domain.minimumEvaluations,
     };
   },

@@ -92,6 +92,7 @@ model Competition {
   votingStartsAt       DateTime?
   votingEndsAt         DateTime?
   resultsAt            DateTime?
+  resultsFinalizedAt   DateTime?
   minimumEvaluations   Int                  @default(3)
   worksDetails         ProjectCompDetails[]
   Rating               Rating[]

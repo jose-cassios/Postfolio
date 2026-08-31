@@ -22,6 +22,7 @@ import {
   ReputationRankMissionEvidence,
   resolveReputationRankProgress,
 } from "./ReputationRankProgressService";
+import { validateReputationRankConfig } from "./ReputationRanks";
 
 const thresholds = [
   [ReputationRank.F, 0], [ReputationRank.F_PLUS, 20], [ReputationRank.E, 50],
@@ -140,5 +141,31 @@ describe("ReputationRankProgressService", () => {
       mission: null,
       missionCompleted: true,
     }));
+  });
+
+  it("accepts a complete strictly increasing persisted rank configuration", () => {
+    expect(() => validateReputationRankConfig([
+      { rank: "F", requiredXp: 0 }, { rank: "F+", requiredXp: 20 },
+      { rank: "E", requiredXp: 50 }, { rank: "E+", requiredXp: 100 },
+      { rank: "D", requiredXp: 180 }, { rank: "D+", requiredXp: 300 },
+      { rank: "C", requiredXp: 500 }, { rank: "C+", requiredXp: 750 },
+      { rank: "B", requiredXp: 1100 }, { rank: "B+", requiredXp: 1550 },
+      { rank: "A", requiredXp: 2100 }, { rank: "A+", requiredXp: 2800 },
+      { rank: "S", requiredXp: 3800 }, { rank: "SS", requiredXp: 5000 },
+    ])).not.toThrow();
+  });
+
+  it("rejects invalid persisted rank configurations even outside the HTTP form", () => {
+    const invalid = [
+      { rank: "F", requiredXp: 1 }, { rank: "F+", requiredXp: 20 },
+      { rank: "E", requiredXp: 20 }, { rank: "E+", requiredXp: 100 },
+      { rank: "D", requiredXp: 180 }, { rank: "D+", requiredXp: 300 },
+      { rank: "C", requiredXp: 500 }, { rank: "C+", requiredXp: 750 },
+      { rank: "B", requiredXp: 1100 }, { rank: "B+", requiredXp: 1550 },
+      { rank: "A", requiredXp: 2100 }, { rank: "A+", requiredXp: 2800 },
+      { rank: "S", requiredXp: 3800 }, { rank: "SS", requiredXp: 5000 },
+    ] as const;
+
+    expect(() => validateReputationRankConfig(invalid)).toThrow("rank F");
   });
 });

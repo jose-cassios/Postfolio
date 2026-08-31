@@ -11,6 +11,7 @@ import {
   CreateUserRequest,
   UpdateUserRequest,
   UpdateUserRoleRequest,
+  UpdateReputationRankConfigRequest,
   PublicProfileRequest,
 } from "@user/api/UserSchema";
 import { IUserService } from "@user/domain/interfaces/IUserService";
@@ -97,6 +98,19 @@ export class UserController {
       id: user.getId(),
       usertype: UserTypeMapper.fromDomainToPrisma(user.getUserType()),
     });
+  }
+
+  async getReputationRankConfig(req: FastifyRequest, reply: FastifyReply) {
+    await this.requireAdmin(req.user?.id);
+    reply.send(await this.userService.findReputationRankConfig());
+  }
+
+  async updateReputationRankConfig(
+    req: UpdateReputationRankConfigRequest,
+    reply: FastifyReply,
+  ) {
+    await this.requireAdmin(req.user?.id);
+    reply.send(await this.userService.updateReputationRankConfig(req.body.ranks));
   }
 
   async create(req: CreateUserRequest, reply: FastifyReply) {
@@ -257,5 +271,12 @@ export class UserController {
         reputation,
       },
     });
+  }
+
+  private async requireAdmin(userId?: string): Promise<void> {
+    const requester = userId ? await this.userService.findById(userId) : null;
+    if (requester?.getUserType() !== UserType.ADMIN) {
+      throw new Forbidden("Apenas administradores podem alterar a configuracao de ranks.");
+    }
   }
 }

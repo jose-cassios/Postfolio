@@ -7,6 +7,7 @@ import {
   userRouteSchema,
   UpdateUserRequest,
   UpdateUserRoleRequest,
+  UpdateReputationRankConfigRequest,
   PublicProfileRequest,
 } from "@user/api/UserSchema";
 
@@ -20,6 +21,21 @@ function userRoutesPlugin(
     "/admin/users",
     { preValidation: UserMiddle.authenticate },
     (req, reply) => userController.getAll(req, reply)
+  );
+
+  app.get(
+    "/admin/rank-config",
+    { preValidation: UserMiddle.authenticate },
+    (req, reply) => userController.getReputationRankConfig(req, reply)
+  );
+
+  app.put(
+    "/admin/rank-config",
+    { schema: userRouteSchema.reputationRankConfig, preValidation: UserMiddle.authenticate },
+    (req, reply) => userController.updateReputationRankConfig(
+      req as UpdateReputationRankConfigRequest,
+      reply,
+    )
   );
 
   app.put(

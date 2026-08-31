@@ -15,6 +15,7 @@ export class Competition {
     public votingStartsAt: Date | null = null,
     public votingEndsAt: Date | null = null,
     public resultsAt: Date | null = null,
+    public resultsFinalizedAt: Date | null = null,
     public minimumEvaluations: number = 3,
     public criteria: Array<{ name: string; weight: number }> = [],
   ) { }
@@ -33,6 +34,7 @@ export class Competition {
       dto.votingStartsAt,
       dto.votingEndsAt,
       dto.resultsAt,
+      null,
       dto.minimumEvaluations,
       dto.criteria,
     );

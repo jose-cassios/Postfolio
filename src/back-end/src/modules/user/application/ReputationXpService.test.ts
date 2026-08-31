@@ -1,6 +1,7 @@
 import {
   canAwardEventEvaluationXp,
   EVENT_EVALUATION_XP_LIMIT,
+  eventPlacementRewardType,
   postmarkStatusXpRewards,
   resolveXpGrant,
   XpAxis,
@@ -42,6 +43,13 @@ describe("ReputationXpService", () => {
     expect(canAwardEventEvaluationXp(0)).toBe(true);
     expect(canAwardEventEvaluationXp(4)).toBe(true);
     expect(canAwardEventEvaluationXp(5)).toBe(false);
+  });
+
+  it("maps only the three official placements to their creator rewards", () => {
+    expect(eventPlacementRewardType(1)).toBe("EVENT_FIRST_PLACE");
+    expect(eventPlacementRewardType(2)).toBe("EVENT_SECOND_PLACE");
+    expect(eventPlacementRewardType(3)).toBe("EVENT_THIRD_PLACE");
+    expect(eventPlacementRewardType(4)).toBeNull();
   });
 
   it("grants useful and applied XP when a pending Postmark is applied directly", () => {

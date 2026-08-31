@@ -74,6 +74,12 @@
             </div>
           }
 
+          @if (canManageCompetitions() && competition.status === 'WAITING_RESULTS') {
+            <div class="result-actions">
+              <button [disabled]="pending() || !canFinalizeResults(competition)" (click)="finalizeResults(competition)">Encerrar e consolidar resultados</button>
+            </div>
+          }
+
           <div class="submissions">
             @for (project of competition.submissions; track project.id) {
               <article class="submission" [class.winner]="project.rank">

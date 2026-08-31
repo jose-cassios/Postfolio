@@ -103,6 +103,14 @@ export function canAwardEventEvaluationXp(awardedEvaluations: number): boolean {
   return awardedEvaluations < EVENT_EVALUATION_XP_LIMIT;
 }
 
+export function eventPlacementRewardType(rank: number): XpRewardEventType | null {
+  return ({
+    1: "EVENT_FIRST_PLACE",
+    2: "EVENT_SECOND_PLACE",
+    3: "EVENT_THIRD_PLACE",
+  } as Record<number, XpRewardEventType | undefined>)[rank] ?? null;
+}
+
 export function resolveXpGrant(input: XpGrantInput): {
   axis: XpAxis;
   points: number;

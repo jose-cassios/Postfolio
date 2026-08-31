@@ -82,6 +82,37 @@ const UpdateUserRoleBodySchema = z.object({
   usertype: z.enum(["USER", "MODERATOR", "ADMIN"]),
 });
 
+const ReputationRankSchema = z.enum([
+  "F", "F+", "E", "E+", "D", "D+", "C", "C+", "B", "B+", "A", "A+", "S", "SS",
+]);
+const UpdateReputationRankConfigBodySchema = z.object({
+  ranks: z.array(z.object({
+    rank: ReputationRankSchema,
+    requiredXp: z.number().int().min(0),
+  })).length(14),
+}).superRefine(({ ranks }, context) => {
+  const expected = ["F", "F+", "E", "E+", "D", "D+", "C", "C+", "B", "B+", "A", "A+", "S", "SS"];
+  if (new Set(ranks.map((rank) => rank.rank)).size !== expected.length) {
+    context.addIssue({ code: "custom", path: ["ranks"], message: "Informe cada rank uma unica vez." });
+    return;
+  }
+  let previousXp = -1;
+  for (const rank of expected) {
+    const item = ranks.find((candidate) => candidate.rank === rank);
+    if (!item) {
+      context.addIssue({ code: "custom", path: ["ranks"], message: "Informe todos os ranks." });
+      return;
+    }
+    if (rank === "F" && item.requiredXp !== 0) {
+      context.addIssue({ code: "custom", path: ["ranks"], message: "O rank F deve permanecer em 0 XP." });
+    }
+    if (item.requiredXp <= previousXp) {
+      context.addIssue({ code: "custom", path: ["ranks"], message: "Cada rank deve exigir mais XP que o anterior." });
+    }
+    previousXp = item.requiredXp;
+  }
+});
+
 type UpdateUserRequest = FastifyRequest<{
   Params: z.infer<typeof UpdateUserParamsSchema>;
   Body: z.infer<typeof UpdateUserBodySchema>;
@@ -90,6 +121,10 @@ type UpdateUserRequest = FastifyRequest<{
 type UpdateUserRoleRequest = FastifyRequest<{
   Params: z.infer<typeof UpdateUserParamsSchema>;
   Body: z.infer<typeof UpdateUserRoleBodySchema>;
+}>;
+
+type UpdateReputationRankConfigRequest = FastifyRequest<{
+  Body: z.infer<typeof UpdateReputationRankConfigBodySchema>;
 }>;
 
 const PublicProfileParamsSchema = z.object({
@@ -112,6 +147,9 @@ const userRouteSchema = {
     params: UpdateUserParamsSchema,
     body: UpdateUserRoleBodySchema,
   },
+  reputationRankConfig: {
+    body: UpdateReputationRankConfigBodySchema,
+  },
   login: {
     body: LoginUserBodySchema,
   },
@@ -125,6 +163,7 @@ export {
   CreateUserRequest,
   UpdateUserRequest,
   UpdateUserRoleRequest,
+  UpdateReputationRankConfigRequest,
   LoginRequest,
   PublicProfileRequest,
 };

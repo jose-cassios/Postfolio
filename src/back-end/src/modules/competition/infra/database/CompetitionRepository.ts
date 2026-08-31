@@ -13,6 +13,7 @@ import { Conflict, NotFound } from "@shared/error/HttpError";
 import {
   canAwardEventEvaluationXp,
   distributeXp,
+  eventPlacementRewardType,
 } from "@user/application/ReputationXpService";
 
 export class PrismaCompetitionRepository implements ICompetitionRepository {
@@ -89,9 +90,7 @@ export class PrismaCompetitionRepository implements ICompetitionRepository {
       orderBy: { registrationStartsAt: "desc" },
       include: this.contractInclude(),
     });
-    const contracts = models.map((model) => this.toContract(model));
-    await Promise.all(contracts.map((competition) => this.distributeResultXp(competition)));
-    return contracts;
+    return models.map((model) => this.toContract(model));
   }
 
   async findContractById(id: string): Promise<CompetitionContract | null> {
@@ -100,9 +99,45 @@ export class PrismaCompetitionRepository implements ICompetitionRepository {
       include: this.contractInclude(),
     });
     if (!model) return null;
-    const contract = this.toContract(model);
-    await this.distributeResultXp(contract);
-    return contract;
+    return this.toContract(model);
+  }
+
+  async finalizeResults(competitionId: string): Promise<CompetitionContract> {
+    const model = await prisma.competition.findUnique({
+      where: { id: competitionId },
+      include: this.contractInclude(),
+    });
+    if (!model) throw new NotFound("Competicao nao encontrada.");
+    if (model.resultsFinalizedAt) return this.toContract(model);
+    if (!model.resultsAt || model.resultsAt > new Date()) {
+      throw new Conflict("Os resultados ainda nao podem ser encerrados.");
+    }
+
+    const consolidated = this.toContract(model, true);
+    const finalizedAt = new Date();
+    const finalized = await prisma.$transaction(async (tx) => {
+      const updated = await tx.competition.updateMany({
+        where: { id: competitionId, resultsFinalizedAt: null },
+        data: { resultsFinalizedAt: finalizedAt },
+      });
+      if (!updated.count) return false;
+      await this.distributeResultXp(tx, consolidated);
+      return true;
+    });
+
+    if (!finalized) {
+      const current = await prisma.competition.findUnique({
+        where: { id: competitionId },
+        include: this.contractInclude(),
+      });
+      if (current) return this.toContract(current);
+    }
+
+    return {
+      ...consolidated,
+      status: "RESULTS",
+      resultsFinalizedAt: finalizedAt,
+    };
   }
 
   async subscribeProject(
@@ -166,10 +201,11 @@ export class PrismaCompetitionRepository implements ICompetitionRepository {
       });
       if (!existingEvaluation) {
         await tx.$executeRaw`
-          SELECT pg_advisory_xact_lock(hashtext(${`event-evaluation-xp:${competitionId}`}))
+          SELECT pg_advisory_xact_lock(hashtext(${`event-evaluation-xp:${competitionId}:${userId}`}))
         `;
         const rewardedEvaluations = await tx.reputationEvent.count({
           where: {
+            userId,
             eventId: competitionId,
             type: ReputationEventType.EVENT_PROJECT_EVALUATED,
           },
@@ -255,7 +291,7 @@ export class PrismaCompetitionRepository implements ICompetitionRepository {
     } satisfies Prisma.CompetitionInclude;
   }
 
-  private toContract(model: any): CompetitionContract {
+  private toContract(model: any, forceResultsVisible = false): CompetitionContract {
     const criteria = model.criteria as Array<{
       id: string;
       name: string;
@@ -277,9 +313,9 @@ export class PrismaCompetitionRepository implements ICompetitionRepository {
           ? "WAITING_VOTING"
           : now <= model.votingEndsAt
             ? "VOTING"
-            : model.resultsAt && now < model.resultsAt
-              ? "WAITING_RESULTS"
-              : "RESULTS";
+          : model.resultsFinalizedAt || forceResultsVisible
+            ? "RESULTS"
+            : "WAITING_RESULTS";
     const resultsVisible = status === "RESULTS";
     const criterionIds = new Set(criteria.map((criterion) => criterion.id));
     const totalWeight = criteria.reduce((total, criterion) => total + criterion.weight, 0) || 1;
@@ -338,6 +374,7 @@ export class PrismaCompetitionRepository implements ICompetitionRepository {
       votingStartsAt: model.votingStartsAt,
       votingEndsAt: model.votingEndsAt,
       resultsAt: model.resultsAt,
+      resultsFinalizedAt: model.resultsFinalizedAt,
       status,
       minimumEvaluations: model.minimumEvaluations,
       criteria,
@@ -373,31 +410,25 @@ export class PrismaCompetitionRepository implements ICompetitionRepository {
       : 0;
   }
 
-  private async distributeResultXp(competition: CompetitionContract): Promise<void> {
-    if (competition.status !== "RESULTS" || !competition.resultsAt) return;
-
-    const rewardTypeByRank = {
-      1: ReputationEventType.EVENT_FIRST_PLACE,
-      2: ReputationEventType.EVENT_SECOND_PLACE,
-      3: ReputationEventType.EVENT_THIRD_PLACE,
-    } as const;
+  private async distributeResultXp(
+    tx: Prisma.TransactionClient,
+    competition: CompetitionContract,
+  ): Promise<void> {
     const winners = competition.submissions.flatMap((project) => {
-      const type = project.rank ? rewardTypeByRank[project.rank as 1 | 2 | 3] : undefined;
+      const type = project.rank ? eventPlacementRewardType(project.rank) : null;
       return type ? [{ project, type }] : [];
     });
     if (!winners.length) return;
 
-    await prisma.$transaction(async (tx) => {
-      for (const { project, type } of winners) {
-        await distributeXp(tx, {
-          userId: project.author.id,
-          type,
-          idempotencyKey: `event-result:${competition.id}:${project.id}:${project.rank}`,
-          eventId: competition.id,
-          projectId: project.id,
-          metadata: { rank: project.rank },
-        });
-      }
-    });
+    for (const { project, type } of winners) {
+      await distributeXp(tx, {
+        userId: project.author.id,
+        type,
+        idempotencyKey: `event-result:${competition.id}:${project.id}:${project.rank}`,
+        eventId: competition.id,
+        projectId: project.id,
+        metadata: { rank: project.rank },
+      });
+    }
   }
 }

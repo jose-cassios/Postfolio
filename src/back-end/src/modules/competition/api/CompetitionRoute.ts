@@ -38,6 +38,11 @@ function competitionRoutesPlugin(app: FastifyInstance, controller: CompetitionCo
     { schema: competitonRouteSchema.id, preValidation: UserMiddle.authenticate },
     (req, rep) => controller.evaluationProgress(req, rep)
   );
+  app.post(
+    "/:competitionId/finalize-results",
+    { schema: competitonRouteSchema.id, preValidation: UserMiddle.authenticate },
+    (req, rep) => controller.finalizeResults(req, rep)
+  );
 }
 
 export class CompetitionRoute {

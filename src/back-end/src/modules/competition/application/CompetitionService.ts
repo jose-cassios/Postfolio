@@ -97,6 +97,13 @@ export class CompetitionService implements ICompetitionService {
     return await this.competitionRepository.getEvaluationProgress(competitionId, userId);
   }
 
+  async finalizeResults(competitionId: string, userId: string) {
+    if (!(await this.userPort.canManageCompetitions(userId))) {
+      throw new Forbidden("Apenas administradores e moderadores podem encerrar eventos.");
+    }
+    return await this.competitionRepository.finalizeResults(competitionId);
+  }
+
   findMany(): Promise<Competition[]> {
     return this.competitionRepository.findMany();
   }

@@ -22,6 +22,7 @@ header { margin-bottom: 32px; h1 { margin: 8px 0; font-size: 2.4rem; } p { color
 .event-heading h2 { margin: 7px 0 0; }
 .timeline { justify-content: flex-start; flex-wrap: wrap; color: $color-text-secondary; font-size: .85rem; }
 .subscribe-box { margin: 22px 0; padding: 14px; background: $color-primary-100; border-radius: 12px; select { flex: 1; } }
+.result-actions { display: flex; justify-content: flex-end; margin: 20px 0; padding: 14px; border: 1px solid $color-border-default; border-radius: 12px; background: #fafafa; }
 select, button { padding: 10px 14px; border: 1px solid $color-border-default; border-radius: 8px; background: white; }
 button { cursor: pointer; background: $color-primary-500; color: white; border: 0; &:disabled { opacity: .5; } &.ghost { color: $color-primary-500; background: white; border: 1px solid $color-primary-500; } }
 .submissions { display: grid; gap: 10px; margin-top: 22px; }

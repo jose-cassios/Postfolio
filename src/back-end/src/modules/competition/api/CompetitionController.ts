@@ -78,4 +78,12 @@ export class CompetitionController {
       userId,
     ));
   }
+
+  async finalizeResults(req: FastifyRequest, reply: FastifyReply) {
+    const userId = req.user?.id;
+    const { competitionId } = req.params as { competitionId?: string };
+    if (!userId) throw new Unauthorized("Usuario precisa fazer login.");
+    if (!competitionId) throw new BadRequest("ID da competicao e obrigatorio.");
+    reply.send(await this.competitionService.finalizeResults(competitionId, userId));
+  }
 }

@@ -1,7 +1,7 @@
 import User from "@user/domain/entities/User";
 import Email from "@user/domain/valueObject/Email";
 import { CreateUserDTO, LoginUserDTO, UpdateUserDTO } from "@user/api/UserDTO";
-import { UserAchievementContract, UserReputationContract } from "@shared/contracts/UserContracts";
+import { ReputationRankConfigContract, UserAchievementContract, UserReputationContract } from "@shared/contracts/UserContracts";
 import { UserType } from "@user/domain/enum/UserType";
 
 export interface IUserService {
@@ -20,4 +20,6 @@ export interface IUserService {
   setUserType(id: string, userType: UserType): Promise<User>;
   findAchievements(userId: string): Promise<UserAchievementContract[]>;
   findReputation(userId: string): Promise<UserReputationContract>;
+  findReputationRankConfig(): Promise<ReputationRankConfigContract[]>;
+  updateReputationRankConfig(config: ReputationRankConfigContract[]): Promise<ReputationRankConfigContract[]>;
 }
