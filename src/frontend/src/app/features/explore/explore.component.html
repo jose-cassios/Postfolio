@@ -81,7 +81,7 @@
       
       <div class="explore-meta">
         <div class="projects-count">
-          {{ totalProjects }} projetos encontrados
+          {{ totalProjects() }} projetos encontrados
         </div>
 
         <div class="sort-info">
@@ -90,13 +90,13 @@
         </div>
       </div>
 
-      @if (errorMessage) {
-        <p class="empty-state">{{ errorMessage }} <button (click)="loadProjects(currentPage)">Tentar novamente</button></p>
-      } @else if (isLoading) {
+      @if (errorMessage()) {
+        <p class="empty-state">{{ errorMessage() }} <button (click)="loadProjects(currentPage())">Tentar novamente</button></p>
+      } @else if (isLoading()) {
         <p class="empty-state">Carregando projetos...</p>
       } @else {
       <div class="projects-grid">
-        @for (project of filteredProjects; track project.id) {
+        @for (project of filteredProjects(); track project.id) {
           <app-project-card
             [routerLink]="['/projetos', project.id]"
             [project]="project"
@@ -104,15 +104,15 @@
           />
         }
   
-        @if (filteredProjects.length === 0) {
+        @if (filteredProjects().length === 0) {
           <p class="empty-state">Nenhum projeto encontrado.</p>
         }
       </div>
-      @if (totalPages > 1) {
+      @if (totalPages() > 1) {
         <nav class="pagination" aria-label="Paginação dos projetos">
-          <button [disabled]="currentPage === 1" (click)="loadProjects(currentPage - 1)">Anterior</button>
-          <span>Página {{ currentPage }} de {{ totalPages }}</span>
-          <button [disabled]="currentPage === totalPages" (click)="loadProjects(currentPage + 1)">Próxima</button>
+          <button [disabled]="currentPage() === 1" (click)="loadProjects(currentPage() - 1)">Anterior</button>
+          <span>Página {{ currentPage() }} de {{ totalPages() }}</span>
+          <button [disabled]="currentPage() === totalPages()" (click)="loadProjects(currentPage() + 1)">Próxima</button>
         </nav>
       }
       }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ProjectCardComponent } from '../../shared/components/project-card/project-card.component';
@@ -28,14 +28,13 @@ export class ExploreComponent implements OnInit {
     { name: 'Outros', slug: 'OTHER' },
   ];
   tools = ['Figma', 'Angular', 'React', 'Vue', 'TypeScript', 'Node.js'];
-  projects: Project[] = [];
   mode = ProjectCardMode;
-  filteredProjects: Project[] = [];
-  isLoading = true;
-  errorMessage = '';
-  totalProjects = 0;
-  totalPages = 0;
-  currentPage = 1;
+  readonly filteredProjects = signal<Project[]>([]);
+  readonly isLoading = signal(true);
+  readonly errorMessage = signal('');
+  readonly totalProjects = signal(0);
+  readonly totalPages = signal(0);
+  readonly currentPage = signal(1);
 
   selectedCategory: string | null = null;
   selectedCategoryName: string | null = null;
@@ -50,8 +49,15 @@ export class ExploreComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.selectedCategory = this.route.snapshot.queryParamMap.get('categoria');
+    this.updateCategoryName();
+    this.loadProjects(1);
+
     this.route.queryParams.subscribe(params => {
-      this.selectedCategory = params['categoria'] || null;
+      const category = params['categoria'] || null;
+      if (category === this.selectedCategory) return;
+
+      this.selectedCategory = category;
       this.updateCategoryName();
       this.loadProjects(1);
     });
@@ -75,8 +81,8 @@ export class ExploreComponent implements OnInit {
   }
 
   loadProjects(page: number) {
-    this.isLoading = true;
-    this.errorMessage = '';
+    this.isLoading.set(true);
+    this.errorMessage.set('');
     this.projectService.list({
       q: this.searchTerm.trim() || undefined,
       category: this.selectedCategory || undefined,
@@ -84,15 +90,14 @@ export class ExploreComponent implements OnInit {
       sort: this.selectedSort,
       page,
       limit: 12,
-    }).pipe(finalize(() => this.isLoading = false)).subscribe({
+    }).pipe(finalize(() => this.isLoading.set(false))).subscribe({
       next: (response) => {
-        this.projects = response.data;
-        this.filteredProjects = response.data;
-        this.currentPage = response.pagination.page;
-        this.totalPages = response.pagination.totalPages;
-        this.totalProjects = response.pagination.total;
+        this.filteredProjects.set(response.data);
+        this.currentPage.set(response.pagination.page);
+        this.totalPages.set(response.pagination.totalPages);
+        this.totalProjects.set(response.pagination.total);
       },
-      error: () => this.errorMessage = 'Não foi possível carregar os projetos.',
+      error: () => this.errorMessage.set('Não foi possível carregar os projetos.'),
     });
   }
 
