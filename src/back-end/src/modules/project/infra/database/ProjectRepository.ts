@@ -138,10 +138,10 @@ export class ProjectRepository implements IProjectRepository {
           });
           await recordReputationEvent(tx, {
             userId: postmark.userId,
-            type: ReputationEventType.APPRECIATION_APPLIED,
-            idempotencyKey: `appreciation-applied:${postmark.id}`,
+            type: ReputationEventType.POSTMARK_APPLIED,
+            idempotencyKey: `postmark-applied:${postmark.id}`,
             projectId: updated.id,
-            appreciationId: postmark.id,
+            postmarkId: postmark.id,
             projectVersionId: version.id,
           });
         }
@@ -559,14 +559,14 @@ export class ProjectRepository implements IProjectRepository {
       });
       if (status === "USEFUL" || status === "APPLIED") {
         const type = status === "USEFUL"
-          ? ReputationEventType.APPRECIATION_USEFUL
-          : ReputationEventType.APPRECIATION_APPLIED;
+          ? ReputationEventType.POSTMARK_USEFUL
+          : ReputationEventType.POSTMARK_APPLIED;
         await recordReputationEvent(tx, {
           userId: existing.userId,
           type,
-          idempotencyKey: `appreciation-${status.toLowerCase()}:${existing.id}`,
+          idempotencyKey: `postmark-${status.toLowerCase()}:${existing.id}`,
           projectId,
-          appreciationId: existing.id,
+          postmarkId: existing.id,
         });
       }
       return this.toPostmarkContract(appreciation);

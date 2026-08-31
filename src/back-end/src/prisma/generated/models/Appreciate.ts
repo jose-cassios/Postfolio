@@ -343,7 +343,7 @@ export type AppreciateCreateInput = {
   postMetrics: Prisma.PostMetricsCreateNestedOneWithoutAppreciateInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutAppreciateInput
   versionCredits?: Prisma.ProjectVersionCreditCreateNestedManyWithoutAppreciationInput
-  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutAppreciationInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutPostmarkInput
 }
 
 export type AppreciateUncheckedCreateInput = {
@@ -361,7 +361,7 @@ export type AppreciateUncheckedCreateInput = {
   resolvedAt?: Date | string | null
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAppreciateInput
   versionCredits?: Prisma.ProjectVersionCreditUncheckedCreateNestedManyWithoutAppreciationInput
-  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutAppreciationInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutPostmarkInput
 }
 
 export type AppreciateUpdateInput = {
@@ -379,7 +379,7 @@ export type AppreciateUpdateInput = {
   postMetrics?: Prisma.PostMetricsUpdateOneRequiredWithoutAppreciateNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutAppreciateNestedInput
   versionCredits?: Prisma.ProjectVersionCreditUpdateManyWithoutAppreciationNestedInput
-  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutAppreciationNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutPostmarkNestedInput
 }
 
 export type AppreciateUncheckedUpdateInput = {
@@ -397,7 +397,7 @@ export type AppreciateUncheckedUpdateInput = {
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutAppreciateNestedInput
   versionCredits?: Prisma.ProjectVersionCreditUncheckedUpdateManyWithoutAppreciationNestedInput
-  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutAppreciationNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutPostmarkNestedInput
 }
 
 export type AppreciateCreateManyInput = {
@@ -700,7 +700,7 @@ export type AppreciateCreateWithoutUserInput = {
   postMetrics: Prisma.PostMetricsCreateNestedOneWithoutAppreciateInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutAppreciateInput
   versionCredits?: Prisma.ProjectVersionCreditCreateNestedManyWithoutAppreciationInput
-  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutAppreciationInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutPostmarkInput
 }
 
 export type AppreciateUncheckedCreateWithoutUserInput = {
@@ -717,7 +717,7 @@ export type AppreciateUncheckedCreateWithoutUserInput = {
   resolvedAt?: Date | string | null
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAppreciateInput
   versionCredits?: Prisma.ProjectVersionCreditUncheckedCreateNestedManyWithoutAppreciationInput
-  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutAppreciationInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutPostmarkInput
 }
 
 export type AppreciateCreateOrConnectWithoutUserInput = {
@@ -778,7 +778,7 @@ export type AppreciateCreateWithoutProjectInput = {
   postMetrics: Prisma.PostMetricsCreateNestedOneWithoutAppreciateInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutAppreciateInput
   versionCredits?: Prisma.ProjectVersionCreditCreateNestedManyWithoutAppreciationInput
-  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutAppreciationInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutPostmarkInput
 }
 
 export type AppreciateUncheckedCreateWithoutProjectInput = {
@@ -795,7 +795,7 @@ export type AppreciateUncheckedCreateWithoutProjectInput = {
   resolvedAt?: Date | string | null
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAppreciateInput
   versionCredits?: Prisma.ProjectVersionCreditUncheckedCreateNestedManyWithoutAppreciationInput
-  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutAppreciationInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutPostmarkInput
 }
 
 export type AppreciateCreateOrConnectWithoutProjectInput = {
@@ -838,7 +838,7 @@ export type AppreciateCreateWithoutPostMetricsInput = {
   project: Prisma.ProjectCreateNestedOneWithoutAppreciateInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutAppreciateInput
   versionCredits?: Prisma.ProjectVersionCreditCreateNestedManyWithoutAppreciationInput
-  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutAppreciationInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutPostmarkInput
 }
 
 export type AppreciateUncheckedCreateWithoutPostMetricsInput = {
@@ -855,7 +855,7 @@ export type AppreciateUncheckedCreateWithoutPostMetricsInput = {
   resolvedAt?: Date | string | null
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAppreciateInput
   versionCredits?: Prisma.ProjectVersionCreditUncheckedCreateNestedManyWithoutAppreciationInput
-  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutAppreciationInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutPostmarkInput
 }
 
 export type AppreciateCreateOrConnectWithoutPostMetricsInput = {
@@ -898,7 +898,7 @@ export type AppreciateCreateWithoutFeedbackInput = {
   project: Prisma.ProjectCreateNestedOneWithoutAppreciateInput
   postMetrics: Prisma.PostMetricsCreateNestedOneWithoutAppreciateInput
   versionCredits?: Prisma.ProjectVersionCreditCreateNestedManyWithoutAppreciationInput
-  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutAppreciationInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutPostmarkInput
 }
 
 export type AppreciateUncheckedCreateWithoutFeedbackInput = {
@@ -915,7 +915,7 @@ export type AppreciateUncheckedCreateWithoutFeedbackInput = {
   updatedAt?: Date | string
   resolvedAt?: Date | string | null
   versionCredits?: Prisma.ProjectVersionCreditUncheckedCreateNestedManyWithoutAppreciationInput
-  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutAppreciationInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutPostmarkInput
 }
 
 export type AppreciateCreateOrConnectWithoutFeedbackInput = {
@@ -948,7 +948,7 @@ export type AppreciateUpdateWithoutFeedbackInput = {
   project?: Prisma.ProjectUpdateOneRequiredWithoutAppreciateNestedInput
   postMetrics?: Prisma.PostMetricsUpdateOneRequiredWithoutAppreciateNestedInput
   versionCredits?: Prisma.ProjectVersionCreditUpdateManyWithoutAppreciationNestedInput
-  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutAppreciationNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutPostmarkNestedInput
 }
 
 export type AppreciateUncheckedUpdateWithoutFeedbackInput = {
@@ -965,7 +965,7 @@ export type AppreciateUncheckedUpdateWithoutFeedbackInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   versionCredits?: Prisma.ProjectVersionCreditUncheckedUpdateManyWithoutAppreciationNestedInput
-  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutAppreciationNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutPostmarkNestedInput
 }
 
 export type AppreciateCreateWithoutVersionCreditsInput = {
@@ -982,7 +982,7 @@ export type AppreciateCreateWithoutVersionCreditsInput = {
   project: Prisma.ProjectCreateNestedOneWithoutAppreciateInput
   postMetrics: Prisma.PostMetricsCreateNestedOneWithoutAppreciateInput
   Feedback?: Prisma.FeedbackCreateNestedManyWithoutAppreciateInput
-  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutAppreciationInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutPostmarkInput
 }
 
 export type AppreciateUncheckedCreateWithoutVersionCreditsInput = {
@@ -999,7 +999,7 @@ export type AppreciateUncheckedCreateWithoutVersionCreditsInput = {
   updatedAt?: Date | string
   resolvedAt?: Date | string | null
   Feedback?: Prisma.FeedbackUncheckedCreateNestedManyWithoutAppreciateInput
-  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutAppreciationInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutPostmarkInput
 }
 
 export type AppreciateCreateOrConnectWithoutVersionCreditsInput = {
@@ -1032,7 +1032,7 @@ export type AppreciateUpdateWithoutVersionCreditsInput = {
   project?: Prisma.ProjectUpdateOneRequiredWithoutAppreciateNestedInput
   postMetrics?: Prisma.PostMetricsUpdateOneRequiredWithoutAppreciateNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutAppreciateNestedInput
-  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutAppreciationNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutPostmarkNestedInput
 }
 
 export type AppreciateUncheckedUpdateWithoutVersionCreditsInput = {
@@ -1049,7 +1049,7 @@ export type AppreciateUncheckedUpdateWithoutVersionCreditsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutAppreciateNestedInput
-  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutAppreciationNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutPostmarkNestedInput
 }
 
 export type AppreciateCreateWithoutReputationEventsInput = {
@@ -1164,7 +1164,7 @@ export type AppreciateUpdateWithoutUserInput = {
   postMetrics?: Prisma.PostMetricsUpdateOneRequiredWithoutAppreciateNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutAppreciateNestedInput
   versionCredits?: Prisma.ProjectVersionCreditUpdateManyWithoutAppreciationNestedInput
-  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutAppreciationNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutPostmarkNestedInput
 }
 
 export type AppreciateUncheckedUpdateWithoutUserInput = {
@@ -1181,7 +1181,7 @@ export type AppreciateUncheckedUpdateWithoutUserInput = {
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutAppreciateNestedInput
   versionCredits?: Prisma.ProjectVersionCreditUncheckedUpdateManyWithoutAppreciationNestedInput
-  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutAppreciationNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutPostmarkNestedInput
 }
 
 export type AppreciateUncheckedUpdateManyWithoutUserInput = {
@@ -1226,7 +1226,7 @@ export type AppreciateUpdateWithoutProjectInput = {
   postMetrics?: Prisma.PostMetricsUpdateOneRequiredWithoutAppreciateNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutAppreciateNestedInput
   versionCredits?: Prisma.ProjectVersionCreditUpdateManyWithoutAppreciationNestedInput
-  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutAppreciationNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutPostmarkNestedInput
 }
 
 export type AppreciateUncheckedUpdateWithoutProjectInput = {
@@ -1243,7 +1243,7 @@ export type AppreciateUncheckedUpdateWithoutProjectInput = {
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutAppreciateNestedInput
   versionCredits?: Prisma.ProjectVersionCreditUncheckedUpdateManyWithoutAppreciationNestedInput
-  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutAppreciationNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutPostmarkNestedInput
 }
 
 export type AppreciateUncheckedUpdateManyWithoutProjectInput = {
@@ -1288,7 +1288,7 @@ export type AppreciateUpdateWithoutPostMetricsInput = {
   project?: Prisma.ProjectUpdateOneRequiredWithoutAppreciateNestedInput
   Feedback?: Prisma.FeedbackUpdateManyWithoutAppreciateNestedInput
   versionCredits?: Prisma.ProjectVersionCreditUpdateManyWithoutAppreciationNestedInput
-  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutAppreciationNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutPostmarkNestedInput
 }
 
 export type AppreciateUncheckedUpdateWithoutPostMetricsInput = {
@@ -1305,7 +1305,7 @@ export type AppreciateUncheckedUpdateWithoutPostMetricsInput = {
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   Feedback?: Prisma.FeedbackUncheckedUpdateManyWithoutAppreciateNestedInput
   versionCredits?: Prisma.ProjectVersionCreditUncheckedUpdateManyWithoutAppreciationNestedInput
-  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutAppreciationNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutPostmarkNestedInput
 }
 
 export type AppreciateUncheckedUpdateManyWithoutPostMetricsInput = {

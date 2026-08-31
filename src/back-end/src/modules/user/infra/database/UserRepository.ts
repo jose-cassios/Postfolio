@@ -9,6 +9,7 @@ import {
   ReputationAxis,
 } from "@PrismaGen/client";
 import { UserMapper } from "@user/application/UserMapper";
+import { resolveReputationRank } from "@user/application/ReputationRanks";
 import { IUserRepository } from "@user/domain/interfaces/IUserRepository";
 import Email from "@user/domain/valueObject/Email";
 import { UserAchievementContract, UserReputationContract } from "@shared/contracts/UserContracts";
@@ -151,12 +152,15 @@ export class UserRepository implements IUserRepository {
   }
 
   async findReputation(userId: string): Promise<UserReputationContract> {
-    const [scores, publishedProjects, versionsCreated, postmarksSent,
+    const [scores, rankThresholds, publishedProjects, versionsCreated, postmarksSent,
       usefulFeedbacks, appliedSuggestions, recognizedContributions] = await Promise.all([
       prisma.reputationEvent.groupBy({
         by: ["axis"],
         where: { userId },
         _sum: { points: true },
+      }),
+      prisma.reputationRankConfig.findMany({
+        select: { rank: true, requiredXp: true },
       }),
       prisma.project.count({
         where: {
@@ -177,11 +181,15 @@ export class UserRepository implements IUserRepository {
       }),
       prisma.projectVersionCredit.count({ where: { contributorId: userId } }),
     ]);
-    const score = (axis: ReputationAxis) =>
+    const xp = (axis: ReputationAxis) =>
       scores.find((item) => item.axis === axis)?._sum.points ?? 0;
+    const creatorXp = xp(ReputationAxis.CREATOR);
+    const contributorXp = xp(ReputationAxis.CONTRIBUTOR);
     return {
-      creatorScore: score(ReputationAxis.CREATOR),
-      contributorScore: score(ReputationAxis.CONTRIBUTOR),
+      creatorXp,
+      contributorXp,
+      creatorRank: resolveReputationRank(creatorXp, rankThresholds),
+      contributorRank: resolveReputationRank(contributorXp, rankThresholds),
       evidence: {
         publishedProjects,
         versionsCreated,

@@ -414,6 +414,7 @@ export const ModelName = {
   ProjectVersion: 'ProjectVersion',
   ProjectVersionCredit: 'ProjectVersionCredit',
   ReputationEvent: 'ReputationEvent',
+  ReputationRankConfig: 'ReputationRankConfig',
   EventCriterion: 'EventCriterion',
   EventEvaluation: 'EventEvaluation',
   EventEvaluationScore: 'EventEvaluationScore'
@@ -432,7 +433,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "providerOAuth" | "message" | "portfolio" | "competition" | "project" | "appreciate" | "postMetrics" | "favorateProjects" | "comments" | "like" | "feedback" | "rating" | "projectCompDetails" | "projectVersion" | "projectVersionCredit" | "reputationEvent" | "eventCriterion" | "eventEvaluation" | "eventEvaluationScore"
+    modelProps: "user" | "providerOAuth" | "message" | "portfolio" | "competition" | "project" | "appreciate" | "postMetrics" | "favorateProjects" | "comments" | "like" | "feedback" | "rating" | "projectCompDetails" | "projectVersion" | "projectVersionCredit" | "reputationEvent" | "reputationRankConfig" | "eventCriterion" | "eventEvaluation" | "eventEvaluationScore"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1694,6 +1695,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ReputationRankConfig: {
+      payload: Prisma.$ReputationRankConfigPayload<ExtArgs>
+      fields: Prisma.ReputationRankConfigFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ReputationRankConfigFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReputationRankConfigPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ReputationRankConfigFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReputationRankConfigPayload>
+        }
+        findFirst: {
+          args: Prisma.ReputationRankConfigFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReputationRankConfigPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ReputationRankConfigFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReputationRankConfigPayload>
+        }
+        findMany: {
+          args: Prisma.ReputationRankConfigFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReputationRankConfigPayload>[]
+        }
+        create: {
+          args: Prisma.ReputationRankConfigCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReputationRankConfigPayload>
+        }
+        createMany: {
+          args: Prisma.ReputationRankConfigCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ReputationRankConfigCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReputationRankConfigPayload>[]
+        }
+        delete: {
+          args: Prisma.ReputationRankConfigDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReputationRankConfigPayload>
+        }
+        update: {
+          args: Prisma.ReputationRankConfigUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReputationRankConfigPayload>
+        }
+        deleteMany: {
+          args: Prisma.ReputationRankConfigDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ReputationRankConfigUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ReputationRankConfigUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReputationRankConfigPayload>[]
+        }
+        upsert: {
+          args: Prisma.ReputationRankConfigUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReputationRankConfigPayload>
+        }
+        aggregate: {
+          args: Prisma.ReputationRankConfigAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateReputationRankConfig>
+        }
+        groupBy: {
+          args: Prisma.ReputationRankConfigGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReputationRankConfigGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ReputationRankConfigCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReputationRankConfigCountAggregateOutputType> | number
+        }
+      }
+    }
     EventCriterion: {
       payload: Prisma.$EventCriterionPayload<ExtArgs>
       fields: Prisma.EventCriterionFieldRefs
@@ -2188,13 +2263,25 @@ export const ReputationEventScalarFieldEnum = {
   axis: 'axis',
   points: 'points',
   projectId: 'projectId',
-  appreciationId: 'appreciationId',
+  postmarkId: 'postmarkId',
   projectVersionId: 'projectVersionId',
+  eventId: 'eventId',
+  metadata: 'metadata',
   idempotencyKey: 'idempotencyKey',
   createdAt: 'createdAt'
 } as const
 
 export type ReputationEventScalarFieldEnum = (typeof ReputationEventScalarFieldEnum)[keyof typeof ReputationEventScalarFieldEnum]
+
+
+export const ReputationRankConfigScalarFieldEnum = {
+  rank: 'rank',
+  requiredXp: 'requiredXp',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ReputationRankConfigScalarFieldEnum = (typeof ReputationRankConfigScalarFieldEnum)[keyof typeof ReputationRankConfigScalarFieldEnum]
 
 
 export const EventCriterionScalarFieldEnum = {
@@ -2244,6 +2331,14 @@ export const JsonNullValueInput = {
 } as const
 
 export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -2365,49 +2460,49 @@ export type EnumProjectCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$
  * Reference to a field of type 'ProjectCategory[]'
  */
 export type ListEnumProjectCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProjectCategory[]'>
-
+    
 
 
 /**
  * Reference to a field of type 'Int'
  */
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-
+    
 
 
 /**
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-
+    
 
 
 /**
  * Reference to a field of type 'Json'
  */
 export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-
+    
 
 
 /**
  * Reference to a field of type 'QueryMode'
  */
 export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
-
+    
 
 
 /**
  * Reference to a field of type 'ProjectStatus'
  */
 export type EnumProjectStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProjectStatus'>
-
+    
 
 
 /**
  * Reference to a field of type 'ProjectStatus[]'
  */
 export type ListEnumProjectStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProjectStatus[]'>
-
+    
 
 
 /**
@@ -2456,28 +2551,42 @@ export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMode
  * Reference to a field of type 'ReputationEventType'
  */
 export type EnumReputationEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReputationEventType'>
-
+    
 
 
 /**
  * Reference to a field of type 'ReputationEventType[]'
  */
 export type ListEnumReputationEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReputationEventType[]'>
-
+    
 
 
 /**
  * Reference to a field of type 'ReputationAxis'
  */
 export type EnumReputationAxisFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReputationAxis'>
-
+    
 
 
 /**
  * Reference to a field of type 'ReputationAxis[]'
  */
 export type ListEnumReputationAxisFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReputationAxis[]'>
+    
 
+
+/**
+ * Reference to a field of type 'ReputationRank'
+ */
+export type EnumReputationRankFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReputationRank'>
+    
+
+
+/**
+ * Reference to a field of type 'ReputationRank[]'
+ */
+export type ListEnumReputationRankFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReputationRank[]'>
+    
 
 /**
  * Batch Payload for updateMany & deleteMany & createMany
@@ -2647,6 +2756,7 @@ export type GlobalOmitConfig = {
   projectVersion?: Prisma.ProjectVersionOmit
   projectVersionCredit?: Prisma.ProjectVersionCreditOmit
   reputationEvent?: Prisma.ReputationEventOmit
+  reputationRankConfig?: Prisma.ReputationRankConfigOmit
   eventCriterion?: Prisma.EventCriterionOmit
   eventEvaluation?: Prisma.EventEvaluationOmit
   eventEvaluationScore?: Prisma.EventEvaluationScoreOmit
@@ -2712,3 +2822,4 @@ export type PrismaAction =
  * `PrismaClient` proxy available in interactive transactions.
  */
 export type TransactionClient = Omit<DefaultPrismaClient, runtime.ITXClientDenyList>
+

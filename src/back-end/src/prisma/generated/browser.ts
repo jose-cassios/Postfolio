@@ -89,31 +89,36 @@ export type Rating = Prisma.RatingModel
 export type ProjectCompDetails = Prisma.ProjectCompDetailsModel
 /**
  * Model ProjectVersion
- *
+ * 
  */
 export type ProjectVersion = Prisma.ProjectVersionModel
 /**
  * Model ProjectVersionCredit
- *
+ * 
  */
 export type ProjectVersionCredit = Prisma.ProjectVersionCreditModel
 /**
  * Model ReputationEvent
- *
+ * 
  */
 export type ReputationEvent = Prisma.ReputationEventModel
 /**
+ * Model ReputationRankConfig
+ * 
+ */
+export type ReputationRankConfig = Prisma.ReputationRankConfigModel
+/**
  * Model EventCriterion
- *
+ * 
  */
 export type EventCriterion = Prisma.EventCriterionModel
 /**
  * Model EventEvaluation
- *
+ * 
  */
 export type EventEvaluation = Prisma.EventEvaluationModel
 /**
  * Model EventEvaluationScore
- *
+ * 
  */
 export type EventEvaluationScore = Prisma.EventEvaluationScoreModel

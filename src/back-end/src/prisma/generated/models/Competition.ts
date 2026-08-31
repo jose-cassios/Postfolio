@@ -184,13 +184,13 @@ export type CompetitionAggregateArgs<ExtArgs extends runtime.Types.Extensions.In
   _avg?: CompetitionAvgAggregateInputType
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   *
+   * 
    * Select which fields to sum
   **/
   _sum?: CompetitionSumAggregateInputType
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   *
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: CompetitionMinAggregateInputType
@@ -284,6 +284,7 @@ export type CompetitionWhereInput = {
   Rating?: Prisma.RatingListRelationFilter
   criteria?: Prisma.EventCriterionListRelationFilter
   evaluations?: Prisma.EventEvaluationListRelationFilter
+  reputationEvents?: Prisma.ReputationEventListRelationFilter
 }
 
 export type CompetitionOrderByWithRelationInput = {
@@ -304,6 +305,7 @@ export type CompetitionOrderByWithRelationInput = {
   Rating?: Prisma.RatingOrderByRelationAggregateInput
   criteria?: Prisma.EventCriterionOrderByRelationAggregateInput
   evaluations?: Prisma.EventEvaluationOrderByRelationAggregateInput
+  reputationEvents?: Prisma.ReputationEventOrderByRelationAggregateInput
 }
 
 export type CompetitionWhereUniqueInput = Prisma.AtLeast<{
@@ -327,6 +329,7 @@ export type CompetitionWhereUniqueInput = Prisma.AtLeast<{
   Rating?: Prisma.RatingListRelationFilter
   criteria?: Prisma.EventCriterionListRelationFilter
   evaluations?: Prisma.EventEvaluationListRelationFilter
+  reputationEvents?: Prisma.ReputationEventListRelationFilter
 }, "id">
 
 export type CompetitionOrderByWithAggregationInput = {
@@ -387,6 +390,7 @@ export type CompetitionCreateInput = {
   Rating?: Prisma.RatingCreateNestedManyWithoutCompetitionInput
   criteria?: Prisma.EventCriterionCreateNestedManyWithoutCompetitionInput
   evaluations?: Prisma.EventEvaluationCreateNestedManyWithoutCompetitionInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutEventInput
 }
 
 export type CompetitionUncheckedCreateInput = {
@@ -407,6 +411,7 @@ export type CompetitionUncheckedCreateInput = {
   Rating?: Prisma.RatingUncheckedCreateNestedManyWithoutCompetitionInput
   criteria?: Prisma.EventCriterionUncheckedCreateNestedManyWithoutCompetitionInput
   evaluations?: Prisma.EventEvaluationUncheckedCreateNestedManyWithoutCompetitionInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutEventInput
 }
 
 export type CompetitionUpdateInput = {
@@ -427,6 +432,7 @@ export type CompetitionUpdateInput = {
   Rating?: Prisma.RatingUpdateManyWithoutCompetitionNestedInput
   criteria?: Prisma.EventCriterionUpdateManyWithoutCompetitionNestedInput
   evaluations?: Prisma.EventEvaluationUpdateManyWithoutCompetitionNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutEventNestedInput
 }
 
 export type CompetitionUncheckedUpdateInput = {
@@ -447,6 +453,7 @@ export type CompetitionUncheckedUpdateInput = {
   Rating?: Prisma.RatingUncheckedUpdateManyWithoutCompetitionNestedInput
   criteria?: Prisma.EventCriterionUncheckedUpdateManyWithoutCompetitionNestedInput
   evaluations?: Prisma.EventEvaluationUncheckedUpdateManyWithoutCompetitionNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutEventNestedInput
 }
 
 export type CompetitionCreateManyInput = {
@@ -558,6 +565,11 @@ export type CompetitionScalarRelationFilter = {
   isNot?: Prisma.CompetitionWhereInput
 }
 
+export type CompetitionNullableScalarRelationFilter = {
+  is?: Prisma.CompetitionWhereInput | null
+  isNot?: Prisma.CompetitionWhereInput | null
+}
+
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
 }
@@ -600,6 +612,22 @@ export type CompetitionUpdateOneRequiredWithoutWorksDetailsNestedInput = {
   upsert?: Prisma.CompetitionUpsertWithoutWorksDetailsInput
   connect?: Prisma.CompetitionWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.CompetitionUpdateToOneWithWhereWithoutWorksDetailsInput, Prisma.CompetitionUpdateWithoutWorksDetailsInput>, Prisma.CompetitionUncheckedUpdateWithoutWorksDetailsInput>
+}
+
+export type CompetitionCreateNestedOneWithoutReputationEventsInput = {
+  create?: Prisma.XOR<Prisma.CompetitionCreateWithoutReputationEventsInput, Prisma.CompetitionUncheckedCreateWithoutReputationEventsInput>
+  connectOrCreate?: Prisma.CompetitionCreateOrConnectWithoutReputationEventsInput
+  connect?: Prisma.CompetitionWhereUniqueInput
+}
+
+export type CompetitionUpdateOneWithoutReputationEventsNestedInput = {
+  create?: Prisma.XOR<Prisma.CompetitionCreateWithoutReputationEventsInput, Prisma.CompetitionUncheckedCreateWithoutReputationEventsInput>
+  connectOrCreate?: Prisma.CompetitionCreateOrConnectWithoutReputationEventsInput
+  upsert?: Prisma.CompetitionUpsertWithoutReputationEventsInput
+  disconnect?: Prisma.CompetitionWhereInput | boolean
+  delete?: Prisma.CompetitionWhereInput | boolean
+  connect?: Prisma.CompetitionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CompetitionUpdateToOneWithWhereWithoutReputationEventsInput, Prisma.CompetitionUpdateWithoutReputationEventsInput>, Prisma.CompetitionUncheckedUpdateWithoutReputationEventsInput>
 }
 
 export type CompetitionCreateNestedOneWithoutCriteriaInput = {
@@ -647,6 +675,7 @@ export type CompetitionCreateWithoutRatingInput = {
   worksDetails?: Prisma.ProjectCompDetailsCreateNestedManyWithoutCompetitionInput
   criteria?: Prisma.EventCriterionCreateNestedManyWithoutCompetitionInput
   evaluations?: Prisma.EventEvaluationCreateNestedManyWithoutCompetitionInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutEventInput
 }
 
 export type CompetitionUncheckedCreateWithoutRatingInput = {
@@ -666,6 +695,7 @@ export type CompetitionUncheckedCreateWithoutRatingInput = {
   worksDetails?: Prisma.ProjectCompDetailsUncheckedCreateNestedManyWithoutCompetitionInput
   criteria?: Prisma.EventCriterionUncheckedCreateNestedManyWithoutCompetitionInput
   evaluations?: Prisma.EventEvaluationUncheckedCreateNestedManyWithoutCompetitionInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutEventInput
 }
 
 export type CompetitionCreateOrConnectWithoutRatingInput = {
@@ -701,6 +731,7 @@ export type CompetitionUpdateWithoutRatingInput = {
   worksDetails?: Prisma.ProjectCompDetailsUpdateManyWithoutCompetitionNestedInput
   criteria?: Prisma.EventCriterionUpdateManyWithoutCompetitionNestedInput
   evaluations?: Prisma.EventEvaluationUpdateManyWithoutCompetitionNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutEventNestedInput
 }
 
 export type CompetitionUncheckedUpdateWithoutRatingInput = {
@@ -720,6 +751,7 @@ export type CompetitionUncheckedUpdateWithoutRatingInput = {
   worksDetails?: Prisma.ProjectCompDetailsUncheckedUpdateManyWithoutCompetitionNestedInput
   criteria?: Prisma.EventCriterionUncheckedUpdateManyWithoutCompetitionNestedInput
   evaluations?: Prisma.EventEvaluationUncheckedUpdateManyWithoutCompetitionNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutEventNestedInput
 }
 
 export type CompetitionCreateWithoutWorksDetailsInput = {
@@ -739,6 +771,7 @@ export type CompetitionCreateWithoutWorksDetailsInput = {
   Rating?: Prisma.RatingCreateNestedManyWithoutCompetitionInput
   criteria?: Prisma.EventCriterionCreateNestedManyWithoutCompetitionInput
   evaluations?: Prisma.EventEvaluationCreateNestedManyWithoutCompetitionInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutEventInput
 }
 
 export type CompetitionUncheckedCreateWithoutWorksDetailsInput = {
@@ -758,6 +791,7 @@ export type CompetitionUncheckedCreateWithoutWorksDetailsInput = {
   Rating?: Prisma.RatingUncheckedCreateNestedManyWithoutCompetitionInput
   criteria?: Prisma.EventCriterionUncheckedCreateNestedManyWithoutCompetitionInput
   evaluations?: Prisma.EventEvaluationUncheckedCreateNestedManyWithoutCompetitionInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutEventInput
 }
 
 export type CompetitionCreateOrConnectWithoutWorksDetailsInput = {
@@ -793,6 +827,7 @@ export type CompetitionUpdateWithoutWorksDetailsInput = {
   Rating?: Prisma.RatingUpdateManyWithoutCompetitionNestedInput
   criteria?: Prisma.EventCriterionUpdateManyWithoutCompetitionNestedInput
   evaluations?: Prisma.EventEvaluationUpdateManyWithoutCompetitionNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutEventNestedInput
 }
 
 export type CompetitionUncheckedUpdateWithoutWorksDetailsInput = {
@@ -809,6 +844,103 @@ export type CompetitionUncheckedUpdateWithoutWorksDetailsInput = {
   votingEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resultsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   minimumEvaluations?: Prisma.IntFieldUpdateOperationsInput | number
+  Rating?: Prisma.RatingUncheckedUpdateManyWithoutCompetitionNestedInput
+  criteria?: Prisma.EventCriterionUncheckedUpdateManyWithoutCompetitionNestedInput
+  evaluations?: Prisma.EventEvaluationUncheckedUpdateManyWithoutCompetitionNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutEventNestedInput
+}
+
+export type CompetitionCreateWithoutReputationEventsInput = {
+  id?: string
+  name: string
+  description: string
+  createdAt?: Date | string
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  category?: $Enums.ProjectCategory
+  registrationStartsAt?: Date | string | null
+  registrationEndsAt?: Date | string | null
+  votingStartsAt?: Date | string | null
+  votingEndsAt?: Date | string | null
+  resultsAt?: Date | string | null
+  minimumEvaluations?: number
+  worksDetails?: Prisma.ProjectCompDetailsCreateNestedManyWithoutCompetitionInput
+  Rating?: Prisma.RatingCreateNestedManyWithoutCompetitionInput
+  criteria?: Prisma.EventCriterionCreateNestedManyWithoutCompetitionInput
+  evaluations?: Prisma.EventEvaluationCreateNestedManyWithoutCompetitionInput
+}
+
+export type CompetitionUncheckedCreateWithoutReputationEventsInput = {
+  id?: string
+  name: string
+  description: string
+  createdAt?: Date | string
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  category?: $Enums.ProjectCategory
+  registrationStartsAt?: Date | string | null
+  registrationEndsAt?: Date | string | null
+  votingStartsAt?: Date | string | null
+  votingEndsAt?: Date | string | null
+  resultsAt?: Date | string | null
+  minimumEvaluations?: number
+  worksDetails?: Prisma.ProjectCompDetailsUncheckedCreateNestedManyWithoutCompetitionInput
+  Rating?: Prisma.RatingUncheckedCreateNestedManyWithoutCompetitionInput
+  criteria?: Prisma.EventCriterionUncheckedCreateNestedManyWithoutCompetitionInput
+  evaluations?: Prisma.EventEvaluationUncheckedCreateNestedManyWithoutCompetitionInput
+}
+
+export type CompetitionCreateOrConnectWithoutReputationEventsInput = {
+  where: Prisma.CompetitionWhereUniqueInput
+  create: Prisma.XOR<Prisma.CompetitionCreateWithoutReputationEventsInput, Prisma.CompetitionUncheckedCreateWithoutReputationEventsInput>
+}
+
+export type CompetitionUpsertWithoutReputationEventsInput = {
+  update: Prisma.XOR<Prisma.CompetitionUpdateWithoutReputationEventsInput, Prisma.CompetitionUncheckedUpdateWithoutReputationEventsInput>
+  create: Prisma.XOR<Prisma.CompetitionCreateWithoutReputationEventsInput, Prisma.CompetitionUncheckedCreateWithoutReputationEventsInput>
+  where?: Prisma.CompetitionWhereInput
+}
+
+export type CompetitionUpdateToOneWithWhereWithoutReputationEventsInput = {
+  where?: Prisma.CompetitionWhereInput
+  data: Prisma.XOR<Prisma.CompetitionUpdateWithoutReputationEventsInput, Prisma.CompetitionUncheckedUpdateWithoutReputationEventsInput>
+}
+
+export type CompetitionUpdateWithoutReputationEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
+  registrationStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  minimumEvaluations?: Prisma.IntFieldUpdateOperationsInput | number
+  worksDetails?: Prisma.ProjectCompDetailsUpdateManyWithoutCompetitionNestedInput
+  Rating?: Prisma.RatingUpdateManyWithoutCompetitionNestedInput
+  criteria?: Prisma.EventCriterionUpdateManyWithoutCompetitionNestedInput
+  evaluations?: Prisma.EventEvaluationUpdateManyWithoutCompetitionNestedInput
+}
+
+export type CompetitionUncheckedUpdateWithoutReputationEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
+  registrationStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  minimumEvaluations?: Prisma.IntFieldUpdateOperationsInput | number
+  worksDetails?: Prisma.ProjectCompDetailsUncheckedUpdateManyWithoutCompetitionNestedInput
   Rating?: Prisma.RatingUncheckedUpdateManyWithoutCompetitionNestedInput
   criteria?: Prisma.EventCriterionUncheckedUpdateManyWithoutCompetitionNestedInput
   evaluations?: Prisma.EventEvaluationUncheckedUpdateManyWithoutCompetitionNestedInput
@@ -831,6 +963,7 @@ export type CompetitionCreateWithoutCriteriaInput = {
   worksDetails?: Prisma.ProjectCompDetailsCreateNestedManyWithoutCompetitionInput
   Rating?: Prisma.RatingCreateNestedManyWithoutCompetitionInput
   evaluations?: Prisma.EventEvaluationCreateNestedManyWithoutCompetitionInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutEventInput
 }
 
 export type CompetitionUncheckedCreateWithoutCriteriaInput = {
@@ -850,6 +983,7 @@ export type CompetitionUncheckedCreateWithoutCriteriaInput = {
   worksDetails?: Prisma.ProjectCompDetailsUncheckedCreateNestedManyWithoutCompetitionInput
   Rating?: Prisma.RatingUncheckedCreateNestedManyWithoutCompetitionInput
   evaluations?: Prisma.EventEvaluationUncheckedCreateNestedManyWithoutCompetitionInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutEventInput
 }
 
 export type CompetitionCreateOrConnectWithoutCriteriaInput = {
@@ -885,6 +1019,7 @@ export type CompetitionUpdateWithoutCriteriaInput = {
   worksDetails?: Prisma.ProjectCompDetailsUpdateManyWithoutCompetitionNestedInput
   Rating?: Prisma.RatingUpdateManyWithoutCompetitionNestedInput
   evaluations?: Prisma.EventEvaluationUpdateManyWithoutCompetitionNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutEventNestedInput
 }
 
 export type CompetitionUncheckedUpdateWithoutCriteriaInput = {
@@ -904,6 +1039,7 @@ export type CompetitionUncheckedUpdateWithoutCriteriaInput = {
   worksDetails?: Prisma.ProjectCompDetailsUncheckedUpdateManyWithoutCompetitionNestedInput
   Rating?: Prisma.RatingUncheckedUpdateManyWithoutCompetitionNestedInput
   evaluations?: Prisma.EventEvaluationUncheckedUpdateManyWithoutCompetitionNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutEventNestedInput
 }
 
 export type CompetitionCreateWithoutEvaluationsInput = {
@@ -923,6 +1059,7 @@ export type CompetitionCreateWithoutEvaluationsInput = {
   worksDetails?: Prisma.ProjectCompDetailsCreateNestedManyWithoutCompetitionInput
   Rating?: Prisma.RatingCreateNestedManyWithoutCompetitionInput
   criteria?: Prisma.EventCriterionCreateNestedManyWithoutCompetitionInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutEventInput
 }
 
 export type CompetitionUncheckedCreateWithoutEvaluationsInput = {
@@ -942,6 +1079,7 @@ export type CompetitionUncheckedCreateWithoutEvaluationsInput = {
   worksDetails?: Prisma.ProjectCompDetailsUncheckedCreateNestedManyWithoutCompetitionInput
   Rating?: Prisma.RatingUncheckedCreateNestedManyWithoutCompetitionInput
   criteria?: Prisma.EventCriterionUncheckedCreateNestedManyWithoutCompetitionInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutEventInput
 }
 
 export type CompetitionCreateOrConnectWithoutEvaluationsInput = {
@@ -977,6 +1115,7 @@ export type CompetitionUpdateWithoutEvaluationsInput = {
   worksDetails?: Prisma.ProjectCompDetailsUpdateManyWithoutCompetitionNestedInput
   Rating?: Prisma.RatingUpdateManyWithoutCompetitionNestedInput
   criteria?: Prisma.EventCriterionUpdateManyWithoutCompetitionNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutEventNestedInput
 }
 
 export type CompetitionUncheckedUpdateWithoutEvaluationsInput = {
@@ -996,6 +1135,7 @@ export type CompetitionUncheckedUpdateWithoutEvaluationsInput = {
   worksDetails?: Prisma.ProjectCompDetailsUncheckedUpdateManyWithoutCompetitionNestedInput
   Rating?: Prisma.RatingUncheckedUpdateManyWithoutCompetitionNestedInput
   criteria?: Prisma.EventCriterionUncheckedUpdateManyWithoutCompetitionNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutEventNestedInput
 }
 
 
@@ -1008,6 +1148,7 @@ export type CompetitionCountOutputType = {
   Rating: number
   criteria: number
   evaluations: number
+  reputationEvents: number
 }
 
 export type CompetitionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1015,6 +1156,7 @@ export type CompetitionCountOutputTypeSelect<ExtArgs extends runtime.Types.Exten
   Rating?: boolean | CompetitionCountOutputTypeCountRatingArgs
   criteria?: boolean | CompetitionCountOutputTypeCountCriteriaArgs
   evaluations?: boolean | CompetitionCountOutputTypeCountEvaluationsArgs
+  reputationEvents?: boolean | CompetitionCountOutputTypeCountReputationEventsArgs
 }
 
 /**
@@ -1055,6 +1197,13 @@ export type CompetitionCountOutputTypeCountEvaluationsArgs<ExtArgs extends runti
   where?: Prisma.EventEvaluationWhereInput
 }
 
+/**
+ * CompetitionCountOutputType without action
+ */
+export type CompetitionCountOutputTypeCountReputationEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReputationEventWhereInput
+}
+
 
 export type CompetitionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1074,6 +1223,7 @@ export type CompetitionSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   Rating?: boolean | Prisma.Competition$RatingArgs<ExtArgs>
   criteria?: boolean | Prisma.Competition$criteriaArgs<ExtArgs>
   evaluations?: boolean | Prisma.Competition$evaluationsArgs<ExtArgs>
+  reputationEvents?: boolean | Prisma.Competition$reputationEventsArgs<ExtArgs>
   _count?: boolean | Prisma.CompetitionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["competition"]>
 
@@ -1131,6 +1281,7 @@ export type CompetitionInclude<ExtArgs extends runtime.Types.Extensions.Internal
   Rating?: boolean | Prisma.Competition$RatingArgs<ExtArgs>
   criteria?: boolean | Prisma.Competition$criteriaArgs<ExtArgs>
   evaluations?: boolean | Prisma.Competition$evaluationsArgs<ExtArgs>
+  reputationEvents?: boolean | Prisma.Competition$reputationEventsArgs<ExtArgs>
   _count?: boolean | Prisma.CompetitionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CompetitionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1143,6 +1294,7 @@ export type $CompetitionPayload<ExtArgs extends runtime.Types.Extensions.Interna
     Rating: Prisma.$RatingPayload<ExtArgs>[]
     criteria: Prisma.$EventCriterionPayload<ExtArgs>[]
     evaluations: Prisma.$EventEvaluationPayload<ExtArgs>[]
+    reputationEvents: Prisma.$ReputationEventPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1556,6 +1708,7 @@ export interface Prisma__CompetitionClient<T, Null = never, ExtArgs extends runt
   Rating<T extends Prisma.Competition$RatingArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Competition$RatingArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RatingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   criteria<T extends Prisma.Competition$criteriaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Competition$criteriaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventCriterionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   evaluations<T extends Prisma.Competition$evaluationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Competition$evaluationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventEvaluationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reputationEvents<T extends Prisma.Competition$reputationEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Competition$reputationEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReputationEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2084,6 +2237,30 @@ export type Competition$evaluationsArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.EventEvaluationScalarFieldEnum | Prisma.EventEvaluationScalarFieldEnum[]
+}
+
+/**
+ * Competition.reputationEvents
+ */
+export type Competition$reputationEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ReputationEvent
+   */
+  select?: Prisma.ReputationEventSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ReputationEvent
+   */
+  omit?: Prisma.ReputationEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReputationEventInclude<ExtArgs> | null
+  where?: Prisma.ReputationEventWhereInput
+  orderBy?: Prisma.ReputationEventOrderByWithRelationInput | Prisma.ReputationEventOrderByWithRelationInput[]
+  cursor?: Prisma.ReputationEventWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReputationEventScalarFieldEnum | Prisma.ReputationEventScalarFieldEnum[]
 }
 
 /**

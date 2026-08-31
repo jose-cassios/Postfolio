@@ -56,8 +56,10 @@ export interface ProfileProject {
 }
 
 export interface UserReputation {
-  creatorScore: number;
-  contributorScore: number;
+  creatorXp: number;
+  contributorXp: number;
+  creatorRank: ReputationRank;
+  contributorRank: ReputationRank;
   evidence: {
     publishedProjects: number;
     versionsCreated: number;
@@ -67,3 +69,19 @@ export interface UserReputation {
     recognizedContributions: number;
   };
 }
+
+export type ReputationRank =
+  | 'F'
+  | 'F+'
+  | 'E'
+  | 'E+'
+  | 'D'
+  | 'D+'
+  | 'C'
+  | 'C+'
+  | 'B'
+  | 'B+'
+  | 'A'
+  | 'A+'
+  | 'S'
+  | 'SS';

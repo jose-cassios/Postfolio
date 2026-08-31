@@ -4,9 +4,32 @@ export interface UserAchievementContract {
   rank: number;
 }
 
+export type ReputationRankContract =
+  | "F"
+  | "F+"
+  | "E"
+  | "E+"
+  | "D"
+  | "D+"
+  | "C"
+  | "C+"
+  | "B"
+  | "B+"
+  | "A"
+  | "A+"
+  | "S"
+  | "SS";
+
+export interface ReputationRankConfigContract {
+  rank: ReputationRankContract;
+  requiredXp: number;
+}
+
 export interface UserReputationContract {
-  creatorScore: number;
-  contributorScore: number;
+  creatorXp: number;
+  contributorXp: number;
+  creatorRank: ReputationRankContract;
+  contributorRank: ReputationRankContract;
   evidence: {
     publishedProjects: number;
     versionsCreated: number;

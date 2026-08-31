@@ -5,8 +5,8 @@ import {
 } from "@PrismaGen/client";
 
 export const REPUTATION_RULES = Object.freeze({
-  APPRECIATION_USEFUL: { axis: ReputationAxis.CONTRIBUTOR, points: 2 },
-  APPRECIATION_APPLIED: { axis: ReputationAxis.CONTRIBUTOR, points: 5 },
+  POSTMARK_USEFUL: { axis: ReputationAxis.CONTRIBUTOR, points: 2 },
+  POSTMARK_APPLIED: { axis: ReputationAxis.CONTRIBUTOR, points: 5 },
   PROJECT_IMPROVED: { axis: ReputationAxis.CREATOR, points: 3 },
   PROJECT_VERSION_WITH_COMMUNITY_CREDIT: {
     axis: ReputationAxis.CREATOR,
@@ -19,8 +19,10 @@ export interface ReputationEventInput {
   type: ReputationEventType;
   idempotencyKey: string;
   projectId?: string;
-  appreciationId?: string;
+  postmarkId?: string;
   projectVersionId?: string;
+  eventId?: string;
+  metadata?: Prisma.InputJsonValue;
 }
 
 export async function recordReputationEvent(
@@ -37,8 +39,10 @@ export async function recordReputationEvent(
       axis: rule.axis,
       points: rule.points,
       projectId: input.projectId,
-      appreciationId: input.appreciationId,
+      postmarkId: input.postmarkId,
       projectVersionId: input.projectVersionId,
+      eventId: input.eventId,
+      metadata: input.metadata,
       idempotencyKey: input.idempotencyKey,
     },
   });

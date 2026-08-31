@@ -44,8 +44,10 @@ describe('ProfileComponent', () => {
       username: 'ana',
       usertype: 'USER',
       reputation: {
-        creatorScore: 3,
-        contributorScore: 7,
+        creatorXp: 3,
+        contributorXp: 7,
+        creatorRank: 'F',
+        contributorRank: 'F',
         evidence: {
           publishedProjects: 2,
           versionsCreated: 4,

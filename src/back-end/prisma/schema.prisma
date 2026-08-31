@@ -97,6 +97,7 @@ model Competition {
   Rating               Rating[]
   criteria             EventCriterion[]
   evaluations          EventEvaluation[]
+  reputationEvents     ReputationEvent[]    @relation("ReputationEventCompetition")
 
   @@map("tb_competition")
 }
@@ -333,18 +334,31 @@ model ReputationEvent {
   axis             ReputationAxis
   points           Int
   projectId        String?
-  appreciationId   String?
+  postmarkId       String?
   projectVersionId String?
+  eventId          String?
+  metadata         Json?
   idempotencyKey   String              @unique
   createdAt        DateTime            @default(now())
 
   user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   project        Project?        @relation(fields: [projectId], references: [id], onDelete: SetNull)
-  appreciation   Appreciate?     @relation(fields: [appreciationId], references: [id], onDelete: SetNull)
+  postmark       Appreciate?     @relation(fields: [postmarkId], references: [id], onDelete: SetNull)
   projectVersion ProjectVersion? @relation(fields: [projectVersionId], references: [id], onDelete: SetNull)
+  event          Competition?    @relation("ReputationEventCompetition", fields: [eventId], references: [id], onDelete: SetNull)
 
   @@index([userId, axis, createdAt])
+  @@index([eventId])
   @@map("tb_reputation_event")
+}
+
+model ReputationRankConfig {
+  rank       ReputationRank @id
+  requiredXp Int
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  @@map("tb_reputation_rank_config")
 }
 
 model EventCriterion {
@@ -412,10 +426,27 @@ enum ReputationAxis {
 }
 
 enum ReputationEventType {
-  APPRECIATION_USEFUL
-  APPRECIATION_APPLIED
+  POSTMARK_USEFUL
+  POSTMARK_APPLIED
   PROJECT_IMPROVED
   PROJECT_VERSION_WITH_COMMUNITY_CREDIT
+}
+
+enum ReputationRank {
+  F
+  F_PLUS @map("F+")
+  E
+  E_PLUS @map("E+")
+  D
+  D_PLUS @map("D+")
+  C
+  C_PLUS @map("C+")
+  B
+  B_PLUS @map("B+")
+  A
+  A_PLUS @map("A+")
+  S
+  SS
 }
 
 enum SocialProviderType {

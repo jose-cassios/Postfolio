@@ -68,6 +68,7 @@ export const ModelName = {
   ProjectVersion: 'ProjectVersion',
   ProjectVersionCredit: 'ProjectVersionCredit',
   ReputationEvent: 'ReputationEvent',
+  ReputationRankConfig: 'ReputationRankConfig',
   EventCriterion: 'EventCriterion',
   EventEvaluation: 'EventEvaluation',
   EventEvaluationScore: 'EventEvaluationScore'
@@ -322,13 +323,25 @@ export const ReputationEventScalarFieldEnum = {
   axis: 'axis',
   points: 'points',
   projectId: 'projectId',
-  appreciationId: 'appreciationId',
+  postmarkId: 'postmarkId',
   projectVersionId: 'projectVersionId',
+  eventId: 'eventId',
+  metadata: 'metadata',
   idempotencyKey: 'idempotencyKey',
   createdAt: 'createdAt'
 } as const
 
 export type ReputationEventScalarFieldEnum = (typeof ReputationEventScalarFieldEnum)[keyof typeof ReputationEventScalarFieldEnum]
+
+
+export const ReputationRankConfigScalarFieldEnum = {
+  rank: 'rank',
+  requiredXp: 'requiredXp',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ReputationRankConfigScalarFieldEnum = (typeof ReputationRankConfigScalarFieldEnum)[keyof typeof ReputationRankConfigScalarFieldEnum]
 
 
 export const EventCriterionScalarFieldEnum = {
@@ -378,6 +391,14 @@ export const JsonNullValueInput = {
 } as const
 
 export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {

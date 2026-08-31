@@ -66,13 +66,33 @@ export type ReputationAxis = (typeof ReputationAxis)[keyof typeof ReputationAxis
 
 
 export const ReputationEventType = {
-  APPRECIATION_USEFUL: 'APPRECIATION_USEFUL',
-  APPRECIATION_APPLIED: 'APPRECIATION_APPLIED',
+  POSTMARK_USEFUL: 'POSTMARK_USEFUL',
+  POSTMARK_APPLIED: 'POSTMARK_APPLIED',
   PROJECT_IMPROVED: 'PROJECT_IMPROVED',
   PROJECT_VERSION_WITH_COMMUNITY_CREDIT: 'PROJECT_VERSION_WITH_COMMUNITY_CREDIT'
 } as const
 
 export type ReputationEventType = (typeof ReputationEventType)[keyof typeof ReputationEventType]
+
+
+export const ReputationRank = {
+  F: 'F',
+  F_PLUS: 'F_PLUS',
+  E: 'E',
+  E_PLUS: 'E_PLUS',
+  D: 'D',
+  D_PLUS: 'D_PLUS',
+  C: 'C',
+  C_PLUS: 'C_PLUS',
+  B: 'B',
+  B_PLUS: 'B_PLUS',
+  A: 'A',
+  A_PLUS: 'A_PLUS',
+  S: 'S',
+  SS: 'SS'
+} as const
+
+export type ReputationRank = (typeof ReputationRank)[keyof typeof ReputationRank]
 
 
 export const SocialProviderType = {
