@@ -8,8 +8,8 @@ import { IPortfolioPort } from "@portfolio/domain/interfaces/PortfolioPort";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@compositionRoot/Types";
 import { ProjectStatus } from "@project/domain/valueObject/ProjectContent";
-import { AppreciateStatus } from "@shared/contracts/ProjectContracts";
-import { CreateAppreciationInput } from "@project/domain/interfaces/IProjectRepository";
+import { PostmarkStatus } from "@shared/contracts/ProjectContracts";
+import { CreatePostmarkInput } from "@project/domain/interfaces/IProjectRepository";
 
 @injectable()
 export class ProjectService implements IProjectService {
@@ -74,7 +74,7 @@ export class ProjectService implements IProjectService {
       ? {
           authorId: userId,
           changelog: updateProjectDto.changelog?.trim() || "Nova versao publicada",
-          appreciationIds: [...new Set(updateProjectDto.appreciationIds ?? [])],
+          postmarkIds: [...new Set(updateProjectDto.postmarkIds ?? [])],
         }
       : undefined;
     return await this.repository.update(project, publication);
@@ -138,47 +138,47 @@ export class ProjectService implements IProjectService {
     return await this.repository.setLike(id, userId, liked);
   }
 
-  async createAppreciation(
+  async createPostmark(
     id: string,
     userId: string,
-    input: CreateAppreciationInput,
+    input: CreatePostmarkInput,
   ) {
     const project = await this.repository.findById(id);
     if (!project || project.getStatus() !== ProjectStatus.PUBLISHED) {
       throw new NotFound("O projeto nao existe");
     }
     if (await this.portfolioPort.isOwnedBy(project.getPortfolioId(), userId)) {
-      throw new Forbidden("Voce nao pode enviar Appreciate para o proprio projeto.");
+      throw new Forbidden("Voce nao pode enviar um Postmark para o proprio projeto.");
     }
     const requestedAspects = project.getFeedbackAspects();
     if (requestedAspects.length && !requestedAspects.includes(input.aspect)) {
       throw new BadRequest("Escolha um dos aspectos de feedback pedidos pelo autor.");
     }
-    return await this.repository.createAppreciation(id, userId, input);
+    return await this.repository.createPostmark(id, userId, input);
   }
 
-  async updateAppreciationStatus(
+  async updatePostmarkStatus(
     projectId: string,
-    appreciationId: string,
+    postmarkId: string,
     userId: string,
-    status: AppreciateStatus,
+    status: PostmarkStatus,
   ) {
     if (!(await this.repository.isOwnedBy(projectId, userId))) {
-      throw new Forbidden("Apenas o autor pode classificar este Appreciate.");
+      throw new Forbidden("Apenas o autor pode classificar este Postmark.");
     }
-    return await this.repository.updateAppreciationStatus(
+    return await this.repository.updatePostmarkStatus(
       projectId,
-      appreciationId,
+      postmarkId,
       status,
     );
   }
 
-  async findAppreciations(projectId: string) {
+  async findPostmarks(projectId: string) {
     const project = await this.repository.findById(projectId);
     if (!project || project.getStatus() !== ProjectStatus.PUBLISHED) {
       throw new NotFound("O projeto nao existe");
     }
-    return await this.repository.findAppreciations(projectId);
+    return await this.repository.findPostmarks(projectId);
   }
 
   async getInteraction(id: string, userId: string) {

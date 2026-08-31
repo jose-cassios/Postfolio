@@ -15,7 +15,6 @@ interface CreateProjectDTO {
   status?: ProjectStatus;
   feedbackAspects?: string[];
   feedbackQuestion?: string | null;
-  seekingFeedback?: boolean;
   portfolioId: string;
 }
 
@@ -34,9 +33,8 @@ interface UpdateProjectDTO {
   status?: ProjectStatus;
   feedbackAspects?: string[];
   feedbackQuestion?: string | null;
-  seekingFeedback?: boolean;
   changelog?: string;
-  appreciationIds?: string[];
+  postmarkIds?: string[];
 }
 
 export interface ProjectListQuery {
@@ -44,8 +42,7 @@ export interface ProjectListQuery {
   category?: ProjectCategory;
   tool?: string;
   tag?: string;
-  sort: "newest" | "likes" | "feedback";
-  seekingFeedback?: boolean;
+  sort: "newest" | "likes";
   page: number;
   limit: number;
 }

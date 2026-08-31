@@ -16,7 +16,6 @@ export interface ProjectContract {
   status: ProjectStatus;
   feedbackAspects: string[];
   feedbackQuestion: string | null;
-  seekingFeedback: boolean;
   currentVersion: number;
   publishedAt: Date | null;
   createdAt: Date;
@@ -31,7 +30,7 @@ export interface ProjectContract {
   };
   metrics?: {
     likes: number;
-    appreciates: number;
+    postmarks: number;
     comments: number;
     saves: number;
   };
@@ -40,7 +39,7 @@ export interface ProjectContract {
     content: string;
     username: string;
   }>;
-  appreciations?: ProjectAppreciationContract[];
+  postmarks?: ProjectPostmarkContract[];
   versions?: ProjectVersionContract[];
 }
 
@@ -59,21 +58,21 @@ export interface ProjectContactContract {
 
 export interface ProjectInteractionContract {
   liked: boolean;
-  appreciated: boolean;
+  postmarked: boolean;
   saved: boolean;
   likes: number;
-  appreciates: number;
+  postmarks: number;
 }
 
-export type AppreciateStatus = "PENDING" | "USEFUL" | "APPLIED" | "DISMISSED";
+export type PostmarkStatus = "PENDING" | "USEFUL" | "APPLIED" | "DISMISSED";
 
-export interface ProjectAppreciationContract {
+export interface ProjectPostmarkContract {
   id: string;
   aspect: string;
   strength: string;
-  improvement: string;
+  suggestion: string;
   additionalComment: string | null;
-  status: AppreciateStatus;
+  status: PostmarkStatus;
   createdAt: Date;
   updatedAt: Date;
   creditedInVersion: number | null;
@@ -88,7 +87,7 @@ export interface ProjectVersionContract {
   createdAt: Date;
   author: { id: string; username: string };
   credits: Array<{
-    appreciationId: string;
+    postmarkId: string;
     aspect: string;
     contributor: { id: string; username: string };
   }>;

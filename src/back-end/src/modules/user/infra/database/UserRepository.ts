@@ -151,7 +151,7 @@ export class UserRepository implements IUserRepository {
   }
 
   async findReputation(userId: string): Promise<UserReputationContract> {
-    const [scores, publishedProjects, versionsCreated, appreciatesSent,
+    const [scores, publishedProjects, versionsCreated, postmarksSent,
       usefulFeedbacks, appliedSuggestions, recognizedContributions] = await Promise.all([
       prisma.reputationEvent.groupBy({
         by: ["axis"],
@@ -185,7 +185,7 @@ export class UserRepository implements IUserRepository {
       evidence: {
         publishedProjects,
         versionsCreated,
-        appreciatesSent,
+        postmarksSent,
         usefulFeedbacks,
         appliedSuggestions,
         recognizedContributions,

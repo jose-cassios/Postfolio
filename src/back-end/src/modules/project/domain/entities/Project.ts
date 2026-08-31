@@ -26,7 +26,7 @@ export class Project {
     private status: ProjectStatus = ProjectStatus.DRAFT,
     private feedbackAspects: string[] = [],
     private feedbackQuestion: string | null = null,
-    private seekingFeedback: boolean = false,
+    private seekingFeedback: boolean = true,
     private currentVersion: number = 0,
     private publishedAt: Date | null = null,
     private createdAt: Date = new Date(),
@@ -72,7 +72,6 @@ export class Project {
     }
     if (dto.feedbackAspects !== undefined) this.feedbackAspects = dto.feedbackAspects;
     if (dto.feedbackQuestion !== undefined) this.feedbackQuestion = dto.feedbackQuestion;
-    if (dto.seekingFeedback !== undefined) this.seekingFeedback = dto.seekingFeedback;
   }
 
   // Getters

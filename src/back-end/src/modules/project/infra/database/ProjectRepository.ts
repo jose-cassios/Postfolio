@@ -10,7 +10,7 @@ import {
 import { Project } from "@project/domain/entities/Project";
 import { ProjectMapper } from "@project/application/ProjectMapper";
 import {
-  CreateAppreciationInput,
+  CreatePostmarkInput,
   IProjectRepository,
   VersionPublication,
 } from "@project/domain/interfaces/IProjectRepository";
@@ -21,7 +21,7 @@ import {
   ProjectContactContract,
   ProjectInteractionContract,
   ProjectFeedbackContract,
-  ProjectAppreciationContract,
+  ProjectPostmarkContract,
 } from "@shared/contracts/ProjectContracts";
 import { ProjectCategoryMapper } from "@project/application/ProjectMapper";
 import { recordReputationEvent } from "@project/application/ReputationPolicy";
@@ -89,10 +89,10 @@ export class ProjectRepository implements IProjectRepository {
           throw new BadRequest("Altere o conteudo do projeto antes de publicar outra versao.");
         }
 
-        const appreciations = publication.appreciationIds.length
+        const postmarks = publication.postmarkIds.length
           ? await tx.appreciate.findMany({
               where: {
-                id: { in: publication.appreciationIds },
+                id: { in: publication.postmarkIds },
                 projectId: updated.id,
               },
               include: {
@@ -102,16 +102,16 @@ export class ProjectRepository implements IProjectRepository {
               },
             })
           : [];
-        if (appreciations.length !== publication.appreciationIds.length) {
-          throw new BadRequest("Um dos Appreciates selecionados nao pertence ao projeto.");
+        if (postmarks.length !== publication.postmarkIds.length) {
+          throw new BadRequest("Um dos Postmarks selecionados nao pertence ao projeto.");
         }
-        if (appreciations.some((appreciation) => appreciation.versionCredits.length)) {
-          throw new BadRequest("Um dos Appreciates ja recebeu credito em outra versao.");
+        if (postmarks.some((postmark) => postmark.versionCredits.length)) {
+          throw new BadRequest("Um dos Postmarks ja recebeu credito em outra versao.");
         }
-        if (appreciations.some((appreciation) => appreciation.status === AppreciateStatus.DISMISSED)) {
-          throw new BadRequest("Um Appreciate descartado nao pode receber credito.");
+        if (postmarks.some((postmark) => postmark.status === AppreciateStatus.DISMISSED)) {
+          throw new BadRequest("Um Postmark arquivado nao pode receber credito.");
         }
-        if (appreciations.some((appreciation) => appreciation.userId === publication.authorId)) {
+        if (postmarks.some((postmark) => postmark.userId === publication.authorId)) {
           throw new Forbidden("O autor nao pode gerar credito de contribuicao para si mesmo.");
         }
 
@@ -124,24 +124,24 @@ export class ProjectRepository implements IProjectRepository {
           ),
         });
 
-        for (const appreciation of appreciations) {
+        for (const postmark of postmarks) {
           await tx.projectVersionCredit.create({
             data: {
               projectVersionId: version.id,
-              appreciationId: appreciation.id,
-              contributorId: appreciation.userId,
+              appreciationId: postmark.id,
+              contributorId: postmark.userId,
             },
           });
           await tx.appreciate.update({
-            where: { id: appreciation.id },
+            where: { id: postmark.id },
             data: { status: AppreciateStatus.APPLIED, resolvedAt: new Date() },
           });
           await recordReputationEvent(tx, {
-            userId: appreciation.userId,
+            userId: postmark.userId,
             type: ReputationEventType.APPRECIATION_APPLIED,
-            idempotencyKey: `appreciation-applied:${appreciation.id}`,
+            idempotencyKey: `appreciation-applied:${postmark.id}`,
             projectId: updated.id,
-            appreciationId: appreciation.id,
+            appreciationId: postmark.id,
             projectVersionId: version.id,
           });
         }
@@ -155,7 +155,7 @@ export class ProjectRepository implements IProjectRepository {
             projectVersionId: version.id,
           });
         }
-        if (appreciations.length) {
+        if (postmarks.length) {
           await recordReputationEvent(tx, {
             userId: publication.authorId,
             type: ReputationEventType.PROJECT_VERSION_WITH_COMMUNITY_CREDIT,
@@ -245,9 +245,6 @@ export class ProjectRepository implements IProjectRepository {
       }),
       ...(query.tool && { tools: { has: query.tool } }),
       ...(query.tag && { tags: { has: query.tag } }),
-      ...(query.seekingFeedback !== undefined && {
-        seekingFeedback: query.seekingFeedback,
-      }),
       ...(query.q && {
         OR: [
           { name: { contains: query.q, mode: "insensitive" } },
@@ -259,10 +256,8 @@ export class ProjectRepository implements IProjectRepository {
 
     const orderBy: Prisma.ProjectOrderByWithRelationInput | Prisma.ProjectOrderByWithRelationInput[] =
       query.sort === "likes"
-        ? { likes: { _count: "desc" } }
-        : query.sort === "feedback"
-          ? [{ seekingFeedback: "desc" }, { publishedAt: "desc" }]
-          : { publishedAt: "desc" };
+        ? [{ likes: { _count: "desc" } }, { publishedAt: "desc" }]
+        : { publishedAt: "desc" };
 
     const [models, total] = await Promise.all([
       prisma.project.findMany({
@@ -304,7 +299,7 @@ export class ProjectRepository implements IProjectRepository {
         author: model.portfolio.author,
         metrics: {
           likes: model._count.likes,
-          appreciates: model._count.Appreciate,
+          postmarks: model._count.Appreciate,
           comments: model._count.Comments,
           saves: model._count.FavorateProjects,
         },
@@ -384,7 +379,7 @@ export class ProjectRepository implements IProjectRepository {
       author: model.portfolio.author,
       metrics: {
         likes: model._count.likes,
-        appreciates: model._count.Appreciate,
+        postmarks: model._count.Appreciate,
         comments: model._count.Comments,
         saves: model._count.FavorateProjects,
       },
@@ -393,8 +388,8 @@ export class ProjectRepository implements IProjectRepository {
         content: feedback.content,
         username: feedback.user.username,
       })),
-      appreciations: model.Appreciate.map((appreciation) =>
-        this.toAppreciationContract(appreciation)
+      postmarks: model.Appreciate.map((postmark) =>
+        this.toPostmarkContract(postmark)
       ),
       versions: model.versions.map((version) => ({
         id: version.id,
@@ -404,7 +399,7 @@ export class ProjectRepository implements IProjectRepository {
         createdAt: version.createdAt,
         author: version.author,
         credits: version.credits.map((credit) => ({
-          appreciationId: credit.appreciation.id,
+          postmarkId: credit.appreciation.id,
           aspect: credit.appreciation.aspect,
           contributor: credit.contributor,
         })),
@@ -463,17 +458,17 @@ export class ProjectRepository implements IProjectRepository {
     return this.getInteraction(projectId, userId);
   }
 
-  async createAppreciation(
+  async createPostmark(
     projectId: string,
     userId: string,
-    input: CreateAppreciationInput,
-  ): Promise<ProjectAppreciationContract> {
+    input: CreatePostmarkInput,
+  ): Promise<ProjectPostmarkContract> {
     return await prisma.$transaction(async (tx) => {
       const existing = await tx.appreciate.findUnique({
         where: { userId_projectId: { userId, projectId } },
       });
       if (existing && existing.status !== AppreciateStatus.PENDING) {
-        throw new Conflict("Este Appreciate ja foi analisado pelo autor.");
+        throw new Conflict("Este Postmark ja foi analisado pelo autor.");
       }
 
       const metrics = await tx.postMetrics.upsert({
@@ -485,7 +480,9 @@ export class ProjectRepository implements IProjectRepository {
         ? await tx.appreciate.update({
             where: { id: existing.id },
             data: {
-              ...input,
+              aspect: input.aspect,
+              strength: input.strength,
+              improvement: input.suggestion,
               additionalComment: input.additionalComment || null,
               status: AppreciateStatus.PENDING,
               resolvedAt: null,
@@ -502,7 +499,9 @@ export class ProjectRepository implements IProjectRepository {
               userId,
               projectId,
               postMetricsId: metrics.id,
-              ...input,
+              aspect: input.aspect,
+              strength: input.strength,
+              improvement: input.suggestion,
               additionalComment: input.additionalComment || null,
             },
             include: {
@@ -516,18 +515,18 @@ export class ProjectRepository implements IProjectRepository {
           data: { appreciateCount: { increment: 1 } },
         });
       }
-      return this.toAppreciationContract(appreciation);
+      return this.toPostmarkContract(appreciation);
     });
   }
 
-  async updateAppreciationStatus(
+  async updatePostmarkStatus(
     projectId: string,
-    appreciationId: string,
+    postmarkId: string,
     status: "PENDING" | "USEFUL" | "APPLIED" | "DISMISSED",
-  ): Promise<ProjectAppreciationContract> {
+  ): Promise<ProjectPostmarkContract> {
     return await prisma.$transaction(async (tx) => {
       const existing = await tx.appreciate.findFirst({
-        where: { id: appreciationId, projectId },
+        where: { id: postmarkId, projectId },
         include: {
           project: {
             select: { portfolio: { select: { authorId: true } } },
@@ -535,18 +534,18 @@ export class ProjectRepository implements IProjectRepository {
           versionCredits: { select: { id: true } },
         },
       });
-      if (!existing) throw new NotFound("Appreciate nao encontrado.");
+      if (!existing) throw new NotFound("Postmark nao encontrado.");
       if (existing.userId === existing.project.portfolio.authorId) {
         throw new Forbidden("Uma interacao propria nao pode gerar reputacao.");
       }
       if (existing.versionCredits.length && status !== "APPLIED") {
         throw new Conflict(
-          "Um Appreciate creditado em uma versao deve permanecer como aplicado.",
+          "Um Postmark creditado em uma versao deve permanecer como aplicado.",
         );
       }
 
       const appreciation = await tx.appreciate.update({
-        where: { id: appreciationId },
+        where: { id: postmarkId },
         data: {
           status: status as AppreciateStatus,
           resolvedAt: status === "PENDING" ? null : new Date(),
@@ -570,12 +569,12 @@ export class ProjectRepository implements IProjectRepository {
           appreciationId: existing.id,
         });
       }
-      return this.toAppreciationContract(appreciation);
+      return this.toPostmarkContract(appreciation);
     });
   }
 
-  async findAppreciations(projectId: string): Promise<ProjectAppreciationContract[]> {
-    const appreciations = await prisma.appreciate.findMany({
+  async findPostmarks(projectId: string): Promise<ProjectPostmarkContract[]> {
+    const postmarks = await prisma.appreciate.findMany({
       where: { projectId },
       orderBy: { createdAt: "desc" },
       include: {
@@ -585,8 +584,8 @@ export class ProjectRepository implements IProjectRepository {
         },
       },
     });
-    return appreciations.map((appreciation) =>
-      this.toAppreciationContract(appreciation)
+    return postmarks.map((postmark) =>
+      this.toPostmarkContract(postmark)
     );
   }
 
@@ -594,7 +593,7 @@ export class ProjectRepository implements IProjectRepository {
     projectId: string,
     userId: string
   ): Promise<ProjectInteractionContract> {
-    const [liked, appreciated, saved, likes, appreciates] = await Promise.all([
+    const [liked, postmarked, saved, likes, postmarks] = await Promise.all([
       prisma.like.findUnique({ where: { userId_projectId: { userId, projectId } } }),
       prisma.appreciate.findUnique({ where: { userId_projectId: { userId, projectId } } }),
       prisma.favorateProjects.findUnique({ where: { userId_projectId: { userId, projectId } } }),
@@ -603,10 +602,10 @@ export class ProjectRepository implements IProjectRepository {
     ]);
     return {
       liked: Boolean(liked),
-      appreciated: Boolean(appreciated),
+      postmarked: Boolean(postmarked),
       saved: Boolean(saved),
       likes,
-      appreciates,
+      postmarks,
     };
   }
 
@@ -663,7 +662,7 @@ export class ProjectRepository implements IProjectRepository {
     };
   }
 
-  private toAppreciationContract(appreciation: {
+  private toPostmarkContract(postmark: {
     id: string;
     aspect: string;
     strength: string;
@@ -674,19 +673,19 @@ export class ProjectRepository implements IProjectRepository {
     updatedAt: Date;
     user: { id: string; username: string; profilePhoto: string | null };
     versionCredits?: Array<{ projectVersion: { versionNumber: number } }>;
-  }): ProjectAppreciationContract {
+  }): ProjectPostmarkContract {
     return {
-      id: appreciation.id,
-      aspect: appreciation.aspect,
-      strength: appreciation.strength,
-      improvement: appreciation.improvement,
-      additionalComment: appreciation.additionalComment,
-      status: appreciation.status,
-      createdAt: appreciation.createdAt,
-      updatedAt: appreciation.updatedAt,
+      id: postmark.id,
+      aspect: postmark.aspect,
+      strength: postmark.strength,
+      suggestion: postmark.improvement,
+      additionalComment: postmark.additionalComment,
+      status: postmark.status,
+      createdAt: postmark.createdAt,
+      updatedAt: postmark.updatedAt,
       creditedInVersion:
-        appreciation.versionCredits?.[0]?.projectVersion.versionNumber ?? null,
-      author: appreciation.user,
+        postmark.versionCredits?.[0]?.projectVersion.versionNumber ?? null,
+      author: postmark.user,
     };
   }
 

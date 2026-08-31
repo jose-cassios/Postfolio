@@ -1,7 +1,7 @@
 import { Project } from "@project/domain/entities/Project";
 import { CreateProjectDTO, ProjectListQuery, UpdateProjectDTO } from "@project/api/ProjectDTO";
-import { AppreciateStatus, PaginatedProjectsContract, ProjectAppreciationContract, ProjectContactContract, ProjectContract, ProjectFeedbackContract, ProjectInteractionContract } from "@shared/contracts/ProjectContracts";
-import { CreateAppreciationInput } from "@project/domain/interfaces/IProjectRepository";
+import { PostmarkStatus, PaginatedProjectsContract, ProjectPostmarkContract, ProjectContactContract, ProjectContract, ProjectFeedbackContract, ProjectInteractionContract } from "@shared/contracts/ProjectContracts";
+import { CreatePostmarkInput } from "@project/domain/interfaces/IProjectRepository";
 
 export interface IProjectService {
   create(createWorkDto: Omit<CreateProjectDTO, "portfolioId">, userId: string): Promise<Project>;
@@ -16,18 +16,18 @@ export interface IProjectService {
   findForEditor(id: string, userId: string): Promise<ProjectContract>;
   findOwnerContact(id: string): Promise<ProjectContactContract>;
   setLike(id: string, userId: string, liked: boolean): Promise<ProjectInteractionContract>;
-  createAppreciation(
+  createPostmark(
     id: string,
     userId: string,
-    input: CreateAppreciationInput,
-  ): Promise<ProjectAppreciationContract>;
-  updateAppreciationStatus(
+    input: CreatePostmarkInput,
+  ): Promise<ProjectPostmarkContract>;
+  updatePostmarkStatus(
     projectId: string,
-    appreciationId: string,
+    postmarkId: string,
     userId: string,
-    status: AppreciateStatus,
-  ): Promise<ProjectAppreciationContract>;
-  findAppreciations(projectId: string): Promise<ProjectAppreciationContract[]>;
+    status: PostmarkStatus,
+  ): Promise<ProjectPostmarkContract>;
+  findPostmarks(projectId: string): Promise<ProjectPostmarkContract[]>;
   getInteraction(id: string, userId: string): Promise<ProjectInteractionContract>;
   findPrivateFeedback(id: string, userId: string): Promise<ProjectFeedbackContract[]>;
 }

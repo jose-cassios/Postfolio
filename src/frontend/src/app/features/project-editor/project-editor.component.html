@@ -229,8 +229,7 @@
             <label>Ferramentas<input type="text" formControlName="tools" placeholder="Angular, Figma, Node.js" /></label>
             <label>Tags<input type="text" formControlName="tags" placeholder="ux, acessibilidade, mobile" /></label>
             <div class="feedback-settings">
-              <label class="check-line"><input type="checkbox" formControlName="seekingFeedback" /> Projeto em revisão / buscando feedback</label>
-              <span class="segmented-label">Aspectos desejados · até 3</span>
+              <span class="segmented-label">Direcione os Postmarks · até 3 aspectos</span>
               <div class="aspect-options">
                 @for (aspect of feedbackAspectOptions; track aspect.value) {
                   <button
@@ -252,17 +251,17 @@
                 <label>Changelog
                   <textarea formControlName="changelog" rows="3" maxlength="500" placeholder="O que mudou nesta versão?"></textarea>
                 </label>
-                @if (appreciations().length) {
-                  <p class="inspector-help">Reconheça as sugestões incorporadas nesta versão.</p>
+                @if (postmarks().length) {
+                  <p class="inspector-help">Reconheça os Postmarks incorporados nesta versão.</p>
                   <div class="credit-options">
-                    @for (appreciation of appreciations(); track appreciation.id) {
+                    @for (postmark of postmarks(); track postmark.id) {
                       <label class="credit-option">
                         <input
                           type="checkbox"
-                          [checked]="selectedAppreciationIds().includes(appreciation.id)"
-                          (change)="toggleAppreciationCredit(appreciation.id)"
+                          [checked]="selectedPostmarkIds().includes(postmark.id)"
+                          (change)="togglePostmarkCredit(postmark.id)"
                         />
-                        <span><strong>&#64;{{ appreciation.author.username }}</strong>{{ appreciation.aspect }} · {{ appreciation.improvement }}</span>
+                        <span><strong>&#64;{{ postmark.author.username }}</strong>{{ postmark.aspect }} · {{ postmark.suggestion }}</span>
                       </label>
                     }
                   </div>

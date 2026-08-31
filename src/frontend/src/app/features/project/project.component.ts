@@ -8,8 +8,8 @@ import { AuthService } from '../auth/services/auth.service';
 import { ProjectDetails } from '../../shared/models/project-details';
 import {
   ProjectComment,
-  AppreciateStatus,
-  ProjectAppreciation,
+  PostmarkStatus,
+  ProjectPostmark,
   ProjectInteraction,
   ProjectService,
 } from '../../shared/services/project.service';
@@ -30,13 +30,13 @@ export class ProjectComponent {
   readonly project = signal<ProjectDetails | null>(null);
   readonly interaction = signal<ProjectInteraction>({
     liked: false,
-    appreciated: false,
+    postmarked: false,
     saved: false,
     likes: 0,
-    appreciates: 0,
+    postmarks: 0,
   });
   readonly comments = signal<ProjectComment[]>([]);
-  readonly showAppreciateForm = signal(false);
+  readonly showPostmarkForm = signal(false);
   readonly isLoading = signal(true);
   readonly actionPending = signal(false);
   readonly errorMessage = signal('');
@@ -48,9 +48,9 @@ export class ProjectComponent {
   );
   commentText = '';
   selectedAspect = '';
-  appreciationStrength = '';
-  appreciationImprovement = '';
-  appreciationComment = '';
+  postmarkStrength = '';
+  postmarkSuggestion = '';
+  postmarkComment = '';
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('slug');
@@ -67,7 +67,7 @@ export class ProjectComponent {
         this.interaction.update((state) => ({
           ...state,
           likes: project.likes,
-          appreciates: project.appreciates,
+        postmarks: project.postmarksCount,
         }));
         this.loadComments();
         if (this.auth.isAuthenticated()) {
@@ -89,64 +89,64 @@ export class ProjectComponent {
       .subscribe({ next: (state) => this.interaction.set(state), error: () => this.showError() });
   }
 
-  openAppreciation(): void {
+  openPostmark(): void {
     if (!this.requireAuthentication() || this.isOwner()) return;
-    this.showAppreciateForm.set(true);
+    this.showPostmarkForm.set(true);
   }
 
-  submitAppreciation() {
+  submitPostmark() {
     const project = this.project();
     if (!project || !this.requireAuthentication() || this.actionPending()) return;
     if (
       !this.selectedAspect
-      || this.appreciationStrength.trim().length < 3
-      || this.appreciationImprovement.trim().length < 3
+      || this.postmarkStrength.trim().length < 3
+      || this.postmarkSuggestion.trim().length < 3
     ) return;
     this.actionPending.set(true);
-    this.projects.createAppreciation(project.id, {
+    this.projects.createPostmark(project.id, {
       aspect: this.selectedAspect,
-      strength: this.appreciationStrength.trim(),
-      improvement: this.appreciationImprovement.trim(),
-      additionalComment: this.appreciationComment.trim() || null,
+      strength: this.postmarkStrength.trim(),
+      suggestion: this.postmarkSuggestion.trim(),
+      additionalComment: this.postmarkComment.trim() || null,
     })
       .pipe(finalize(() => this.actionPending.set(false)))
       .subscribe({
-        next: (appreciation) => {
+        next: (postmark) => {
           this.project.update((current) => current ? {
             ...current,
-            appreciations: [
-              appreciation,
-              ...current.appreciations.filter((item) => item.id !== appreciation.id),
+            postmarks: [
+              postmark,
+              ...current.postmarks.filter((item) => item.id !== postmark.id),
             ],
           } : current);
           this.interaction.update((state) => ({
             ...state,
-            appreciated: true,
-            appreciates: state.appreciated ? state.appreciates : state.appreciates + 1,
+            postmarked: true,
+            postmarks: state.postmarked ? state.postmarks : state.postmarks + 1,
           }));
-          this.appreciationStrength = '';
-          this.appreciationImprovement = '';
-          this.appreciationComment = '';
-          this.showAppreciateForm.set(false);
-          this.notice.set('Improve enviado para o autor.');
+          this.postmarkStrength = '';
+          this.postmarkSuggestion = '';
+          this.postmarkComment = '';
+          this.showPostmarkForm.set(false);
+          this.notice.set('Postmark enviado para o autor.');
         },
         error: () => this.showError(),
       });
   }
 
-  updateAppreciationStatus(
-    appreciation: ProjectAppreciation,
-    status: Exclude<AppreciateStatus, 'PENDING'>,
+  updatePostmarkStatus(
+    postmark: ProjectPostmark,
+    status: Exclude<PostmarkStatus, 'PENDING'>,
   ): void {
     const project = this.project();
     if (!project || !this.isOwner() || this.actionPending()) return;
     this.actionPending.set(true);
-    this.projects.updateAppreciationStatus(project.id, appreciation.id, status)
+    this.projects.updatePostmarkStatus(project.id, postmark.id, status)
       .pipe(finalize(() => this.actionPending.set(false)))
       .subscribe({
         next: (updated) => this.project.update((current) => current ? {
           ...current,
-          appreciations: current.appreciations.map((item) =>
+          postmarks: current.postmarks.map((item) =>
             item.id === updated.id ? updated : item
           ),
         } : current),
@@ -168,7 +168,7 @@ export class ProjectComponent {
       : ['UI', 'UX', 'ARCHITECTURE', 'CODE', 'PERFORMANCE', 'ACCESSIBILITY', 'ORIGINALITY', 'DOCUMENTATION'];
   }
 
-  appreciationStatusLabel(status: AppreciateStatus): string {
+  postmarkStatusLabel(status: PostmarkStatus): string {
     return ({
       PENDING: 'Pendente', USEFUL: 'Útil', APPLIED: 'Aplicado', DISMISSED: 'Arquivado',
     })[status];

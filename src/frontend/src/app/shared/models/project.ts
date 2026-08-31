@@ -9,8 +9,7 @@ export interface Project {
   likes: number;
   views: number;
   commentsCount: number;
-  appreciates?: number;
-  seekingFeedback?: boolean;
+  postmarksCount?: number;
   currentVersion?: number;
   saves?: number;
   createdAt: Date;

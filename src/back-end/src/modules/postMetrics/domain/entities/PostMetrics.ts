@@ -3,7 +3,7 @@ import { CreatePostMetricsDTO } from "@postMetrics/api/PostMetricsDTO";
 export class PostMetrics {
   constructor(
     private id: string,
-    private appreciateCount: number,
+    private postmarkCount: number,
     private projectId: string
   ) {}
 
@@ -11,20 +11,20 @@ export class PostMetrics {
     return new PostMetrics("", 0, dto.projectId);
   }
 
-  public incrementsAppreciateCount() {
-    this.appreciateCount += 1;
+  public incrementPostmarkCount() {
+    this.postmarkCount += 1;
   }
 
-  public decrementAppreciateCount() {
-    this.appreciateCount -= 1;
+  public decrementPostmarkCount() {
+    this.postmarkCount -= 1;
   }
 
   public getId(): string {
     return this.id;
   }
 
-  public getCauntAppreciate(): number {
-    return this.appreciateCount;
+  public getPostmarkCount(): number {
+    return this.postmarkCount;
   }
 
   public getProjectId(): string {

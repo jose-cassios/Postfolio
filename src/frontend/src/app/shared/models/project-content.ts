@@ -61,7 +61,6 @@ export interface ProjectDocument {
   status: ProjectStatus;
   feedbackAspects: string[];
   feedbackQuestion: string | null;
-  seekingFeedback: boolean;
   currentVersion: number;
   publishedAt: string | null;
   createdAt: string;
@@ -83,7 +82,6 @@ export interface ProjectEditorPayload {
   status: ProjectStatus;
   feedbackAspects: string[];
   feedbackQuestion: string | null;
-  seekingFeedback: boolean;
   changelog?: string;
-  appreciationIds?: string[];
+  postmarkIds?: string[];
 }

@@ -35,8 +35,8 @@
               <mat-icon>{{ interaction().liked ? 'favorite' : 'favorite_border' }}</mat-icon>
               Curtir ({{ interaction().likes }})
             </button>
-            <button [class.active]="interaction().appreciated" [disabled]="actionPending() || isOwner()" (click)="openAppreciation()">
-              <mat-icon>tips_and_updates</mat-icon> Improve ({{ interaction().appreciates }})
+            <button [class.active]="interaction().postmarked" [disabled]="actionPending() || isOwner()" (click)="openPostmark()">
+              <mat-icon>tips_and_updates</mat-icon> Postmark ({{ interaction().postmarks }})
             </button>
             <button [class.active]="interaction().saved" [disabled]="actionPending()" (click)="toggleSaved()">
               <mat-icon>{{ interaction().saved ? 'bookmark' : 'bookmark_border' }}</mat-icon> Salvar
@@ -55,11 +55,10 @@
           <div class="meta">
             <span>Publicado em {{ p.publishedAt | date:'dd/MM/yyyy' }}</span>
             <span>Versão atual v{{ p.currentVersion || 1 }}</span>
-            @if (p.seekingFeedback) { <span class="reviewing">Em revisão · buscando feedback</span> }
           </div>
           <hr />
 
-          @if (p.seekingFeedback || p.feedbackAspects.length || p.feedbackQuestion) {
+          @if (p.feedbackAspects.length || p.feedbackQuestion) {
             <section class="feedback-request">
               <span class="eyebrow">Feedback desejado</span>
               @if (p.feedbackQuestion) { <h2>{{ p.feedbackQuestion }}</h2> }
@@ -166,7 +165,7 @@
                     <div>
                       <strong>{{ version.changelog }}</strong>
                       <small>{{ version.createdAt | date:'dd/MM/yyyy HH:mm' }}</small>
-                      @for (credit of version.credits; track credit.appreciationId) {
+                      @for (credit of version.credits; track credit.postmarkId) {
                         <p>Incorporou uma sugestão de
                           <a [routerLink]="['/perfil', credit.contributor.username]">&#64;{{ credit.contributor.username }}</a>
                           sobre {{ aspectLabel(credit.aspect) }}.
@@ -181,11 +180,11 @@
 
           @if (!isOwner()) {
             <section class="section feedback-box">
-              <div class="section-title"><span class="eyebrow">Improve</span><h2>Ajude este projeto a evoluir</h2></div>
+              <div class="section-title"><span class="eyebrow">Postmark</span><h2>Ajude este projeto a evoluir</h2></div>
               <p>Envie um ponto forte e uma sugestão objetiva. Likes e Saves continuam independentes.</p>
-              @if (!showAppreciateForm()) {
-                <button class="primary-action" (click)="openAppreciation()">
-                  {{ interaction().appreciated ? 'Editar feedback pendente' : 'Enviar Improve' }}
+              @if (!showPostmarkForm()) {
+                <button class="primary-action" (click)="openPostmark()">
+                  {{ interaction().postmarked ? 'Editar Postmark pendente' : 'Enviar Postmark' }}
                 </button>
               } @else {
                 <div class="structured-feedback-form">
@@ -197,44 +196,44 @@
                     </select>
                   </label>
                   <label>Ponto forte
-                    <textarea [(ngModel)]="appreciationStrength" maxlength="500" rows="3" placeholder="O que já funciona bem?"></textarea>
+                    <textarea [(ngModel)]="postmarkStrength" maxlength="500" rows="3" placeholder="O que já funciona bem?"></textarea>
                   </label>
                   <label>Sugestão de melhoria
-                    <textarea [(ngModel)]="appreciationImprovement" maxlength="500" rows="3" placeholder="O que pode ser melhorado e como?"></textarea>
+                    <textarea [(ngModel)]="postmarkSuggestion" maxlength="500" rows="3" placeholder="O que pode ser melhorado e como?"></textarea>
                   </label>
                   <label>Comentário complementar <small>opcional</small>
-                    <textarea [(ngModel)]="appreciationComment" maxlength="500" rows="2"></textarea>
+                    <textarea [(ngModel)]="postmarkComment" maxlength="500" rows="2"></textarea>
                   </label>
                   <div class="form-actions">
-                    <button type="button" (click)="showAppreciateForm.set(false)">Cancelar</button>
-                    <button class="primary-action" [disabled]="appreciationStrength.trim().length < 3 || appreciationImprovement.trim().length < 3 || actionPending()" (click)="submitAppreciation()">Enviar Improve</button>
+                    <button type="button" (click)="showPostmarkForm.set(false)">Cancelar</button>
+                    <button class="primary-action" [disabled]="postmarkStrength.trim().length < 3 || postmarkSuggestion.trim().length < 3 || actionPending()" (click)="submitPostmark()">Enviar Postmark</button>
                   </div>
                 </div>
               }
             </section>
           }
 
-          @if (p.appreciations.length) {
-            <section class="section improvements">
-              <div class="section-title"><span class="eyebrow">Comunidade</span><h2>Appreciates e melhorias</h2></div>
-              @for (appreciation of p.appreciations; track appreciation.id) {
-                <article class="improvement-card" [attr.data-status]="appreciation.status">
+          @if (p.postmarks.length) {
+            <section class="section postmarks">
+              <div class="section-title"><span class="eyebrow">Comunidade</span><h2>Postmarks recebidos</h2></div>
+              @for (postmark of p.postmarks; track postmark.id) {
+                <article class="postmark-card" [attr.data-status]="postmark.status">
                   <header>
-                    <a [routerLink]="['/perfil', appreciation.author.username]">&#64;{{ appreciation.author.username }}</a>
-                    <span>{{ aspectLabel(appreciation.aspect) }}</span>
-                    <span class="feedback-status">{{ appreciationStatusLabel(appreciation.status) }}</span>
+                    <a [routerLink]="['/perfil', postmark.author.username]">&#64;{{ postmark.author.username }}</a>
+                    <span>{{ aspectLabel(postmark.aspect) }}</span>
+                    <span class="feedback-status">{{ postmarkStatusLabel(postmark.status) }}</span>
                   </header>
-                  <p><strong>Ponto forte</strong>{{ appreciation.strength }}</p>
-                  <p><strong>Sugestão</strong>{{ appreciation.improvement }}</p>
-                  @if (appreciation.additionalComment) { <p>{{ appreciation.additionalComment }}</p> }
-                  @if (appreciation.creditedInVersion) {
-                    <small>Incorporado com crédito na v{{ appreciation.creditedInVersion }}.</small>
+                  <p><strong>Ponto forte</strong>{{ postmark.strength }}</p>
+                  <p><strong>Sugestão</strong>{{ postmark.suggestion }}</p>
+                  @if (postmark.additionalComment) { <p>{{ postmark.additionalComment }}</p> }
+                  @if (postmark.creditedInVersion) {
+                    <small>Incorporado com crédito na v{{ postmark.creditedInVersion }}.</small>
                   }
-                  @if (isOwner() && !appreciation.creditedInVersion) {
+                  @if (isOwner() && !postmark.creditedInVersion) {
                     <div class="status-actions">
-                      <button [disabled]="actionPending()" (click)="updateAppreciationStatus(appreciation, 'USEFUL')">Marcar útil</button>
-                      <button [disabled]="actionPending()" (click)="updateAppreciationStatus(appreciation, 'APPLIED')">Marcar aplicado</button>
-                      <button [disabled]="actionPending()" (click)="updateAppreciationStatus(appreciation, 'DISMISSED')">Arquivar</button>
+                      <button [disabled]="actionPending()" (click)="updatePostmarkStatus(postmark, 'USEFUL')">Marcar útil</button>
+                      <button [disabled]="actionPending()" (click)="updatePostmarkStatus(postmark, 'APPLIED')">Marcar aplicado</button>
+                      <button [disabled]="actionPending()" (click)="updatePostmarkStatus(postmark, 'DISMISSED')">Arquivar</button>
                     </div>
                   }
                 </article>

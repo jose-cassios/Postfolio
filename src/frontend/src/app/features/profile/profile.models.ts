@@ -61,7 +61,7 @@ export interface UserReputation {
   evidence: {
     publishedProjects: number;
     versionsCreated: number;
-    appreciatesSent: number;
+    postmarksSent: number;
     usefulFeedbacks: number;
     appliedSuggestions: number;
     recognizedContributions: number;

@@ -385,11 +385,6 @@ hr {
   footer { color: $color-text-secondary; font-size: .82rem; }
 }
 
-.reviewing {
-  color: #168454;
-  font-weight: 650;
-}
-
 .feedback-request {
   margin: 0 0 2.5rem;
   padding: 1.25rem 1.4rem;
@@ -479,8 +474,8 @@ hr {
   }
 }
 
-.improvements { display: grid; gap: .85rem; }
-.improvement-card {
+.postmarks { display: grid; gap: .85rem; }
+.postmark-card {
   padding: 1rem 1.1rem;
   border: 1px solid $color-border-default;
   border-radius: 10px;

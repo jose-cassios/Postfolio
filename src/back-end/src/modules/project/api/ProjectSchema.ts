@@ -93,7 +93,6 @@ const ProjectBodyFields = z.object({
     .refine((items) => new Set(items).size === items.length, "Nao repita aspectos")
     .default([]),
   feedbackQuestion: z.string().trim().max(240).nullable().optional(),
-  seekingFeedback: z.boolean().default(false),
 });
 
 const CreateProjectBodySchema = ProjectBodyFields.superRefine((project, context) => {
@@ -133,13 +132,6 @@ const CreateProjectBodySchema = ProjectBodyFields.superRefine((project, context)
       });
     }
   });
-  if (project.seekingFeedback && !project.feedbackAspects.length) {
-    context.addIssue({
-      code: "custom",
-      path: ["feedbackAspects"],
-      message: "Escolha pelo menos um aspecto para pedir feedback",
-    });
-  }
 });
 
 type CreateProjectRequest = FastifyRequest<{
@@ -153,7 +145,7 @@ const UpdateProjectParamsSchema = z.object({
 const UpdateProjectBodySchema = ProjectBodyFields.partial()
   .extend({
     changelog: z.string().trim().min(3).max(500).optional(),
-    appreciationIds: z.array(z.string().uuid()).max(20).default([]),
+    postmarkIds: z.array(z.string().uuid()).max(20).default([]),
   })
   .superRefine((project, context) => {
     if (project.status === "PUBLISHED" && !project.changelog) {
@@ -161,13 +153,6 @@ const UpdateProjectBodySchema = ProjectBodyFields.partial()
         code: "custom",
         path: ["changelog"],
         message: "Descreva o que mudou nesta versao",
-      });
-    }
-    if (project.seekingFeedback && !project.feedbackAspects?.length) {
-      context.addIssue({
-        code: "custom",
-        path: ["feedbackAspects"],
-        message: "Escolha pelo menos um aspecto para pedir feedback",
       });
     }
   });
@@ -179,8 +164,7 @@ const ProjectListQuerySchema = z.object({
   ]).optional(),
   tool: z.string().trim().max(40).optional(),
   tag: z.string().trim().max(30).optional(),
-  sort: z.enum(["newest", "likes", "feedback"]).default("newest"),
-  seekingFeedback: z.enum(["true", "false"]).transform((value) => value === "true").optional(),
+  sort: z.enum(["newest", "likes"]).default("newest"),
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(48).default(12),
 });
@@ -194,17 +178,17 @@ const ProjectInteractionParamsSchema = z.object({
 });
 
 const SetLikeBodySchema = z.object({ liked: z.boolean() });
-const CreateAppreciationBodySchema = z.object({
+const CreatePostmarkBodySchema = z.object({
   aspect: FeedbackAspectSchema,
   strength: z.string().trim().min(3).max(500),
-  improvement: z.string().trim().min(3).max(500),
+  suggestion: z.string().trim().min(3).max(500),
   additionalComment: z.string().trim().max(500).nullable().optional(),
 });
-const AppreciationStatusParamsSchema = z.object({
+const PostmarkStatusParamsSchema = z.object({
   projectId: z.string().uuid("ID do projeto invalido"),
-  appreciationId: z.string().uuid("ID do Appreciate invalido"),
+  postmarkId: z.string().uuid("ID do Postmark invalido"),
 });
-const UpdateAppreciationStatusBodySchema = z.object({
+const UpdatePostmarkStatusBodySchema = z.object({
   status: z.enum(["USEFUL", "APPLIED", "DISMISSED"]),
 });
 
@@ -213,14 +197,14 @@ type SetLikeRequest = FastifyRequest<{
   Body: z.infer<typeof SetLikeBodySchema>;
 }>;
 
-type CreateAppreciationRequest = FastifyRequest<{
+type CreatePostmarkRequest = FastifyRequest<{
   Params: z.infer<typeof ProjectInteractionParamsSchema>;
-  Body: z.infer<typeof CreateAppreciationBodySchema>;
+  Body: z.infer<typeof CreatePostmarkBodySchema>;
 }>;
 
-type UpdateAppreciationStatusRequest = FastifyRequest<{
-  Params: z.infer<typeof AppreciationStatusParamsSchema>;
-  Body: z.infer<typeof UpdateAppreciationStatusBodySchema>;
+type UpdatePostmarkStatusRequest = FastifyRequest<{
+  Params: z.infer<typeof PostmarkStatusParamsSchema>;
+  Body: z.infer<typeof UpdatePostmarkStatusBodySchema>;
 }>;
 
 type UpdateProjectRequest = FastifyRequest<{
@@ -236,13 +220,13 @@ const projectRouteSchema = {
   },
   list: { querystring: ProjectListQuerySchema },
   setLike: { params: ProjectInteractionParamsSchema, body: SetLikeBodySchema },
-  createAppreciation: {
+  createPostmark: {
     params: ProjectInteractionParamsSchema,
-    body: CreateAppreciationBodySchema,
+    body: CreatePostmarkBodySchema,
   },
-  appreciationStatus: {
-    params: AppreciationStatusParamsSchema,
-    body: UpdateAppreciationStatusBodySchema,
+  postmarkStatus: {
+    params: PostmarkStatusParamsSchema,
+    body: UpdatePostmarkStatusBodySchema,
   },
   interaction: { params: ProjectInteractionParamsSchema },
 };
@@ -253,6 +237,6 @@ export {
   UpdateProjectRequest,
   ProjectListRequest,
   SetLikeRequest,
-  CreateAppreciationRequest,
-  UpdateAppreciationStatusRequest,
+  CreatePostmarkRequest,
+  UpdatePostmarkStatusRequest,
 };

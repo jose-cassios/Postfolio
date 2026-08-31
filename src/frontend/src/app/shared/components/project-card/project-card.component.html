@@ -1,7 +1,6 @@
 <div class="card" [class.detailed]="mode() === ProjectCardMode.DETAILED">
 
   <div class="image-container">
-    @if (project().seekingFeedback) { <span class="review-label">Em revisão</span> }
     @if (project().imageUrl) {
       <img [src]="project().imageUrl" [alt]="project().title" loading="lazy">
     } @else {
@@ -49,8 +48,8 @@
         </div>
 
         <div class="stat">
-          <mat-icon title="Improves recebidos">tips_and_updates</mat-icon>
-          <span>{{ project().appreciates || 0 }}</span>
+          <mat-icon title="Postmarks recebidos">tips_and_updates</mat-icon>
+          <span>{{ project().postmarksCount || 0 }}</span>
         </div>
 
       </div>

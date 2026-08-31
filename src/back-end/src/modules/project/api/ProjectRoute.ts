@@ -7,8 +7,8 @@ import {
   projectRouteSchema,
   ProjectListRequest,
   SetLikeRequest,
-  CreateAppreciationRequest,
-  UpdateAppreciationStatusRequest,
+  CreatePostmarkRequest,
+  UpdatePostmarkStatusRequest,
 } from "@project/api/ProjectSchema";
 
 function projectRoutesPlugin(app: FastifyInstance, controller: WorkController) {
@@ -63,28 +63,28 @@ function projectRoutesPlugin(app: FastifyInstance, controller: WorkController) {
   );
 
   app.post(
-    "/:projectId/appreciations",
+    "/:projectId/postmarks",
     {
-      schema: projectRouteSchema.createAppreciation,
+      schema: projectRouteSchema.createPostmark,
       preValidation: UserMiddle.authenticate,
     },
-    (req, rep) => controller.createAppreciation(req as CreateAppreciationRequest, rep)
+    (req, rep) => controller.createPostmark(req as CreatePostmarkRequest, rep)
   );
 
   app.get(
-    "/:projectId/appreciations",
+    "/:projectId/postmarks",
     { schema: projectRouteSchema.interaction },
-    (req, rep) => controller.getAppreciations(req, rep)
+    (req, rep) => controller.getPostmarks(req, rep)
   );
 
   app.patch(
-    "/:projectId/appreciations/:appreciationId/status",
+    "/:projectId/postmarks/:postmarkId/status",
     {
-      schema: projectRouteSchema.appreciationStatus,
+      schema: projectRouteSchema.postmarkStatus,
       preValidation: UserMiddle.authenticate,
     },
-    (req, rep) => controller.updateAppreciationStatus(
-      req as UpdateAppreciationStatusRequest,
+    (req, rep) => controller.updatePostmarkStatus(
+      req as UpdatePostmarkStatusRequest,
       rep,
     )
   );

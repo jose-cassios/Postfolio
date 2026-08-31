@@ -2,7 +2,7 @@ import { ProjectDetails } from "../models/project-details";
 
 type LegacyMockProject = Omit<
   ProjectDetails,
-  'feedbackAspects' | 'feedbackQuestion' | 'seekingFeedback' | 'currentVersion' | 'appreciations' | 'versions'
+  'feedbackAspects' | 'feedbackQuestion' | 'currentVersion' | 'postmarks' | 'versions'
 >;
 
 const LEGACY_FEATURED_PROJECTS: LegacyMockProject[] = [
@@ -16,7 +16,7 @@ const LEGACY_FEATURED_PROJECTS: LegacyMockProject[] = [
     likes: 2245,
     views: 10000,
     commentsCount: 1088,
-    appreciates: 845,
+    postmarksCount: 845,
     saves: 302,
 
     category: 'web-design',
@@ -55,7 +55,7 @@ const LEGACY_FEATURED_PROJECTS: LegacyMockProject[] = [
     likes: 189,
     views: 1340,
     commentsCount: 12,
-    appreciates: 72,
+    postmarksCount: 72,
     saves: 41,
 
     category: 'web-design',
@@ -91,7 +91,7 @@ const LEGACY_FEATURED_PROJECTS: LegacyMockProject[] = [
     likes: 421,
     views: 3200,
     commentsCount: 34,
-    appreciates: 15,
+    postmarksCount: 15,
     saves: 41,
 
     category: 'ilustracao',
@@ -126,7 +126,7 @@ const LEGACY_FEATURED_PROJECTS: LegacyMockProject[] = [
     likes: 178,
     views: 980,
     commentsCount: 6,
-    appreciates: 15,
+    postmarksCount: 15,
     saves: 41,
 
     category: 'branding',
@@ -162,7 +162,7 @@ const LEGACY_FEATURED_PROJECTS: LegacyMockProject[] = [
     likes: 312,
     views: 2450,
     commentsCount: 22,
-    appreciates: 85,
+    postmarksCount: 85,
     saves: 120,
 
     category: 'desenvolvimento',
@@ -198,7 +198,7 @@ const LEGACY_FEATURED_PROJECTS: LegacyMockProject[] = [
     likes: 256,
     views: 1670,
     commentsCount: 15,
-    appreciates: 92,
+    postmarksCount: 92,
     saves: 210,
 
     category: 'ui-ux',
@@ -234,7 +234,7 @@ const LEGACY_FEATURED_PROJECTS: LegacyMockProject[] = [
     likes: 367,
     views: 2890,
     commentsCount: 19,
-    appreciates: 150,
+    postmarksCount: 150,
     saves: 88,
 
     category: 'fotografia',
@@ -270,7 +270,7 @@ const LEGACY_FEATURED_PROJECTS: LegacyMockProject[] = [
     likes: 298,
     views: 2210,
     commentsCount: 11,
-    appreciates: 67,
+    postmarksCount: 67,
     saves: 145,
 
     category: 'arquitetura',
@@ -306,7 +306,7 @@ const LEGACY_FEATURED_PROJECTS: LegacyMockProject[] = [
     likes: 489,
     views: 4100,
     commentsCount: 41,
-    appreciates: 210,
+    postmarksCount: 210,
     saves: 330,
 
     category: 'jogos',
@@ -342,7 +342,7 @@ const LEGACY_FEATURED_PROJECTS: LegacyMockProject[] = [
     likes: 223,
     views: 1540,
     commentsCount: 8,
-    appreciates: 45,
+    postmarksCount: 45,
     saves: 72,
 
     category: 'motion',
@@ -376,9 +376,8 @@ export const FEATURED_PROJECTS: ProjectDetails[] = LEGACY_FEATURED_PROJECTS.map(
     ...project,
     feedbackAspects: [],
     feedbackQuestion: null,
-    seekingFeedback: false,
     currentVersion: 1,
-    appreciations: [],
+    postmarks: [],
     versions: [],
   }),
 );

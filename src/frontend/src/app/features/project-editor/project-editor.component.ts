@@ -12,7 +12,7 @@ import {
   ProjectEditorPayload,
   ProjectStatus,
 } from '../../shared/models/project-content';
-import { ProjectAppreciation, ProjectService } from '../../shared/services/project.service';
+import { ProjectPostmark, ProjectService } from '../../shared/services/project.service';
 import { AuthService } from '../auth/services/auth.service';
 import { ImageUploadFieldComponent } from '../../shared/components/image-upload-field/image-upload-field.component';
 
@@ -51,8 +51,8 @@ export class ProjectEditorComponent {
   readonly noticeIsError = signal(false);
   readonly invalidVideoIds = signal<string[]>([]);
   readonly feedbackAspects = signal<string[]>([]);
-  readonly appreciations = signal<ProjectAppreciation[]>([]);
-  readonly selectedAppreciationIds = signal<string[]>([]);
+  readonly postmarks = signal<ProjectPostmark[]>([]);
+  readonly selectedPostmarkIds = signal<string[]>([]);
 
   readonly categories = [
     { value: 'FULLSTACK', label: 'Full stack' },
@@ -84,7 +84,6 @@ export class ProjectEditorComponent {
     tools: [''],
     tags: [''],
     feedbackQuestion: ['', [Validators.maxLength(240)]],
-    seekingFeedback: [false],
     changelog: ['', [Validators.maxLength(500)]],
   });
 
@@ -108,15 +107,14 @@ export class ProjectEditorComponent {
             tools: project.tools.join(', '),
             tags: project.tags.join(', '),
             feedbackQuestion: project.feedbackQuestion ?? '',
-            seekingFeedback: project.seekingFeedback ?? false,
             changelog: '',
           });
           this.feedbackAspects.set(project.feedbackAspects ?? []);
           this.blocks.set(project.contentBlocks ?? []);
           this.selectedBlockId.set(project.contentBlocks?.[0]?.id ?? null);
-          this.projectService.getAppreciations(id).subscribe({
-            next: (appreciations) => this.appreciations.set(
-              appreciations.filter((item) => !item.creditedInVersion && item.status !== 'DISMISSED'),
+          this.projectService.getPostmarks(id).subscribe({
+            next: (postmarks) => this.postmarks.set(
+              postmarks.filter((item) => !item.creditedInVersion && item.status !== 'DISMISSED'),
             ),
           });
         },
@@ -255,11 +253,11 @@ export class ProjectEditorComponent {
     });
   }
 
-  toggleAppreciationCredit(appreciationId: string): void {
-    this.selectedAppreciationIds.update((selected) =>
-      selected.includes(appreciationId)
-        ? selected.filter((id) => id !== appreciationId)
-        : [...selected, appreciationId]
+  togglePostmarkCredit(postmarkId: string): void {
+    this.selectedPostmarkIds.update((selected) =>
+      selected.includes(postmarkId)
+        ? selected.filter((id) => id !== postmarkId)
+        : [...selected, postmarkId]
     );
   }
 
@@ -293,11 +291,10 @@ export class ProjectEditorComponent {
       status,
       feedbackAspects: this.feedbackAspects(),
       feedbackQuestion: values.feedbackQuestion.trim() || null,
-      seekingFeedback: values.seekingFeedback,
       ...(this.isEditing() && status === 'PUBLISHED'
         ? {
             changelog: values.changelog.trim(),
-            appreciationIds: this.selectedAppreciationIds(),
+            postmarkIds: this.selectedPostmarkIds(),
           }
         : {}),
     };

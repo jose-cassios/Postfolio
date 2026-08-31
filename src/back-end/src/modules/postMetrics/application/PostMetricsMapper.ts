@@ -5,7 +5,7 @@ export const PostMetricsMapper = {
   fromDomainToPrisma(domain: PostMetrics): PostMetricsModel {
     return {
       id: domain.getId(),
-      appreciateCount: domain.getCauntAppreciate(),
+      appreciateCount: domain.getPostmarkCount(),
       projectId: domain.getProjectId(),
     };
   },

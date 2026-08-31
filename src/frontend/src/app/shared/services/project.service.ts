@@ -14,9 +14,9 @@ interface ProjectApiContract extends ProjectDocument {
     profilePhoto: string | null;
     availableForHire: boolean;
   };
-  metrics?: { likes: number; appreciates: number; comments: number; saves: number };
+  metrics?: { likes: number; postmarks: number; comments: number; saves: number };
   publicFeedback?: Array<{ id: string; content: string; username: string }>;
-  appreciations?: ProjectAppreciation[];
+  postmarks?: ProjectPostmark[];
   versions?: ProjectVersion[];
 }
 
@@ -30,8 +30,7 @@ export interface ProjectQuery {
   category?: string;
   tool?: string;
   tag?: string;
-  sort?: 'newest' | 'likes' | 'feedback';
-  seekingFeedback?: boolean;
+  sort?: 'newest' | 'likes';
   page?: number;
   limit?: number;
 }
@@ -43,10 +42,10 @@ export interface ProjectPage {
 
 export interface ProjectInteraction {
   liked: boolean;
-  appreciated: boolean;
+  postmarked: boolean;
   saved: boolean;
   likes: number;
-  appreciates: number;
+  postmarks: number;
 }
 
 export interface ProjectContact {
@@ -71,15 +70,15 @@ export interface ProjectFeedback {
   username: string;
 }
 
-export type AppreciateStatus = 'PENDING' | 'USEFUL' | 'APPLIED' | 'DISMISSED';
+export type PostmarkStatus = 'PENDING' | 'USEFUL' | 'APPLIED' | 'DISMISSED';
 
-export interface ProjectAppreciation {
+export interface ProjectPostmark {
   id: string;
   aspect: string;
   strength: string;
-  improvement: string;
+  suggestion: string;
   additionalComment: string | null;
-  status: AppreciateStatus;
+  status: PostmarkStatus;
   creditedInVersion: number | null;
   createdAt: string;
   updatedAt: string;
@@ -94,16 +93,16 @@ export interface ProjectVersion {
   createdAt: string;
   author: { id: string; username: string };
   credits: Array<{
-    appreciationId: string;
+    postmarkId: string;
     aspect: string;
     contributor: { id: string; username: string };
   }>;
 }
 
-export interface CreateAppreciationPayload {
+export interface CreatePostmarkPayload {
   aspect: string;
   strength: string;
-  improvement: string;
+  suggestion: string;
   additionalComment?: string | null;
 }
 
@@ -171,27 +170,27 @@ export class ProjectService {
     );
   }
 
-  createAppreciation(id: string, payload: CreateAppreciationPayload) {
-    return this.api.post<ProjectAppreciation>(
-      `project/${encodeURIComponent(id)}/appreciations`,
+  createPostmark(id: string, payload: CreatePostmarkPayload) {
+    return this.api.post<ProjectPostmark>(
+      `project/${encodeURIComponent(id)}/postmarks`,
       payload,
       this.auth.authOptions(),
     );
   }
 
-  getAppreciations(id: string) {
-    return this.api.get<ProjectAppreciation[]>(
-      `project/${encodeURIComponent(id)}/appreciations`,
+  getPostmarks(id: string) {
+    return this.api.get<ProjectPostmark[]>(
+      `project/${encodeURIComponent(id)}/postmarks`,
     );
   }
 
-  updateAppreciationStatus(
+  updatePostmarkStatus(
     projectId: string,
-    appreciationId: string,
-    status: Exclude<AppreciateStatus, 'PENDING'>,
+    postmarkId: string,
+    status: Exclude<PostmarkStatus, 'PENDING'>,
   ) {
-    return this.api.patch<ProjectAppreciation>(
-      `project/${encodeURIComponent(projectId)}/appreciations/${encodeURIComponent(appreciationId)}/status`,
+    return this.api.patch<ProjectPostmark>(
+      `project/${encodeURIComponent(projectId)}/postmarks/${encodeURIComponent(postmarkId)}/status`,
       { status },
       this.auth.authOptions(),
     );
@@ -253,7 +252,7 @@ export class ProjectService {
       title: project.name,
       imageUrl: project.coverImageUrl,
       likes: project.metrics?.likes ?? 0,
-      appreciates: project.metrics?.appreciates ?? 0,
+      postmarksCount: project.metrics?.postmarks ?? 0,
       saves: project.metrics?.saves ?? 0,
       views: 0,
       commentsCount: project.metrics?.comments ?? 0,
@@ -277,7 +276,6 @@ export class ProjectService {
       contentBlocks: project.contentBlocks ?? [],
       contentMarkdown: project.contentMarkdown ?? '',
       status: project.status ?? 'PUBLISHED',
-      seekingFeedback: project.seekingFeedback,
       currentVersion: project.currentVersion,
       publishedAt: project.publishedAt ?? project.createdAt,
     };
@@ -290,7 +288,7 @@ export class ProjectService {
       coverImageUrl: project.coverImageUrl,
       description: project.description,
       gallery: project.galleryUrls,
-      appreciates: project.metrics?.appreciates ?? 0,
+      postmarksCount: project.metrics?.postmarks ?? 0,
       saves: project.metrics?.saves ?? 0,
       tags: project.tags,
       publishedAt: project.publishedAt ?? project.createdAt,
@@ -299,9 +297,8 @@ export class ProjectService {
       status: project.status ?? 'PUBLISHED',
       feedbackAspects: project.feedbackAspects ?? [],
       feedbackQuestion: project.feedbackQuestion ?? null,
-      seekingFeedback: project.seekingFeedback ?? false,
       currentVersion: project.currentVersion ?? 0,
-      appreciations: project.appreciations ?? [],
+      postmarks: project.postmarks ?? [],
       versions: project.versions ?? [],
       publicFeedback: project.publicFeedback ?? [],
     };

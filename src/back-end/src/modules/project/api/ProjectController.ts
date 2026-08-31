@@ -5,8 +5,8 @@ import {
   UpdateProjectRequest,
   ProjectListRequest,
   SetLikeRequest,
-  CreateAppreciationRequest,
-  UpdateAppreciationStatusRequest,
+  CreatePostmarkRequest,
+  UpdatePostmarkStatusRequest,
 } from "@project/api/ProjectSchema";
 import { CreateProjectDTO, UpdateProjectDTO } from "@project/api/ProjectDTO";
 import { BadRequest } from "@shared/error/HttpError";
@@ -112,11 +112,11 @@ export class WorkController {
     );
   }
 
-  async createAppreciation(req: CreateAppreciationRequest, reply: FastifyReply) {
+  async createPostmark(req: CreatePostmarkRequest, reply: FastifyReply) {
     const userId = req.user?.id;
     if (!userId) throw new BadRequest("Usuario autenticado e obrigatorio");
     reply.code(201).send(
-      await this.workService.createAppreciation(
+      await this.workService.createPostmark(
         req.params.projectId,
         userId,
         req.body,
@@ -124,24 +124,24 @@ export class WorkController {
     );
   }
 
-  async updateAppreciationStatus(
-    req: UpdateAppreciationStatusRequest,
+  async updatePostmarkStatus(
+    req: UpdatePostmarkStatusRequest,
     reply: FastifyReply,
   ) {
     const userId = req.user?.id;
     if (!userId) throw new BadRequest("Usuario autenticado e obrigatorio");
-    reply.send(await this.workService.updateAppreciationStatus(
+    reply.send(await this.workService.updatePostmarkStatus(
       req.params.projectId,
-      req.params.appreciationId,
+      req.params.postmarkId,
       userId,
       req.body.status,
     ));
   }
 
-  async getAppreciations(req: FastifyRequest, reply: FastifyReply) {
+  async getPostmarks(req: FastifyRequest, reply: FastifyReply) {
     const { projectId } = req.params as { projectId?: string };
     if (!projectId) throw new BadRequest("ID do projeto e necessario");
-    reply.send(await this.workService.findAppreciations(projectId));
+    reply.send(await this.workService.findPostmarks(projectId));
   }
 
   async getInteraction(req: FastifyRequest, reply: FastifyReply) {
