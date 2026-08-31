@@ -1,47 +1,48 @@
 <main class="admin-page">
-  <header><span>Painel administrativo</span><h1>Gestão do Postfolio</h1><p>Crie os eventos mensais e acompanhe as fases da comunidade.</p></header>
-  @if (!canModerate()) {
-    <section class="state"><h2>Acesso restrito</h2><p>Esta área exige uma conta de administrador.</p><a routerLink="/">Voltar ao início</a></section>
+  <header>
+    <span>Painel administrativo</span>
+    <h1>Usuários e permissões</h1>
+    <p>Gerencie os acessos da comunidade. A criação de competições fica em Eventos.</p>
+  </header>
+
+  @if (!isAdmin()) {
+    <section class="state">
+      <h2>Acesso restrito</h2>
+      <p>Esta área é exclusiva para administradores.</p>
+      <a routerLink="/">Voltar ao início</a>
+    </section>
   } @else {
     @if (notice()) { <p class="notice" role="status">{{ notice() }}</p> }
-    @if (isAdmin()) {
     <section class="panel">
-      <h2>Nova competição</h2>
-      <form [formGroup]="form" (ngSubmit)="submit()">
-        <label class="wide"><span>Nome</span><input formControlName="name" /></label>
-        <label class="wide"><span>Descrição</span><textarea rows="4" formControlName="description"></textarea></label>
-        <label><span>Categoria</span><select formControlName="category">@for (category of categories; track category) { <option [value]="category">{{ category }}</option> }</select></label>
-        <label><span>Início das inscrições</span><input type="datetime-local" formControlName="registrationStartsAt" /></label>
-        <label><span>Fim das inscrições</span><input type="datetime-local" formControlName="registrationEndsAt" /></label>
-        <label><span>Início da avaliação</span><input type="datetime-local" formControlName="votingStartsAt" /></label>
-        <label><span>Fim da avaliação</span><input type="datetime-local" formControlName="votingEndsAt" /></label>
-        <label><span>Divulgação dos resultados</span><input type="datetime-local" formControlName="resultsAt" /></label>
-        <label><span>Avaliações mínimas por participante</span><input type="number" min="1" max="10" formControlName="minimumEvaluations" /></label>
-        <div class="wide criteria-editor" formArrayName="criteria">
-          <span>Critérios e pesos</span>
-          @for (criterion of criteriaControls; track $index) {
-            <div class="criterion-row" [formGroupName]="$index">
-              <input formControlName="name" aria-label="Nome do critério" />
-              <input type="number" formControlName="weight" min="1" max="100" aria-label="Peso do critério" />
-              <small>%</small>
-              <button type="button" class="remove-criterion" [disabled]="criteriaControls.length === 1" (click)="removeCriterion($index)" aria-label="Remover critério">×</button>
-            </div>
-          }
-          <button type="button" class="add-criterion" [disabled]="criteriaControls.length >= 8" (click)="addCriterion()">+ Adicionar critério</button>
-          <small>Os pesos devem somar 100%.</small>
+      <div class="panel-heading">
+        <div><h2>Usuários cadastrados</h2><p>Escolha um dos três papéis disponíveis: User, Moderator ou Admin.</p></div>
+        <a routerLink="/competicoes">Ir para Eventos</a>
+      </div>
+
+      @if (loading()) { <p class="state">Carregando usuários...</p> }
+      @else {
+        <div class="user-list">
+          @for (user of users(); track user.id) {
+            <article>
+              <div class="identity">
+                <strong>{{ user.username }}</strong>
+                <span>{{ user.email }}</span>
+                <small [class.inactive]="!user.active">{{ user.active ? 'Conta ativa' : 'Conta suspensa' }}</small>
+              </div>
+              <div class="controls">
+                <label>
+                  <span>Papel atual: {{ roleLabel(user.usertype) }}</span>
+                  <select [(ngModel)]="selectedRoles[user.id]" [disabled]="isCurrentUser(user) || pendingUserId() === user.id">
+                    @for (role of roles; track role.value) { <option [value]="role.value">{{ role.label }}</option> }
+                  </select>
+                </label>
+                <button class="role-button" [disabled]="isCurrentUser(user) || pendingUserId() === user.id || selectedRoles[user.id] === user.usertype" (click)="changeRole(user)">Salvar papel</button>
+                <button class="status-button" [class.reactivate]="!user.active" [disabled]="isCurrentUser(user) || pendingUserId() === user.id" (click)="toggleUser(user)">{{ user.active ? 'Suspender' : 'Reativar' }}</button>
+              </div>
+            </article>
+          } @empty { <p class="state">Nenhum usuário encontrado.</p> }
         </div>
-        <button class="wide" type="submit" [disabled]="saving()">{{ saving() ? 'Criando...' : 'Criar competição' }}</button>
-      </form>
+      }
     </section>
-    <section class="panel"><h2>Eventos cadastrados</h2><div class="event-list">
-      @for (competition of competitions(); track competition.id) { <a routerLink="/competicoes"><strong>{{ competition.name }}</strong><span>{{ competition.status }} · {{ competition.submissions.length }} projetos</span></a> }
-      @empty { <p>Nenhum evento cadastrado.</p> }
-    </div></section>
-    }
-    <section class="panel"><h2>Moderação de usuários</h2><div class="user-list">
-      @for (user of users(); track user.id) {
-        <article><div><strong>{{ user.username }}</strong><span>{{ user.email }} · {{ user.usertype }}</span></div><button [class.reactivate]="!user.active" [disabled]="user.id === auth.user()?.id" (click)="toggleUser(user)">{{ user.active ? 'Suspender' : 'Reativar' }}</button></article>
-      } @empty { <p>Nenhum usuário encontrado.</p> }
-    </div></section>
   }
 </main>

@@ -10,6 +10,7 @@ import {
   LoginRequest,
   CreateUserRequest,
   UpdateUserRequest,
+  UpdateUserRoleRequest,
   PublicProfileRequest,
 } from "@user/api/UserSchema";
 import { IUserService } from "@user/domain/interfaces/IUserService";
@@ -35,8 +36,8 @@ export class UserController {
     const requester = req.user?.id
       ? await this.userService.findById(req.user.id)
       : null;
-    if (![UserType.ADMIN, UserType.MODERATOR].includes(requester?.getUserType() as UserType)) {
-      throw new Forbidden("Apenas moderadores podem listar usuarios.");
+    if (requester?.getUserType() !== UserType.ADMIN) {
+      throw new Forbidden("Apenas administradores podem listar usuarios.");
     }
     const allUsers = await this.userService.findMany();
     reply.send(
@@ -65,18 +66,37 @@ export class UserController {
       throw new BadRequest("Usuario e status sao obrigatorios.");
     }
     const requester = await this.userService.findById(requesterId);
-    if (![UserType.ADMIN, UserType.MODERATOR].includes(requester?.getUserType() as UserType)) {
-      throw new Forbidden("Apenas moderadores podem moderar usuarios.");
+    if (requester?.getUserType() !== UserType.ADMIN) {
+      throw new Forbidden("Apenas administradores podem moderar usuarios.");
     }
     if (requesterId === id && !active) {
       throw new BadRequest("Voce nao pode suspender a propria conta.");
     }
-    const target = await this.userService.findById(id);
-    if (requester?.getUserType() !== UserType.ADMIN && target?.getUserType() === UserType.ADMIN) {
-      throw new Forbidden("Moderadores nao podem suspender administradores.");
-    }
     const user = await this.userService.setActive(id, active);
     reply.send({ id: user.getId(), active: user.isActive() });
+  }
+
+  async setRole(req: UpdateUserRoleRequest, reply: FastifyReply) {
+    const requesterId = req.user?.id;
+    const { id } = req.params;
+    if (!requesterId) throw new BadRequest("Usuario autenticado e obrigatorio.");
+    if (requesterId === id) {
+      throw new BadRequest("Voce nao pode alterar o proprio papel.");
+    }
+
+    const requester = await this.userService.findById(requesterId);
+    if (requester?.getUserType() !== UserType.ADMIN) {
+      throw new Forbidden("Apenas administradores podem alterar papeis.");
+    }
+
+    const user = await this.userService.setUserType(
+      id,
+      UserTypeMapper.fromSchemaToDto(req.body.usertype),
+    );
+    reply.send({
+      id: user.getId(),
+      usertype: UserTypeMapper.fromDomainToPrisma(user.getUserType()),
+    });
   }
 
   async create(req: CreateUserRequest, reply: FastifyReply) {

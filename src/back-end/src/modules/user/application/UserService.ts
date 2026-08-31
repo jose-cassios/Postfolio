@@ -9,6 +9,7 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "@compositionRoot/Types";
 import { UserCreatedEvent } from "@shared/event/UserCreatedEvent";
 import { EventListener } from "@shared/event/EventListener";
+import { UserType } from "@user/domain/enum/UserType";
 
 @injectable()
 export class UserService implements IUserService {
@@ -132,6 +133,13 @@ export class UserService implements IUserService {
     const user = await this.repository.findById(id);
     if (!user) throw new NotFound("Usuario nao encontrado.");
     user.setActive(active);
+    return await this.repository.updateById(user);
+  }
+
+  async setUserType(id: string, userType: UserType): Promise<User> {
+    const user = await this.repository.findById(id);
+    if (!user) throw new NotFound("Usuario nao encontrado.");
+    user.setUserType(userType);
     return await this.repository.updateById(user);
   }
 

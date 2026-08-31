@@ -3,6 +3,19 @@
 header { margin-bottom: 32px; h1 { margin: 8px 0; font-size: 2.4rem; } p { color: $color-text-secondary; } }
 .eyebrow, .status, .category { color: $color-primary-500; font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
 .notice, .state { padding: 16px; margin: 20px 0; border-radius: 12px; background: $color-primary-100; }
+.creation-panel { margin: 28px 0 36px; padding: 26px; border: 1px solid $color-border-default; border-radius: 20px; background: white; }
+.section-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 22px; }
+.section-heading h2 { margin: 5px 0 0; }
+.section-heading p { max-width: 360px; margin: 0; color: $color-text-secondary; font-size: .9rem; }
+.creation-panel form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
+.creation-panel label { display: grid; gap: 7px; color: $color-text-secondary; font-size: .83rem; font-weight: 650; }
+.creation-panel .wide { grid-column: 1 / -1; }
+.creation-panel input, .creation-panel textarea, .creation-panel select { box-sizing: border-box; width: 100%; }
+.criteria-editor { display: grid; gap: 8px; padding: 14px; border: 1px solid $color-border-default; border-radius: 10px; }
+.criterion-row { display: grid; grid-template-columns: 1fr 90px 20px 38px; align-items: center; gap: 7px; }
+.criteria-editor small { color: $color-text-secondary; }
+.criteria-editor .add-criterion { justify-self: start; background: white; border: 1px solid $color-border-default; color: $color-text-primary; }
+.criteria-editor .remove-criterion { padding: 8px; background: transparent; color: $color-text-secondary; font-size: 1.15rem; }
 .events { display: grid; gap: 24px; }
 .event-card { padding: 28px; border: 1px solid $color-border-default; border-radius: 20px; background: $color-bg-default; }
 .event-heading, .timeline, .subscribe-box, .submission { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
@@ -25,4 +38,8 @@ button { cursor: pointer; background: $color-primary-500; color: white; border: 
 .result-score { display: grid; flex: 0 0 auto !important; margin-left: auto; text-align: right; }
 .result-score strong { font-size: 1.1rem; }
 .result-score span { color: $color-text-secondary; font-size: .7rem; }
-@media (max-width: 650px) { .event-heading, .subscribe-box, .submission { align-items: stretch; flex-direction: column; } }
+@media (max-width: 650px) {
+  .section-heading, .event-heading, .subscribe-box, .submission { align-items: stretch; flex-direction: column; }
+  .creation-panel form { grid-template-columns: 1fr; }
+  .creation-panel .wide { grid-column: 1; }
+}

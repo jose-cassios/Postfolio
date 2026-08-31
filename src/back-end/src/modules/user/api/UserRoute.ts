@@ -6,6 +6,7 @@ import {
   CreateUserRequest,
   userRouteSchema,
   UpdateUserRequest,
+  UpdateUserRoleRequest,
   PublicProfileRequest,
 } from "@user/api/UserSchema";
 
@@ -60,6 +61,12 @@ function userRoutesPlugin(
     "/profile",
     { preValidation: UserMiddle.authenticate },
     (req, reply) => userController.getProfile(req, reply)
+  );
+
+  app.put(
+    "/admin/users/:id/role",
+    { schema: userRouteSchema.updateRole, preValidation: UserMiddle.authenticate },
+    (req, reply) => userController.setRole(req as UpdateUserRoleRequest, reply)
   );
 
   app.get(

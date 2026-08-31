@@ -20,8 +20,8 @@ export class CompetitionService implements ICompetitionService {
   ) {}
 
   async create(dto: CreateCompetitionDTO, userId: string): Promise<Competition> {
-    if (!(await this.userPort.isAdmin(userId))) {
-      throw new Forbidden("Apenas administradores podem criar competicoes.");
+    if (!(await this.userPort.canManageCompetitions(userId))) {
+      throw new Forbidden("Apenas administradores e moderadores podem criar competicoes.");
     }
     return await this.competitionRepository.create(Competition.create(dto));
   }

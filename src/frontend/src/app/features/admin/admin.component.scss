@@ -1,17 +1,31 @@
 @use 'tokens' as *;
-.admin-page { max-width: 980px; margin: 0 auto; padding: 64px 24px 96px; }
-header { margin-bottom: 30px; span { color: $color-primary-500; font-weight: 700; } h1 { margin: 8px 0; } p { color: $color-text-secondary; } }
+
+.admin-page { max-width: 1080px; margin: 0 auto; padding: 64px 24px 96px; }
+header { margin-bottom: 30px; }
+header span { color: $color-primary-500; font-weight: 700; }
+header h1 { margin: 8px 0; }
+header p, .panel-heading p, .identity span { color: $color-text-secondary; }
 .panel, .state, .notice { margin-bottom: 24px; padding: 26px; border: 1px solid $color-border-default; border-radius: 18px; background: white; }
 .notice { background: $color-primary-100; }
-form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; label { display: grid; gap: 7px; } span { font-size: .85rem; font-weight: 650; } .wide { grid-column: 1 / -1; } }
-input, textarea, select { box-sizing: border-box; width: 100%; padding: 11px; border: 1px solid $color-border-default; border-radius: 8px; }
-button { padding: 12px; border: 0; border-radius: 9px; background: $color-primary-500; color: white; font-weight: 700; cursor: pointer; }
-.event-list { display: grid; gap: 10px; a { display: flex; justify-content: space-between; padding: 14px; border: 1px solid $color-border-default; border-radius: 10px; color: inherit; text-decoration: none; } span { color: $color-text-secondary; } }
-.user-list { display: grid; gap: 10px; article { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 14px; border: 1px solid $color-border-default; border-radius: 10px; } div { display: grid; gap: 4px; } span { color: $color-text-secondary; font-size: .82rem; } .reactivate { background: #16845b; } }
-.criteria-editor { display: grid; gap: 8px; padding: 14px; border: 1px solid $color-border-default; border-radius: 10px; }
-.criterion-row { display: grid; grid-template-columns: 1fr 90px 20px 38px; align-items: center; gap: 7px; }
-.criteria-editor small { color: $color-text-secondary; }
-.criteria-editor .add-criterion { justify-self: start; padding: 9px 12px; background: transparent; border: 1px solid $color-border-default; color: $color-text-primary; }
-.criteria-editor .remove-criterion { padding: 8px; background: transparent; color: $color-text-secondary; font-size: 1.15rem; }
-.criteria-editor button:disabled { cursor: not-allowed; opacity: .45; }
-@media (max-width: 650px) { form { grid-template-columns: 1fr; label, .wide { grid-column: 1; } } }
+.panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px; }
+.panel-heading h2 { margin: 0 0 6px; }
+.panel-heading p { margin: 0; }
+.panel-heading a { color: $color-primary-500; font-weight: 700; text-decoration: none; }
+.user-list { display: grid; gap: 10px; }
+.user-list article { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 16px; border: 1px solid $color-border-default; border-radius: 12px; }
+.identity { display: grid; gap: 4px; min-width: 0; }
+.identity span { overflow: hidden; text-overflow: ellipsis; }
+.identity small { color: #168454; font-weight: 650; }
+.identity small.inactive { color: #a13f3f; }
+.controls { display: flex; align-items: end; justify-content: flex-end; gap: 8px; }
+.controls label { display: grid; gap: 5px; color: $color-text-secondary; font-size: .75rem; }
+select, button { box-sizing: border-box; min-height: 40px; padding: 9px 12px; border: 1px solid $color-border-default; border-radius: 8px; background: white; }
+button { color: white; background: $color-primary-500; border: 0; font-weight: 700; cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: .5; }
+.status-button { background: #a13f3f; }
+.status-button.reactivate { background: #168454; }
+@media (max-width: 760px) {
+  .panel-heading, .user-list article, .controls { align-items: stretch; flex-direction: column; }
+  .controls { width: 100%; }
+  .controls label, .controls button { width: 100%; }
+}

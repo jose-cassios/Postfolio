@@ -78,9 +78,18 @@ const UpdateUserParamsSchema = z.object({
   id: z.string().uuid("ID do user inválido"),
 });
 
+const UpdateUserRoleBodySchema = z.object({
+  usertype: z.enum(["USER", "MODERATOR", "ADMIN"]),
+});
+
 type UpdateUserRequest = FastifyRequest<{
   Params: z.infer<typeof UpdateUserParamsSchema>;
   Body: z.infer<typeof UpdateUserBodySchema>;
+}>;
+
+type UpdateUserRoleRequest = FastifyRequest<{
+  Params: z.infer<typeof UpdateUserParamsSchema>;
+  Body: z.infer<typeof UpdateUserRoleBodySchema>;
 }>;
 
 const PublicProfileParamsSchema = z.object({
@@ -99,6 +108,10 @@ const userRouteSchema = {
     params: UpdateUserParamsSchema,
     body: UpdateUserBodySchema,
   },
+  updateRole: {
+    params: UpdateUserParamsSchema,
+    body: UpdateUserRoleBodySchema,
+  },
   login: {
     body: LoginUserBodySchema,
   },
@@ -111,6 +124,7 @@ export {
   userRouteSchema,
   CreateUserRequest,
   UpdateUserRequest,
+  UpdateUserRoleRequest,
   LoginRequest,
   PublicProfileRequest,
 };

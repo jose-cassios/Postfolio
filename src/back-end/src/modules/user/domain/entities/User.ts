@@ -153,4 +153,8 @@ export default class User {
   public setActive(active: boolean): void {
     this.active = active;
   }
+
+  public setUserType(userType: UserType): void {
+    this.userType = userType;
+  }
 }

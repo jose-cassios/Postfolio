@@ -14,8 +14,8 @@
       }
       <a routerLink="/sobre" routerLinkActive="active">Sobre</a>
 
-      @if (isLogged() && (user()?.usertype === 'ADMIN' || user()?.usertype === 'MODERATOR')) {
-        <a routerLink="/admin" routerLinkActive="active">Moderação</a>
+      @if (isLogged() && user()?.usertype === 'ADMIN') {
+        <a routerLink="/admin" routerLinkActive="active">Administração</a>
       }
     </nav>
 
