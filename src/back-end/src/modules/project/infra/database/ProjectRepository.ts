@@ -24,7 +24,7 @@ import {
   ProjectPostmarkContract,
 } from "@shared/contracts/ProjectContracts";
 import { ProjectCategoryMapper } from "@project/application/ProjectMapper";
-import { recordReputationEvent } from "@project/application/ReputationPolicy";
+import { distributeXp } from "@user/application/ReputationXpService";
 
 export class ProjectRepository implements IProjectRepository {
   async create(project: Project): Promise<Project> {
@@ -43,8 +43,15 @@ export class ProjectRepository implements IProjectRepository {
           where: { id: created.portfolioId },
           select: { authorId: true },
         });
-        await tx.projectVersion.create({
+        const version = await tx.projectVersion.create({
           data: this.versionSnapshot(created, 1, "Versao inicial", portfolio.authorId),
+        });
+        await distributeXp(tx, {
+          userId: portfolio.authorId,
+          type: ReputationEventType.PROJECT_PUBLISHED,
+          idempotencyKey: `project-published:${created.id}`,
+          projectId: created.id,
+          projectVersionId: version.id,
         });
         return await tx.project.update({
           where: { id: created.id },
@@ -67,9 +74,20 @@ export class ProjectRepository implements IProjectRepository {
       const model = await prisma.$transaction(async (tx) => {
         const current = await tx.project.findUniqueOrThrow({
           where: { id: project.getId() },
-          select: { currentVersion: true },
+          select: {
+            currentVersion: true,
+            status: true,
+            portfolio: { select: { authorId: true } },
+          },
         });
-        const nextVersion = publication ? current.currentVersion + 1 : current.currentVersion;
+        const isInitialPublication =
+          current.status !== ProjectStatus.PUBLISHED
+          && project.getStatus() === ProjectStatus.PUBLISHED;
+        const nextVersion = isInitialPublication
+          ? 1
+          : publication
+            ? current.currentVersion + 1
+            : current.currentVersion;
         const updated = await tx.project.update({
           where: { id: project.getId() },
           data: {
@@ -79,7 +97,7 @@ export class ProjectRepository implements IProjectRepository {
             updatedAt: new Date(),
           },
         });
-        if (!publication) return updated;
+        if (!publication && !isInitialPublication) return updated;
 
         const previousVersion = await tx.projectVersion.findFirst({
           where: { projectId: updated.id },
@@ -89,7 +107,7 @@ export class ProjectRepository implements IProjectRepository {
           throw new BadRequest("Altere o conteudo do projeto antes de publicar outra versao.");
         }
 
-        const postmarks = publication.postmarkIds.length
+        const postmarks = publication?.postmarkIds.length
           ? await tx.appreciate.findMany({
               where: {
                 id: { in: publication.postmarkIds },
@@ -102,7 +120,7 @@ export class ProjectRepository implements IProjectRepository {
               },
             })
           : [];
-        if (postmarks.length !== publication.postmarkIds.length) {
+        if (postmarks.length !== (publication?.postmarkIds.length ?? 0)) {
           throw new BadRequest("Um dos Postmarks selecionados nao pertence ao projeto.");
         }
         if (postmarks.some((postmark) => postmark.versionCredits.length)) {
@@ -111,7 +129,8 @@ export class ProjectRepository implements IProjectRepository {
         if (postmarks.some((postmark) => postmark.status === AppreciateStatus.DISMISSED)) {
           throw new BadRequest("Um Postmark arquivado nao pode receber credito.");
         }
-        if (postmarks.some((postmark) => postmark.userId === publication.authorId)) {
+        const authorId = publication?.authorId ?? current.portfolio.authorId;
+        if (postmarks.some((postmark) => postmark.userId === authorId)) {
           throw new Forbidden("O autor nao pode gerar credito de contribuicao para si mesmo.");
         }
 
@@ -119,8 +138,8 @@ export class ProjectRepository implements IProjectRepository {
           data: this.versionSnapshot(
             updated,
             nextVersion,
-            publication.changelog,
-            publication.authorId,
+            publication?.changelog ?? "Versao inicial",
+            authorId,
           ),
         });
 
@@ -136,7 +155,7 @@ export class ProjectRepository implements IProjectRepository {
             where: { id: postmark.id },
             data: { status: AppreciateStatus.APPLIED, resolvedAt: new Date() },
           });
-          await recordReputationEvent(tx, {
+          await distributeXp(tx, {
             userId: postmark.userId,
             type: ReputationEventType.POSTMARK_APPLIED,
             idempotencyKey: `postmark-applied:${postmark.id}`,
@@ -144,26 +163,26 @@ export class ProjectRepository implements IProjectRepository {
             postmarkId: postmark.id,
             projectVersionId: version.id,
           });
-        }
-
-        if (nextVersion > 1) {
-          await recordReputationEvent(tx, {
-            userId: publication.authorId,
-            type: ReputationEventType.PROJECT_IMPROVED,
-            idempotencyKey: `project-improved:${version.id}`,
+          await distributeXp(tx, {
+            userId: postmark.userId,
+            type: ReputationEventType.POSTMARK_CREDITED_IN_VERSION,
+            idempotencyKey: `postmark-credited:${postmark.id}`,
             projectId: updated.id,
             projectVersionId: version.id,
+            postmarkId: postmark.id,
           });
         }
-        if (postmarks.length) {
-          await recordReputationEvent(tx, {
-            userId: publication.authorId,
-            type: ReputationEventType.PROJECT_VERSION_WITH_COMMUNITY_CREDIT,
-            idempotencyKey: `project-community-credit:${version.id}`,
-            projectId: updated.id,
-            projectVersionId: version.id,
-          });
-        }
+        await distributeXp(tx, {
+          userId: authorId,
+          type: isInitialPublication
+            ? ReputationEventType.PROJECT_PUBLISHED
+            : ReputationEventType.PROJECT_VERSION_PUBLISHED,
+          idempotencyKey: isInitialPublication
+            ? `project-published:${updated.id}`
+            : `project-version-published:${version.id}`,
+          projectId: updated.id,
+          projectVersionId: version.id,
+        });
         return updated;
       });
       return ProjectMapper.fromPrismaToDomain(model);
@@ -514,6 +533,13 @@ export class ProjectRepository implements IProjectRepository {
           where: { id: metrics.id },
           data: { appreciateCount: { increment: 1 } },
         });
+        await distributeXp(tx, {
+          userId,
+          type: ReputationEventType.POSTMARK_SENT,
+          idempotencyKey: `postmark-sent:${appreciation.id}`,
+          projectId,
+          postmarkId: appreciation.id,
+        });
       }
       return this.toPostmarkContract(appreciation);
     });
@@ -561,7 +587,7 @@ export class ProjectRepository implements IProjectRepository {
         const type = status === "USEFUL"
           ? ReputationEventType.POSTMARK_USEFUL
           : ReputationEventType.POSTMARK_APPLIED;
-        await recordReputationEvent(tx, {
+        await distributeXp(tx, {
           userId: existing.userId,
           type,
           idempotencyKey: `postmark-${status.toLowerCase()}:${existing.id}`,

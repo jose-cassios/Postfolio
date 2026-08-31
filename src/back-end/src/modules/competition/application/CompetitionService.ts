@@ -45,7 +45,7 @@ export class CompetitionService implements ICompetitionService {
     if (competition.submissions.some((project) => project.id === projectId)) {
       throw new Conflict("O projeto ja esta inscrito.");
     }
-    await this.competitionRepository.subscribeProject(competitionId, projectId);
+    await this.competitionRepository.subscribeProject(competitionId, projectId, userId);
   }
 
   async unsubscribeProject(competitionId: string, projectId: string, userId: string) {

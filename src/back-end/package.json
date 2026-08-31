@@ -4,6 +4,7 @@
   "main": "dist/serverless.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "test:xp": "jest src/modules/user/application/ReputationXpService.test.ts --runInBand",
     "docs": "typedoc --options typedoc.json",
     "start": "node dist/src/app.js",
     "dev": "tsx watch --env-file=.env src/app.ts",

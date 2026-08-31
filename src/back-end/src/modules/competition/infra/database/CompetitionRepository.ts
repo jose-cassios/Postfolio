@@ -1,6 +1,6 @@
 import { InternalServerError } from "@shared/error/HttpError";
 import { prisma } from "@infrastructure/config/Prisma";
-import { Prisma, ProjectStatus } from "@PrismaGen/client";
+import { Prisma, ProjectStatus, ReputationEventType } from "@PrismaGen/client";
 import { Competition } from "@competition/domain/entities/Competition";
 import { CompetitionMapper } from "@competition/application/CompetitionMapper";
 import { ICompetitionRepository } from "@competition/domain/interfaces/ICompetitionRepository";
@@ -10,7 +10,10 @@ import {
   EventEvaluationInput,
 } from "@competition/api/CompetitionDTO";
 import { Conflict, NotFound } from "@shared/error/HttpError";
-Competition;
+import {
+  canAwardEventEvaluationXp,
+  distributeXp,
+} from "@user/application/ReputationXpService";
 
 export class PrismaCompetitionRepository implements ICompetitionRepository {
   async create(competition: Competition): Promise<Competition> {
@@ -86,7 +89,9 @@ export class PrismaCompetitionRepository implements ICompetitionRepository {
       orderBy: { registrationStartsAt: "desc" },
       include: this.contractInclude(),
     });
-    return models.map((model) => this.toContract(model));
+    const contracts = models.map((model) => this.toContract(model));
+    await Promise.all(contracts.map((competition) => this.distributeResultXp(competition)));
+    return contracts;
   }
 
   async findContractById(id: string): Promise<CompetitionContract | null> {
@@ -94,12 +99,28 @@ export class PrismaCompetitionRepository implements ICompetitionRepository {
       where: { id },
       include: this.contractInclude(),
     });
-    return model ? this.toContract(model) : null;
+    if (!model) return null;
+    const contract = this.toContract(model);
+    await this.distributeResultXp(contract);
+    return contract;
   }
 
-  async subscribeProject(competitionId: string, projectId: string): Promise<void> {
-    await prisma.projectCompDetails.create({
-      data: { competitionId, projectId, totalReviewers: 0, totalScore: 0 },
+  async subscribeProject(
+    competitionId: string,
+    projectId: string,
+    userId: string,
+  ): Promise<void> {
+    await prisma.$transaction(async (tx) => {
+      await tx.projectCompDetails.create({
+        data: { competitionId, projectId, totalReviewers: 0, totalScore: 0 },
+      });
+      await distributeXp(tx, {
+        userId,
+        type: ReputationEventType.EVENT_PARTICIPATION,
+        idempotencyKey: `event-participation:${competitionId}:${userId}`,
+        eventId: competitionId,
+        projectId,
+      });
     });
   }
 
@@ -116,7 +137,7 @@ export class PrismaCompetitionRepository implements ICompetitionRepository {
     scores: EventEvaluationInput[],
   ): Promise<void> {
     await prisma.$transaction(async (tx) => {
-      const evaluation = await tx.eventEvaluation.upsert({
+      const existingEvaluation = await tx.eventEvaluation.findUnique({
         where: {
           competitionId_projectId_evaluatorId: {
             competitionId,
@@ -124,9 +145,15 @@ export class PrismaCompetitionRepository implements ICompetitionRepository {
             evaluatorId: userId,
           },
         },
-        update: {},
-        create: { competitionId, projectId, evaluatorId: userId },
       });
+      const evaluation = existingEvaluation
+        ? await tx.eventEvaluation.update({
+            where: { id: existingEvaluation.id },
+            data: {},
+          })
+        : await tx.eventEvaluation.create({
+            data: { competitionId, projectId, evaluatorId: userId },
+          });
       await tx.eventEvaluationScore.deleteMany({
         where: { evaluationId: evaluation.id },
       });
@@ -137,6 +164,27 @@ export class PrismaCompetitionRepository implements ICompetitionRepository {
           score: score.score,
         })),
       });
+      if (!existingEvaluation) {
+        await tx.$executeRaw`
+          SELECT pg_advisory_xact_lock(hashtext(${`event-evaluation-xp:${competitionId}`}))
+        `;
+        const rewardedEvaluations = await tx.reputationEvent.count({
+          where: {
+            eventId: competitionId,
+            type: ReputationEventType.EVENT_PROJECT_EVALUATED,
+          },
+        });
+        if (canAwardEventEvaluationXp(rewardedEvaluations)) {
+          await distributeXp(tx, {
+            userId,
+            type: ReputationEventType.EVENT_PROJECT_EVALUATED,
+            idempotencyKey: `event-project-evaluated:${evaluation.id}`,
+            eventId: competitionId,
+            projectId,
+            metadata: { evaluationId: evaluation.id },
+          });
+        }
+      }
     });
   }
 
@@ -323,5 +371,33 @@ export class PrismaCompetitionRepository implements ICompetitionRepository {
     return values.length
       ? values.reduce((total, value) => total + value, 0) / values.length
       : 0;
+  }
+
+  private async distributeResultXp(competition: CompetitionContract): Promise<void> {
+    if (competition.status !== "RESULTS" || !competition.resultsAt) return;
+
+    const rewardTypeByRank = {
+      1: ReputationEventType.EVENT_FIRST_PLACE,
+      2: ReputationEventType.EVENT_SECOND_PLACE,
+      3: ReputationEventType.EVENT_THIRD_PLACE,
+    } as const;
+    const winners = competition.submissions.flatMap((project) => {
+      const type = project.rank ? rewardTypeByRank[project.rank as 1 | 2 | 3] : undefined;
+      return type ? [{ project, type }] : [];
+    });
+    if (!winners.length) return;
+
+    await prisma.$transaction(async (tx) => {
+      for (const { project, type } of winners) {
+        await distributeXp(tx, {
+          userId: project.author.id,
+          type,
+          idempotencyKey: `event-result:${competition.id}:${project.id}:${project.rank}`,
+          eventId: competition.id,
+          projectId: project.id,
+          metadata: { rank: project.rank },
+        });
+      }
+    });
   }
 }
