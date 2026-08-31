@@ -64,7 +64,7 @@ export interface ProjectInteractionContract {
   postmarks: number;
 }
 
-export type PostmarkStatus = "PENDING" | "USEFUL" | "APPLIED" | "DISMISSED";
+export type PostmarkStatus = "PENDING" | "USEFUL" | "APPLIED" | "DENIED";
 
 export interface ProjectPostmarkContract {
   id: string;
@@ -75,7 +75,7 @@ export interface ProjectPostmarkContract {
   status: PostmarkStatus;
   createdAt: Date;
   updatedAt: Date;
-  creditedInVersion: number | null;
+  creditedInVersions: number[];
   author: { id: string; username: string; profilePhoto: string | null };
 }
 

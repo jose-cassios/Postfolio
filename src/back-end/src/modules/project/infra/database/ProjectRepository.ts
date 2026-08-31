@@ -24,7 +24,10 @@ import {
   ProjectPostmarkContract,
 } from "@shared/contracts/ProjectContracts";
 import { ProjectCategoryMapper } from "@project/application/ProjectMapper";
-import { distributeXp } from "@user/application/ReputationXpService";
+import {
+  distributeXp,
+  postmarkStatusXpRewards,
+} from "@user/application/ReputationXpService";
 
 export class ProjectRepository implements IProjectRepository {
   async create(project: Project): Promise<Project> {
@@ -123,11 +126,8 @@ export class ProjectRepository implements IProjectRepository {
         if (postmarks.length !== (publication?.postmarkIds.length ?? 0)) {
           throw new BadRequest("Um dos Postmarks selecionados nao pertence ao projeto.");
         }
-        if (postmarks.some((postmark) => postmark.versionCredits.length)) {
-          throw new BadRequest("Um dos Postmarks ja recebeu credito em outra versao.");
-        }
-        if (postmarks.some((postmark) => postmark.status === AppreciateStatus.DISMISSED)) {
-          throw new BadRequest("Um Postmark arquivado nao pode receber credito.");
+        if (postmarks.some((postmark) => postmark.status !== AppreciateStatus.APPLIED)) {
+          throw new BadRequest("Apenas Postmarks marcados como aplicados podem receber credito.");
         }
         const authorId = publication?.authorId ?? current.portfolio.authorId;
         if (postmarks.some((postmark) => postmark.userId === authorId)) {
@@ -151,22 +151,10 @@ export class ProjectRepository implements IProjectRepository {
               contributorId: postmark.userId,
             },
           });
-          await tx.appreciate.update({
-            where: { id: postmark.id },
-            data: { status: AppreciateStatus.APPLIED, resolvedAt: new Date() },
-          });
-          await distributeXp(tx, {
-            userId: postmark.userId,
-            type: ReputationEventType.POSTMARK_APPLIED,
-            idempotencyKey: `postmark-applied:${postmark.id}`,
-            projectId: updated.id,
-            postmarkId: postmark.id,
-            projectVersionId: version.id,
-          });
           await distributeXp(tx, {
             userId: postmark.userId,
             type: ReputationEventType.POSTMARK_CREDITED_IN_VERSION,
-            idempotencyKey: `postmark-credited:${postmark.id}`,
+            idempotencyKey: `postmark-credited:${version.id}:${postmark.id}`,
             projectId: updated.id,
             projectVersionId: version.id,
             postmarkId: postmark.id,
@@ -548,7 +536,7 @@ export class ProjectRepository implements IProjectRepository {
   async updatePostmarkStatus(
     projectId: string,
     postmarkId: string,
-    status: "PENDING" | "USEFUL" | "APPLIED" | "DISMISSED",
+    status: "PENDING" | "USEFUL" | "APPLIED" | "DENIED",
   ): Promise<ProjectPostmarkContract> {
     return await prisma.$transaction(async (tx) => {
       const existing = await tx.appreciate.findFirst({
@@ -583,14 +571,11 @@ export class ProjectRepository implements IProjectRepository {
           },
         },
       });
-      if (status === "USEFUL" || status === "APPLIED") {
-        const type = status === "USEFUL"
-          ? ReputationEventType.POSTMARK_USEFUL
-          : ReputationEventType.POSTMARK_APPLIED;
+      for (const type of postmarkStatusXpRewards(status)) {
         await distributeXp(tx, {
           userId: existing.userId,
           type,
-          idempotencyKey: `postmark-${status.toLowerCase()}:${existing.id}`,
+          idempotencyKey: `postmark-${type.toLowerCase().replace("postmark_", "")}:${existing.id}`,
           projectId,
           postmarkId: existing.id,
         });
@@ -709,8 +694,9 @@ export class ProjectRepository implements IProjectRepository {
       status: postmark.status,
       createdAt: postmark.createdAt,
       updatedAt: postmark.updatedAt,
-      creditedInVersion:
-        postmark.versionCredits?.[0]?.projectVersion.versionNumber ?? null,
+      creditedInVersions: (postmark.versionCredits ?? [])
+        .map((credit) => credit.projectVersion.versionNumber)
+        .sort((left, right) => left - right),
       author: postmark.user,
     };
   }

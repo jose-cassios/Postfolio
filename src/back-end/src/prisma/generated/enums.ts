@@ -51,7 +51,7 @@ export const AppreciateStatus = {
   PENDING: 'PENDING',
   USEFUL: 'USEFUL',
   APPLIED: 'APPLIED',
-  DISMISSED: 'DISMISSED'
+  DENIED: 'DENIED'
 } as const
 
 export type AppreciateStatus = (typeof AppreciateStatus)[keyof typeof AppreciateStatus]

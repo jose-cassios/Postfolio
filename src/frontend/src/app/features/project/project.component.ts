@@ -136,7 +136,7 @@ export class ProjectComponent {
 
   updatePostmarkStatus(
     postmark: ProjectPostmark,
-    status: Exclude<PostmarkStatus, 'PENDING'>,
+    status: PostmarkStatus,
   ): void {
     const project = this.project();
     if (!project || !this.isOwner() || this.actionPending()) return;
@@ -170,7 +170,7 @@ export class ProjectComponent {
 
   postmarkStatusLabel(status: PostmarkStatus): string {
     return ({
-      PENDING: 'Pendente', USEFUL: 'Útil', APPLIED: 'Aplicado', DISMISSED: 'Arquivado',
+      PENDING: 'Pendente', USEFUL: 'Útil', APPLIED: 'Aplicado', DENIED: 'Recusado',
     })[status];
   }
 

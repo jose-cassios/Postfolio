@@ -314,7 +314,7 @@ model ProjectVersion {
 model ProjectVersionCredit {
   id               String   @id @default(uuid())
   projectVersionId String
-  appreciationId   String   @unique
+  appreciationId   String
   contributorId    String
   createdAt        DateTime @default(now())
 
@@ -417,7 +417,7 @@ enum AppreciateStatus {
   PENDING
   USEFUL
   APPLIED
-  DISMISSED
+  DENIED
 }
 
 enum ReputationAxis {

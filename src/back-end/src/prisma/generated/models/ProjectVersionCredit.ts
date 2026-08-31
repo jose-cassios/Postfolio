@@ -200,18 +200,18 @@ export type ProjectVersionCreditOrderByWithRelationInput = {
 
 export type ProjectVersionCreditWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  appreciationId?: string
   projectVersionId_appreciationId?: Prisma.ProjectVersionCreditProjectVersionIdAppreciationIdCompoundUniqueInput
   AND?: Prisma.ProjectVersionCreditWhereInput | Prisma.ProjectVersionCreditWhereInput[]
   OR?: Prisma.ProjectVersionCreditWhereInput[]
   NOT?: Prisma.ProjectVersionCreditWhereInput | Prisma.ProjectVersionCreditWhereInput[]
   projectVersionId?: Prisma.StringFilter<"ProjectVersionCredit"> | string
+  appreciationId?: Prisma.StringFilter<"ProjectVersionCredit"> | string
   contributorId?: Prisma.StringFilter<"ProjectVersionCredit"> | string
   createdAt?: Prisma.DateTimeFilter<"ProjectVersionCredit"> | Date | string
   projectVersion?: Prisma.XOR<Prisma.ProjectVersionScalarRelationFilter, Prisma.ProjectVersionWhereInput>
   appreciation?: Prisma.XOR<Prisma.AppreciateScalarRelationFilter, Prisma.AppreciateWhereInput>
   contributor?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-}, "id" | "appreciationId" | "projectVersionId_appreciationId">
+}, "id" | "projectVersionId_appreciationId">
 
 export type ProjectVersionCreditOrderByWithAggregationInput = {
   id?: Prisma.SortOrder

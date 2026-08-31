@@ -114,7 +114,7 @@ export class ProjectEditorComponent {
           this.selectedBlockId.set(project.contentBlocks?.[0]?.id ?? null);
           this.projectService.getPostmarks(id).subscribe({
             next: (postmarks) => this.postmarks.set(
-              postmarks.filter((item) => !item.creditedInVersion && item.status !== 'DISMISSED'),
+              postmarks.filter((item) => item.status === 'APPLIED'),
             ),
           });
         },

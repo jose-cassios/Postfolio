@@ -483,7 +483,7 @@ hr {
 
   &[data-status='APPLIED'] { border-left: 3px solid #168454; }
   &[data-status='USEFUL'] { border-left: 3px solid $color-primary-500; }
-  &[data-status='DISMISSED'] { opacity: .72; }
+  &[data-status='DENIED'] { opacity: .72; }
   header { display: flex; flex-wrap: wrap; align-items: center; gap: .55rem; margin-bottom: .8rem; }
   header a { color: inherit; font-weight: 700; text-decoration: none; }
   header span { color: $color-text-secondary; font-size: .78rem; }

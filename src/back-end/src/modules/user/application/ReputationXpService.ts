@@ -64,6 +64,22 @@ export const XP_REWARDS = Object.freeze({
 
 export const EVENT_EVALUATION_XP_LIMIT = 5;
 
+export type PostmarkStatusForXp = "PENDING" | "USEFUL" | "APPLIED" | "DENIED";
+
+/**
+ * A Postmark can be reclassified, but the ledger keys used by distributeXp
+ * make each reward idempotent for that Postmark.
+ */
+export function postmarkStatusXpRewards(
+  status: PostmarkStatusForXp,
+): readonly XpRewardEventType[] {
+  if (status === "USEFUL") return ["POSTMARK_USEFUL"];
+  if (status === "APPLIED") {
+    return ["POSTMARK_USEFUL", "POSTMARK_APPLIED"];
+  }
+  return [];
+}
+
 interface XpEventContext {
   userId: string;
   idempotencyKey: string;

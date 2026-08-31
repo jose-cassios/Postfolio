@@ -226,14 +226,19 @@
                   <p><strong>Ponto forte</strong>{{ postmark.strength }}</p>
                   <p><strong>Sugestão</strong>{{ postmark.suggestion }}</p>
                   @if (postmark.additionalComment) { <p>{{ postmark.additionalComment }}</p> }
-                  @if (postmark.creditedInVersion) {
-                    <small>Incorporado com crédito na v{{ postmark.creditedInVersion }}.</small>
+                  @if (postmark.creditedInVersions.length) {
+                    <small>Incorporado com crédito na{{ postmark.creditedInVersions.length > 1 ? 's versões' : ' versão' }}
+                      @for (versionNumber of postmark.creditedInVersions; track versionNumber; let isLast = $last) {
+                        v{{ versionNumber }}{{ isLast ? '.' : ', ' }}
+                      }
+                    </small>
                   }
-                  @if (isOwner() && !postmark.creditedInVersion) {
+                  @if (isOwner() && !postmark.creditedInVersions.length) {
                     <div class="status-actions">
-                      <button [disabled]="actionPending()" (click)="updatePostmarkStatus(postmark, 'USEFUL')">Marcar útil</button>
-                      <button [disabled]="actionPending()" (click)="updatePostmarkStatus(postmark, 'APPLIED')">Marcar aplicado</button>
-                      <button [disabled]="actionPending()" (click)="updatePostmarkStatus(postmark, 'DISMISSED')">Arquivar</button>
+                      <button [disabled]="actionPending() || postmark.status === 'PENDING'" (click)="updatePostmarkStatus(postmark, 'PENDING')">Pendente</button>
+                      <button [disabled]="actionPending() || postmark.status === 'USEFUL'" (click)="updatePostmarkStatus(postmark, 'USEFUL')">Marcar útil</button>
+                      <button [disabled]="actionPending() || postmark.status === 'APPLIED'" (click)="updatePostmarkStatus(postmark, 'APPLIED')">Marcar aplicado</button>
+                      <button [disabled]="actionPending() || postmark.status === 'DENIED'" (click)="updatePostmarkStatus(postmark, 'DENIED')">Recusar</button>
                     </div>
                   }
                 </article>

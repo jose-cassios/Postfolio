@@ -1,6 +1,7 @@
 import {
   canAwardEventEvaluationXp,
   EVENT_EVALUATION_XP_LIMIT,
+  postmarkStatusXpRewards,
   resolveXpGrant,
   XpAxis,
   XpGrantInput,
@@ -41,6 +42,16 @@ describe("ReputationXpService", () => {
     expect(canAwardEventEvaluationXp(0)).toBe(true);
     expect(canAwardEventEvaluationXp(4)).toBe(true);
     expect(canAwardEventEvaluationXp(5)).toBe(false);
+  });
+
+  it("grants useful and applied XP when a pending Postmark is applied directly", () => {
+    expect(postmarkStatusXpRewards("PENDING")).toEqual([]);
+    expect(postmarkStatusXpRewards("DENIED")).toEqual([]);
+    expect(postmarkStatusXpRewards("USEFUL")).toEqual(["POSTMARK_USEFUL"]);
+    expect(postmarkStatusXpRewards("APPLIED")).toEqual([
+      "POSTMARK_USEFUL",
+      "POSTMARK_APPLIED",
+    ]);
   });
 
   it("supports signed administrative adjustments and rejects zero XP", () => {

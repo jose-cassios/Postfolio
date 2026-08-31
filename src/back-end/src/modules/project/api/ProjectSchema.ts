@@ -189,7 +189,7 @@ const PostmarkStatusParamsSchema = z.object({
   postmarkId: z.string().uuid("ID do Postmark invalido"),
 });
 const UpdatePostmarkStatusBodySchema = z.object({
-  status: z.enum(["USEFUL", "APPLIED", "DISMISSED"]),
+  status: z.enum(["PENDING", "USEFUL", "APPLIED", "DENIED"]),
 });
 
 type SetLikeRequest = FastifyRequest<{

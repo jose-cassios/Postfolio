@@ -70,7 +70,7 @@ export interface ProjectFeedback {
   username: string;
 }
 
-export type PostmarkStatus = 'PENDING' | 'USEFUL' | 'APPLIED' | 'DISMISSED';
+export type PostmarkStatus = 'PENDING' | 'USEFUL' | 'APPLIED' | 'DENIED';
 
 export interface ProjectPostmark {
   id: string;
@@ -79,7 +79,7 @@ export interface ProjectPostmark {
   suggestion: string;
   additionalComment: string | null;
   status: PostmarkStatus;
-  creditedInVersion: number | null;
+  creditedInVersions: number[];
   createdAt: string;
   updatedAt: string;
   author: { id: string; username: string; profilePhoto: string | null };
@@ -187,7 +187,7 @@ export class ProjectService {
   updatePostmarkStatus(
     projectId: string,
     postmarkId: string,
-    status: Exclude<PostmarkStatus, 'PENDING'>,
+    status: PostmarkStatus,
   ) {
     return this.api.patch<ProjectPostmark>(
       `project/${encodeURIComponent(projectId)}/postmarks/${encodeURIComponent(postmarkId)}/status`,
