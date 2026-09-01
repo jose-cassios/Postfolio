@@ -10,6 +10,7 @@ import {
 import { AppComposer } from "@compositionRoot/appComposer";
 import { configureProvaders } from "@infrastructure/fastify/Providers";
 import { ensureDevelopmentAdmin } from "@infrastructure/bootstrap/ensureDevelopmentAdmin";
+import { ensureReputationRankConfig } from "@infrastructure/bootstrap/ensureReputationRankConfig";
 import dotenv from "dotenv";
 import { pathToFileURL } from "node:url";
 
@@ -54,9 +55,21 @@ export function createApp(): FastifyInstance {
 }
 
 const app = createApp();
+let reputationRankConfigBootstrap: Promise<void> | undefined;
+
+function bootstrapReputationRankConfig(): Promise<void> {
+  if (!reputationRankConfigBootstrap) {
+    reputationRankConfigBootstrap = ensureReputationRankConfig().catch((error) => {
+      reputationRankConfigBootstrap = undefined;
+      throw error;
+    });
+  }
+  return reputationRankConfigBootstrap;
+}
 
 export default async function handler(req: any, res: any) {
   try {
+    await bootstrapReputationRankConfig();
     await app.ready();
     app.server.emit("request", req, res);
   } catch (error) {
@@ -67,6 +80,8 @@ export default async function handler(req: any, res: any) {
 
 async function startServer(): Promise<void> {
   const port = Number(process.env.PORT || 8080);
+  await bootstrapReputationRankConfig();
+  await app.ready();
   await ensureDevelopmentAdmin();
   await app.listen({ port, host: "0.0.0.0" });
   console.log(`Servidor rodando em http://localhost:${port}`);

@@ -18,6 +18,23 @@ export const REPUTATION_RANKS = [
   { value: ReputationRank.SS, label: "SS" },
 ] as const;
 
+export const DEFAULT_REPUTATION_RANK_CONFIG = [
+  { rank: ReputationRank.F, requiredXp: 0 },
+  { rank: ReputationRank.F_PLUS, requiredXp: 20 },
+  { rank: ReputationRank.E, requiredXp: 50 },
+  { rank: ReputationRank.E_PLUS, requiredXp: 100 },
+  { rank: ReputationRank.D, requiredXp: 180 },
+  { rank: ReputationRank.D_PLUS, requiredXp: 300 },
+  { rank: ReputationRank.C, requiredXp: 500 },
+  { rank: ReputationRank.C_PLUS, requiredXp: 750 },
+  { rank: ReputationRank.B, requiredXp: 1100 },
+  { rank: ReputationRank.B_PLUS, requiredXp: 1550 },
+  { rank: ReputationRank.A, requiredXp: 2100 },
+  { rank: ReputationRank.A_PLUS, requiredXp: 2800 },
+  { rank: ReputationRank.S, requiredXp: 3800 },
+  { rank: ReputationRank.SS, requiredXp: 5000 },
+] as const;
+
 export type ReputationRankLabel = (typeof REPUTATION_RANKS)[number]["label"];
 
 export const REPUTATION_RANK_LABELS = REPUTATION_RANKS.map((rank) => rank.label);
