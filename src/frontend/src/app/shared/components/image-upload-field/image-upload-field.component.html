@@ -1,0 +1,33 @@
+<div class="image-field" [class.compact]="compact">
+  <span class="field-label">{{ label }}</span>
+
+  @if (value) {
+    <div class="preview">
+      <img [src]="value" [alt]="'Prévia: ' + label" />
+      <button type="button" (click)="remove()">Remover</button>
+    </div>
+  }
+
+  <div class="image-actions">
+    <label class="upload-button" [class.disabled]="uploading()">
+      <input
+        type="file"
+        accept="image/jpeg,image/png,image/webp,image/gif"
+        [disabled]="uploading()"
+        (change)="selectFile($event)"
+      />
+      {{ uploading() ? 'Enviando…' : value ? 'Trocar arquivo' : 'Escolher arquivo' }}
+    </label>
+    <span>ou</span>
+    <input
+      class="url-input"
+      type="url"
+      [value]="value || ''"
+      (input)="changeUrl($event)"
+      placeholder="Cole uma URL https://"
+    />
+  </div>
+
+  <small>JPG, PNG, WebP ou GIF · máximo de 8 MB</small>
+  @if (error()) { <p class="upload-error" role="alert">{{ error() }}</p> }
+</div>

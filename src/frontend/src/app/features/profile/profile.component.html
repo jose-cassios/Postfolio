@@ -19,17 +19,26 @@
       </button>
     </div>
   } @else if (displayedProfile(); as user) {
-    <header class="profile-hero">
+    <header class="profile-hero" [class.has-cover]="user.coverPhoto">
+      @if (user.coverPhoto) {
+        <img class="profile-cover-image" [src]="user.coverPhoto" alt="" />
+      }
       <div class="profile-identity">
         <div class="profile-avatar" aria-hidden="true">
-          {{ user.username.charAt(0).toUpperCase() }}
+          @if (user.profilePhoto) {
+            <img [src]="user.profilePhoto" [alt]="user.username" />
+          } @else {
+            {{ user.username.charAt(0).toUpperCase() }}
+          }
         </div>
         <div>
-          <span class="badge">{{ user.usertype }}</span>
+          @if (user.usertype !== 'USER') {
+            <span class="badge">{{ user.usertype === 'ADMIN' ? 'Administrador' : 'Moderador' }}</span>
+          }
           <h1>{{ user.username }}</h1>
           <p>{{ user.bio || 'Este usuário ainda não adicionou uma bio.' }}</p>
           @if (user.availableForHire) {
-            <span class="badge hire-badge">Disponível para contratação</span>
+            <span class="availability-status"><span aria-hidden="true"></span>Disponível para contratação</span>
           }
           @if (user.achievements?.length) {
             <div class="achievements" aria-label="Conquistas em competições">
@@ -58,18 +67,112 @@
           <button class="btn ghost" type="button" (click)="openEditModal()">
             Editar perfil
           </button>
-          <button class="btn primary" type="button" (click)="openCreateProjectModal()">
+          <button class="btn primary" type="button" (click)="openCreateProjectEditor()">
             + Adicionar projeto
           </button>
         </div>
       }
     </header>
 
+    @if (user.reputation; as reputation) {
+      <section class="reputation-overview" aria-label="Atuação na comunidade">
+        <div class="rank-summary">
+          <div class="reputation-heading">
+        <span class="eyebrow">Reputação</span>
+            <h2>Ranks de reputação</h2>
+            <p>Seu progresso como Creator e Contributor.</p>
+          </div>
+          <div class="reputation-visuals" aria-label="Ranks de reputação">
+            @for (indicator of rankIndicators(); track indicator.axis) {
+              <article
+                class="rank-indicator"
+                [class.creator-rank]="indicator.axis === 'creator'"
+                [class.contributor-rank]="indicator.axis === 'contributor'"
+                [class.is-open]="isRankPopoverOpen(indicator.axis)"
+              >
+              <button
+                class="rank-trigger"
+                type="button"
+                [attr.aria-label]="'Ver progresso do rank ' + indicator.label"
+                [attr.aria-controls]="rankPopoverId(indicator.axis)"
+                [attr.aria-expanded]="isRankPopoverOpen(indicator.axis)"
+                (click)="toggleRankPopover(indicator.axis)"
+              >
+                <span class="rank-circle" [style.--score-progress]="indicator.progress.progressPercent + '%'">
+                  <span class="rank-circle-center">
+                    <strong>{{ indicator.progress.rank }}</strong>
+                    <span>{{ indicator.label }}</span>
+                  </span>
+                </span>
+              </button>
+
+              <div class="rank-popover" [id]="rankPopoverId(indicator.axis)" role="tooltip">
+                <div class="rank-popover-heading">
+                  <strong>
+                    {{ indicator.label }} {{ indicator.progress.rank }}
+                    @if (indicator.progress.nextRank) { <span>→ {{ indicator.progress.nextRank }}</span> }
+                  </strong>
+                  <span>
+                    {{ indicator.progress.nextRank
+                      ? indicator.progress.xp + ' / ' + indicator.progress.xpRequired + ' XP'
+                      : indicator.progress.xp + ' XP · Rank máximo' }}
+                  </span>
+                </div>
+
+                @if (indicator.progress.nextRank) {
+                  <div
+                    class="rank-progress-bar"
+                    role="progressbar"
+                    [attr.aria-valuemin]="0"
+                    [attr.aria-valuemax]="100"
+                    [attr.aria-valuenow]="indicator.progress.progressPercent"
+                    [style.--score-progress]="indicator.progress.progressPercent + '%'"
+                  ><span></span></div>
+
+                  <div class="rank-mission">
+                    <span>Missão</span>
+                    <strong>{{ indicator.progress.mission }}</strong>
+                    <small>{{ indicator.progress.missionCurrentValue }} / {{ indicator.progress.missionRequiredValue }}</small>
+                  </div>
+
+                  <div class="rank-requirements" aria-label="Requisitos para o próximo rank">
+                    <p [class.complete]="isXpRequirementComplete(indicator.progress)">
+                      <span aria-hidden="true">{{ isXpRequirementComplete(indicator.progress) ? '✓' : '○' }}</span>
+                      {{ isXpRequirementComplete(indicator.progress)
+                        ? 'XP necessário atingido'
+                        : indicator.progress.xp + ' / ' + indicator.progress.xpRequired + ' XP' }}
+                    </p>
+                    <p [class.complete]="indicator.progress.missionCompleted">
+                      <span aria-hidden="true">{{ indicator.progress.missionCompleted ? '✓' : '○' }}</span>
+                      {{ indicator.progress.missionCompleted ? 'Missão concluída' : 'Missão ainda incompleta' }}
+                    </p>
+                  </div>
+                } @else {
+                  <p class="rank-max">✓ Todos os requisitos deste eixo foram concluídos.</p>
+                }
+              </div>
+              </article>
+            }
+          </div>
+        </div>
+
+        <div class="contribution-badges" aria-label="Reconhecimentos da comunidade">
+          @if (reputationBadges().length) {
+            @for (badge of reputationBadges(); track badge) {
+              <span>{{ badge }}</span>
+            }
+          } @else {
+            <p>Os reconhecimentos da comunidade aparecerão aqui.</p>
+          }
+        </div>
+      </section>
+    }
+
     <section class="projects-section" aria-labelledby="projects-title">
       <div class="section-heading">
         <div>
           <span class="eyebrow">Portfólio</span>
-          <h2 id="projects-title">Projetos publicados</h2>
+          <h2 id="projects-title">{{ isOwnProfile() ? 'Seus projetos' : 'Projetos publicados' }}</h2>
           @if (portfolio(); as currentPortfolio) {
             @if (currentPortfolio.description && currentPortfolio.description !== 'not found') {
               <p>{{ currentPortfolio.description }}</p>
@@ -87,19 +190,28 @@
         <div class="projects-grid">
           @for (project of projects(); track project.id) {
             <article class="project-card">
-              <a [routerLink]="['/projetos', project.id]" class="project-cover" [attr.data-category]="project.category">
+              <a
+                [routerLink]="project.status === 'DRAFT'
+                  ? ['/projetos', project.id, 'editar']
+                  : ['/projetos', project.id]"
+                class="project-cover"
+                [attr.data-category]="project.category"
+              >
                 @if (project.coverImageUrl) {
-                  <img [src]="project.coverImageUrl" [alt]="project.name" loading="lazy" />
+                  <img [src]="project.coverImageUrl" [alt]="project.name || 'Projeto sem título'" loading="lazy" />
                 } @else {
                   <span>{{ categoryLabel(project.category) }}</span>
                 }
               </a>
               <div class="project-content">
                 <div class="project-title-row">
-                  <h3>{{ project.name }}</h3>
+                  <h3>{{ project.name || 'Projeto sem título' }}</h3>
+                  @if (project.status === 'DRAFT') {
+                    <span class="draft-status">Rascunho</span>
+                  }
                   @if (isOwnProfile()) {
                     <div class="project-actions">
-                      <button type="button" (click)="openEditProjectModal(project)">Editar</button>
+                      <button type="button" (click)="openEditProjectEditor(project)">Editar</button>
                       <button
                         type="button"
                         class="danger"
@@ -138,13 +250,40 @@
               : 'Este usuário ainda não publicou projetos.' }}
           </p>
           @if (isOwnProfile()) {
-            <button class="btn primary" type="button" (click)="openCreateProjectModal()">
+            <button class="btn primary" type="button" (click)="openCreateProjectEditor()">
               Criar primeiro projeto
             </button>
           }
         </div>
       }
     </section>
+
+    @if (user.reputation; as reputation) {
+      <details class="statistics-panel">
+        <summary>
+          <span>Estatísticas de participação</span>
+          <small>Ver detalhes</small>
+        </summary>
+        <dl class="statistics-grid">
+          <div>
+            <dt>Postmarks enviados</dt>
+            <dd>{{ reputation.evidence.postmarksSent }}</dd>
+          </div>
+          <div>
+            <dt>Feedbacks úteis</dt>
+            <dd>{{ reputation.evidence.usefulFeedbacks }}</dd>
+          </div>
+          <div>
+            <dt>Sugestões aplicadas</dt>
+            <dd>{{ reputation.evidence.appliedSuggestions }}</dd>
+          </div>
+          <div>
+            <dt>Contribuições reconhecidas</dt>
+            <dd>{{ reputation.evidence.recognizedContributions }}</dd>
+          </div>
+        </dl>
+      </details>
+    }
   }
 
   @if (showEditModal()) {
@@ -185,9 +324,24 @@
             <textarea formControlName="bio" rows="4" maxlength="200"></textarea>
             <small class="counter">{{ profileForm.controls.bio.value.length }}/200</small>
           </label>
+          <app-image-upload-field
+            class="full-width"
+            label="Foto de perfil"
+            [value]="profileForm.controls.profilePhoto.value"
+            (valueChange)="profileForm.controls.profilePhoto.setValue($event)"
+          />
+          <app-image-upload-field
+            class="full-width"
+            label="Imagem de capa"
+            [value]="profileForm.controls.coverPhoto.value"
+            (valueChange)="profileForm.controls.coverPhoto.setValue($event)"
+          />
           <label>
             <span>LinkedIn</span>
             <input type="url" formControlName="linkedin" placeholder="https://linkedin.com/in/..." />
+            @if (profileForm.controls.linkedin.touched && profileForm.controls.linkedin.invalid) {
+              <small>Informe um link válido, como linkedin.com/in/seu-perfil.</small>
+            }
           </label>
           <label>
             <span>GitHub</span>
@@ -196,10 +350,6 @@
           <label class="full-width">
             <span>Website</span>
             <input type="url" formControlName="website" placeholder="https://seusite.com" />
-          </label>
-          <label>
-            <span>Email para contato profissional</span>
-            <input type="email" formControlName="contactEmail" placeholder="contato@exemplo.com" />
           </label>
           <label class="checkbox-field">
             <input type="checkbox" formControlName="availableForHire" />
@@ -217,83 +367,4 @@
     </section>
   }
 
-  @if (showProjectModal()) {
-    <div class="modal-backdrop" (click)="closeProjectModal()"></div>
-    <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="project-title">
-      <div class="modal-heading">
-        <div>
-          <span class="eyebrow">Seu trabalho</span>
-          <h2 id="project-title">{{ projectModalTitle() }}</h2>
-        </div>
-        <button class="close-button" type="button" aria-label="Fechar" (click)="closeProjectModal()">×</button>
-      </div>
-
-      @if (feedback(); as notice) {
-        <div class="feedback" [class.error]="notice.type === 'error'" role="status">
-          {{ notice.message }}
-        </div>
-      }
-
-      <form [formGroup]="projectForm" (ngSubmit)="submitProject()" novalidate>
-        <div class="form-grid">
-          <label class="full-width">
-            <span>Nome do projeto</span>
-            <input type="text" formControlName="name" />
-            @if (projectForm.controls.name.touched && projectForm.controls.name.invalid) {
-              <small>Use entre 3 e 100 caracteres.</small>
-            }
-          </label>
-          <label class="full-width">
-            <span>Descrição</span>
-            <textarea formControlName="description" rows="5" maxlength="500"></textarea>
-            @if (projectForm.controls.description.touched && projectForm.controls.description.invalid) {
-              <small>Descreva o projeto em até 500 caracteres.</small>
-            }
-          </label>
-          <label>
-            <span>Categoria</span>
-            <select formControlName="category">
-              @for (category of categories; track category.value) {
-                <option [value]="category.value">{{ category.label }}</option>
-              }
-            </select>
-          </label>
-          <label>
-            <span>Repositório GitHub</span>
-            <input type="url" formControlName="githublink" placeholder="https://github.com/..." />
-            @if (projectForm.controls.githublink.touched && projectForm.controls.githublink.invalid) {
-              <small>Informe uma URL completa, começando com http:// ou https://.</small>
-            }
-          </label>
-          <label>
-            <span>Link do projeto ou vídeo</span>
-            <input type="url" formControlName="externalLink" placeholder="https://..." />
-          </label>
-          <label class="full-width">
-            <span>URL da imagem de capa</span>
-            <input type="url" formControlName="coverImageUrl" placeholder="https://.../capa.jpg" />
-          </label>
-          <label class="full-width">
-            <span>Imagens de amostra (até 3 URLs, uma por linha)</span>
-            <textarea formControlName="galleryUrls" rows="3"></textarea>
-          </label>
-          <label>
-            <span>Ferramentas (separadas por vírgula)</span>
-            <input type="text" formControlName="tools" placeholder="Angular, Figma, Node.js" />
-          </label>
-          <label>
-            <span>Tags (separadas por vírgula)</span>
-            <input type="text" formControlName="tags" placeholder="acessibilidade, dashboard" />
-          </label>
-        </div>
-
-        <div class="modal-actions">
-          <button type="button" class="btn ghost" (click)="closeProjectModal()">Cancelar</button>
-          <button type="submit" class="btn primary" [disabled]="isSavingProject()">
-            {{ isSavingProject() ? 'Salvando…' : editingProjectId() ? 'Salvar projeto' : 'Publicar projeto' }}
-          </button>
-        </div>
-      </form>
-    </section>
-  }
 </section>

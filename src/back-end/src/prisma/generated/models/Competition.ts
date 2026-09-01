@@ -20,8 +20,18 @@ export type CompetitionModel = runtime.Types.Result.DefaultSelection<Prisma.$Com
 
 export type AggregateCompetition = {
   _count: CompetitionCountAggregateOutputType | null
+  _avg: CompetitionAvgAggregateOutputType | null
+  _sum: CompetitionSumAggregateOutputType | null
   _min: CompetitionMinAggregateOutputType | null
   _max: CompetitionMaxAggregateOutputType | null
+}
+
+export type CompetitionAvgAggregateOutputType = {
+  minimumEvaluations: number | null
+}
+
+export type CompetitionSumAggregateOutputType = {
+  minimumEvaluations: number | null
 }
 
 export type CompetitionMinAggregateOutputType = {
@@ -37,6 +47,8 @@ export type CompetitionMinAggregateOutputType = {
   votingStartsAt: Date | null
   votingEndsAt: Date | null
   resultsAt: Date | null
+  resultsFinalizedAt: Date | null
+  minimumEvaluations: number | null
 }
 
 export type CompetitionMaxAggregateOutputType = {
@@ -52,6 +64,8 @@ export type CompetitionMaxAggregateOutputType = {
   votingStartsAt: Date | null
   votingEndsAt: Date | null
   resultsAt: Date | null
+  resultsFinalizedAt: Date | null
+  minimumEvaluations: number | null
 }
 
 export type CompetitionCountAggregateOutputType = {
@@ -67,9 +81,19 @@ export type CompetitionCountAggregateOutputType = {
   votingStartsAt: number
   votingEndsAt: number
   resultsAt: number
+  resultsFinalizedAt: number
+  minimumEvaluations: number
   _all: number
 }
 
+
+export type CompetitionAvgAggregateInputType = {
+  minimumEvaluations?: true
+}
+
+export type CompetitionSumAggregateInputType = {
+  minimumEvaluations?: true
+}
 
 export type CompetitionMinAggregateInputType = {
   id?: true
@@ -84,6 +108,8 @@ export type CompetitionMinAggregateInputType = {
   votingStartsAt?: true
   votingEndsAt?: true
   resultsAt?: true
+  resultsFinalizedAt?: true
+  minimumEvaluations?: true
 }
 
 export type CompetitionMaxAggregateInputType = {
@@ -99,6 +125,8 @@ export type CompetitionMaxAggregateInputType = {
   votingStartsAt?: true
   votingEndsAt?: true
   resultsAt?: true
+  resultsFinalizedAt?: true
+  minimumEvaluations?: true
 }
 
 export type CompetitionCountAggregateInputType = {
@@ -114,6 +142,8 @@ export type CompetitionCountAggregateInputType = {
   votingStartsAt?: true
   votingEndsAt?: true
   resultsAt?: true
+  resultsFinalizedAt?: true
+  minimumEvaluations?: true
   _all?: true
 }
 
@@ -155,6 +185,18 @@ export type CompetitionAggregateArgs<ExtArgs extends runtime.Types.Extensions.In
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: CompetitionAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: CompetitionSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: CompetitionMinAggregateInputType
@@ -185,6 +227,8 @@ export type CompetitionGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   _count?: CompetitionCountAggregateInputType | true
+  _avg?: CompetitionAvgAggregateInputType
+  _sum?: CompetitionSumAggregateInputType
   _min?: CompetitionMinAggregateInputType
   _max?: CompetitionMaxAggregateInputType
 }
@@ -202,7 +246,11 @@ export type CompetitionGroupByOutputType = {
   votingStartsAt: Date | null
   votingEndsAt: Date | null
   resultsAt: Date | null
+  resultsFinalizedAt: Date | null
+  minimumEvaluations: number
   _count: CompetitionCountAggregateOutputType | null
+  _avg: CompetitionAvgAggregateOutputType | null
+  _sum: CompetitionSumAggregateOutputType | null
   _min: CompetitionMinAggregateOutputType | null
   _max: CompetitionMaxAggregateOutputType | null
 }
@@ -238,8 +286,13 @@ export type CompetitionWhereInput = {
   votingStartsAt?: Prisma.DateTimeNullableFilter<"Competition"> | Date | string | null
   votingEndsAt?: Prisma.DateTimeNullableFilter<"Competition"> | Date | string | null
   resultsAt?: Prisma.DateTimeNullableFilter<"Competition"> | Date | string | null
+  resultsFinalizedAt?: Prisma.DateTimeNullableFilter<"Competition"> | Date | string | null
+  minimumEvaluations?: Prisma.IntFilter<"Competition"> | number
   worksDetails?: Prisma.ProjectCompDetailsListRelationFilter
   Rating?: Prisma.RatingListRelationFilter
+  criteria?: Prisma.EventCriterionListRelationFilter
+  evaluations?: Prisma.EventEvaluationListRelationFilter
+  reputationEvents?: Prisma.ReputationEventListRelationFilter
 }
 
 export type CompetitionOrderByWithRelationInput = {
@@ -255,8 +308,13 @@ export type CompetitionOrderByWithRelationInput = {
   votingStartsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   votingEndsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   resultsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  resultsFinalizedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  minimumEvaluations?: Prisma.SortOrder
   worksDetails?: Prisma.ProjectCompDetailsOrderByRelationAggregateInput
   Rating?: Prisma.RatingOrderByRelationAggregateInput
+  criteria?: Prisma.EventCriterionOrderByRelationAggregateInput
+  evaluations?: Prisma.EventEvaluationOrderByRelationAggregateInput
+  reputationEvents?: Prisma.ReputationEventOrderByRelationAggregateInput
 }
 
 export type CompetitionWhereUniqueInput = Prisma.AtLeast<{
@@ -275,8 +333,13 @@ export type CompetitionWhereUniqueInput = Prisma.AtLeast<{
   votingStartsAt?: Prisma.DateTimeNullableFilter<"Competition"> | Date | string | null
   votingEndsAt?: Prisma.DateTimeNullableFilter<"Competition"> | Date | string | null
   resultsAt?: Prisma.DateTimeNullableFilter<"Competition"> | Date | string | null
+  resultsFinalizedAt?: Prisma.DateTimeNullableFilter<"Competition"> | Date | string | null
+  minimumEvaluations?: Prisma.IntFilter<"Competition"> | number
   worksDetails?: Prisma.ProjectCompDetailsListRelationFilter
   Rating?: Prisma.RatingListRelationFilter
+  criteria?: Prisma.EventCriterionListRelationFilter
+  evaluations?: Prisma.EventEvaluationListRelationFilter
+  reputationEvents?: Prisma.ReputationEventListRelationFilter
 }, "id">
 
 export type CompetitionOrderByWithAggregationInput = {
@@ -292,9 +355,13 @@ export type CompetitionOrderByWithAggregationInput = {
   votingStartsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   votingEndsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   resultsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  resultsFinalizedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  minimumEvaluations?: Prisma.SortOrder
   _count?: Prisma.CompetitionCountOrderByAggregateInput
+  _avg?: Prisma.CompetitionAvgOrderByAggregateInput
   _max?: Prisma.CompetitionMaxOrderByAggregateInput
   _min?: Prisma.CompetitionMinOrderByAggregateInput
+  _sum?: Prisma.CompetitionSumOrderByAggregateInput
 }
 
 export type CompetitionScalarWhereWithAggregatesInput = {
@@ -313,6 +380,8 @@ export type CompetitionScalarWhereWithAggregatesInput = {
   votingStartsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Competition"> | Date | string | null
   votingEndsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Competition"> | Date | string | null
   resultsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Competition"> | Date | string | null
+  resultsFinalizedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Competition"> | Date | string | null
+  minimumEvaluations?: Prisma.IntWithAggregatesFilter<"Competition"> | number
 }
 
 export type CompetitionCreateInput = {
@@ -328,8 +397,13 @@ export type CompetitionCreateInput = {
   votingStartsAt?: Date | string | null
   votingEndsAt?: Date | string | null
   resultsAt?: Date | string | null
+  resultsFinalizedAt?: Date | string | null
+  minimumEvaluations?: number
   worksDetails?: Prisma.ProjectCompDetailsCreateNestedManyWithoutCompetitionInput
   Rating?: Prisma.RatingCreateNestedManyWithoutCompetitionInput
+  criteria?: Prisma.EventCriterionCreateNestedManyWithoutCompetitionInput
+  evaluations?: Prisma.EventEvaluationCreateNestedManyWithoutCompetitionInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutEventInput
 }
 
 export type CompetitionUncheckedCreateInput = {
@@ -345,8 +419,13 @@ export type CompetitionUncheckedCreateInput = {
   votingStartsAt?: Date | string | null
   votingEndsAt?: Date | string | null
   resultsAt?: Date | string | null
+  resultsFinalizedAt?: Date | string | null
+  minimumEvaluations?: number
   worksDetails?: Prisma.ProjectCompDetailsUncheckedCreateNestedManyWithoutCompetitionInput
   Rating?: Prisma.RatingUncheckedCreateNestedManyWithoutCompetitionInput
+  criteria?: Prisma.EventCriterionUncheckedCreateNestedManyWithoutCompetitionInput
+  evaluations?: Prisma.EventEvaluationUncheckedCreateNestedManyWithoutCompetitionInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutEventInput
 }
 
 export type CompetitionUpdateInput = {
@@ -362,8 +441,13 @@ export type CompetitionUpdateInput = {
   votingStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   votingEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resultsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsFinalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  minimumEvaluations?: Prisma.IntFieldUpdateOperationsInput | number
   worksDetails?: Prisma.ProjectCompDetailsUpdateManyWithoutCompetitionNestedInput
   Rating?: Prisma.RatingUpdateManyWithoutCompetitionNestedInput
+  criteria?: Prisma.EventCriterionUpdateManyWithoutCompetitionNestedInput
+  evaluations?: Prisma.EventEvaluationUpdateManyWithoutCompetitionNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutEventNestedInput
 }
 
 export type CompetitionUncheckedUpdateInput = {
@@ -379,8 +463,13 @@ export type CompetitionUncheckedUpdateInput = {
   votingStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   votingEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resultsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsFinalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  minimumEvaluations?: Prisma.IntFieldUpdateOperationsInput | number
   worksDetails?: Prisma.ProjectCompDetailsUncheckedUpdateManyWithoutCompetitionNestedInput
   Rating?: Prisma.RatingUncheckedUpdateManyWithoutCompetitionNestedInput
+  criteria?: Prisma.EventCriterionUncheckedUpdateManyWithoutCompetitionNestedInput
+  evaluations?: Prisma.EventEvaluationUncheckedUpdateManyWithoutCompetitionNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutEventNestedInput
 }
 
 export type CompetitionCreateManyInput = {
@@ -396,6 +485,8 @@ export type CompetitionCreateManyInput = {
   votingStartsAt?: Date | string | null
   votingEndsAt?: Date | string | null
   resultsAt?: Date | string | null
+  resultsFinalizedAt?: Date | string | null
+  minimumEvaluations?: number
 }
 
 export type CompetitionUpdateManyMutationInput = {
@@ -411,6 +502,8 @@ export type CompetitionUpdateManyMutationInput = {
   votingStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   votingEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resultsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsFinalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  minimumEvaluations?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type CompetitionUncheckedUpdateManyInput = {
@@ -426,6 +519,8 @@ export type CompetitionUncheckedUpdateManyInput = {
   votingStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   votingEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resultsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsFinalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  minimumEvaluations?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type CompetitionCountOrderByAggregateInput = {
@@ -441,6 +536,12 @@ export type CompetitionCountOrderByAggregateInput = {
   votingStartsAt?: Prisma.SortOrder
   votingEndsAt?: Prisma.SortOrder
   resultsAt?: Prisma.SortOrder
+  resultsFinalizedAt?: Prisma.SortOrder
+  minimumEvaluations?: Prisma.SortOrder
+}
+
+export type CompetitionAvgOrderByAggregateInput = {
+  minimumEvaluations?: Prisma.SortOrder
 }
 
 export type CompetitionMaxOrderByAggregateInput = {
@@ -456,6 +557,8 @@ export type CompetitionMaxOrderByAggregateInput = {
   votingStartsAt?: Prisma.SortOrder
   votingEndsAt?: Prisma.SortOrder
   resultsAt?: Prisma.SortOrder
+  resultsFinalizedAt?: Prisma.SortOrder
+  minimumEvaluations?: Prisma.SortOrder
 }
 
 export type CompetitionMinOrderByAggregateInput = {
@@ -471,11 +574,22 @@ export type CompetitionMinOrderByAggregateInput = {
   votingStartsAt?: Prisma.SortOrder
   votingEndsAt?: Prisma.SortOrder
   resultsAt?: Prisma.SortOrder
+  resultsFinalizedAt?: Prisma.SortOrder
+  minimumEvaluations?: Prisma.SortOrder
+}
+
+export type CompetitionSumOrderByAggregateInput = {
+  minimumEvaluations?: Prisma.SortOrder
 }
 
 export type CompetitionScalarRelationFilter = {
   is?: Prisma.CompetitionWhereInput
   isNot?: Prisma.CompetitionWhereInput
+}
+
+export type CompetitionNullableScalarRelationFilter = {
+  is?: Prisma.CompetitionWhereInput | null
+  isNot?: Prisma.CompetitionWhereInput | null
 }
 
 export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -484,6 +598,14 @@ export type NullableDateTimeFieldUpdateOperationsInput = {
 
 export type EnumProjectCategoryFieldUpdateOperationsInput = {
   set?: $Enums.ProjectCategory
+}
+
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type CompetitionCreateNestedOneWithoutRatingInput = {
@@ -514,6 +636,50 @@ export type CompetitionUpdateOneRequiredWithoutWorksDetailsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CompetitionUpdateToOneWithWhereWithoutWorksDetailsInput, Prisma.CompetitionUpdateWithoutWorksDetailsInput>, Prisma.CompetitionUncheckedUpdateWithoutWorksDetailsInput>
 }
 
+export type CompetitionCreateNestedOneWithoutReputationEventsInput = {
+  create?: Prisma.XOR<Prisma.CompetitionCreateWithoutReputationEventsInput, Prisma.CompetitionUncheckedCreateWithoutReputationEventsInput>
+  connectOrCreate?: Prisma.CompetitionCreateOrConnectWithoutReputationEventsInput
+  connect?: Prisma.CompetitionWhereUniqueInput
+}
+
+export type CompetitionUpdateOneWithoutReputationEventsNestedInput = {
+  create?: Prisma.XOR<Prisma.CompetitionCreateWithoutReputationEventsInput, Prisma.CompetitionUncheckedCreateWithoutReputationEventsInput>
+  connectOrCreate?: Prisma.CompetitionCreateOrConnectWithoutReputationEventsInput
+  upsert?: Prisma.CompetitionUpsertWithoutReputationEventsInput
+  disconnect?: Prisma.CompetitionWhereInput | boolean
+  delete?: Prisma.CompetitionWhereInput | boolean
+  connect?: Prisma.CompetitionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CompetitionUpdateToOneWithWhereWithoutReputationEventsInput, Prisma.CompetitionUpdateWithoutReputationEventsInput>, Prisma.CompetitionUncheckedUpdateWithoutReputationEventsInput>
+}
+
+export type CompetitionCreateNestedOneWithoutCriteriaInput = {
+  create?: Prisma.XOR<Prisma.CompetitionCreateWithoutCriteriaInput, Prisma.CompetitionUncheckedCreateWithoutCriteriaInput>
+  connectOrCreate?: Prisma.CompetitionCreateOrConnectWithoutCriteriaInput
+  connect?: Prisma.CompetitionWhereUniqueInput
+}
+
+export type CompetitionUpdateOneRequiredWithoutCriteriaNestedInput = {
+  create?: Prisma.XOR<Prisma.CompetitionCreateWithoutCriteriaInput, Prisma.CompetitionUncheckedCreateWithoutCriteriaInput>
+  connectOrCreate?: Prisma.CompetitionCreateOrConnectWithoutCriteriaInput
+  upsert?: Prisma.CompetitionUpsertWithoutCriteriaInput
+  connect?: Prisma.CompetitionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CompetitionUpdateToOneWithWhereWithoutCriteriaInput, Prisma.CompetitionUpdateWithoutCriteriaInput>, Prisma.CompetitionUncheckedUpdateWithoutCriteriaInput>
+}
+
+export type CompetitionCreateNestedOneWithoutEvaluationsInput = {
+  create?: Prisma.XOR<Prisma.CompetitionCreateWithoutEvaluationsInput, Prisma.CompetitionUncheckedCreateWithoutEvaluationsInput>
+  connectOrCreate?: Prisma.CompetitionCreateOrConnectWithoutEvaluationsInput
+  connect?: Prisma.CompetitionWhereUniqueInput
+}
+
+export type CompetitionUpdateOneRequiredWithoutEvaluationsNestedInput = {
+  create?: Prisma.XOR<Prisma.CompetitionCreateWithoutEvaluationsInput, Prisma.CompetitionUncheckedCreateWithoutEvaluationsInput>
+  connectOrCreate?: Prisma.CompetitionCreateOrConnectWithoutEvaluationsInput
+  upsert?: Prisma.CompetitionUpsertWithoutEvaluationsInput
+  connect?: Prisma.CompetitionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CompetitionUpdateToOneWithWhereWithoutEvaluationsInput, Prisma.CompetitionUpdateWithoutEvaluationsInput>, Prisma.CompetitionUncheckedUpdateWithoutEvaluationsInput>
+}
+
 export type CompetitionCreateWithoutRatingInput = {
   id?: string
   name: string
@@ -527,7 +693,12 @@ export type CompetitionCreateWithoutRatingInput = {
   votingStartsAt?: Date | string | null
   votingEndsAt?: Date | string | null
   resultsAt?: Date | string | null
+  resultsFinalizedAt?: Date | string | null
+  minimumEvaluations?: number
   worksDetails?: Prisma.ProjectCompDetailsCreateNestedManyWithoutCompetitionInput
+  criteria?: Prisma.EventCriterionCreateNestedManyWithoutCompetitionInput
+  evaluations?: Prisma.EventEvaluationCreateNestedManyWithoutCompetitionInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutEventInput
 }
 
 export type CompetitionUncheckedCreateWithoutRatingInput = {
@@ -543,7 +714,12 @@ export type CompetitionUncheckedCreateWithoutRatingInput = {
   votingStartsAt?: Date | string | null
   votingEndsAt?: Date | string | null
   resultsAt?: Date | string | null
+  resultsFinalizedAt?: Date | string | null
+  minimumEvaluations?: number
   worksDetails?: Prisma.ProjectCompDetailsUncheckedCreateNestedManyWithoutCompetitionInput
+  criteria?: Prisma.EventCriterionUncheckedCreateNestedManyWithoutCompetitionInput
+  evaluations?: Prisma.EventEvaluationUncheckedCreateNestedManyWithoutCompetitionInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutEventInput
 }
 
 export type CompetitionCreateOrConnectWithoutRatingInput = {
@@ -575,7 +751,12 @@ export type CompetitionUpdateWithoutRatingInput = {
   votingStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   votingEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resultsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsFinalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  minimumEvaluations?: Prisma.IntFieldUpdateOperationsInput | number
   worksDetails?: Prisma.ProjectCompDetailsUpdateManyWithoutCompetitionNestedInput
+  criteria?: Prisma.EventCriterionUpdateManyWithoutCompetitionNestedInput
+  evaluations?: Prisma.EventEvaluationUpdateManyWithoutCompetitionNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutEventNestedInput
 }
 
 export type CompetitionUncheckedUpdateWithoutRatingInput = {
@@ -591,7 +772,12 @@ export type CompetitionUncheckedUpdateWithoutRatingInput = {
   votingStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   votingEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resultsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsFinalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  minimumEvaluations?: Prisma.IntFieldUpdateOperationsInput | number
   worksDetails?: Prisma.ProjectCompDetailsUncheckedUpdateManyWithoutCompetitionNestedInput
+  criteria?: Prisma.EventCriterionUncheckedUpdateManyWithoutCompetitionNestedInput
+  evaluations?: Prisma.EventEvaluationUncheckedUpdateManyWithoutCompetitionNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutEventNestedInput
 }
 
 export type CompetitionCreateWithoutWorksDetailsInput = {
@@ -607,7 +793,12 @@ export type CompetitionCreateWithoutWorksDetailsInput = {
   votingStartsAt?: Date | string | null
   votingEndsAt?: Date | string | null
   resultsAt?: Date | string | null
+  resultsFinalizedAt?: Date | string | null
+  minimumEvaluations?: number
   Rating?: Prisma.RatingCreateNestedManyWithoutCompetitionInput
+  criteria?: Prisma.EventCriterionCreateNestedManyWithoutCompetitionInput
+  evaluations?: Prisma.EventEvaluationCreateNestedManyWithoutCompetitionInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutEventInput
 }
 
 export type CompetitionUncheckedCreateWithoutWorksDetailsInput = {
@@ -623,7 +814,12 @@ export type CompetitionUncheckedCreateWithoutWorksDetailsInput = {
   votingStartsAt?: Date | string | null
   votingEndsAt?: Date | string | null
   resultsAt?: Date | string | null
+  resultsFinalizedAt?: Date | string | null
+  minimumEvaluations?: number
   Rating?: Prisma.RatingUncheckedCreateNestedManyWithoutCompetitionInput
+  criteria?: Prisma.EventCriterionUncheckedCreateNestedManyWithoutCompetitionInput
+  evaluations?: Prisma.EventEvaluationUncheckedCreateNestedManyWithoutCompetitionInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutEventInput
 }
 
 export type CompetitionCreateOrConnectWithoutWorksDetailsInput = {
@@ -655,7 +851,12 @@ export type CompetitionUpdateWithoutWorksDetailsInput = {
   votingStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   votingEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resultsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsFinalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  minimumEvaluations?: Prisma.IntFieldUpdateOperationsInput | number
   Rating?: Prisma.RatingUpdateManyWithoutCompetitionNestedInput
+  criteria?: Prisma.EventCriterionUpdateManyWithoutCompetitionNestedInput
+  evaluations?: Prisma.EventEvaluationUpdateManyWithoutCompetitionNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutEventNestedInput
 }
 
 export type CompetitionUncheckedUpdateWithoutWorksDetailsInput = {
@@ -671,7 +872,312 @@ export type CompetitionUncheckedUpdateWithoutWorksDetailsInput = {
   votingStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   votingEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resultsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsFinalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  minimumEvaluations?: Prisma.IntFieldUpdateOperationsInput | number
   Rating?: Prisma.RatingUncheckedUpdateManyWithoutCompetitionNestedInput
+  criteria?: Prisma.EventCriterionUncheckedUpdateManyWithoutCompetitionNestedInput
+  evaluations?: Prisma.EventEvaluationUncheckedUpdateManyWithoutCompetitionNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutEventNestedInput
+}
+
+export type CompetitionCreateWithoutReputationEventsInput = {
+  id?: string
+  name: string
+  description: string
+  createdAt?: Date | string
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  category?: $Enums.ProjectCategory
+  registrationStartsAt?: Date | string | null
+  registrationEndsAt?: Date | string | null
+  votingStartsAt?: Date | string | null
+  votingEndsAt?: Date | string | null
+  resultsAt?: Date | string | null
+  resultsFinalizedAt?: Date | string | null
+  minimumEvaluations?: number
+  worksDetails?: Prisma.ProjectCompDetailsCreateNestedManyWithoutCompetitionInput
+  Rating?: Prisma.RatingCreateNestedManyWithoutCompetitionInput
+  criteria?: Prisma.EventCriterionCreateNestedManyWithoutCompetitionInput
+  evaluations?: Prisma.EventEvaluationCreateNestedManyWithoutCompetitionInput
+}
+
+export type CompetitionUncheckedCreateWithoutReputationEventsInput = {
+  id?: string
+  name: string
+  description: string
+  createdAt?: Date | string
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  category?: $Enums.ProjectCategory
+  registrationStartsAt?: Date | string | null
+  registrationEndsAt?: Date | string | null
+  votingStartsAt?: Date | string | null
+  votingEndsAt?: Date | string | null
+  resultsAt?: Date | string | null
+  resultsFinalizedAt?: Date | string | null
+  minimumEvaluations?: number
+  worksDetails?: Prisma.ProjectCompDetailsUncheckedCreateNestedManyWithoutCompetitionInput
+  Rating?: Prisma.RatingUncheckedCreateNestedManyWithoutCompetitionInput
+  criteria?: Prisma.EventCriterionUncheckedCreateNestedManyWithoutCompetitionInput
+  evaluations?: Prisma.EventEvaluationUncheckedCreateNestedManyWithoutCompetitionInput
+}
+
+export type CompetitionCreateOrConnectWithoutReputationEventsInput = {
+  where: Prisma.CompetitionWhereUniqueInput
+  create: Prisma.XOR<Prisma.CompetitionCreateWithoutReputationEventsInput, Prisma.CompetitionUncheckedCreateWithoutReputationEventsInput>
+}
+
+export type CompetitionUpsertWithoutReputationEventsInput = {
+  update: Prisma.XOR<Prisma.CompetitionUpdateWithoutReputationEventsInput, Prisma.CompetitionUncheckedUpdateWithoutReputationEventsInput>
+  create: Prisma.XOR<Prisma.CompetitionCreateWithoutReputationEventsInput, Prisma.CompetitionUncheckedCreateWithoutReputationEventsInput>
+  where?: Prisma.CompetitionWhereInput
+}
+
+export type CompetitionUpdateToOneWithWhereWithoutReputationEventsInput = {
+  where?: Prisma.CompetitionWhereInput
+  data: Prisma.XOR<Prisma.CompetitionUpdateWithoutReputationEventsInput, Prisma.CompetitionUncheckedUpdateWithoutReputationEventsInput>
+}
+
+export type CompetitionUpdateWithoutReputationEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
+  registrationStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsFinalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  minimumEvaluations?: Prisma.IntFieldUpdateOperationsInput | number
+  worksDetails?: Prisma.ProjectCompDetailsUpdateManyWithoutCompetitionNestedInput
+  Rating?: Prisma.RatingUpdateManyWithoutCompetitionNestedInput
+  criteria?: Prisma.EventCriterionUpdateManyWithoutCompetitionNestedInput
+  evaluations?: Prisma.EventEvaluationUpdateManyWithoutCompetitionNestedInput
+}
+
+export type CompetitionUncheckedUpdateWithoutReputationEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
+  registrationStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsFinalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  minimumEvaluations?: Prisma.IntFieldUpdateOperationsInput | number
+  worksDetails?: Prisma.ProjectCompDetailsUncheckedUpdateManyWithoutCompetitionNestedInput
+  Rating?: Prisma.RatingUncheckedUpdateManyWithoutCompetitionNestedInput
+  criteria?: Prisma.EventCriterionUncheckedUpdateManyWithoutCompetitionNestedInput
+  evaluations?: Prisma.EventEvaluationUncheckedUpdateManyWithoutCompetitionNestedInput
+}
+
+export type CompetitionCreateWithoutCriteriaInput = {
+  id?: string
+  name: string
+  description: string
+  createdAt?: Date | string
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  category?: $Enums.ProjectCategory
+  registrationStartsAt?: Date | string | null
+  registrationEndsAt?: Date | string | null
+  votingStartsAt?: Date | string | null
+  votingEndsAt?: Date | string | null
+  resultsAt?: Date | string | null
+  resultsFinalizedAt?: Date | string | null
+  minimumEvaluations?: number
+  worksDetails?: Prisma.ProjectCompDetailsCreateNestedManyWithoutCompetitionInput
+  Rating?: Prisma.RatingCreateNestedManyWithoutCompetitionInput
+  evaluations?: Prisma.EventEvaluationCreateNestedManyWithoutCompetitionInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutEventInput
+}
+
+export type CompetitionUncheckedCreateWithoutCriteriaInput = {
+  id?: string
+  name: string
+  description: string
+  createdAt?: Date | string
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  category?: $Enums.ProjectCategory
+  registrationStartsAt?: Date | string | null
+  registrationEndsAt?: Date | string | null
+  votingStartsAt?: Date | string | null
+  votingEndsAt?: Date | string | null
+  resultsAt?: Date | string | null
+  resultsFinalizedAt?: Date | string | null
+  minimumEvaluations?: number
+  worksDetails?: Prisma.ProjectCompDetailsUncheckedCreateNestedManyWithoutCompetitionInput
+  Rating?: Prisma.RatingUncheckedCreateNestedManyWithoutCompetitionInput
+  evaluations?: Prisma.EventEvaluationUncheckedCreateNestedManyWithoutCompetitionInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutEventInput
+}
+
+export type CompetitionCreateOrConnectWithoutCriteriaInput = {
+  where: Prisma.CompetitionWhereUniqueInput
+  create: Prisma.XOR<Prisma.CompetitionCreateWithoutCriteriaInput, Prisma.CompetitionUncheckedCreateWithoutCriteriaInput>
+}
+
+export type CompetitionUpsertWithoutCriteriaInput = {
+  update: Prisma.XOR<Prisma.CompetitionUpdateWithoutCriteriaInput, Prisma.CompetitionUncheckedUpdateWithoutCriteriaInput>
+  create: Prisma.XOR<Prisma.CompetitionCreateWithoutCriteriaInput, Prisma.CompetitionUncheckedCreateWithoutCriteriaInput>
+  where?: Prisma.CompetitionWhereInput
+}
+
+export type CompetitionUpdateToOneWithWhereWithoutCriteriaInput = {
+  where?: Prisma.CompetitionWhereInput
+  data: Prisma.XOR<Prisma.CompetitionUpdateWithoutCriteriaInput, Prisma.CompetitionUncheckedUpdateWithoutCriteriaInput>
+}
+
+export type CompetitionUpdateWithoutCriteriaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
+  registrationStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsFinalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  minimumEvaluations?: Prisma.IntFieldUpdateOperationsInput | number
+  worksDetails?: Prisma.ProjectCompDetailsUpdateManyWithoutCompetitionNestedInput
+  Rating?: Prisma.RatingUpdateManyWithoutCompetitionNestedInput
+  evaluations?: Prisma.EventEvaluationUpdateManyWithoutCompetitionNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutEventNestedInput
+}
+
+export type CompetitionUncheckedUpdateWithoutCriteriaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
+  registrationStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsFinalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  minimumEvaluations?: Prisma.IntFieldUpdateOperationsInput | number
+  worksDetails?: Prisma.ProjectCompDetailsUncheckedUpdateManyWithoutCompetitionNestedInput
+  Rating?: Prisma.RatingUncheckedUpdateManyWithoutCompetitionNestedInput
+  evaluations?: Prisma.EventEvaluationUncheckedUpdateManyWithoutCompetitionNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutEventNestedInput
+}
+
+export type CompetitionCreateWithoutEvaluationsInput = {
+  id?: string
+  name: string
+  description: string
+  createdAt?: Date | string
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  category?: $Enums.ProjectCategory
+  registrationStartsAt?: Date | string | null
+  registrationEndsAt?: Date | string | null
+  votingStartsAt?: Date | string | null
+  votingEndsAt?: Date | string | null
+  resultsAt?: Date | string | null
+  resultsFinalizedAt?: Date | string | null
+  minimumEvaluations?: number
+  worksDetails?: Prisma.ProjectCompDetailsCreateNestedManyWithoutCompetitionInput
+  Rating?: Prisma.RatingCreateNestedManyWithoutCompetitionInput
+  criteria?: Prisma.EventCriterionCreateNestedManyWithoutCompetitionInput
+  reputationEvents?: Prisma.ReputationEventCreateNestedManyWithoutEventInput
+}
+
+export type CompetitionUncheckedCreateWithoutEvaluationsInput = {
+  id?: string
+  name: string
+  description: string
+  createdAt?: Date | string
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  category?: $Enums.ProjectCategory
+  registrationStartsAt?: Date | string | null
+  registrationEndsAt?: Date | string | null
+  votingStartsAt?: Date | string | null
+  votingEndsAt?: Date | string | null
+  resultsAt?: Date | string | null
+  resultsFinalizedAt?: Date | string | null
+  minimumEvaluations?: number
+  worksDetails?: Prisma.ProjectCompDetailsUncheckedCreateNestedManyWithoutCompetitionInput
+  Rating?: Prisma.RatingUncheckedCreateNestedManyWithoutCompetitionInput
+  criteria?: Prisma.EventCriterionUncheckedCreateNestedManyWithoutCompetitionInput
+  reputationEvents?: Prisma.ReputationEventUncheckedCreateNestedManyWithoutEventInput
+}
+
+export type CompetitionCreateOrConnectWithoutEvaluationsInput = {
+  where: Prisma.CompetitionWhereUniqueInput
+  create: Prisma.XOR<Prisma.CompetitionCreateWithoutEvaluationsInput, Prisma.CompetitionUncheckedCreateWithoutEvaluationsInput>
+}
+
+export type CompetitionUpsertWithoutEvaluationsInput = {
+  update: Prisma.XOR<Prisma.CompetitionUpdateWithoutEvaluationsInput, Prisma.CompetitionUncheckedUpdateWithoutEvaluationsInput>
+  create: Prisma.XOR<Prisma.CompetitionCreateWithoutEvaluationsInput, Prisma.CompetitionUncheckedCreateWithoutEvaluationsInput>
+  where?: Prisma.CompetitionWhereInput
+}
+
+export type CompetitionUpdateToOneWithWhereWithoutEvaluationsInput = {
+  where?: Prisma.CompetitionWhereInput
+  data: Prisma.XOR<Prisma.CompetitionUpdateWithoutEvaluationsInput, Prisma.CompetitionUncheckedUpdateWithoutEvaluationsInput>
+}
+
+export type CompetitionUpdateWithoutEvaluationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
+  registrationStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsFinalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  minimumEvaluations?: Prisma.IntFieldUpdateOperationsInput | number
+  worksDetails?: Prisma.ProjectCompDetailsUpdateManyWithoutCompetitionNestedInput
+  Rating?: Prisma.RatingUpdateManyWithoutCompetitionNestedInput
+  criteria?: Prisma.EventCriterionUpdateManyWithoutCompetitionNestedInput
+  reputationEvents?: Prisma.ReputationEventUpdateManyWithoutEventNestedInput
+}
+
+export type CompetitionUncheckedUpdateWithoutEvaluationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  category?: Prisma.EnumProjectCategoryFieldUpdateOperationsInput | $Enums.ProjectCategory
+  registrationStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingStartsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  votingEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resultsFinalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  minimumEvaluations?: Prisma.IntFieldUpdateOperationsInput | number
+  worksDetails?: Prisma.ProjectCompDetailsUncheckedUpdateManyWithoutCompetitionNestedInput
+  Rating?: Prisma.RatingUncheckedUpdateManyWithoutCompetitionNestedInput
+  criteria?: Prisma.EventCriterionUncheckedUpdateManyWithoutCompetitionNestedInput
+  reputationEvents?: Prisma.ReputationEventUncheckedUpdateManyWithoutEventNestedInput
 }
 
 
@@ -682,11 +1188,17 @@ export type CompetitionUncheckedUpdateWithoutWorksDetailsInput = {
 export type CompetitionCountOutputType = {
   worksDetails: number
   Rating: number
+  criteria: number
+  evaluations: number
+  reputationEvents: number
 }
 
 export type CompetitionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   worksDetails?: boolean | CompetitionCountOutputTypeCountWorksDetailsArgs
   Rating?: boolean | CompetitionCountOutputTypeCountRatingArgs
+  criteria?: boolean | CompetitionCountOutputTypeCountCriteriaArgs
+  evaluations?: boolean | CompetitionCountOutputTypeCountEvaluationsArgs
+  reputationEvents?: boolean | CompetitionCountOutputTypeCountReputationEventsArgs
 }
 
 /**
@@ -713,6 +1225,27 @@ export type CompetitionCountOutputTypeCountRatingArgs<ExtArgs extends runtime.Ty
   where?: Prisma.RatingWhereInput
 }
 
+/**
+ * CompetitionCountOutputType without action
+ */
+export type CompetitionCountOutputTypeCountCriteriaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EventCriterionWhereInput
+}
+
+/**
+ * CompetitionCountOutputType without action
+ */
+export type CompetitionCountOutputTypeCountEvaluationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EventEvaluationWhereInput
+}
+
+/**
+ * CompetitionCountOutputType without action
+ */
+export type CompetitionCountOutputTypeCountReputationEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReputationEventWhereInput
+}
+
 
 export type CompetitionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -727,8 +1260,13 @@ export type CompetitionSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   votingStartsAt?: boolean
   votingEndsAt?: boolean
   resultsAt?: boolean
+  resultsFinalizedAt?: boolean
+  minimumEvaluations?: boolean
   worksDetails?: boolean | Prisma.Competition$worksDetailsArgs<ExtArgs>
   Rating?: boolean | Prisma.Competition$RatingArgs<ExtArgs>
+  criteria?: boolean | Prisma.Competition$criteriaArgs<ExtArgs>
+  evaluations?: boolean | Prisma.Competition$evaluationsArgs<ExtArgs>
+  reputationEvents?: boolean | Prisma.Competition$reputationEventsArgs<ExtArgs>
   _count?: boolean | Prisma.CompetitionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["competition"]>
 
@@ -745,6 +1283,8 @@ export type CompetitionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   votingStartsAt?: boolean
   votingEndsAt?: boolean
   resultsAt?: boolean
+  resultsFinalizedAt?: boolean
+  minimumEvaluations?: boolean
 }, ExtArgs["result"]["competition"]>
 
 export type CompetitionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -760,6 +1300,8 @@ export type CompetitionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   votingStartsAt?: boolean
   votingEndsAt?: boolean
   resultsAt?: boolean
+  resultsFinalizedAt?: boolean
+  minimumEvaluations?: boolean
 }, ExtArgs["result"]["competition"]>
 
 export type CompetitionSelectScalar = {
@@ -775,12 +1317,17 @@ export type CompetitionSelectScalar = {
   votingStartsAt?: boolean
   votingEndsAt?: boolean
   resultsAt?: boolean
+  resultsFinalizedAt?: boolean
+  minimumEvaluations?: boolean
 }
 
-export type CompetitionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "createdAt" | "startsAt" | "endsAt" | "category" | "registrationStartsAt" | "registrationEndsAt" | "votingStartsAt" | "votingEndsAt" | "resultsAt", ExtArgs["result"]["competition"]>
+export type CompetitionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "createdAt" | "startsAt" | "endsAt" | "category" | "registrationStartsAt" | "registrationEndsAt" | "votingStartsAt" | "votingEndsAt" | "resultsAt" | "resultsFinalizedAt" | "minimumEvaluations", ExtArgs["result"]["competition"]>
 export type CompetitionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   worksDetails?: boolean | Prisma.Competition$worksDetailsArgs<ExtArgs>
   Rating?: boolean | Prisma.Competition$RatingArgs<ExtArgs>
+  criteria?: boolean | Prisma.Competition$criteriaArgs<ExtArgs>
+  evaluations?: boolean | Prisma.Competition$evaluationsArgs<ExtArgs>
+  reputationEvents?: boolean | Prisma.Competition$reputationEventsArgs<ExtArgs>
   _count?: boolean | Prisma.CompetitionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CompetitionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -791,6 +1338,9 @@ export type $CompetitionPayload<ExtArgs extends runtime.Types.Extensions.Interna
   objects: {
     worksDetails: Prisma.$ProjectCompDetailsPayload<ExtArgs>[]
     Rating: Prisma.$RatingPayload<ExtArgs>[]
+    criteria: Prisma.$EventCriterionPayload<ExtArgs>[]
+    evaluations: Prisma.$EventEvaluationPayload<ExtArgs>[]
+    reputationEvents: Prisma.$ReputationEventPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -805,6 +1355,8 @@ export type $CompetitionPayload<ExtArgs extends runtime.Types.Extensions.Interna
     votingStartsAt: Date | null
     votingEndsAt: Date | null
     resultsAt: Date | null
+    resultsFinalizedAt: Date | null
+    minimumEvaluations: number
   }, ExtArgs["result"]["competition"]>
   composites: {}
 }
@@ -1201,6 +1753,9 @@ export interface Prisma__CompetitionClient<T, Null = never, ExtArgs extends runt
   readonly [Symbol.toStringTag]: "PrismaPromise"
   worksDetails<T extends Prisma.Competition$worksDetailsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Competition$worksDetailsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectCompDetailsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   Rating<T extends Prisma.Competition$RatingArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Competition$RatingArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RatingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  criteria<T extends Prisma.Competition$criteriaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Competition$criteriaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventCriterionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  evaluations<T extends Prisma.Competition$evaluationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Competition$evaluationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventEvaluationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reputationEvents<T extends Prisma.Competition$reputationEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Competition$reputationEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReputationEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1242,6 +1797,8 @@ export interface CompetitionFieldRefs {
   readonly votingStartsAt: Prisma.FieldRef<"Competition", 'DateTime'>
   readonly votingEndsAt: Prisma.FieldRef<"Competition", 'DateTime'>
   readonly resultsAt: Prisma.FieldRef<"Competition", 'DateTime'>
+  readonly resultsFinalizedAt: Prisma.FieldRef<"Competition", 'DateTime'>
+  readonly minimumEvaluations: Prisma.FieldRef<"Competition", 'Int'>
 }
     
 
@@ -1680,6 +2237,78 @@ export type Competition$RatingArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.RatingScalarFieldEnum | Prisma.RatingScalarFieldEnum[]
+}
+
+/**
+ * Competition.criteria
+ */
+export type Competition$criteriaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EventCriterion
+   */
+  select?: Prisma.EventCriterionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EventCriterion
+   */
+  omit?: Prisma.EventCriterionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EventCriterionInclude<ExtArgs> | null
+  where?: Prisma.EventCriterionWhereInput
+  orderBy?: Prisma.EventCriterionOrderByWithRelationInput | Prisma.EventCriterionOrderByWithRelationInput[]
+  cursor?: Prisma.EventCriterionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EventCriterionScalarFieldEnum | Prisma.EventCriterionScalarFieldEnum[]
+}
+
+/**
+ * Competition.evaluations
+ */
+export type Competition$evaluationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EventEvaluation
+   */
+  select?: Prisma.EventEvaluationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EventEvaluation
+   */
+  omit?: Prisma.EventEvaluationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EventEvaluationInclude<ExtArgs> | null
+  where?: Prisma.EventEvaluationWhereInput
+  orderBy?: Prisma.EventEvaluationOrderByWithRelationInput | Prisma.EventEvaluationOrderByWithRelationInput[]
+  cursor?: Prisma.EventEvaluationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EventEvaluationScalarFieldEnum | Prisma.EventEvaluationScalarFieldEnum[]
+}
+
+/**
+ * Competition.reputationEvents
+ */
+export type Competition$reputationEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ReputationEvent
+   */
+  select?: Prisma.ReputationEventSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ReputationEvent
+   */
+  omit?: Prisma.ReputationEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReputationEventInclude<ExtArgs> | null
+  where?: Prisma.ReputationEventWhereInput
+  orderBy?: Prisma.ReputationEventOrderByWithRelationInput | Prisma.ReputationEventOrderByWithRelationInput[]
+  cursor?: Prisma.ReputationEventWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReputationEventScalarFieldEnum | Prisma.ReputationEventScalarFieldEnum[]
 }
 
 /**

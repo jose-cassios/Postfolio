@@ -3,15 +3,44 @@
 header { margin-bottom: 32px; h1 { margin: 8px 0; font-size: 2.4rem; } p { color: $color-text-secondary; } }
 .eyebrow, .status, .category { color: $color-primary-500; font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
 .notice, .state { padding: 16px; margin: 20px 0; border-radius: 12px; background: $color-primary-100; }
+.creation-panel { margin: 28px 0 36px; padding: 26px; border: 1px solid $color-border-default; border-radius: 20px; background: white; }
+.section-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 22px; }
+.section-heading h2 { margin: 5px 0 0; }
+.section-heading p { max-width: 360px; margin: 0; color: $color-text-secondary; font-size: .9rem; }
+.creation-panel form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
+.creation-panel label { display: grid; gap: 7px; color: $color-text-secondary; font-size: .83rem; font-weight: 650; }
+.creation-panel .wide { grid-column: 1 / -1; }
+.creation-panel input, .creation-panel textarea, .creation-panel select { box-sizing: border-box; width: 100%; }
+.criteria-editor { display: grid; gap: 8px; padding: 14px; border: 1px solid $color-border-default; border-radius: 10px; }
+.criterion-row { display: grid; grid-template-columns: 1fr 90px 20px 38px; align-items: center; gap: 7px; }
+.criteria-editor small { color: $color-text-secondary; }
+.criteria-editor .add-criterion { justify-self: start; background: white; border: 1px solid $color-border-default; color: $color-text-primary; }
+.criteria-editor .remove-criterion { padding: 8px; background: transparent; color: $color-text-secondary; font-size: 1.15rem; }
 .events { display: grid; gap: 24px; }
 .event-card { padding: 28px; border: 1px solid $color-border-default; border-radius: 20px; background: $color-bg-default; }
 .event-heading, .timeline, .subscribe-box, .submission { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .event-heading h2 { margin: 7px 0 0; }
 .timeline { justify-content: flex-start; flex-wrap: wrap; color: $color-text-secondary; font-size: .85rem; }
 .subscribe-box { margin: 22px 0; padding: 14px; background: $color-primary-100; border-radius: 12px; select { flex: 1; } }
+.result-actions { display: flex; justify-content: flex-end; margin: 20px 0; padding: 14px; border: 1px solid $color-border-default; border-radius: 12px; background: #fafafa; }
 select, button { padding: 10px 14px; border: 1px solid $color-border-default; border-radius: 8px; background: white; }
 button { cursor: pointer; background: $color-primary-500; color: white; border: 0; &:disabled { opacity: .5; } &.ghost { color: $color-primary-500; background: white; border: 1px solid $color-primary-500; } }
 .submissions { display: grid; gap: 10px; margin-top: 22px; }
 .submission { justify-content: flex-start; padding: 12px; border: 1px solid $color-border-default; border-radius: 12px; img { width: 90px; height: 64px; border-radius: 8px; object-fit: cover; } div { flex: 1; } h3 { margin: 2px 0; } a { color: inherit; } &.winner { border-color: $color-primary-500; } }
 .rank { color: $color-primary-500; font-weight: 700; font-size: .75rem; }
-@media (max-width: 650px) { .event-heading, .subscribe-box, .submission { align-items: stretch; flex-direction: column; } }
+.criteria-summary { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.criteria-summary span { padding: 6px 9px; border-radius: 6px; background: #f3f3f6; color: $color-text-secondary; font-size: .76rem; }
+.evaluation-progress { margin: 14px 0; padding-left: 10px; border-left: 3px solid #d39522; color: $color-text-secondary; font-size: .84rem; }
+.evaluation-progress.complete { border-color: #168454; color: #168454; }
+.evaluation-form { display: grid; grid-template-columns: repeat(2, minmax(100px, 1fr)); gap: 7px; flex: 0 1 420px !important; }
+.evaluation-form label { display: grid; gap: 3px; color: $color-text-secondary; font-size: .72rem; }
+.evaluation-form button { grid-column: 1 / -1; }
+.own-project { margin-left: auto; color: $color-text-secondary; font-size: .76rem; }
+.result-score { display: grid; flex: 0 0 auto !important; margin-left: auto; text-align: right; }
+.result-score strong { font-size: 1.1rem; }
+.result-score span { color: $color-text-secondary; font-size: .7rem; }
+@media (max-width: 650px) {
+  .section-heading, .event-heading, .subscribe-box, .submission { align-items: stretch; flex-direction: column; }
+  .creation-panel form { grid-template-columns: 1fr; }
+  .creation-panel .wide { grid-column: 1; }
+}

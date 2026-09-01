@@ -47,7 +47,7 @@ export class PortfolioController {
     if (!username) throw new BadRequest("Nome de usuario e obrigatorio");
 
     const portfolio = await this.portfolioService.findByUsername(username);
-    if (!portfolio) throw new NotFound("Portfolio nao encontrado");
+    if (!portfolio) return reply.send(null);
     reply.send(portfolio);
   }
 
@@ -73,7 +73,7 @@ export class PortfolioController {
     if (!username) throw new BadRequest("Nome de usuario e obrigatorio");
 
     const portfolio = await this.portfolioService.findByUsername(username);
-    if (!portfolio) throw new NotFound("Portfolio nao encontrado");
+    if (!portfolio) return reply.send([]);
 
     const response = await this.portfolioService.findProjects(
       portfolio.getId()
@@ -101,7 +101,9 @@ export class PortfolioController {
 
   async deleteById(req: FastifyRequest, reply: FastifyReply) {
     const authorId = req.user?.id;
-    const { id } = req.body as Partial<{ id: string }>;
+    const params = req.params as Partial<{ id: string }>;
+    const body = req.body as Partial<{ id: string }> | undefined;
+    const id = params.id ?? body?.id;
     if (!id) throw new BadRequest("Id e obrigatorio");
 
     const portfolio = await this.portfolioService.findById(id);

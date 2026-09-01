@@ -16,7 +16,9 @@ export const CompetitionMapper = {
       model.registrationEndsAt,
       model.votingStartsAt,
       model.votingEndsAt,
-      model.resultsAt
+      model.resultsAt,
+      model.resultsFinalizedAt,
+      model.minimumEvaluations,
     );
   },
   fromDomainToPrisma(domain: Competition): CompetitionModel {
@@ -33,6 +35,8 @@ export const CompetitionMapper = {
       votingStartsAt: domain.votingStartsAt,
       votingEndsAt: domain.votingEndsAt,
       resultsAt: domain.resultsAt,
+      resultsFinalizedAt: domain.resultsFinalizedAt,
+      minimumEvaluations: domain.minimumEvaluations,
     };
   },
 };

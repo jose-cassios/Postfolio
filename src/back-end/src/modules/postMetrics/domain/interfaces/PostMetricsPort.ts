@@ -1,5 +1,5 @@
 export interface PostMetricsPort {
-  addAppreciate(projectId: string): Promise<string>;
-  removeAppreciate(projectId: string): Promise<string>;
-  getTotalAppreciates(projectId: string): Promise<number>;
+  addPostmark(projectId: string): Promise<string>;
+  removePostmark(projectId: string): Promise<string>;
+  getTotalPostmarks(projectId: string): Promise<number>;
 }

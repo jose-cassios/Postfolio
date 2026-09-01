@@ -1,3 +1,5 @@
+import { ProjectBlock, ProjectStatus } from './project-content';
+
 export interface Project {
   id: string;
   title: string;
@@ -7,7 +9,8 @@ export interface Project {
   likes: number;
   views: number;
   commentsCount: number;
-  appreciates?: number;
+  postmarksCount?: number;
+  currentVersion?: number;
   saves?: number;
   createdAt: Date;
 
@@ -25,4 +28,8 @@ export interface Project {
   gallery?: string[];
   githubLink?: string | null;
   externalLink?: string | null;
+  contentBlocks?: ProjectBlock[];
+  contentMarkdown?: string;
+  status?: ProjectStatus;
+  publishedAt?: string | null;
 }

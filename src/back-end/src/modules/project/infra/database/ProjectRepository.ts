@@ -1,9 +1,19 @@
-import { InternalServerError } from "@shared/error/HttpError";
+import { BadRequest, Conflict, Forbidden, GenericHttpError, InternalServerError, NotFound } from "@shared/error/HttpError";
 import { prisma } from "@infrastructure/config/Prisma";
-import { Prisma } from "@PrismaGen/client";
+import {
+  AppreciateStatus,
+  Prisma,
+  Project as PrismaProject,
+  ProjectStatus,
+  ReputationEventType,
+} from "@PrismaGen/client";
 import { Project } from "@project/domain/entities/Project";
 import { ProjectMapper } from "@project/application/ProjectMapper";
-import { IProjectRepository } from "@project/domain/interfaces/IProjectRepository";
+import {
+  CreatePostmarkInput,
+  IProjectRepository,
+  VersionPublication,
+} from "@project/domain/interfaces/IProjectRepository";
 import { ProjectContract } from "@shared/contracts/ProjectContracts";
 import { ProjectListQuery } from "@project/api/ProjectDTO";
 import {
@@ -11,17 +21,45 @@ import {
   ProjectContactContract,
   ProjectInteractionContract,
   ProjectFeedbackContract,
+  ProjectPostmarkContract,
 } from "@shared/contracts/ProjectContracts";
 import { ProjectCategoryMapper } from "@project/application/ProjectMapper";
+import {
+  distributeXp,
+  postmarkStatusXpRewards,
+} from "@user/application/ReputationXpService";
 
 export class ProjectRepository implements IProjectRepository {
   async create(project: Project): Promise<Project> {
     try {
-      const model = await prisma.project.create({
-        data: {
-          ...ProjectMapper.fromDomainToPrisma(project),
-          id: undefined,
-        },
+      const model = await prisma.$transaction(async (tx) => {
+        const created = await tx.project.create({
+          data: {
+            ...ProjectMapper.fromDomainToPrisma(project),
+            id: undefined,
+            contentBlocks: project.getContentBlocks() as unknown as Prisma.InputJsonValue,
+          },
+        });
+        if (created.status !== ProjectStatus.PUBLISHED) return created;
+
+        const portfolio = await tx.portfolio.findUniqueOrThrow({
+          where: { id: created.portfolioId },
+          select: { authorId: true },
+        });
+        const version = await tx.projectVersion.create({
+          data: this.versionSnapshot(created, 1, "Versao inicial", portfolio.authorId),
+        });
+        await distributeXp(tx, {
+          userId: portfolio.authorId,
+          type: ReputationEventType.PROJECT_PUBLISHED,
+          idempotencyKey: `project-published:${created.id}`,
+          projectId: created.id,
+          projectVersionId: version.id,
+        });
+        return await tx.project.update({
+          where: { id: created.id },
+          data: { currentVersion: 1 },
+        });
       });
       return ProjectMapper.fromPrismaToDomain(model);
     } catch (error) {
@@ -34,19 +72,110 @@ export class ProjectRepository implements IProjectRepository {
     }
   }
 
-  async update(project: Project): Promise<Project> {
+  async update(project: Project, publication?: VersionPublication): Promise<Project> {
     try {
-      const model = await prisma.project.update({
-        where: {
-          id: project.getId(),
-        },
-        data: {
-          ...ProjectMapper.fromDomainToPrisma(project),
-          updatedAt: new Date(),
-        },
+      const model = await prisma.$transaction(async (tx) => {
+        const current = await tx.project.findUniqueOrThrow({
+          where: { id: project.getId() },
+          select: {
+            currentVersion: true,
+            status: true,
+            portfolio: { select: { authorId: true } },
+          },
+        });
+        const isInitialPublication =
+          current.status !== ProjectStatus.PUBLISHED
+          && project.getStatus() === ProjectStatus.PUBLISHED;
+        const nextVersion = isInitialPublication
+          ? 1
+          : publication
+            ? current.currentVersion + 1
+            : current.currentVersion;
+        const updated = await tx.project.update({
+          where: { id: project.getId() },
+          data: {
+            ...ProjectMapper.fromDomainToPrisma(project),
+            currentVersion: nextVersion,
+            contentBlocks: project.getContentBlocks() as unknown as Prisma.InputJsonValue,
+            updatedAt: new Date(),
+          },
+        });
+        if (!publication && !isInitialPublication) return updated;
+
+        const previousVersion = await tx.projectVersion.findFirst({
+          where: { projectId: updated.id },
+          orderBy: { versionNumber: "desc" },
+        });
+        if (previousVersion && !this.hasSnapshotChanges(updated, previousVersion)) {
+          throw new BadRequest("Altere o conteudo do projeto antes de publicar outra versao.");
+        }
+
+        const postmarks = publication?.postmarkIds.length
+          ? await tx.appreciate.findMany({
+              where: {
+                id: { in: publication.postmarkIds },
+                projectId: updated.id,
+              },
+              include: {
+                versionCredits: {
+                  select: { projectVersion: { select: { versionNumber: true } } },
+                },
+              },
+            })
+          : [];
+        if (postmarks.length !== (publication?.postmarkIds.length ?? 0)) {
+          throw new BadRequest("Um dos Postmarks selecionados nao pertence ao projeto.");
+        }
+        if (postmarks.some((postmark) => postmark.status !== AppreciateStatus.APPLIED)) {
+          throw new BadRequest("Apenas Postmarks marcados como aplicados podem receber credito.");
+        }
+        const authorId = publication?.authorId ?? current.portfolio.authorId;
+        if (postmarks.some((postmark) => postmark.userId === authorId)) {
+          throw new Forbidden("O autor nao pode gerar credito de contribuicao para si mesmo.");
+        }
+
+        const version = await tx.projectVersion.create({
+          data: this.versionSnapshot(
+            updated,
+            nextVersion,
+            publication?.changelog ?? "Versao inicial",
+            authorId,
+          ),
+        });
+
+        for (const postmark of postmarks) {
+          await tx.projectVersionCredit.create({
+            data: {
+              projectVersionId: version.id,
+              appreciationId: postmark.id,
+              contributorId: postmark.userId,
+            },
+          });
+          await distributeXp(tx, {
+            userId: postmark.userId,
+            type: ReputationEventType.POSTMARK_CREDITED_IN_VERSION,
+            idempotencyKey: `postmark-credited:${version.id}:${postmark.id}`,
+            projectId: updated.id,
+            projectVersionId: version.id,
+            postmarkId: postmark.id,
+          });
+        }
+        await distributeXp(tx, {
+          userId: authorId,
+          type: isInitialPublication
+            ? ReputationEventType.PROJECT_PUBLISHED
+            : ReputationEventType.PROJECT_VERSION_PUBLISHED,
+          idempotencyKey: isInitialPublication
+            ? `project-published:${updated.id}`
+            : `project-version-published:${version.id}`,
+          projectId: updated.id,
+          projectVersionId: version.id,
+        });
+        return updated;
       });
       return ProjectMapper.fromPrismaToDomain(model);
     } catch (error) {
+      if (error instanceof GenericHttpError) throw error;
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         throw new InternalServerError(
           `Não foi possivel atualizar o trabalho! Código: ${error.code}`
@@ -71,7 +200,9 @@ export class ProjectRepository implements IProjectRepository {
   }
 
   async findMany(): Promise<Project[]> {
-    const models = await prisma.project.findMany();
+    const models = await prisma.project.findMany({
+      where: { status: ProjectStatus.PUBLISHED },
+    });
     return models.map(ProjectMapper.fromPrismaToDomain);
   }
 
@@ -88,16 +219,25 @@ export class ProjectRepository implements IProjectRepository {
     const models = await prisma.project.findMany({
       where: {
         portfolioId: portfolioId,
+        status: ProjectStatus.PUBLISHED,
       },
-      orderBy: { createdAt: "desc" },
+      orderBy: { publishedAt: "desc" },
+    });
+    return models.map(ProjectMapper.fromPrismaToContracts);
+  }
+
+  async findByOwner(userId: string): Promise<ProjectContract[]> {
+    const models = await prisma.project.findMany({
+      where: { portfolio: { authorId: userId } },
+      orderBy: { updatedAt: "desc" },
     });
     return models.map(ProjectMapper.fromPrismaToContracts);
   }
 
   async findLatestByPortfolio(portfolioId: string): Promise<Project | null> {
     const model = await prisma.project.findFirst({
-      where: { portfolioId },
-      orderBy: { createdAt: "desc" },
+      where: { portfolioId, status: ProjectStatus.PUBLISHED },
+      orderBy: { publishedAt: "desc" },
     });
     return model ? ProjectMapper.fromPrismaToDomain(model) : null;
   }
@@ -106,6 +246,7 @@ export class ProjectRepository implements IProjectRepository {
     query: ProjectListQuery
   ): Promise<PaginatedProjectsContract> {
     const where: Prisma.ProjectWhereInput = {
+      status: ProjectStatus.PUBLISHED,
       ...(query.category && {
         category: ProjectCategoryMapper.fromDomainToPrisma(query.category),
       }),
@@ -120,12 +261,10 @@ export class ProjectRepository implements IProjectRepository {
       }),
     };
 
-    const orderBy: Prisma.ProjectOrderByWithRelationInput =
+    const orderBy: Prisma.ProjectOrderByWithRelationInput | Prisma.ProjectOrderByWithRelationInput[] =
       query.sort === "likes"
-        ? { likes: { _count: "desc" } }
-        : query.sort === "appreciates"
-          ? { AppreciateProjectDetails: { appreciateCount: "desc" } }
-          : { createdAt: "desc" };
+        ? [{ likes: { _count: "desc" } }, { publishedAt: "desc" }]
+        : { publishedAt: "desc" };
 
     const [models, total] = await Promise.all([
       prisma.project.findMany({
@@ -141,6 +280,7 @@ export class ProjectRepository implements IProjectRepository {
                   id: true,
                   username: true,
                   bio: true,
+                  profilePhoto: true,
                   availableForHire: true,
                 },
               },
@@ -150,6 +290,7 @@ export class ProjectRepository implements IProjectRepository {
           _count: {
             select: {
               likes: true,
+              Appreciate: true,
               Comments: true,
               FavorateProjects: true,
             },
@@ -165,7 +306,7 @@ export class ProjectRepository implements IProjectRepository {
         author: model.portfolio.author,
         metrics: {
           likes: model._count.likes,
-          appreciates: model.AppreciateProjectDetails?.appreciateCount ?? 0,
+          postmarks: model._count.Appreciate,
           comments: model._count.Comments,
           saves: model._count.FavorateProjects,
         },
@@ -181,7 +322,7 @@ export class ProjectRepository implements IProjectRepository {
 
   async findPublicById(id: string): Promise<ProjectContract | null> {
     const model = await prisma.project.findUnique({
-      where: { id },
+      where: { id, status: ProjectStatus.PUBLISHED },
       include: {
         portfolio: {
           include: {
@@ -190,6 +331,7 @@ export class ProjectRepository implements IProjectRepository {
                 id: true,
                 username: true,
                 bio: true,
+                profilePhoto: true,
                 availableForHire: true,
               },
             },
@@ -204,8 +346,36 @@ export class ProjectRepository implements IProjectRepository {
             user: { select: { username: true } },
           },
         },
+        Appreciate: {
+          orderBy: { createdAt: "desc" },
+          include: {
+            user: {
+              select: { id: true, username: true, profilePhoto: true },
+            },
+            versionCredits: {
+              select: { projectVersion: { select: { versionNumber: true } } },
+            },
+          },
+        },
+        versions: {
+          orderBy: { versionNumber: "asc" },
+          include: {
+            author: { select: { id: true, username: true } },
+            credits: {
+              include: {
+                appreciation: { select: { id: true, aspect: true } },
+                contributor: { select: { id: true, username: true } },
+              },
+            },
+          },
+        },
         _count: {
-          select: { likes: true, Comments: true, FavorateProjects: true },
+          select: {
+            likes: true,
+            Appreciate: true,
+            Comments: true,
+            FavorateProjects: true,
+          },
         },
       },
     });
@@ -216,7 +386,7 @@ export class ProjectRepository implements IProjectRepository {
       author: model.portfolio.author,
       metrics: {
         likes: model._count.likes,
-        appreciates: model.AppreciateProjectDetails?.appreciateCount ?? 0,
+        postmarks: model._count.Appreciate,
         comments: model._count.Comments,
         saves: model._count.FavorateProjects,
       },
@@ -225,6 +395,22 @@ export class ProjectRepository implements IProjectRepository {
         content: feedback.content,
         username: feedback.user.username,
       })),
+      postmarks: model.Appreciate.map((postmark) =>
+        this.toPostmarkContract(postmark)
+      ),
+      versions: model.versions.map((version) => ({
+        id: version.id,
+        versionNumber: version.versionNumber,
+        changelog: version.changelog,
+        contentMarkdown: version.contentMarkdown,
+        createdAt: version.createdAt,
+        author: version.author,
+        credits: version.credits.map((credit) => ({
+          postmarkId: credit.appreciation.id,
+          aspect: credit.appreciation.aspect,
+          contributor: credit.contributor,
+        })),
+      })),
     };
   }
 
@@ -232,6 +418,7 @@ export class ProjectRepository implements IProjectRepository {
     const project = await prisma.project.findFirst({
       where: {
         id: projectId,
+        status: ProjectStatus.PUBLISHED,
         portfolio: { author: { availableForHire: true } },
       },
       select: {
@@ -241,7 +428,6 @@ export class ProjectRepository implements IProjectRepository {
               select: {
                 username: true,
                 email: true,
-                contactEmail: true,
                 linkedin: true,
                 github: true,
                 website: true,
@@ -255,7 +441,7 @@ export class ProjectRepository implements IProjectRepository {
     const author = project.portfolio.author;
     return {
       username: author.username,
-      contactEmail: author.contactEmail ?? author.email,
+      email: author.email,
       linkedin: author.linkedin,
       github: author.github,
       website: author.website,
@@ -279,27 +465,17 @@ export class ProjectRepository implements IProjectRepository {
     return this.getInteraction(projectId, userId);
   }
 
-  async setAppreciation(
+  async createPostmark(
     projectId: string,
     userId: string,
-    appreciated: boolean,
-    feedback?: { content: string; type: "PUBLIC" | "PRIVATE" }
-  ): Promise<ProjectInteractionContract> {
-    await prisma.$transaction(async (tx) => {
+    input: CreatePostmarkInput,
+  ): Promise<ProjectPostmarkContract> {
+    return await prisma.$transaction(async (tx) => {
       const existing = await tx.appreciate.findUnique({
         where: { userId_projectId: { userId, projectId } },
       });
-
-      if (!appreciated) {
-        if (existing) {
-          await tx.feedback.deleteMany({ where: { appreciateId: existing.id } });
-          await tx.appreciate.delete({ where: { id: existing.id } });
-          await tx.postMetrics.updateMany({
-            where: { projectId, appreciateCount: { gt: 0 } },
-            data: { appreciateCount: { decrement: 1 } },
-          });
-        }
-        return;
+      if (existing && existing.status !== AppreciateStatus.PENDING) {
+        throw new Conflict("Este Postmark ja foi analisado pelo autor.");
       }
 
       const metrics = await tx.postMetrics.upsert({
@@ -307,57 +483,150 @@ export class ProjectRepository implements IProjectRepository {
         update: {},
         create: { projectId, appreciateCount: 0 },
       });
-
-      const appreciation = existing ?? await tx.appreciate.create({
-        data: { userId, projectId, postMetricsId: metrics.id },
-      });
+      const appreciation = existing
+        ? await tx.appreciate.update({
+            where: { id: existing.id },
+            data: {
+              aspect: input.aspect,
+              strength: input.strength,
+              improvement: input.suggestion,
+              additionalComment: input.additionalComment || null,
+              status: AppreciateStatus.PENDING,
+              resolvedAt: null,
+            },
+            include: {
+              user: { select: { id: true, username: true, profilePhoto: true } },
+              versionCredits: {
+                select: { projectVersion: { select: { versionNumber: true } } },
+              },
+            },
+          })
+        : await tx.appreciate.create({
+            data: {
+              userId,
+              projectId,
+              postMetricsId: metrics.id,
+              aspect: input.aspect,
+              strength: input.strength,
+              improvement: input.suggestion,
+              additionalComment: input.additionalComment || null,
+            },
+            include: {
+              user: { select: { id: true, username: true, profilePhoto: true } },
+            },
+          });
 
       if (!existing) {
         await tx.postMetrics.update({
           where: { id: metrics.id },
           data: { appreciateCount: { increment: 1 } },
         });
-      }
-
-      if (feedback) {
-        await tx.feedback.deleteMany({ where: { appreciateId: appreciation.id } });
-        await tx.feedback.create({
-          data: {
-            content: feedback.content,
-            type: feedback.type,
-            userId,
-            projectId,
-            appreciateId: appreciation.id,
-          },
+        await distributeXp(tx, {
+          userId,
+          type: ReputationEventType.POSTMARK_SENT,
+          idempotencyKey: `postmark-sent:${appreciation.id}`,
+          projectId,
+          postmarkId: appreciation.id,
         });
       }
+      return this.toPostmarkContract(appreciation);
     });
-    return this.getInteraction(projectId, userId);
+  }
+
+  async updatePostmarkStatus(
+    projectId: string,
+    postmarkId: string,
+    status: "PENDING" | "USEFUL" | "APPLIED" | "DENIED",
+  ): Promise<ProjectPostmarkContract> {
+    return await prisma.$transaction(async (tx) => {
+      const existing = await tx.appreciate.findFirst({
+        where: { id: postmarkId, projectId },
+        include: {
+          project: {
+            select: { portfolio: { select: { authorId: true } } },
+          },
+          versionCredits: { select: { id: true } },
+        },
+      });
+      if (!existing) throw new NotFound("Postmark nao encontrado.");
+      if (existing.userId === existing.project.portfolio.authorId) {
+        throw new Forbidden("Uma interacao propria nao pode gerar reputacao.");
+      }
+      if (existing.versionCredits.length && status !== "APPLIED") {
+        throw new Conflict(
+          "Um Postmark creditado em uma versao deve permanecer como aplicado.",
+        );
+      }
+
+      const appreciation = await tx.appreciate.update({
+        where: { id: postmarkId },
+        data: {
+          status: status as AppreciateStatus,
+          resolvedAt: status === "PENDING" ? null : new Date(),
+        },
+        include: {
+          user: { select: { id: true, username: true, profilePhoto: true } },
+          versionCredits: {
+            select: { projectVersion: { select: { versionNumber: true } } },
+          },
+        },
+      });
+      for (const type of postmarkStatusXpRewards(status)) {
+        await distributeXp(tx, {
+          userId: existing.userId,
+          type,
+          idempotencyKey: `postmark-${type.toLowerCase().replace("postmark_", "")}:${existing.id}`,
+          projectId,
+          postmarkId: existing.id,
+        });
+      }
+      return this.toPostmarkContract(appreciation);
+    });
+  }
+
+  async findPostmarks(projectId: string): Promise<ProjectPostmarkContract[]> {
+    const postmarks = await prisma.appreciate.findMany({
+      where: { projectId },
+      orderBy: { createdAt: "desc" },
+      include: {
+        user: { select: { id: true, username: true, profilePhoto: true } },
+        versionCredits: {
+          select: { projectVersion: { select: { versionNumber: true } } },
+        },
+      },
+    });
+    return postmarks.map((postmark) =>
+      this.toPostmarkContract(postmark)
+    );
   }
 
   async getInteraction(
     projectId: string,
     userId: string
   ): Promise<ProjectInteractionContract> {
-    const [liked, appreciated, saved, likes, metrics] = await Promise.all([
+    const [liked, postmarked, saved, likes, postmarks] = await Promise.all([
       prisma.like.findUnique({ where: { userId_projectId: { userId, projectId } } }),
       prisma.appreciate.findUnique({ where: { userId_projectId: { userId, projectId } } }),
       prisma.favorateProjects.findUnique({ where: { userId_projectId: { userId, projectId } } }),
       prisma.like.count({ where: { projectId } }),
-      prisma.postMetrics.findUnique({ where: { projectId } }),
+      prisma.appreciate.count({ where: { projectId } }),
     ]);
     return {
       liked: Boolean(liked),
-      appreciated: Boolean(appreciated),
+      postmarked: Boolean(postmarked),
       saved: Boolean(saved),
       likes,
-      appreciates: metrics?.appreciateCount ?? 0,
+      postmarks,
     };
   }
 
   async isOwnedBy(projectId: string, userId: string): Promise<boolean> {
     return Boolean(await prisma.project.findFirst({
-      where: { id: projectId, portfolio: { authorId: userId } },
+      where: {
+        id: projectId,
+        status: ProjectStatus.PUBLISHED,
+        portfolio: { authorId: userId },
+      },
       select: { id: true },
     }));
   }
@@ -377,5 +646,85 @@ export class ProjectRepository implements IProjectRepository {
       content: item.content,
       username: item.user.username,
     }));
+  }
+
+  private versionSnapshot(
+    project: PrismaProject,
+    versionNumber: number,
+    changelog: string,
+    authorId: string,
+  ): Prisma.ProjectVersionUncheckedCreateInput {
+    return {
+      projectId: project.id,
+      versionNumber,
+      changelog,
+      name: project.name,
+      description: project.description,
+      category: project.category,
+      githubLink: project.githublink,
+      externalLink: project.externalLink,
+      coverImageUrl: project.coverImageUrl,
+      galleryUrls: project.galleryUrls,
+      tools: project.tools,
+      tags: project.tags,
+      contentBlocks: project.contentBlocks as Prisma.InputJsonValue,
+      contentMarkdown: project.contentMarkdown,
+      authorId,
+    };
+  }
+
+  private toPostmarkContract(postmark: {
+    id: string;
+    aspect: string;
+    strength: string;
+    improvement: string;
+    additionalComment: string | null;
+    status: AppreciateStatus;
+    createdAt: Date;
+    updatedAt: Date;
+    user: { id: string; username: string; profilePhoto: string | null };
+    versionCredits?: Array<{ projectVersion: { versionNumber: number } }>;
+  }): ProjectPostmarkContract {
+    return {
+      id: postmark.id,
+      aspect: postmark.aspect,
+      strength: postmark.strength,
+      suggestion: postmark.improvement,
+      additionalComment: postmark.additionalComment,
+      status: postmark.status,
+      createdAt: postmark.createdAt,
+      updatedAt: postmark.updatedAt,
+      creditedInVersions: (postmark.versionCredits ?? [])
+        .map((credit) => credit.projectVersion.versionNumber)
+        .sort((left, right) => left - right),
+      author: postmark.user,
+    };
+  }
+
+  private hasSnapshotChanges(
+    project: PrismaProject,
+    version: {
+      name: string;
+      description: string;
+      category: PrismaProject["category"];
+      githubLink: string | null;
+      externalLink: string | null;
+      coverImageUrl: string | null;
+      galleryUrls: string[];
+      tools: string[];
+      tags: string[];
+      contentMarkdown: string;
+    },
+  ): boolean {
+    return project.name !== version.name
+      || project.description !== version.description
+      || project.category !== version.category
+      || project.githublink !== version.githubLink
+      || project.externalLink !== version.externalLink
+      || project.coverImageUrl !== version.coverImageUrl
+      || project.contentMarkdown !== version.contentMarkdown
+      || JSON.stringify(project.galleryUrls) !== JSON.stringify(version.galleryUrls)
+      || JSON.stringify(project.tools) !== JSON.stringify(version.tools)
+      || JSON.stringify(project.tags) !== JSON.stringify(version.tags);
   }
 }

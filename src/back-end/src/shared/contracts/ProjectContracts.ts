@@ -1,3 +1,5 @@
+import { ProjectBlock, ProjectStatus } from "@project/domain/valueObject/ProjectContent";
+
 export interface ProjectContract {
   id: string;
   name: string;
@@ -9,6 +11,13 @@ export interface ProjectContract {
   galleryUrls: string[];
   tools: string[];
   tags: string[];
+  contentBlocks: ProjectBlock[];
+  contentMarkdown: string;
+  status: ProjectStatus;
+  feedbackAspects: string[];
+  feedbackQuestion: string | null;
+  currentVersion: number;
+  publishedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
   portfolioId: string;
@@ -16,11 +25,12 @@ export interface ProjectContract {
     id: string;
     username: string;
     bio: string;
+    profilePhoto: string | null;
     availableForHire: boolean;
   };
   metrics?: {
     likes: number;
-    appreciates: number;
+    postmarks: number;
     comments: number;
     saves: number;
   };
@@ -29,6 +39,8 @@ export interface ProjectContract {
     content: string;
     username: string;
   }>;
+  postmarks?: ProjectPostmarkContract[];
+  versions?: ProjectVersionContract[];
 }
 
 export interface PaginatedProjectsContract {
@@ -38,7 +50,7 @@ export interface PaginatedProjectsContract {
 
 export interface ProjectContactContract {
   username: string;
-  contactEmail: string;
+  email: string;
   linkedin: string | null;
   github: string | null;
   website: string | null;
@@ -46,10 +58,39 @@ export interface ProjectContactContract {
 
 export interface ProjectInteractionContract {
   liked: boolean;
-  appreciated: boolean;
+  postmarked: boolean;
   saved: boolean;
   likes: number;
-  appreciates: number;
+  postmarks: number;
+}
+
+export type PostmarkStatus = "PENDING" | "USEFUL" | "APPLIED" | "DENIED";
+
+export interface ProjectPostmarkContract {
+  id: string;
+  aspect: string;
+  strength: string;
+  suggestion: string;
+  additionalComment: string | null;
+  status: PostmarkStatus;
+  createdAt: Date;
+  updatedAt: Date;
+  creditedInVersions: number[];
+  author: { id: string; username: string; profilePhoto: string | null };
+}
+
+export interface ProjectVersionContract {
+  id: string;
+  versionNumber: number;
+  changelog: string;
+  contentMarkdown: string;
+  createdAt: Date;
+  author: { id: string; username: string };
+  credits: Array<{
+    postmarkId: string;
+    aspect: string;
+    contributor: { id: string; username: string };
+  }>;
 }
 
 export interface ProjectFeedbackContract {

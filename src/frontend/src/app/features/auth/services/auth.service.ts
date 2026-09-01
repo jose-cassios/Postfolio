@@ -2,7 +2,7 @@ import { Injectable, signal, computed, inject, PLATFORM_ID } from '@angular/core
 import { isPlatformBrowser } from '@angular/common';
 import { ApiService } from '../../../core/services/api.service';
 import { map, of, tap, throwError, switchMap } from 'rxjs';
-import { UserType } from '../../profile/profile.models';
+import { UserReputation, UserType } from '../../profile/profile.models';
 
 export interface User {
   id?: string;
@@ -10,12 +10,12 @@ export interface User {
   email: string;
   password?: string;
   bio?: string;
-  linkedin?: string;
-  github?: string;
-  website?: string;
-  contactEmail?: string;
+  linkedin?: string | null;
+  github?: string | null;
+  website?: string | null;
   availableForHire?: boolean;
   achievements?: Array<{ competitionId: string; competitionName: string; rank: number }>;
+  reputation?: UserReputation;
   usertype: UserType;
   profilePhoto?: string;
   coverPhoto?: string;
@@ -47,8 +47,7 @@ export class AuthService {
   constructor(private api: ApiService) {
     if (isPlatformBrowser(this.platformId) && this.getToken()) {
       this.fetchProfile().subscribe({
-        error: (error) => {
-          console.error('Falha ao carregar perfil a partir do token:', error);
+        error: () => {
           this.logout();
         },
       });
@@ -63,10 +62,7 @@ export class AuthService {
 
     return this.api.post<LoginResponse>('user/login', payload).pipe(
       tap(response => this.setToken(response.token)),
-      switchMap(() => this.fetchProfile()),
-      tap(user => {
-        console.log('Login bem-sucedido:', user);
-      })
+      switchMap(() => this.fetchProfile())
     );
   }
 
@@ -77,9 +73,9 @@ export class AuthService {
       return throwError(() => new Error('NOT_AUTHENTICATED'));
     }
 
-    return this.api.post<ProfileResponse>(
-      'user/profile',
-      {},
+    return this.api.get<ProfileResponse>(
+      'user/me',
+      undefined,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -125,7 +121,6 @@ export class AuthService {
       linkedin: userData.linkedin,
       github: userData.github,
       website: userData.website,
-      contactEmail: userData.contactEmail,
       availableForHire: userData.availableForHire,
     };
 
@@ -166,7 +161,8 @@ export class AuthService {
       linkedin: userData.linkedin || null,
       github: userData.github || null,
       website: userData.website || null,
-      contactEmail: userData.contactEmail || null,
+      profilePhoto: userData.profilePhoto || null,
+      coverPhoto: userData.coverPhoto || null,
       availableForHire: userData.availableForHire ?? false,
     };
 

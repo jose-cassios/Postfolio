@@ -1,6 +1,11 @@
 import { ProjectDetails } from "../models/project-details";
 
-export const FEATURED_PROJECTS: ProjectDetails[] = [
+type LegacyMockProject = Omit<
+  ProjectDetails,
+  'feedbackAspects' | 'feedbackQuestion' | 'currentVersion' | 'postmarks' | 'versions'
+>;
+
+const LEGACY_FEATURED_PROJECTS: LegacyMockProject[] = [
 
   {
     id: '1',
@@ -11,7 +16,7 @@ export const FEATURED_PROJECTS: ProjectDetails[] = [
     likes: 2245,
     views: 10000,
     commentsCount: 1088,
-    appreciates: 845,
+    postmarksCount: 845,
     saves: 302,
 
     category: 'web-design',
@@ -50,7 +55,7 @@ export const FEATURED_PROJECTS: ProjectDetails[] = [
     likes: 189,
     views: 1340,
     commentsCount: 12,
-    appreciates: 72,
+    postmarksCount: 72,
     saves: 41,
 
     category: 'web-design',
@@ -86,7 +91,7 @@ export const FEATURED_PROJECTS: ProjectDetails[] = [
     likes: 421,
     views: 3200,
     commentsCount: 34,
-    appreciates: 15,
+    postmarksCount: 15,
     saves: 41,
 
     category: 'ilustracao',
@@ -121,7 +126,7 @@ export const FEATURED_PROJECTS: ProjectDetails[] = [
     likes: 178,
     views: 980,
     commentsCount: 6,
-    appreciates: 15,
+    postmarksCount: 15,
     saves: 41,
 
     category: 'branding',
@@ -157,7 +162,7 @@ export const FEATURED_PROJECTS: ProjectDetails[] = [
     likes: 312,
     views: 2450,
     commentsCount: 22,
-    appreciates: 85,
+    postmarksCount: 85,
     saves: 120,
 
     category: 'desenvolvimento',
@@ -193,7 +198,7 @@ export const FEATURED_PROJECTS: ProjectDetails[] = [
     likes: 256,
     views: 1670,
     commentsCount: 15,
-    appreciates: 92,
+    postmarksCount: 92,
     saves: 210,
 
     category: 'ui-ux',
@@ -229,7 +234,7 @@ export const FEATURED_PROJECTS: ProjectDetails[] = [
     likes: 367,
     views: 2890,
     commentsCount: 19,
-    appreciates: 150,
+    postmarksCount: 150,
     saves: 88,
 
     category: 'fotografia',
@@ -265,7 +270,7 @@ export const FEATURED_PROJECTS: ProjectDetails[] = [
     likes: 298,
     views: 2210,
     commentsCount: 11,
-    appreciates: 67,
+    postmarksCount: 67,
     saves: 145,
 
     category: 'arquitetura',
@@ -301,7 +306,7 @@ export const FEATURED_PROJECTS: ProjectDetails[] = [
     likes: 489,
     views: 4100,
     commentsCount: 41,
-    appreciates: 210,
+    postmarksCount: 210,
     saves: 330,
 
     category: 'jogos',
@@ -337,7 +342,7 @@ export const FEATURED_PROJECTS: ProjectDetails[] = [
     likes: 223,
     views: 1540,
     commentsCount: 8,
-    appreciates: 45,
+    postmarksCount: 45,
     saves: 72,
 
     category: 'motion',
@@ -365,3 +370,14 @@ export const FEATURED_PROJECTS: ProjectDetails[] = [
     publishedAt: "2023 10 12"
   }
 ];
+
+export const FEATURED_PROJECTS: ProjectDetails[] = LEGACY_FEATURED_PROJECTS.map(
+  (project) => ({
+    ...project,
+    feedbackAspects: [],
+    feedbackQuestion: null,
+    currentVersion: 1,
+    postmarks: [],
+    versions: [],
+  }),
+);

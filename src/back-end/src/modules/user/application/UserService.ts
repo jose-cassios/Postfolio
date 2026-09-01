@@ -1,5 +1,5 @@
 import User from "@user/domain/entities/User";
-import { Conflict, NotFound, Unauthorized } from "@shared/error/HttpError";
+import { BadRequest, Conflict, NotFound, Unauthorized } from "@shared/error/HttpError";
 import { Token } from "@shared/util/Token";
 import { IUserRepository } from "@user/domain/interfaces/IUserRepository";
 import Email from "@user/domain/valueObject/Email";
@@ -9,6 +9,13 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "@compositionRoot/Types";
 import { UserCreatedEvent } from "@shared/event/UserCreatedEvent";
 import { EventListener } from "@shared/event/EventListener";
+import { UserType } from "@user/domain/enum/UserType";
+import { validateReputationRankConfig } from "@user/application/ReputationRanks";
+import {
+  ReputationAdjustmentInput,
+  ReputationRankConfigContract,
+  ReputationReversalInput,
+} from "@shared/contracts/UserContracts";
 
 @injectable()
 export class UserService implements IUserService {
@@ -135,7 +142,57 @@ export class UserService implements IUserService {
     return await this.repository.updateById(user);
   }
 
+  async setUserType(id: string, userType: UserType): Promise<User> {
+    const user = await this.repository.findById(id);
+    if (!user) throw new NotFound("Usuario nao encontrado.");
+    user.setUserType(userType);
+    return await this.repository.updateById(user);
+  }
+
   async findAchievements(userId: string) {
     return await this.repository.findAchievements(userId);
+  }
+
+  async findReputation(userId: string) {
+    return await this.repository.findReputation(userId);
+  }
+
+  async findReputationRankConfig() {
+    return await this.repository.findReputationRankConfig();
+  }
+
+  async updateReputationRankConfig(config: ReputationRankConfigContract[]) {
+    try {
+      validateReputationRankConfig(config);
+    } catch (error) {
+      throw new BadRequest(error instanceof Error ? error.message : "Configuracao de ranks invalida.");
+    }
+    return await this.repository.updateReputationRankConfig(config);
+  }
+
+  async findReputationHistory(userId: string, limit = 100) {
+    if (!(await this.repository.findById(userId))) {
+      throw new NotFound("Usuario nao encontrado.");
+    }
+    return await this.repository.findReputationHistory(userId, Math.min(Math.max(limit, 1), 100));
+  }
+
+  async applyReputationAdjustment(
+    userId: string,
+    adminId: string,
+    input: ReputationAdjustmentInput,
+  ) {
+    if (!(await this.repository.findById(userId))) {
+      throw new NotFound("Usuario nao encontrado.");
+    }
+    return await this.repository.applyReputationAdjustment(userId, adminId, input);
+  }
+
+  async reverseReputationEvent(
+    eventId: string,
+    adminId: string,
+    input: ReputationReversalInput,
+  ) {
+    return await this.repository.reverseReputationEvent(eventId, adminId, input);
   }
 }

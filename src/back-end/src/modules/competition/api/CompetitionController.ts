@@ -2,6 +2,7 @@ import { CreateCompetitionDTO } from "@competition/api/CompetitionDTO";
 import {
   CompetitionProjectRequest,
   CreateCompetitionRequest,
+  EventEvaluationRequest,
 } from "@competition/api/CompetitionSchema";
 import { ICompetitionService } from "@competition/domain/interfaces/ICompetitionService";
 import { TYPES } from "@compositionRoot/Types";
@@ -55,14 +56,34 @@ export class CompetitionController {
     reply.send({ message: "Inscricao removida." });
   }
 
-  async vote(req: CompetitionProjectRequest, reply: FastifyReply) {
+  async evaluate(req: EventEvaluationRequest, reply: FastifyReply) {
     const userId = req.user?.id;
     if (!userId) throw new Unauthorized("Usuario precisa fazer login.");
-    await this.competitionService.vote(
+    await this.competitionService.evaluate(
       req.params.competitionId,
       req.params.projectId,
-      userId
+      userId,
+      req.body.scores,
     );
-    reply.status(201).send({ message: "Voto registrado." });
+    reply.status(201).send({ message: "Avaliacao registrada." });
+  }
+
+  async evaluationProgress(req: FastifyRequest, reply: FastifyReply) {
+    const userId = req.user?.id;
+    const { competitionId } = req.params as { competitionId?: string };
+    if (!userId) throw new Unauthorized("Usuario precisa fazer login.");
+    if (!competitionId) throw new BadRequest("ID da competicao e obrigatorio.");
+    reply.send(await this.competitionService.getEvaluationProgress(
+      competitionId,
+      userId,
+    ));
+  }
+
+  async finalizeResults(req: FastifyRequest, reply: FastifyReply) {
+    const userId = req.user?.id;
+    const { competitionId } = req.params as { competitionId?: string };
+    if (!userId) throw new Unauthorized("Usuario precisa fazer login.");
+    if (!competitionId) throw new BadRequest("ID da competicao e obrigatorio.");
+    reply.send(await this.competitionService.finalizeResults(competitionId, userId));
   }
 }

@@ -12,6 +12,7 @@ export const TYPES = {
   IFavorateProjectsRepository: Symbol.for("IFavorateProjectsRepository"),
   ICommentsRepository: Symbol.for("ICommentsRepository"),
   IPostMetricsRepository: Symbol.for("IPostMetricsRepository"),
+  IStorageService: Symbol.for("IStorageService"),
 
   // Portas de Aplicação (Use Cases de alto nível)
   IUserService: Symbol.for("IUserService"),
@@ -44,6 +45,7 @@ export const TYPES = {
   ProjectService: Symbol.for("ProjectService"),
   ProjectCompDetailsService: Symbol.for("WorkCompDetailsService"),
   EmailService: Symbol.for("EmailService"),
+  StorageService: Symbol.for("StorageService"),
 
   // Controladores
   UserController: Symbol.for("UserController"),
@@ -56,6 +58,7 @@ export const TYPES = {
   EmailController: Symbol.for("EmailController"),
   FavorateProjectsController: Symbol.for("FavorateProjectsController"),
   CommentsController: Symbol.for("CommentsController"),
+  StorageController: Symbol.for("StorageController"),
 
   // Handlers
   // PortfolioUserCreatedHandler: Symbol.for("PortfolioUserCreatedHandler"),

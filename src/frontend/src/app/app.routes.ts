@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './features/auth/guards/auth-guard';
+import { adminGuard } from './features/auth/guards/admin-guard';
 
 export const routes: Routes = [
   {
@@ -41,7 +42,7 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    canActivate: [authGuard],
+    canActivate: [adminGuard],
     loadComponent: () =>
       import('./features/admin/admin.component')
         .then(m => m.AdminComponent)
@@ -57,6 +58,20 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/auth/components/register/register.component')
         .then(m => m.RegisterComponent)
+  },
+  {
+    path: 'projetos/novo',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/project-editor/project-editor.component')
+        .then(m => m.ProjectEditorComponent)
+  },
+  {
+    path: 'projetos/:projectId/editar',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/project-editor/project-editor.component')
+        .then(m => m.ProjectEditorComponent)
   },
   {
     path: 'projetos/:slug',

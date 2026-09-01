@@ -4,8 +4,13 @@ const config: Config = {
   preset: "ts-jest",
   testEnvironment: "node",
   moduleFileExtensions: ["ts", "js"],
+  moduleNameMapper: {
+    "^@PrismaGen/(.*)$": "<rootDir>/src/prisma/generated/$1",
+    "^@user/(.*)$": "<rootDir>/src/modules/user/$1",
+    "^@shared/(.*)$": "<rootDir>/src/shared/$1",
+  },
   transform: {
-    "^.+\\.ts$": "ts-jest",
+    "^.+\\.ts$": ["ts-jest", { tsconfig: "<rootDir>/tsconfig.jest.json" }],
   },
 };
 

@@ -1,3 +1,5 @@
+import { ProjectBlock, ProjectStatus } from '../../shared/models/project-content';
+
 export type UserType = 'USER' | 'MODERATOR' | 'ADMIN';
 
 export interface ProfileUser {
@@ -5,12 +7,14 @@ export interface ProfileUser {
   username: string;
   email?: string;
   bio?: string;
-  linkedin?: string;
-  github?: string;
-  website?: string;
-  contactEmail?: string;
+  linkedin?: string | null;
+  github?: string | null;
+  website?: string | null;
+  profilePhoto?: string | null;
+  coverPhoto?: string | null;
   availableForHire?: boolean;
   achievements?: Array<{ competitionId: string; competitionName: string; rank: number }>;
+  reputation?: UserReputation;
   usertype: UserType;
 }
 
@@ -42,19 +46,53 @@ export interface ProfileProject {
   galleryUrls: string[];
   tools: string[];
   tags: string[];
+  contentBlocks: ProjectBlock[];
+  contentMarkdown: string;
+  status: ProjectStatus;
+  publishedAt: string | null;
   createdAt: string;
   updatedAt: string;
   portfolioId: string;
 }
 
-export interface ProjectPayload {
-  name: string;
-  description: string;
-  category: ProjectCategory;
-  githublink: string | null;
-  externalLink: string | null;
-  coverImageUrl: string | null;
-  galleryUrls: string[];
-  tools: string[];
-  tags: string[];
+export interface UserReputation {
+  creator: ReputationRankProgress;
+  contributor: ReputationRankProgress;
+  evidence: {
+    publishedProjects: number;
+    versionsCreated: number;
+    postmarksSent: number;
+    usefulFeedbacks: number;
+    appliedSuggestions: number;
+    recognizedContributions: number;
+  };
 }
+
+export interface ReputationRankProgress {
+  rank: ReputationRank;
+  xp: number;
+  nextRank: ReputationRank | null;
+  xpRequired: number | null;
+  xpRemaining: number;
+  progressPercent: number;
+  mission: string | null;
+  missionCurrentValue: number | null;
+  missionRequiredValue: number | null;
+  missionCompleted: boolean;
+}
+
+export type ReputationRank =
+  | 'F'
+  | 'F+'
+  | 'E'
+  | 'E+'
+  | 'D'
+  | 'D+'
+  | 'C'
+  | 'C+'
+  | 'B'
+  | 'B+'
+  | 'A'
+  | 'A+'
+  | 'S'
+  | 'SS';

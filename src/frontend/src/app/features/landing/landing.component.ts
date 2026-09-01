@@ -20,7 +20,7 @@ export class LandingComponent {
   mode = ProjectCardMode;
 
   constructor(private projectService: ProjectService) {
-    this.projectService.list({ sort: 'appreciates', limit: 6 }).subscribe({
+    this.projectService.list({ sort: 'likes', limit: 6 }).subscribe({
       next: (response) => this.projects = response.data,
     });
   }

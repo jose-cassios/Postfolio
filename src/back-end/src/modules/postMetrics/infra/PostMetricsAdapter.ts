@@ -12,14 +12,14 @@ export class PostMetricsAdapter implements PostMetricsPort {
     private repository: IPostMetricsRepository
   ) {}
 
-  async addAppreciate(projectId: string): Promise<string> {
+  async addPostmark(projectId: string): Promise<string> {
     let postMetrics = await this.repository.findByProjectId(projectId);
 
     if (!postMetrics) {
       postMetrics = await this.createDefaultMetrics(projectId);
     }
 
-    postMetrics.incrementsAppreciateCount();
+    postMetrics.incrementPostmarkCount();
     await this.repository.update(postMetrics);
 
     return postMetrics.getId();
@@ -30,21 +30,21 @@ export class PostMetricsAdapter implements PostMetricsPort {
     return await this.repository.create(metrics);
   }
 
-  async removeAppreciate(projectId: string): Promise<string> {
+  async removePostmark(projectId: string): Promise<string> {
     const metrics = await this.repository.findByProjectId(projectId);
 
     if (!metrics) throw new NotFound("Recurro não encontrado!");
 
-    metrics.decrementAppreciateCount();
+    metrics.decrementPostmarkCount();
     await this.repository.update(metrics);
     return metrics.getId();
   }
 
-  async getTotalAppreciates(projectId: string): Promise<number> {
+  async getTotalPostmarks(projectId: string): Promise<number> {
     const metrics = await this.repository.findByProjectId(projectId);
 
     if (!metrics) throw new NotFound("Recurro não encontrado!");
 
-    return metrics.getCauntAppreciate();
+    return metrics.getPostmarkCount();
   }
 }

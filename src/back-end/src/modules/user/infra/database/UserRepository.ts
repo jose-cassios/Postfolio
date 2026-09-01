@@ -1,12 +1,37 @@
 // import PrismaUser from "@models/PrismaUser";
 import User from "@user/domain/entities/User";
 import { prisma } from "@infrastructure/config/Prisma";
-import { InternalServerError } from "@shared/error/HttpError";
-import { Prisma } from "@PrismaGen/client";
+import { BadRequest, Conflict, InternalServerError, NotFound } from "@shared/error/HttpError";
+import {
+  AppreciateStatus,
+  Prisma,
+  ProjectStatus,
+  ReputationAxis,
+  ReputationEventType,
+} from "@PrismaGen/client";
 import { UserMapper } from "@user/application/UserMapper";
+import { resolveReputationRankProgress } from "@user/application/ReputationRankProgressService";
+import { distributeXp } from "@user/application/ReputationXpService";
+import {
+  canApplyReputationDelta,
+  canReverseAutomaticReputationEvent,
+} from "@user/application/ReputationLedgerPolicy";
+import {
+  REPUTATION_RANKS,
+  reputationRankFromLabel,
+} from "@user/application/ReputationRanks";
 import { IUserRepository } from "@user/domain/interfaces/IUserRepository";
 import Email from "@user/domain/valueObject/Email";
-import { UserAchievementContract } from "@shared/contracts/UserContracts";
+import {
+  ReputationAdjustmentInput,
+  ReputationAxisContract,
+  ReputationEventContract,
+  ReputationHistoryContract,
+  ReputationRankConfigContract,
+  ReputationReversalInput,
+  UserAchievementContract,
+  UserReputationContract,
+} from "@shared/contracts/UserContracts";
 
 export class UserRepository implements IUserRepository {
   async create(user: User): Promise<User> {
@@ -76,14 +101,13 @@ export class UserRepository implements IUserRepository {
 
   async findAchievements(userId: string): Promise<UserAchievementContract[]> {
     const competitions = await prisma.competition.findMany({
-      where: { resultsAt: { lte: new Date() } },
-      select: {
-        id: true,
-        name: true,
+      where: { resultsFinalizedAt: { not: null } },
+      include: {
+        criteria: true,
+        evaluations: { include: { scores: true } },
         worksDetails: {
-          orderBy: { totalReviewers: "desc" },
           select: {
-            totalReviewers: true,
+            projectId: true,
             project: { select: { portfolio: { select: { authorId: true } } } },
           },
         },
@@ -91,17 +115,370 @@ export class UserRepository implements IUserRepository {
     });
 
     return competitions.flatMap((competition) => {
-      let previousVotes: number | null = null;
+      const criteriaIds = new Set(competition.criteria.map((criterion) => criterion.id));
+      const totalWeight = competition.criteria.reduce(
+        (total, criterion) => total + criterion.weight,
+        0,
+      ) || 1;
+      const primary = [...competition.criteria].sort(
+        (left, right) => right.weight - left.weight || left.position - right.position,
+      )[0];
+      const results = competition.worksDetails.map((details) => {
+        const evaluations = competition.evaluations.filter((evaluation) => {
+          const submitted = new Set(evaluation.scores.map((score) => score.criterionId));
+          return evaluation.projectId === details.projectId
+            && submitted.size === criteriaIds.size
+            && [...criteriaIds].every((id) => submitted.has(id));
+        });
+        const weighted = evaluations.map((evaluation) =>
+          evaluation.scores.reduce((total, score) => {
+            const criterion = competition.criteria.find((item) => item.id === score.criterionId);
+            return total + score.score * (criterion?.weight ?? 0);
+          }, 0) / totalWeight
+        );
+        const primaryScores = evaluations.flatMap((evaluation) => {
+          const score = evaluation.scores.find((item) => item.criterionId === primary?.id);
+          return score ? [score.score] : [];
+        });
+        const average = (values: number[]) => values.length
+          ? values.reduce((total, value) => total + value, 0) / values.length
+          : 0;
+        return {
+          details,
+          score: average(weighted),
+          primaryScore: average(primaryScores),
+          evaluations: evaluations.length,
+        };
+      }).sort((left, right) =>
+        right.score - left.score
+        || right.primaryScore - left.primaryScore
+        || right.evaluations - left.evaluations
+      );
+
+      let previousResult: string | null = null;
       let rank = 0;
-      return competition.worksDetails.flatMap((details, index) => {
-        if (details.totalReviewers !== previousVotes) rank = index + 1;
-        previousVotes = details.totalReviewers;
-        return details.project.portfolio.authorId === userId &&
-          details.totalReviewers > 0 &&
+      return results.flatMap((result, index) => {
+        const resultKey = `${result.score}:${result.primaryScore}:${result.evaluations}`;
+        if (resultKey !== previousResult) rank = index + 1;
+        previousResult = resultKey;
+        return result.details.project.portfolio.authorId === userId &&
+          result.evaluations > 0 &&
           rank <= 3
           ? [{ competitionId: competition.id, competitionName: competition.name, rank }]
           : [];
       });
     });
+  }
+
+  async findReputationRankConfig(): Promise<ReputationRankConfigContract[]> {
+    const config = await prisma.reputationRankConfig.findMany({
+      select: { rank: true, requiredXp: true },
+    });
+    const byRank = new Map(config.map((item) => [item.rank, item.requiredXp]));
+    return REPUTATION_RANKS.map((rank) => ({
+      rank: rank.label,
+      requiredXp: byRank.get(rank.value) ?? 0,
+    }));
+  }
+
+  async updateReputationRankConfig(
+    config: ReputationRankConfigContract[],
+  ): Promise<ReputationRankConfigContract[]> {
+    await prisma.$transaction(async (tx) => {
+      for (const item of config) {
+        const rank = reputationRankFromLabel(item.rank);
+        await tx.reputationRankConfig.upsert({
+          where: { rank },
+          update: { requiredXp: item.requiredXp },
+          create: { rank, requiredXp: item.requiredXp },
+        });
+      }
+    });
+    return await this.findReputationRankConfig();
+  }
+
+  async findReputationHistory(
+    userId: string,
+    limit: number,
+  ): Promise<ReputationHistoryContract> {
+    const [events, totals] = await Promise.all([
+      prisma.reputationEvent.findMany({
+        where: { userId },
+        orderBy: { createdAt: "desc" },
+        take: limit,
+        include: {
+          reversal: {
+            select: { id: true, points: true, reason: true, createdAt: true },
+          },
+        },
+      }),
+      prisma.reputationEvent.groupBy({
+        by: ["axis"],
+        where: { userId },
+        _sum: { points: true },
+      }),
+    ]);
+
+    const totalFor = (axis: ReputationAxis) =>
+      totals.find((item) => item.axis === axis)?._sum.points ?? 0;
+
+    return {
+      totals: {
+        creatorXp: totalFor(ReputationAxis.CREATOR),
+        contributorXp: totalFor(ReputationAxis.CONTRIBUTOR),
+      },
+      events: events.map((event): ReputationEventContract => ({
+        id: event.id,
+        userId: event.userId,
+        type: event.type,
+        axis: event.axis as ReputationAxisContract,
+        points: event.points,
+        projectId: event.projectId,
+        postmarkId: event.postmarkId,
+        projectVersionId: event.projectVersionId,
+        eventId: event.eventId,
+        reason: event.reason,
+        adminId: event.adminId,
+        reversalOfId: event.reversalOfId,
+        createdAt: event.createdAt,
+        reversal: event.reversal,
+        reversible: canReverseAutomaticReputationEvent(
+          event.type,
+          event.points,
+          Boolean(event.reversalOfId || event.reversal),
+        ),
+      })),
+    };
+  }
+
+  async applyReputationAdjustment(
+    userId: string,
+    adminId: string,
+    input: ReputationAdjustmentInput,
+  ): Promise<ReputationHistoryContract> {
+    const axis = input.axis === "CREATOR"
+      ? ReputationAxis.CREATOR
+      : ReputationAxis.CONTRIBUTOR;
+    const idempotencyKey = `admin-adjustment:${input.idempotencyKey}`;
+
+    await prisma.$transaction(async (tx) => {
+      const existing = await tx.reputationEvent.findUnique({
+        where: { idempotencyKey },
+        select: { id: true },
+      });
+      if (existing) return;
+
+      await this.lockReputationAxis(tx, userId, axis);
+      const replayed = await tx.reputationEvent.findUnique({
+        where: { idempotencyKey },
+        select: { id: true },
+      });
+      if (replayed) return;
+
+      const currentXp = await this.currentAxisXp(tx, userId, axis);
+      if (!canApplyReputationDelta(currentXp, input.points)) {
+        throw new Conflict("O ajuste nao pode deixar o XP total abaixo de zero.");
+      }
+
+      await distributeXp(tx, {
+        userId,
+        type: "ADMIN_ADJUSTMENT",
+        axis: input.axis,
+        points: input.points,
+        idempotencyKey,
+        reason: input.reason.trim(),
+        adminId,
+        metadata: { source: "MANUAL_ADJUSTMENT" },
+      });
+    });
+
+    return await this.findReputationHistory(userId, 100);
+  }
+
+  async reverseReputationEvent(
+    eventId: string,
+    adminId: string,
+    input: ReputationReversalInput,
+  ): Promise<ReputationHistoryContract> {
+    let userId = "";
+    await prisma.$transaction(async (tx) => {
+      const initial = await tx.reputationEvent.findUnique({
+        where: { id: eventId },
+        select: { userId: true, axis: true },
+      });
+      if (!initial) throw new NotFound("Evento de reputacao nao encontrado.");
+      userId = initial.userId;
+
+      await this.lockReputationAxis(tx, initial.userId, initial.axis);
+      const source = await tx.reputationEvent.findUnique({
+        where: { id: eventId },
+        include: { reversal: { select: { id: true } } },
+      });
+      if (!source) throw new NotFound("Evento de reputacao nao encontrado.");
+      if (source.reversal) return;
+      if (!canReverseAutomaticReputationEvent(source.type, source.points, false)) {
+        throw new BadRequest("Apenas ganhos automaticos de XP podem ser revertidos.");
+      }
+
+      const currentXp = await this.currentAxisXp(tx, source.userId, source.axis);
+      if (!canApplyReputationDelta(currentXp, -source.points)) {
+        throw new Conflict("A reversao deixaria o XP total abaixo de zero.");
+      }
+
+      await distributeXp(tx, {
+        userId: source.userId,
+        type: "ADMIN_ADJUSTMENT",
+        axis: source.axis,
+        points: -source.points,
+        idempotencyKey: `reputation-reversal:${source.id}`,
+        projectId: source.projectId ?? undefined,
+        postmarkId: source.postmarkId ?? undefined,
+        projectVersionId: source.projectVersionId ?? undefined,
+        eventId: source.eventId ?? undefined,
+        reversalOfId: source.id,
+        reason: input.reason.trim(),
+        adminId,
+        metadata: { source: "CONTENT_MODERATION_REVERSAL", originalEventId: source.id },
+      });
+    });
+
+    return await this.findReputationHistory(userId, 100);
+  }
+
+  async findReputation(userId: string): Promise<UserReputationContract> {
+    const [scores, rankThresholds, publishedProjects, versionsCreated, newVersions,
+      eventParticipations, topThreeFinishes, eventWins, validEventEvaluations,
+      postmarksSent, usefulFeedbacks, appliedSuggestions,
+      recognizedContributions] = await Promise.all([
+      prisma.reputationEvent.groupBy({
+        by: ["axis"],
+        where: { userId },
+        _sum: { points: true },
+      }),
+      prisma.reputationRankConfig.findMany({
+        select: { rank: true, requiredXp: true },
+      }),
+      prisma.project.count({
+        where: {
+          status: ProjectStatus.PUBLISHED,
+          portfolio: { authorId: userId },
+        },
+      }),
+      prisma.projectVersion.count({ where: { authorId: userId } }),
+      prisma.projectVersion.count({ where: { authorId: userId, versionNumber: { gt: 1 } } }),
+      prisma.projectCompDetails.findMany({
+        where: { project: { portfolio: { authorId: userId } } },
+        distinct: ["competitionId"],
+        select: { competitionId: true },
+      }),
+      prisma.reputationEvent.findMany({
+        where: {
+          userId,
+          eventId: { not: null },
+          type: {
+            in: [
+              ReputationEventType.EVENT_FIRST_PLACE,
+              ReputationEventType.EVENT_SECOND_PLACE,
+              ReputationEventType.EVENT_THIRD_PLACE,
+            ],
+          },
+        },
+        distinct: ["eventId"],
+        select: { eventId: true },
+      }),
+      prisma.reputationEvent.findMany({
+        where: {
+          userId,
+          eventId: { not: null },
+          type: ReputationEventType.EVENT_FIRST_PLACE,
+        },
+        distinct: ["eventId"],
+        select: { eventId: true },
+      }),
+      prisma.eventEvaluation.findMany({
+        where: { evaluatorId: userId },
+        select: {
+          scores: { select: { criterionId: true } },
+          competition: { select: { criteria: { select: { id: true } } } },
+        },
+      }),
+      prisma.appreciate.count({ where: { userId } }),
+      prisma.appreciate.count({
+        where: {
+          userId,
+          status: { in: [AppreciateStatus.USEFUL, AppreciateStatus.APPLIED] },
+        },
+      }),
+      prisma.appreciate.count({
+        where: { userId, status: AppreciateStatus.APPLIED },
+      }),
+      prisma.projectVersionCredit.count({ where: { contributorId: userId } }),
+    ]);
+    const xp = (axis: ReputationAxis) =>
+      scores.find((item) => item.axis === axis)?._sum.points ?? 0;
+    const creatorXp = xp(ReputationAxis.CREATOR);
+    const contributorXp = xp(ReputationAxis.CONTRIBUTOR);
+    const validEvaluationCount = validEventEvaluations.filter((evaluation) => {
+      const criterionIds = new Set(evaluation.competition.criteria.map((criterion) => criterion.id));
+      const submittedIds = new Set(evaluation.scores.map((score) => score.criterionId));
+      return criterionIds.size > 0
+        && criterionIds.size === submittedIds.size
+        && [...criterionIds].every((criterionId) => submittedIds.has(criterionId));
+    }).length;
+    const missionEvidence = {
+      publishedProjects,
+      newVersions,
+      eventParticipations: eventParticipations.length,
+      topThreeFinishes: topThreeFinishes.length,
+      eventWins: eventWins.length,
+      postmarksSent,
+      usefulFeedbacks,
+      appliedSuggestions,
+      validEventEvaluations: validEvaluationCount,
+    };
+    return {
+      creator: resolveReputationRankProgress(
+        "CREATOR",
+        creatorXp,
+        rankThresholds,
+        missionEvidence,
+      ),
+      contributor: resolveReputationRankProgress(
+        "CONTRIBUTOR",
+        contributorXp,
+        rankThresholds,
+        missionEvidence,
+      ),
+      evidence: {
+        publishedProjects,
+        versionsCreated,
+        postmarksSent,
+        usefulFeedbacks,
+        appliedSuggestions,
+        recognizedContributions,
+      },
+    };
+  }
+
+  private async currentAxisXp(
+    tx: Prisma.TransactionClient,
+    userId: string,
+    axis: ReputationAxis,
+  ): Promise<number> {
+    const result = await tx.reputationEvent.aggregate({
+      where: { userId, axis },
+      _sum: { points: true },
+    });
+    return result._sum.points ?? 0;
+  }
+
+  private async lockReputationAxis(
+    tx: Prisma.TransactionClient,
+    userId: string,
+    axis: ReputationAxis,
+  ): Promise<void> {
+    await tx.$executeRaw`
+      SELECT pg_advisory_xact_lock(hashtext(${`reputation-axis:${userId}:${axis}`}))
+    `;
   }
 }

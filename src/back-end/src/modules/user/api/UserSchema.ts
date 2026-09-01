@@ -1,6 +1,30 @@
 import { FastifyRequest } from "fastify";
 import { z } from "zod";
 
+const normalizeHttpUrl = (value: unknown): unknown => {
+  if (typeof value !== "string") return value;
+
+  const trimmedValue = value.trim();
+  if (!trimmedValue) return null;
+
+  return /^https?:\/\//i.test(trimmedValue)
+    ? trimmedValue
+    : `https://${trimmedValue}`;
+};
+
+const optionalHttpUrl = (fieldName: string) =>
+  z.preprocess(
+    normalizeHttpUrl,
+    z
+      .string()
+      .url({
+        message: `O link de ${fieldName} deve ser uma URL valida`,
+        protocol: /^https?$/,
+      })
+      .nullable()
+      .optional(),
+  );
+
 const CreateUserBodySchema = z.object({
   username: z
     .string({ message: "O nome é obrigatorio" })
@@ -12,19 +36,11 @@ const CreateUserBodySchema = z.object({
     .min(8, "Senha muito curta")
     .max(100, "Senha muito longa"),
   bio: z.string().max(200).optional(),
-  linkedin: z
-    .string()
-    .url({ message: "O likedin deve ser uma url válida", protocol: /^https?$/ })
-    .optional(),
-  github: z
-    .string()
-    .url({ message: "O github deve ser uma url válida", protocol: /^https?$/ })
-    .optional(),
-  website: z
-    .string()
-    .url({ message: "O website deve ser uma url válida", protocol: /^https?$/ })
-    .optional(),
-  contactEmail: z.string().email("O email de contato deve ser valido").optional(),
+  linkedin: optionalHttpUrl("LinkedIn"),
+  github: optionalHttpUrl("GitHub"),
+  website: optionalHttpUrl("website"),
+  profilePhoto: optionalHttpUrl("foto de perfil"),
+  coverPhoto: optionalHttpUrl("imagem de capa"),
   availableForHire: z.boolean().optional(),
   usertype: z.literal("USER"),
 });
@@ -49,10 +65,11 @@ const UpdateUserBodySchema = CreateUserBodySchema.omit({
   usertype: true,
 })
   .extend({
-    linkedin: z.string().url("O LinkedIn deve ser uma URL valida").nullable(),
-    github: z.string().url("O GitHub deve ser uma URL valida").nullable(),
-    website: z.string().url("O website deve ser uma URL valida").nullable(),
-    contactEmail: z.string().email("O email de contato deve ser valido").nullable(),
+    linkedin: optionalHttpUrl("LinkedIn"),
+    github: optionalHttpUrl("GitHub"),
+    website: optionalHttpUrl("website"),
+    profilePhoto: optionalHttpUrl("foto de perfil"),
+    coverPhoto: optionalHttpUrl("imagem de capa"),
     availableForHire: z.boolean(),
   })
   .partial();
@@ -61,9 +78,77 @@ const UpdateUserParamsSchema = z.object({
   id: z.string().uuid("ID do user inválido"),
 });
 
+const UpdateUserRoleBodySchema = z.object({
+  usertype: z.enum(["USER", "MODERATOR", "ADMIN"]),
+});
+
+const ReputationRankSchema = z.enum([
+  "F", "F+", "E", "E+", "D", "D+", "C", "C+", "B", "B+", "A", "A+", "S", "SS",
+]);
+const UpdateReputationRankConfigBodySchema = z.object({
+  ranks: z.array(z.object({
+    rank: ReputationRankSchema,
+    requiredXp: z.number().int().min(0),
+  })).length(14),
+}).superRefine(({ ranks }, context) => {
+  const expected = ["F", "F+", "E", "E+", "D", "D+", "C", "C+", "B", "B+", "A", "A+", "S", "SS"];
+  if (new Set(ranks.map((rank) => rank.rank)).size !== expected.length) {
+    context.addIssue({ code: "custom", path: ["ranks"], message: "Informe cada rank uma unica vez." });
+    return;
+  }
+  let previousXp = -1;
+  for (const rank of expected) {
+    const item = ranks.find((candidate) => candidate.rank === rank);
+    if (!item) {
+      context.addIssue({ code: "custom", path: ["ranks"], message: "Informe todos os ranks." });
+      return;
+    }
+    if (rank === "F" && item.requiredXp !== 0) {
+      context.addIssue({ code: "custom", path: ["ranks"], message: "O rank F deve permanecer em 0 XP." });
+    }
+    if (item.requiredXp <= previousXp) {
+      context.addIssue({ code: "custom", path: ["ranks"], message: "Cada rank deve exigir mais XP que o anterior." });
+    }
+    previousXp = item.requiredXp;
+  }
+});
+
+const ReputationAxisSchema = z.enum(["CREATOR", "CONTRIBUTOR"]);
+const AdminReputationAdjustmentBodySchema = z.object({
+  axis: ReputationAxisSchema,
+  points: z.number().int().refine((value) => value !== 0, "O ajuste deve ser diferente de zero."),
+  reason: z.string().trim().min(3, "Informe o motivo do ajuste.").max(500),
+  idempotencyKey: z.string().trim().min(16).max(120),
+});
+const ReputationEventParamsSchema = z.object({
+  eventId: z.string().uuid("ID do evento de reputacao invalido"),
+});
+const ReputationReversalBodySchema = z.object({
+  reason: z.string().trim().min(3, "Informe o motivo da reversao.").max(500),
+});
+
 type UpdateUserRequest = FastifyRequest<{
   Params: z.infer<typeof UpdateUserParamsSchema>;
   Body: z.infer<typeof UpdateUserBodySchema>;
+}>;
+
+type UpdateUserRoleRequest = FastifyRequest<{
+  Params: z.infer<typeof UpdateUserParamsSchema>;
+  Body: z.infer<typeof UpdateUserRoleBodySchema>;
+}>;
+
+type UpdateReputationRankConfigRequest = FastifyRequest<{
+  Body: z.infer<typeof UpdateReputationRankConfigBodySchema>;
+}>;
+
+type AdminReputationAdjustmentRequest = FastifyRequest<{
+  Params: z.infer<typeof UpdateUserParamsSchema>;
+  Body: z.infer<typeof AdminReputationAdjustmentBodySchema>;
+}>;
+
+type ReputationReversalRequest = FastifyRequest<{
+  Params: z.infer<typeof ReputationEventParamsSchema>;
+  Body: z.infer<typeof ReputationReversalBodySchema>;
 }>;
 
 const PublicProfileParamsSchema = z.object({
@@ -82,6 +167,24 @@ const userRouteSchema = {
     params: UpdateUserParamsSchema,
     body: UpdateUserBodySchema,
   },
+  updateRole: {
+    params: UpdateUserParamsSchema,
+    body: UpdateUserRoleBodySchema,
+  },
+  reputationRankConfig: {
+    body: UpdateReputationRankConfigBodySchema,
+  },
+  reputationAdjustment: {
+    params: UpdateUserParamsSchema,
+    body: AdminReputationAdjustmentBodySchema,
+  },
+  reputationHistory: {
+    params: UpdateUserParamsSchema,
+  },
+  reputationReversal: {
+    params: ReputationEventParamsSchema,
+    body: ReputationReversalBodySchema,
+  },
   login: {
     body: LoginUserBodySchema,
   },
@@ -94,6 +197,10 @@ export {
   userRouteSchema,
   CreateUserRequest,
   UpdateUserRequest,
+  UpdateUserRoleRequest,
+  UpdateReputationRankConfigRequest,
+  AdminReputationAdjustmentRequest,
+  ReputationReversalRequest,
   LoginRequest,
   PublicProfileRequest,
 };

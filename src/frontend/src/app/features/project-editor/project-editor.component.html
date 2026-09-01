@@ -1,0 +1,285 @@
+<main class="editor-page">
+  <header class="editor-header">
+    <button class="quiet-button" type="button" (click)="cancel()">
+      <mat-icon>arrow_back</mat-icon> Sair
+    </button>
+    <div class="editor-title">
+      <span>{{ isEditing() ? 'Editando projeto' : 'Novo projeto' }}</span>
+      <small>{{ blocks().length }} {{ blocks().length === 1 ? 'bloco' : 'blocos' }}</small>
+    </div>
+    <div class="save-actions">
+      <button class="draft-button" type="button" [disabled]="isSaving()" (click)="save('DRAFT')">
+        Salvar rascunho
+      </button>
+      <button class="publish-button" type="button" [disabled]="isSaving()" (click)="save('PUBLISHED')">
+        {{ isSaving() ? 'Salvando…' : isEditing() ? 'Publicar nova versão' : 'Publicar' }}
+      </button>
+    </div>
+  </header>
+
+  @if (notice()) {
+    <p class="editor-notice" [class.error]="noticeIsError()" role="status">{{ notice() }}</p>
+  }
+
+  @if (isLoading()) {
+    <div class="loading-editor">Carregando seu projeto…</div>
+  } @else {
+    <div class="editor-layout">
+      <aside class="block-library" aria-label="Biblioteca de blocos">
+        <div class="library-heading">
+          <span>Adicionar conteúdo</span>
+          <small>Escolha um bloco</small>
+        </div>
+        <button type="button" (click)="addBlock('TEXT')">
+          <span class="block-icon"><mat-icon>title</mat-icon></span>
+          <span><strong>Texto</strong><small>Títulos, parágrafos e citações</small></span>
+        </button>
+        <button type="button" (click)="addBlock('IMAGE')">
+          <span class="block-icon coral"><mat-icon>image</mat-icon></span>
+          <span><strong>Imagem</strong><small>Imagem única com legenda</small></span>
+        </button>
+        <button type="button" (click)="addBlock('VIDEO')">
+          <span class="block-icon blue"><mat-icon>play_circle</mat-icon></span>
+          <span><strong>Vídeo curto</strong><small>Arquivo de até 90 segundos</small></span>
+        </button>
+        <button type="button" (click)="addBlock('CAROUSEL')">
+          <span class="block-icon green"><mat-icon>view_carousel</mat-icon></span>
+          <span><strong>Carrossel</strong><small>Sequência de 2 a 10 imagens</small></span>
+        </button>
+        <hr />
+        <button type="button" class="settings-shortcut" [class.active]="!selectedBlock()" (click)="selectProjectSettings()">
+          <mat-icon>tune</mat-icon> Detalhes do projeto
+        </button>
+      </aside>
+
+      <section class="canvas-column">
+        <form class="project-heading-card" [formGroup]="projectForm">
+          <span class="canvas-eyebrow">Apresentação</span>
+          <input
+            class="project-name-input"
+            type="text"
+            formControlName="name"
+            maxlength="100"
+            placeholder="Dê um nome ao projeto"
+            aria-label="Nome do projeto"
+          />
+          <textarea
+            formControlName="description"
+            maxlength="500"
+            rows="2"
+            placeholder="Uma frase curta para apresentar o trabalho na exploração"
+            aria-label="Resumo do projeto"
+          ></textarea>
+          @if (projectForm.controls.coverImageUrl.value) {
+            <img class="cover-preview" [src]="projectForm.controls.coverImageUrl.value" alt="Prévia da capa" />
+          }
+        </form>
+
+        <div class="canvas">
+          @for (block of blocks(); track block.id; let index = $index) {
+            <article
+              class="canvas-block"
+              [class.selected]="selectedBlockId() === block.id"
+              [class.width-standard]="block.type !== 'TEXT' && block.width === 'STANDARD'"
+              [class.width-full]="block.type !== 'TEXT' && block.width === 'FULL'"
+              (click)="selectBlock(block.id)"
+            >
+              <div class="block-toolbar">
+                <span>{{ blockName(block.type) }}</span>
+                <button type="button" aria-label="Mover bloco para cima" [disabled]="index === 0" (click)="moveBlock(index, -1); $event.stopPropagation()"><mat-icon>arrow_upward</mat-icon></button>
+                <button type="button" aria-label="Mover bloco para baixo" [disabled]="index === blocks().length - 1" (click)="moveBlock(index, 1); $event.stopPropagation()"><mat-icon>arrow_downward</mat-icon></button>
+                <button type="button" class="remove" aria-label="Remover bloco" (click)="removeBlock(block.id); $event.stopPropagation()"><mat-icon>delete_outline</mat-icon></button>
+              </div>
+
+              @switch (block.type) {
+                @case ('TEXT') {
+                  <textarea
+                    class="text-block"
+                    [class.title]="block.variant === 'TITLE'"
+                    [class.heading]="block.variant === 'HEADING'"
+                    [class.quote]="block.variant === 'QUOTE'"
+                    [class.bold]="block.bold"
+                    [class.italic]="block.italic"
+                    [style.text-align]="block.alignment.toLowerCase()"
+                    [ngModel]="block.content"
+                    (ngModelChange)="updateBlock(block.id, { content: $event })"
+                    [name]="'text-' + block.id"
+                    rows="4"
+                    maxlength="5000"
+                    placeholder="Comece a contar a história do projeto…"
+                    (click)="$event.stopPropagation()"
+                  ></textarea>
+                }
+                @case ('IMAGE') {
+                  @if (block.url) {
+                    <figure><img [src]="block.url" [alt]="block.alt || 'Imagem do projeto'" /><figcaption>{{ block.caption }}</figcaption></figure>
+                  } @else {
+                    <div class="media-placeholder"><mat-icon>add_photo_alternate</mat-icon><strong>Configure a imagem no painel lateral</strong></div>
+                  }
+                }
+                @case ('VIDEO') {
+                  @if (block.url) {
+                    <figure>
+                      <video [src]="block.url" [poster]="block.posterUrl || ''" controls preload="metadata" (loadedmetadata)="validateVideo($event, block.id)"></video>
+                      <figcaption>{{ block.caption }}</figcaption>
+                      @if (invalidVideoIds().includes(block.id)) { <small class="media-error">Use um vídeo de até 90 segundos.</small> }
+                    </figure>
+                  } @else {
+                    <div class="media-placeholder"><mat-icon>video_library</mat-icon><strong>Adicione a URL de um vídeo curto</strong></div>
+                  }
+                }
+                @case ('CAROUSEL') {
+                  <div class="carousel-preview">
+                    @for (item of block.items; track $index) {
+                      @if (item.url) { <img [src]="item.url" [alt]="item.alt || 'Imagem do carrossel'" /> }
+                      @else { <span><mat-icon>image</mat-icon>Imagem {{ $index + 1 }}</span> }
+                    }
+                  </div>
+                  @if (block.caption) { <p class="block-caption">{{ block.caption }}</p> }
+                }
+              }
+            </article>
+          } @empty {
+            <div class="empty-canvas">
+              <span><mat-icon>dashboard_customize</mat-icon></span>
+              <h2>Construa a narrativa em blocos</h2>
+              <p>Adicione texto, mídia ou um carrossel pelo menu. Você organiza; o Postfolio gera o Markdown.</p>
+              <button type="button" (click)="addBlock('TEXT')">Adicionar primeiro texto</button>
+            </div>
+          }
+        </div>
+      </section>
+
+      <aside class="inspector">
+        @if (selectedBlock(); as block) {
+          <div class="inspector-heading"><span>Bloco selecionado</span><h2>{{ blockName(block.type) }}</h2></div>
+          @switch (block.type) {
+            @case ('TEXT') {
+              <label>Estilo
+                <select [ngModel]="block.variant" (ngModelChange)="updateBlock(block.id, { variant: $event })">
+                  <option value="TITLE">Título grande</option><option value="HEADING">Subtítulo</option><option value="BODY">Corpo</option><option value="QUOTE">Citação</option>
+                </select>
+              </label>
+              <div class="segmented-label">Formatação</div>
+              <div class="segmented">
+                <button type="button" [class.active]="block.bold" (click)="updateBlock(block.id, { bold: !block.bold })"><strong>B</strong></button>
+                <button type="button" [class.active]="block.italic" (click)="updateBlock(block.id, { italic: !block.italic })"><em>I</em></button>
+              </div>
+              <div class="segmented-label">Alinhamento</div>
+              <div class="segmented">
+                <button type="button" [class.active]="block.alignment === 'LEFT'" (click)="updateBlock(block.id, { alignment: 'LEFT' })"><mat-icon>format_align_left</mat-icon></button>
+                <button type="button" [class.active]="block.alignment === 'CENTER'" (click)="updateBlock(block.id, { alignment: 'CENTER' })"><mat-icon>format_align_center</mat-icon></button>
+                <button type="button" [class.active]="block.alignment === 'RIGHT'" (click)="updateBlock(block.id, { alignment: 'RIGHT' })"><mat-icon>format_align_right</mat-icon></button>
+              </div>
+            }
+            @case ('IMAGE') {
+              <app-image-upload-field
+                label="Imagem do bloco"
+                [value]="block.url"
+                (valueChange)="updateBlock(block.id, { url: $event })"
+              />
+              <label>Texto alternativo<input type="text" [ngModel]="block.alt" (ngModelChange)="updateBlock(block.id, { alt: $event })" maxlength="160" /></label>
+              <label>Legenda<input type="text" [ngModel]="block.caption" (ngModelChange)="updateBlock(block.id, { caption: $event })" maxlength="240" /></label>
+              <ng-container *ngTemplateOutlet="mediaWidth; context: { $implicit: block }"></ng-container>
+            }
+            @case ('VIDEO') {
+              <p class="inspector-help">Use um link direto para MP4 ou WebM, com duração máxima de 90 segundos.</p>
+              <label>URL do vídeo<input type="url" [ngModel]="block.url" (ngModelChange)="updateBlock(block.id, { url: $event })" placeholder="https://…/video.mp4" /></label>
+              <app-image-upload-field
+                label="Capa do vídeo"
+                [value]="block.posterUrl"
+                (valueChange)="updateBlock(block.id, { posterUrl: $event || null })"
+              />
+              <label>Legenda<input type="text" [ngModel]="block.caption" (ngModelChange)="updateBlock(block.id, { caption: $event })" maxlength="240" /></label>
+              <ng-container *ngTemplateOutlet="mediaWidth; context: { $implicit: block }"></ng-container>
+            }
+            @case ('CAROUSEL') {
+              <p class="inspector-help">Use de 2 a 10 imagens. A ordem abaixo é a ordem de exibição.</p>
+              <div class="carousel-fields">
+                @for (item of block.items; track $index) {
+                  <div class="carousel-field">
+                    <span>Imagem {{ $index + 1 }}</span>
+                    <button type="button" aria-label="Remover imagem" (click)="removeCarouselItem(block, $index)"><mat-icon>close</mat-icon></button>
+                    <app-image-upload-field
+                      label="Arquivo ou URL"
+                      [value]="item.url"
+                      [compact]="true"
+                      (valueChange)="updateCarouselItem(block, $index, { url: $event })"
+                    />
+                    <input type="text" [ngModel]="item.alt" (ngModelChange)="updateCarouselItem(block, $index, { alt: $event })" placeholder="Descrição acessível" maxlength="160" />
+                  </div>
+                }
+              </div>
+              <button class="add-carousel-item" type="button" [disabled]="block.items.length >= 10" (click)="addCarouselItem(block)">+ Adicionar imagem</button>
+              <label>Legenda<input type="text" [ngModel]="block.caption" (ngModelChange)="updateBlock(block.id, { caption: $event })" maxlength="240" /></label>
+              <ng-container *ngTemplateOutlet="mediaWidth; context: { $implicit: block }"></ng-container>
+            }
+          }
+        } @else {
+          <form [formGroup]="projectForm">
+            <div class="inspector-heading"><span>Configurações</span><h2>Detalhes do projeto</h2></div>
+            <label>Categoria<select formControlName="category">@for (category of categories; track category.value) { <option [value]="category.value">{{ category.label }}</option> }</select></label>
+            <app-image-upload-field
+              label="Imagem de capa"
+              [value]="projectForm.controls.coverImageUrl.value"
+              (valueChange)="projectForm.controls.coverImageUrl.setValue($event)"
+            />
+            <label>Projeto online<input type="url" formControlName="externalLink" placeholder="https://…" /></label>
+            <label>Repositório<input type="url" formControlName="githublink" placeholder="https://github.com/…" /></label>
+            <label>Ferramentas<input type="text" formControlName="tools" placeholder="Angular, Figma, Node.js" /></label>
+            <label>Tags<input type="text" formControlName="tags" placeholder="ux, acessibilidade, mobile" /></label>
+            <div class="feedback-settings">
+              <span class="segmented-label">Direcione os Postmarks · até 3 aspectos</span>
+              <div class="aspect-options">
+                @for (aspect of feedbackAspectOptions; track aspect.value) {
+                  <button
+                    type="button"
+                    [class.active]="feedbackAspects().includes(aspect.value)"
+                    [disabled]="feedbackAspects().length >= 3 && !feedbackAspects().includes(aspect.value)"
+                    (click)="toggleFeedbackAspect(aspect.value)"
+                  >{{ aspect.label }}</button>
+                }
+              </div>
+              <label>Pergunta para a comunidade
+                <textarea formControlName="feedbackQuestion" rows="3" maxlength="240" placeholder="Em que ponto você mais precisa de uma segunda opinião?"></textarea>
+              </label>
+            </div>
+
+            @if (isEditing()) {
+              <div class="version-settings">
+                <span class="segmented-label">Próxima versão</span>
+                <label>Changelog
+                  <textarea formControlName="changelog" rows="3" maxlength="500" placeholder="O que mudou nesta versão?"></textarea>
+                </label>
+                @if (postmarks().length) {
+                  <p class="inspector-help">Reconheça os Postmarks incorporados nesta versão.</p>
+                  <div class="credit-options">
+                    @for (postmark of postmarks(); track postmark.id) {
+                      <label class="credit-option">
+                        <input
+                          type="checkbox"
+                          [checked]="selectedPostmarkIds().includes(postmark.id)"
+                          (change)="togglePostmarkCredit(postmark.id)"
+                        />
+                        <span><strong>&#64;{{ postmark.author.username }}</strong>{{ postmark.aspect }} · {{ postmark.suggestion }}</span>
+                      </label>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </form>
+        }
+      </aside>
+    </div>
+  }
+</main>
+
+<ng-template #mediaWidth let-block>
+  <div class="segmented-label">Largura no projeto</div>
+  <div class="segmented width-options">
+    <button type="button" [class.active]="block.width === 'STANDARD'" (click)="updateBlock(block.id, { width: 'STANDARD' })">Padrão</button>
+    <button type="button" [class.active]="block.width === 'WIDE'" (click)="updateBlock(block.id, { width: 'WIDE' })">Ampla</button>
+    <button type="button" [class.active]="block.width === 'FULL'" (click)="updateBlock(block.id, { width: 'FULL' })">Total</button>
+  </div>
+</ng-template>

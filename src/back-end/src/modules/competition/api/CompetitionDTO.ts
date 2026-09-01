@@ -7,6 +7,15 @@ export interface CreateCompetitionDTO {
   votingStartsAt: Date;
   votingEndsAt: Date;
   resultsAt: Date;
+  minimumEvaluations: number;
+  criteria: Array<{ name: string; weight: number }>;
+}
+
+export interface EventCriterionContract {
+  id: string;
+  name: string;
+  weight: number;
+  position: number;
 }
 
 export interface CompetitionProjectContract {
@@ -15,7 +24,9 @@ export interface CompetitionProjectContract {
   coverImageUrl: string | null;
   tools: string[];
   author: { id: string; username: string };
-  votes?: number;
+  score?: number;
+  primaryCriterionScore?: number;
+  evaluationCount?: number;
   rank?: number;
 }
 
@@ -30,8 +41,23 @@ export interface CompetitionContract {
   votingStartsAt: Date | null;
   votingEndsAt: Date | null;
   resultsAt: Date | null;
+  resultsFinalizedAt: Date | null;
   status: "UPCOMING" | "REGISTRATION" | "WAITING_VOTING" | "VOTING" | "WAITING_RESULTS" | "RESULTS";
+  minimumEvaluations: number;
+  criteria: EventCriterionContract[];
   submissions: CompetitionProjectContract[];
+}
+
+export interface EventEvaluationInput {
+  criterionId: string;
+  score: number;
+}
+
+export interface EvaluationProgressContract {
+  participant: boolean;
+  evaluatedProjects: number;
+  requiredEvaluations: number;
+  completed: boolean;
 }
 
 export interface UpdateCompetionDTO {

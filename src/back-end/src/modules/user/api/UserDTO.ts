@@ -5,10 +5,11 @@ interface CreateUserDTO {
   email: string;
   password?: string;
   bio?: string;
-  linkedin?: string;
-  github?: string;
-  website?: string;
-  contactEmail?: string;
+  linkedin?: string | null;
+  github?: string | null;
+  website?: string | null;
+  profilePhoto?: string | null;
+  coverPhoto?: string | null;
   availableForHire?: boolean;
   userType: UserType;
 }
@@ -21,7 +22,8 @@ export interface UpdateUserDTO {
   linkedin?: string | null;
   github?: string | null;
   website?: string | null;
-  contactEmail?: string | null;
+  profilePhoto?: string | null;
+  coverPhoto?: string | null;
   availableForHire?: boolean;
 }
 

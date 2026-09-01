@@ -1,5 +1,12 @@
 import { UpdateProjectDTO } from "@project/api/ProjectDTO";
 import { ProjectCategory } from "@project/domain/enum/ProjectCategory";
+import {
+  isProjectContentReady,
+  ProjectBlock,
+  projectBlocksToMarkdown,
+  projectBlocksToSummary,
+  ProjectStatus,
+} from "@project/domain/valueObject/ProjectContent";
 
 export class Project {
   constructor(
@@ -14,6 +21,14 @@ export class Project {
     private galleryUrls: string[] = [],
     private tools: string[] = [],
     private tags: string[] = [],
+    private contentBlocks: ProjectBlock[] = [],
+    private contentMarkdown: string = "",
+    private status: ProjectStatus = ProjectStatus.DRAFT,
+    private feedbackAspects: string[] = [],
+    private feedbackQuestion: string | null = null,
+    private seekingFeedback: boolean = true,
+    private currentVersion: number = 0,
+    private publishedAt: Date | null = null,
     private createdAt: Date = new Date(),
     private updatedAt: Date = new Date()
   ) {}
@@ -41,6 +56,22 @@ export class Project {
     if (dto.galleryUrls !== undefined) this.galleryUrls = dto.galleryUrls;
     if (dto.tools !== undefined) this.tools = dto.tools;
     if (dto.tags !== undefined) this.tags = dto.tags;
+    if (dto.contentBlocks !== undefined) {
+      this.contentBlocks = dto.contentBlocks;
+      this.contentMarkdown = projectBlocksToMarkdown(dto.contentBlocks);
+      if (!dto.description?.trim()) {
+        this.description = projectBlocksToSummary(dto.contentBlocks);
+      }
+    }
+    if (dto.status !== undefined) {
+      this.status = dto.status;
+      if (dto.status === ProjectStatus.PUBLISHED && !this.publishedAt) {
+        this.publishedAt = new Date();
+      }
+      if (dto.status === ProjectStatus.DRAFT) this.publishedAt = null;
+    }
+    if (dto.feedbackAspects !== undefined) this.feedbackAspects = dto.feedbackAspects;
+    if (dto.feedbackQuestion !== undefined) this.feedbackQuestion = dto.feedbackQuestion;
   }
 
   // Getters
@@ -73,6 +104,18 @@ export class Project {
   public getGalleryUrls(): string[] { return this.galleryUrls; }
   public getTools(): string[] { return this.tools; }
   public getTags(): string[] { return this.tags; }
+  public getContentBlocks(): ProjectBlock[] { return this.contentBlocks; }
+  public getContentMarkdown(): string { return this.contentMarkdown; }
+  public getStatus(): ProjectStatus { return this.status; }
+  public getFeedbackAspects(): string[] { return this.feedbackAspects; }
+  public getFeedbackQuestion(): string | null { return this.feedbackQuestion; }
+  public isSeekingFeedback(): boolean { return this.seekingFeedback; }
+  public getCurrentVersion(): number { return this.currentVersion; }
+  public setCurrentVersion(version: number): void { this.currentVersion = version; }
+  public getPublishedAt(): Date | null { return this.publishedAt; }
+  public isReadyToPublish(): boolean {
+    return this.name.trim().length >= 3 && isProjectContentReady(this.contentBlocks);
+  }
   public getCreatedAt(): Date { return this.createdAt; }
   public getUpdatedAt(): Date { return this.updatedAt; }
 }

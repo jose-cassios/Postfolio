@@ -1,6 +1,39 @@
 <main class="competitions-page">
-  <header><span class="eyebrow">Comunidade Postfolio</span><h1>Competições</h1><p>Participe com um projeto e vote nos destaques da comunidade.</p></header>
+  <header><span class="eyebrow">Comunidade Postfolio</span><h1>Eventos</h1><p>Participe com um projeto e avalie trabalhos por critérios claros.</p></header>
   @if (notice()) { <p class="notice" role="status">{{ notice() }}</p> }
+  @if (canManageCompetitions()) {
+    <section class="creation-panel">
+      <div class="section-heading">
+        <div><span class="eyebrow">Gestão de eventos</span><h2>Nova competição</h2></div>
+        <p>Defina as datas e os critérios que orientarão a avaliação.</p>
+      </div>
+      <form [formGroup]="creationForm" (ngSubmit)="createCompetition()">
+        <label class="wide"><span>Nome</span><input formControlName="name" /></label>
+        <label class="wide"><span>Descrição</span><textarea rows="3" formControlName="description"></textarea></label>
+        <label><span>Categoria</span><select formControlName="category">@for (category of categories; track category) { <option [value]="category">{{ category }}</option> }</select></label>
+        <label><span>Avaliações mínimas por participante</span><input type="number" min="1" max="10" formControlName="minimumEvaluations" /></label>
+        <label><span>Início das inscrições</span><input type="datetime-local" formControlName="registrationStartsAt" /></label>
+        <label><span>Fim das inscrições</span><input type="datetime-local" formControlName="registrationEndsAt" /></label>
+        <label><span>Início da avaliação</span><input type="datetime-local" formControlName="votingStartsAt" /></label>
+        <label><span>Fim da avaliação</span><input type="datetime-local" formControlName="votingEndsAt" /></label>
+        <label><span>Divulgação dos resultados</span><input type="datetime-local" formControlName="resultsAt" /></label>
+        <div class="wide criteria-editor" formArrayName="criteria">
+          <span>Critérios e pesos</span>
+          @for (criterion of criteriaControls; track $index) {
+            <div class="criterion-row" [formGroupName]="$index">
+              <input formControlName="name" aria-label="Nome do critério" />
+              <input type="number" min="1" max="100" formControlName="weight" aria-label="Peso do critério" />
+              <small>%</small>
+              <button type="button" class="remove-criterion" [disabled]="criteriaControls.length === 1" (click)="removeCriterion($index)" aria-label="Remover critério">×</button>
+            </div>
+          }
+          <button type="button" class="add-criterion" [disabled]="criteriaControls.length >= 8" (click)="addCriterion()">+ Adicionar critério</button>
+          <small>Os pesos devem somar 100%.</small>
+        </div>
+        <button class="wide" type="submit" [disabled]="pending()">{{ pending() ? 'Criando...' : 'Criar competição' }}</button>
+      </form>
+    </section>
+  }
   @if (loading()) { <p class="state">Carregando competições...</p> }
   @else if (error()) { <p class="state">{{ error() }} <button (click)="load()">Tentar novamente</button></p> }
   @else if (!competitions().length) { <p class="state">Nenhuma competição programada.</p> }
@@ -15,8 +48,21 @@
           <p>{{ competition.description }}</p>
           <div class="timeline">
             <span>Inscrições até {{ competition.registrationEndsAt | date:'dd/MM/yyyy HH:mm' }}</span>
-            <span>Votação: {{ competition.votingStartsAt | date:'dd/MM' }}–{{ competition.votingEndsAt | date:'dd/MM' }}</span>
+            <span>Avaliação: {{ competition.votingStartsAt | date:'dd/MM' }}–{{ competition.votingEndsAt | date:'dd/MM' }}</span>
           </div>
+          <div class="criteria-summary" aria-label="Critérios de avaliação">
+            @for (criterion of competition.criteria; track criterion.id) {
+              <span>{{ criterion.name }} <strong>{{ criterion.weight }}%</strong></span>
+            }
+          </div>
+
+          @if (progress()[competition.id]; as evaluationProgress) {
+            @if (evaluationProgress.participant && competition.status === 'VOTING') {
+              <p class="evaluation-progress" [class.complete]="evaluationProgress.completed">
+                {{ evaluationProgress.evaluatedProjects }}/{{ evaluationProgress.requiredEvaluations }} avaliações obrigatórias concluídas
+              </p>
+            }
+          }
 
           @if (competition.status === 'REGISTRATION') {
             <div class="subscribe-box">
@@ -28,18 +74,40 @@
             </div>
           }
 
+          @if (canManageCompetitions() && competition.status === 'WAITING_RESULTS') {
+            <div class="result-actions">
+              <button [disabled]="pending() || !canFinalizeResults(competition)" (click)="finalizeResults(competition)">Encerrar e consolidar resultados</button>
+            </div>
+          }
+
           <div class="submissions">
             @for (project of competition.submissions; track project.id) {
               <article class="submission" [class.winner]="project.rank">
                 @if (project.coverImageUrl) { <img [src]="project.coverImageUrl" [alt]="project.name" loading="lazy"> }
                 <div><span class="rank">{{ project.rank ? project.rank + 'º lugar' : '' }}</span><h3><a [routerLink]="['/projetos', project.id]">{{ project.name }}</a></h3><small>por {{ project.author.username }}</small></div>
                 @if (competition.status === 'VOTING') {
-                  <button [disabled]="pending() || isMyProject(project)" (click)="vote(competition, project.id)">Votar</button>
+                  @if (isMyProject(project)) {
+                    <span class="own-project">Seu projeto · você não pode avaliá-lo</span>
+                  } @else {
+                    <div class="evaluation-form">
+                      @for (criterion of competition.criteria; track criterion.id) {
+                        <label>{{ criterion.name }}
+                          <select [(ngModel)]="evaluationScores[scoreKey(competition.id, project.id, criterion.id)]">
+                            <option [ngValue]="0">Nota</option>
+                            @for (score of [1, 2, 3, 4, 5]; track score) { <option [ngValue]="score">{{ score }}</option> }
+                          </select>
+                        </label>
+                      }
+                      <button [disabled]="pending()" (click)="evaluate(competition, project.id)">Salvar avaliação</button>
+                    </div>
+                  }
                 }
                 @if (competition.status === 'REGISTRATION' && isMyProject(project)) {
                   <button class="ghost" (click)="unsubscribe(competition, project.id)">Remover</button>
                 }
-                @if (competition.status === 'RESULTS') { <strong>{{ project.votes || 0 }} votos</strong> }
+                @if (competition.status === 'RESULTS') {
+                  <div class="result-score"><strong>{{ (project.score || 0) | number:'1.2-2' }}</strong><span>{{ project.evaluationCount || 0 }} avaliações válidas</span></div>
+                }
               </article>
             } @empty { <p>Nenhum projeto inscrito ainda.</p> }
           </div>

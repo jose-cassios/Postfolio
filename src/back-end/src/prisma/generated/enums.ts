@@ -39,6 +39,72 @@ export const ProjectCategory = {
 export type ProjectCategory = (typeof ProjectCategory)[keyof typeof ProjectCategory]
 
 
+export const ProjectStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED'
+} as const
+
+export type ProjectStatus = (typeof ProjectStatus)[keyof typeof ProjectStatus]
+
+
+export const AppreciateStatus = {
+  PENDING: 'PENDING',
+  USEFUL: 'USEFUL',
+  APPLIED: 'APPLIED',
+  DENIED: 'DENIED'
+} as const
+
+export type AppreciateStatus = (typeof AppreciateStatus)[keyof typeof AppreciateStatus]
+
+
+export const ReputationAxis = {
+  CREATOR: 'CREATOR',
+  CONTRIBUTOR: 'CONTRIBUTOR'
+} as const
+
+export type ReputationAxis = (typeof ReputationAxis)[keyof typeof ReputationAxis]
+
+
+export const ReputationEventType = {
+  PROJECT_PUBLISHED: 'PROJECT_PUBLISHED',
+  PROJECT_VERSION_PUBLISHED: 'PROJECT_VERSION_PUBLISHED',
+  EVENT_PARTICIPATION: 'EVENT_PARTICIPATION',
+  EVENT_FIRST_PLACE: 'EVENT_FIRST_PLACE',
+  EVENT_SECOND_PLACE: 'EVENT_SECOND_PLACE',
+  EVENT_THIRD_PLACE: 'EVENT_THIRD_PLACE',
+  POSTMARK_SENT: 'POSTMARK_SENT',
+  POSTMARK_USEFUL: 'POSTMARK_USEFUL',
+  POSTMARK_APPLIED: 'POSTMARK_APPLIED',
+  POSTMARK_CREDITED_IN_VERSION: 'POSTMARK_CREDITED_IN_VERSION',
+  EVENT_PROJECT_EVALUATED: 'EVENT_PROJECT_EVALUATED',
+  ADMIN_ADJUSTMENT: 'ADMIN_ADJUSTMENT',
+  PROJECT_IMPROVED: 'PROJECT_IMPROVED',
+  PROJECT_VERSION_WITH_COMMUNITY_CREDIT: 'PROJECT_VERSION_WITH_COMMUNITY_CREDIT'
+} as const
+
+export type ReputationEventType = (typeof ReputationEventType)[keyof typeof ReputationEventType]
+
+
+export const ReputationRank = {
+  F: 'F',
+  F_PLUS: 'F_PLUS',
+  E: 'E',
+  E_PLUS: 'E_PLUS',
+  D: 'D',
+  D_PLUS: 'D_PLUS',
+  C: 'C',
+  C_PLUS: 'C_PLUS',
+  B: 'B',
+  B_PLUS: 'B_PLUS',
+  A: 'A',
+  A_PLUS: 'A_PLUS',
+  S: 'S',
+  SS: 'SS'
+} as const
+
+export type ReputationRank = (typeof ReputationRank)[keyof typeof ReputationRank]
+
+
 export const SocialProviderType = {
   GOOGLE: 'GOOGLE'
 } as const

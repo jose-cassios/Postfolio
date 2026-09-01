@@ -17,21 +17,30 @@ import {
   ProfileProject,
   ProfileUser,
   ProjectCategory,
-  ProjectPayload,
+  ReputationRankProgress,
 } from './profile.models';
 import { ProfileService } from './profile.service';
+import { ImageUploadFieldComponent } from '../../shared/components/image-upload-field/image-upload-field.component';
 
 interface Feedback {
   type: 'success' | 'error';
   message: string;
 }
 
-const URL_PATTERN = /^https?:\/\/\S+$/i;
+type ReputationAxis = 'creator' | 'contributor';
+
+interface RankIndicator {
+  axis: ReputationAxis;
+  label: 'Creator' | 'Contributor';
+  progress: ReputationRankProgress;
+}
+
+const PROFILE_URL_PATTERN = /^(https?:\/\/)?\S+$/i;
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, ImageUploadFieldComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
 })
@@ -52,11 +61,9 @@ export class ProfileComponent {
   readonly projectsError = signal<string | null>(null);
   readonly feedback = signal<Feedback | null>(null);
   readonly showEditModal = signal(false);
-  readonly showProjectModal = signal(false);
   readonly isSavingProfile = signal(false);
-  readonly isSavingProject = signal(false);
   readonly deletingProjectId = signal<string | null>(null);
-  readonly editingProjectId = signal<string | null>(null);
+  readonly openRankPopover = signal<ReputationAxis | null>(null);
 
   private requestedEdit = false;
   private requestedProject = false;
@@ -75,10 +82,30 @@ export class ProfileComponent {
       ? { ...profile!, ...current, id: current.id ?? profile!.id }
       : profile;
   });
-  readonly projectModalTitle = computed(() =>
-    this.editingProjectId() ? 'Editar projeto' : 'Adicionar projeto',
-  );
+  readonly reputationBadges = computed(() => {
+    const reputation = this.displayedProfile()?.reputation;
+    if (!reputation) return [];
 
+    const { evidence } = reputation;
+    const badges: string[] = [];
+
+    if (reputation.creator.xp > 0) badges.push('Criador em evolução');
+    if (evidence.postmarksSent > 0) badges.push('Postmarker');
+    if (evidence.usefulFeedbacks > 0) badges.push('Feedback útil');
+    if (evidence.appliedSuggestions > 0) badges.push('Sugestão aplicada');
+    if (evidence.recognizedContributions > 0) badges.push('Contribuição reconhecida');
+
+    return badges.slice(0, 4);
+  });
+  readonly rankIndicators = computed<RankIndicator[]>(() => {
+    const reputation = this.displayedProfile()?.reputation;
+    if (!reputation) return [];
+
+    return [
+      { axis: 'creator', label: 'Creator', progress: reputation.creator },
+      { axis: 'contributor', label: 'Contributor', progress: reputation.contributor },
+    ];
+  });
   readonly categories: ReadonlyArray<{
     value: ProjectCategory;
     label: string;
@@ -96,23 +123,12 @@ export class ProfileComponent {
     username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
     email: ['', [Validators.required, Validators.email]],
     bio: ['', [Validators.maxLength(200)]],
-    linkedin: ['', [Validators.pattern(URL_PATTERN)]],
-    github: ['', [Validators.pattern(URL_PATTERN)]],
-    website: ['', [Validators.pattern(URL_PATTERN)]],
-    contactEmail: ['', [Validators.email]],
+    linkedin: ['', [Validators.pattern(PROFILE_URL_PATTERN)]],
+    github: ['', [Validators.pattern(PROFILE_URL_PATTERN)]],
+    website: ['', [Validators.pattern(PROFILE_URL_PATTERN)]],
+    profilePhoto: [''],
+    coverPhoto: [''],
     availableForHire: [false],
-  });
-
-  readonly projectForm = this.fb.nonNullable.group({
-    name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
-    description: ['', [Validators.required, Validators.maxLength(500)]],
-    category: ['OTHER' as ProjectCategory, [Validators.required]],
-    githublink: ['', [Validators.pattern(URL_PATTERN)]],
-    externalLink: ['', [Validators.pattern(URL_PATTERN)]],
-    coverImageUrl: ['', [Validators.pattern(URL_PATTERN)]],
-    galleryUrls: [''],
-    tools: [''],
-    tags: [''],
   });
 
   constructor() {
@@ -189,7 +205,8 @@ export class ProfileComponent {
       linkedin: user.linkedin ?? '',
       github: user.github ?? '',
       website: user.website ?? '',
-      contactEmail: user.contactEmail ?? '',
+      profilePhoto: user.profilePhoto ?? '',
+      coverPhoto: user.coverPhoto ?? '',
       availableForHire: user.availableForHire ?? false,
     });
     this.feedback.set(null);
@@ -208,11 +225,17 @@ export class ProfileComponent {
 
     const previousUsername = this.currentUser()?.username;
     const values = this.profileForm.getRawValue();
+    const payload: Partial<User> = {
+      ...values,
+      linkedin: this.normalizeOptionalUrl(values.linkedin),
+      github: this.normalizeOptionalUrl(values.github),
+      website: this.normalizeOptionalUrl(values.website),
+    };
     this.isSavingProfile.set(true);
     this.feedback.set(null);
 
     this.auth
-      .updateProfile(values as Partial<User>)
+      .updateProfile(payload)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => this.isSavingProfile.set(false)),
@@ -243,102 +266,14 @@ export class ProfileComponent {
       });
   }
 
-  openCreateProjectModal(): void {
+  openCreateProjectEditor(): void {
     if (!this.isOwnProfile()) return;
-    this.editingProjectId.set(null);
-    this.projectForm.reset({
-      name: '',
-      description: '',
-      category: 'OTHER',
-      githublink: '',
-      externalLink: '',
-      coverImageUrl: '',
-      galleryUrls: '',
-      tools: '',
-      tags: '',
-    });
-    this.feedback.set(null);
-    this.showProjectModal.set(true);
+    this.router.navigate(['/projetos/novo']);
   }
 
-  openEditProjectModal(project: ProfileProject): void {
+  openEditProjectEditor(project: ProfileProject): void {
     if (!this.isOwnProfile()) return;
-    this.editingProjectId.set(project.id);
-    this.projectForm.reset({
-      name: project.name,
-      description: project.description,
-      category: project.category,
-      githublink: project.githubLink ?? '',
-      externalLink: project.externalLink ?? '',
-      coverImageUrl: project.coverImageUrl ?? '',
-      galleryUrls: project.galleryUrls.join('\n'),
-      tools: project.tools.join(', '),
-      tags: project.tags.join(', '),
-    });
-    this.feedback.set(null);
-    this.showProjectModal.set(true);
-  }
-
-  closeProjectModal(): void {
-    if (!this.isSavingProject()) {
-      this.showProjectModal.set(false);
-      this.editingProjectId.set(null);
-    }
-  }
-
-  submitProject(): void {
-    if (this.projectForm.invalid || this.isSavingProject()) {
-      this.projectForm.markAllAsTouched();
-      return;
-    }
-
-    const values = this.projectForm.getRawValue();
-    const payload: ProjectPayload = {
-      name: values.name,
-      description: values.description,
-      category: values.category,
-      githublink: values.githublink || null,
-      externalLink: values.externalLink || null,
-      coverImageUrl: values.coverImageUrl || null,
-      galleryUrls: this.splitValues(values.galleryUrls, /[\n,]+/).slice(0, 3),
-      tools: this.splitValues(values.tools),
-      tags: this.splitValues(values.tags),
-    };
-    const editingId = this.editingProjectId();
-    const request = editingId
-      ? this.profileService.updateProject(editingId, payload)
-      : this.profileService.createProject(payload);
-
-    this.isSavingProject.set(true);
-    this.feedback.set(null);
-    request
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        finalize(() => this.isSavingProject.set(false)),
-      )
-      .subscribe({
-        next: (project) => {
-          this.projects.update((projects) =>
-            editingId
-              ? projects.map((item) => (item.id === project.id ? project : item))
-              : [project, ...projects],
-          );
-          this.showProjectModal.set(false);
-          this.editingProjectId.set(null);
-          this.feedback.set({
-            type: 'success',
-            message: editingId
-              ? 'Projeto atualizado com sucesso.'
-              : 'Projeto publicado com sucesso.',
-          });
-        },
-        error: (error) => {
-          this.feedback.set({
-            type: 'error',
-            message: this.errorMessage(error, 'Não foi possível salvar o projeto.'),
-          });
-        },
-      });
+    this.router.navigate(['/projetos', project.id, 'editar']);
   }
 
   deleteProject(project: ProfileProject): void {
@@ -378,6 +313,22 @@ export class ProfileComponent {
     return this.categories.find((item) => item.value === category)?.label ?? category;
   }
 
+  toggleRankPopover(axis: ReputationAxis): void {
+    this.openRankPopover.update((current) => current === axis ? null : axis);
+  }
+
+  isRankPopoverOpen(axis: ReputationAxis): boolean {
+    return this.openRankPopover() === axis;
+  }
+
+  rankPopoverId(axis: ReputationAxis): string {
+    return `rank-progress-${axis}`;
+  }
+
+  isXpRequirementComplete(progress: ReputationRankProgress): boolean {
+    return progress.xpRequired === null || progress.xp >= progress.xpRequired;
+  }
+
   private openRequestedModal(): void {
     if (!this.isOwnProfile()) return;
 
@@ -387,18 +338,24 @@ export class ProfileComponent {
     }
     if (this.requestedProject) {
       this.requestedProject = false;
-      this.openCreateProjectModal();
+      this.openCreateProjectEditor();
     }
   }
 
   private errorMessage(error: unknown, fallback: string): string {
     if (error instanceof HttpErrorResponse) {
-      return error.error?.message || fallback;
+      const validationMessage = error.error?.details?.issues?.[0]?.message;
+      return validationMessage || error.error?.message || fallback;
     }
     return fallback;
   }
 
-  private splitValues(value: string, separator: RegExp = /[,]+/): string[] {
-    return value.split(separator).map((item) => item.trim()).filter(Boolean);
+  private normalizeOptionalUrl(value: string): string | null {
+    const trimmedValue = value.trim();
+    if (!trimmedValue) return null;
+
+    return /^https?:\/\//i.test(trimmedValue)
+      ? trimmedValue
+      : `https://${trimmedValue}`;
   }
 }

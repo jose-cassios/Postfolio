@@ -15,8 +15,9 @@ export default class User {
     private linkedin: string | null = null,
     private github: string | null = null,
     private website: string | null = null,
+    private profilePhoto: string | null = null,
+    private coverPhoto: string | null = null,
     private userType: UserType | null = UserType.USER,
-    private contactEmail: string | null = null,
     private availableForHire: boolean = false,
     private active: boolean = true,
   ) {}
@@ -35,8 +36,9 @@ export default class User {
       dto.linkedin,
       dto.github,
       dto.website,
+      dto.profilePhoto,
+      dto.coverPhoto,
       dto.userType,
-      dto.contactEmail,
       dto.availableForHire
     );
   }
@@ -69,8 +71,12 @@ export default class User {
       this.website = dto.website;
     }
 
-    if (dto.contactEmail !== undefined) {
-      this.contactEmail = dto.contactEmail;
+    if (dto.profilePhoto !== undefined) {
+      this.profilePhoto = dto.profilePhoto;
+    }
+
+    if (dto.coverPhoto !== undefined) {
+      this.coverPhoto = dto.coverPhoto;
     }
 
     if (dto.availableForHire !== undefined) {
@@ -124,12 +130,16 @@ export default class User {
     return this.website;
   }
 
-  public getUserType(): UserType | null {
-    return this.userType;
+  public getProfilePhoto(): string | null {
+    return this.profilePhoto;
   }
 
-  public getContactEmail(): string | null {
-    return this.contactEmail;
+  public getCoverPhoto(): string | null {
+    return this.coverPhoto;
+  }
+
+  public getUserType(): UserType | null {
+    return this.userType;
   }
 
   public isAvailableForHire(): boolean {
@@ -142,5 +152,9 @@ export default class User {
 
   public setActive(active: boolean): void {
     this.active = active;
+  }
+
+  public setUserType(userType: UserType): void {
+    this.userType = userType;
   }
 }

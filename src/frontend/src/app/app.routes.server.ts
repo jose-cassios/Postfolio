@@ -34,6 +34,14 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Server
   },
   {
+    path: 'projetos/novo',
+    renderMode: RenderMode.Server
+  },
+  {
+    path: 'projetos/:projectId/editar',
+    renderMode: RenderMode.Server
+  },
+  {
     path: 'projetos/:slug',
     renderMode: RenderMode.Server
   },

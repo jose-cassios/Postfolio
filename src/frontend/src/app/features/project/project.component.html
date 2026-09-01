@@ -19,7 +19,13 @@
 
           @if (p.author) {
             <a class="author-row" [routerLink]="['/perfil', p.author.username]">
-              <span class="avatar">{{ p.author.name.charAt(0).toUpperCase() }}</span>
+              <span class="avatar">
+                @if (p.author.avatar) {
+                  <img [src]="p.author.avatar" [alt]="p.author.name" />
+                } @else {
+                  {{ p.author.name.charAt(0).toUpperCase() }}
+                }
+              </span>
               <div><strong>{{ p.author.name }}</strong><p>{{ p.author.bio }}</p></div>
             </a>
           }
@@ -29,8 +35,8 @@
               <mat-icon>{{ interaction().liked ? 'favorite' : 'favorite_border' }}</mat-icon>
               Curtir ({{ interaction().likes }})
             </button>
-            <button [class.active]="interaction().appreciated" [disabled]="actionPending()" (click)="toggleAppreciation()">
-              <mat-icon>thumb_up</mat-icon> Apreciar ({{ interaction().appreciates }})
+            <button [class.active]="interaction().postmarked" [disabled]="actionPending() || isOwner()" (click)="openPostmark()">
+              <mat-icon>tips_and_updates</mat-icon> Postmark ({{ interaction().postmarks }})
             </button>
             <button [class.active]="interaction().saved" [disabled]="actionPending()" (click)="toggleSaved()">
               <mat-icon>{{ interaction().saved ? 'bookmark' : 'bookmark_border' }}</mat-icon> Salvar
@@ -38,13 +44,90 @@
             @if (p.author?.availableForHire) {
               <button class="primary" (click)="hire()"><mat-icon>mail</mat-icon> Contratar</button>
             }
+            @if (isOwner()) {
+              <a class="edit-project" [routerLink]="['/projetos', p.id, 'editar']">
+                <mat-icon>edit</mat-icon> Editar projeto
+              </a>
+            }
             <button (click)="share()"><mat-icon>share</mat-icon> Compartilhar</button>
           </div>
 
-          <div class="meta"><span>Publicado em {{ p.publishedAt | date:'dd/MM/yyyy' }}</span></div>
+          <div class="meta">
+            <span>Publicado em {{ p.publishedAt | date:'dd/MM/yyyy' }}</span>
+            <span>Versão atual v{{ p.currentVersion || 1 }}</span>
+          </div>
           <hr />
 
-          <section class="section"><h2>Sobre o projeto</h2><p>{{ p.description }}</p></section>
+          @if (p.feedbackAspects.length || p.feedbackQuestion) {
+            <section class="feedback-request">
+              <span class="eyebrow">Feedback desejado</span>
+              @if (p.feedbackQuestion) { <h2>{{ p.feedbackQuestion }}</h2> }
+              <div class="chips">
+                @for (aspect of p.feedbackAspects; track aspect) {
+                  <span class="chip">{{ aspectLabel(aspect) }}</span>
+                }
+              </div>
+            </section>
+          }
+
+          @if (p.contentBlocks?.length) {
+            <section class="project-story" aria-label="Conteúdo do projeto">
+              @for (block of p.contentBlocks ?? []; track block.id) {
+                @switch (block.type) {
+                  @case ('TEXT') {
+                    <div
+                      class="story-text"
+                      [class.story-title]="block.variant === 'TITLE'"
+                      [class.story-heading]="block.variant === 'HEADING'"
+                      [class.story-quote]="block.variant === 'QUOTE'"
+                      [class.bold]="block.bold"
+                      [class.italic]="block.italic"
+                      [style.text-align]="block.alignment.toLowerCase()"
+                    >{{ block.content }}</div>
+                  }
+                  @case ('IMAGE') {
+                    <figure
+                      class="story-media"
+                      [class.width-standard]="block.width === 'STANDARD'"
+                      [class.width-wide]="block.width === 'WIDE'"
+                      [class.width-full]="block.width === 'FULL'"
+                    >
+                      <img [src]="block.url" [alt]="block.alt || 'Imagem do projeto'" loading="lazy" />
+                      @if (block.caption) { <figcaption>{{ block.caption }}</figcaption> }
+                    </figure>
+                  }
+                  @case ('VIDEO') {
+                    <figure
+                      class="story-media"
+                      [class.width-standard]="block.width === 'STANDARD'"
+                      [class.width-wide]="block.width === 'WIDE'"
+                      [class.width-full]="block.width === 'FULL'"
+                    >
+                      <video [src]="block.url" [poster]="block.posterUrl || ''" controls preload="metadata"></video>
+                      @if (block.caption) { <figcaption>{{ block.caption }}</figcaption> }
+                    </figure>
+                  }
+                  @case ('CAROUSEL') {
+                    <figure
+                      class="story-media"
+                      [class.width-standard]="block.width === 'STANDARD'"
+                      [class.width-wide]="block.width === 'WIDE'"
+                      [class.width-full]="block.width === 'FULL'"
+                    >
+                      <div class="story-carousel" tabindex="0" aria-label="Galeria de imagens">
+                        @for (item of block.items; track $index) {
+                          <img [src]="item.url" [alt]="item.alt || 'Imagem do carrossel'" loading="lazy" />
+                        }
+                      </div>
+                      @if (block.caption) { <figcaption>{{ block.caption }}</figcaption> }
+                    </figure>
+                  }
+                }
+              }
+            </section>
+          } @else {
+            <section class="section"><h2>Sobre o projeto</h2><p>{{ p.description }}</p></section>
+          }
 
           @if (p.githubLink || p.externalLink) {
             <section class="section links">
@@ -66,36 +149,99 @@
             </div></section>
           }
 
-          @if (p.gallery.length) {
+          @if (!p.contentBlocks?.length && p.gallery.length) {
             <section class="section"><h2>Mais imagens</h2><div class="gallery">
               @for (img of p.gallery; track img) { <img [src]="img" alt="Imagem complementar do projeto" loading="lazy" /> }
             </div></section>
           }
 
-          <section class="section feedback-box">
-            <h2>Aprecie com feedback</h2>
-            <p>Um feedback é opcional e pode ser público ou visível apenas para o autor.</p>
-            <textarea [(ngModel)]="feedbackText" maxlength="500" rows="3" placeholder="O que chamou sua atenção?"></textarea>
-            <label><input type="checkbox" [(ngModel)]="feedbackPrivate"> Feedback privado</label>
-            <button class="primary-action" [disabled]="!feedbackText.trim() || actionPending()" (click)="toggleAppreciation(true)">
-              Enviar apreciação
-            </button>
-          </section>
+          @if (p.versions.length) {
+            <section class="section version-history">
+              <div class="section-title"><span class="eyebrow">Evolução</span><h2>Histórico de versões</h2></div>
+              <ol>
+                @for (version of p.versions; track version.id) {
+                  <li>
+                    <span class="version-dot">v{{ version.versionNumber }}</span>
+                    <div>
+                      <strong>{{ version.changelog }}</strong>
+                      <small>{{ version.createdAt | date:'dd/MM/yyyy HH:mm' }}</small>
+                      @for (credit of version.credits; track credit.postmarkId) {
+                        <p>Incorporou uma sugestão de
+                          <a [routerLink]="['/perfil', credit.contributor.username]">&#64;{{ credit.contributor.username }}</a>
+                          sobre {{ aspectLabel(credit.aspect) }}.
+                        </p>
+                      }
+                    </div>
+                  </li>
+                }
+              </ol>
+            </section>
+          }
 
-          @if (p.publicFeedback?.length) {
-            <section class="section public-feedback">
-              <h2>Feedbacks da comunidade</h2>
-              @for (feedback of p.publicFeedback ?? []; track feedback.id) {
-                <blockquote><p>{{ feedback.content }}</p><footer>— {{ feedback.username }}</footer></blockquote>
+          @if (!isOwner()) {
+            <section class="section feedback-box">
+              <div class="section-title"><span class="eyebrow">Postmark</span><h2>Ajude este projeto a evoluir</h2></div>
+              <p>Envie um ponto forte e uma sugestão objetiva. Likes e Saves continuam independentes.</p>
+              @if (!showPostmarkForm()) {
+                <button class="primary-action" (click)="openPostmark()">
+                  {{ interaction().postmarked ? 'Editar Postmark pendente' : 'Enviar Postmark' }}
+                </button>
+              } @else {
+                <div class="structured-feedback-form">
+                  <label>Aspecto
+                    <select [(ngModel)]="selectedAspect">
+                      @for (aspect of feedbackAspectOptions(p); track aspect) {
+                        <option [value]="aspect">{{ aspectLabel(aspect) }}</option>
+                      }
+                    </select>
+                  </label>
+                  <label>Ponto forte
+                    <textarea [(ngModel)]="postmarkStrength" maxlength="500" rows="3" placeholder="O que já funciona bem?"></textarea>
+                  </label>
+                  <label>Sugestão de melhoria
+                    <textarea [(ngModel)]="postmarkSuggestion" maxlength="500" rows="3" placeholder="O que pode ser melhorado e como?"></textarea>
+                  </label>
+                  <label>Comentário complementar <small>opcional</small>
+                    <textarea [(ngModel)]="postmarkComment" maxlength="500" rows="2"></textarea>
+                  </label>
+                  <div class="form-actions">
+                    <button type="button" (click)="showPostmarkForm.set(false)">Cancelar</button>
+                    <button class="primary-action" [disabled]="postmarkStrength.trim().length < 3 || postmarkSuggestion.trim().length < 3 || actionPending()" (click)="submitPostmark()">Enviar Postmark</button>
+                  </div>
+                </div>
               }
             </section>
           }
 
-          @if (privateFeedback().length) {
-            <section class="section public-feedback private-feedback">
-              <h2>Feedbacks privados para você</h2>
-              @for (feedback of privateFeedback(); track feedback.id) {
-                <blockquote><p>{{ feedback.content }}</p><footer>— {{ feedback.username }}</footer></blockquote>
+          @if (p.postmarks.length) {
+            <section class="section postmarks">
+              <div class="section-title"><span class="eyebrow">Comunidade</span><h2>Postmarks recebidos</h2></div>
+              @for (postmark of p.postmarks; track postmark.id) {
+                <article class="postmark-card" [attr.data-status]="postmark.status">
+                  <header>
+                    <a [routerLink]="['/perfil', postmark.author.username]">&#64;{{ postmark.author.username }}</a>
+                    <span>{{ aspectLabel(postmark.aspect) }}</span>
+                    <span class="feedback-status">{{ postmarkStatusLabel(postmark.status) }}</span>
+                  </header>
+                  <p><strong>Ponto forte</strong>{{ postmark.strength }}</p>
+                  <p><strong>Sugestão</strong>{{ postmark.suggestion }}</p>
+                  @if (postmark.additionalComment) { <p>{{ postmark.additionalComment }}</p> }
+                  @if (postmark.creditedInVersions.length) {
+                    <small>Incorporado com crédito na{{ postmark.creditedInVersions.length > 1 ? 's versões' : ' versão' }}
+                      @for (versionNumber of postmark.creditedInVersions; track versionNumber; let isLast = $last) {
+                        v{{ versionNumber }}{{ isLast ? '.' : ', ' }}
+                      }
+                    </small>
+                  }
+                  @if (isOwner() && !postmark.creditedInVersions.length) {
+                    <div class="status-actions">
+                      <button [disabled]="actionPending() || postmark.status === 'PENDING'" (click)="updatePostmarkStatus(postmark, 'PENDING')">Pendente</button>
+                      <button [disabled]="actionPending() || postmark.status === 'USEFUL'" (click)="updatePostmarkStatus(postmark, 'USEFUL')">Marcar útil</button>
+                      <button [disabled]="actionPending() || postmark.status === 'APPLIED'" (click)="updatePostmarkStatus(postmark, 'APPLIED')">Marcar aplicado</button>
+                      <button [disabled]="actionPending() || postmark.status === 'DENIED'" (click)="updatePostmarkStatus(postmark, 'DENIED')">Recusar</button>
+                    </div>
+                  }
+                </article>
               }
             </section>
           }

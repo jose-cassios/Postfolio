@@ -290,7 +290,7 @@ export type RatingScalarWhereWithAggregatesInput = {
 export type RatingCreateInput = {
   id?: string
   score: number
-  user?: Prisma.UserCreateNestedOneWithoutRatingsInput
+  user: Prisma.UserCreateNestedOneWithoutRatingsInput
   project: Prisma.ProjectCreateNestedOneWithoutRatingInput
   competition: Prisma.CompetitionCreateNestedOneWithoutRatingInput
   portfolioDetails: Prisma.ProjectCompDetailsCreateNestedOneWithoutRatingInput
@@ -299,7 +299,7 @@ export type RatingCreateInput = {
 export type RatingUncheckedCreateInput = {
   id?: string
   score: number
-  userId?: string
+  userId: string
   projectId: string
   competitionId: string
   projectCompDetailsID: string
@@ -326,7 +326,7 @@ export type RatingUncheckedUpdateInput = {
 export type RatingCreateManyInput = {
   id?: string
   score: number
-  userId?: string
+  userId: string
   projectId: string
   competitionId: string
   projectCompDetailsID: string
@@ -635,7 +635,7 @@ export type RatingScalarWhereInput = {
 export type RatingCreateWithoutCompetitionInput = {
   id?: string
   score: number
-  user?: Prisma.UserCreateNestedOneWithoutRatingsInput
+  user: Prisma.UserCreateNestedOneWithoutRatingsInput
   project: Prisma.ProjectCreateNestedOneWithoutRatingInput
   portfolioDetails: Prisma.ProjectCompDetailsCreateNestedOneWithoutRatingInput
 }
@@ -643,7 +643,7 @@ export type RatingCreateWithoutCompetitionInput = {
 export type RatingUncheckedCreateWithoutCompetitionInput = {
   id?: string
   score: number
-  userId?: string
+  userId: string
   projectId: string
   projectCompDetailsID: string
 }
@@ -677,7 +677,7 @@ export type RatingUpdateManyWithWhereWithoutCompetitionInput = {
 export type RatingCreateWithoutProjectInput = {
   id?: string
   score: number
-  user?: Prisma.UserCreateNestedOneWithoutRatingsInput
+  user: Prisma.UserCreateNestedOneWithoutRatingsInput
   competition: Prisma.CompetitionCreateNestedOneWithoutRatingInput
   portfolioDetails: Prisma.ProjectCompDetailsCreateNestedOneWithoutRatingInput
 }
@@ -685,7 +685,7 @@ export type RatingCreateWithoutProjectInput = {
 export type RatingUncheckedCreateWithoutProjectInput = {
   id?: string
   score: number
-  userId?: string
+  userId: string
   competitionId: string
   projectCompDetailsID: string
 }
@@ -719,7 +719,7 @@ export type RatingUpdateManyWithWhereWithoutProjectInput = {
 export type RatingCreateWithoutPortfolioDetailsInput = {
   id?: string
   score: number
-  user?: Prisma.UserCreateNestedOneWithoutRatingsInput
+  user: Prisma.UserCreateNestedOneWithoutRatingsInput
   project: Prisma.ProjectCreateNestedOneWithoutRatingInput
   competition: Prisma.CompetitionCreateNestedOneWithoutRatingInput
 }
@@ -727,7 +727,7 @@ export type RatingCreateWithoutPortfolioDetailsInput = {
 export type RatingUncheckedCreateWithoutPortfolioDetailsInput = {
   id?: string
   score: number
-  userId?: string
+  userId: string
   projectId: string
   competitionId: string
 }
@@ -793,7 +793,7 @@ export type RatingUncheckedUpdateManyWithoutUserInput = {
 export type RatingCreateManyCompetitionInput = {
   id?: string
   score: number
-  userId?: string
+  userId: string
   projectId: string
   projectCompDetailsID: string
 }
@@ -825,7 +825,7 @@ export type RatingUncheckedUpdateManyWithoutCompetitionInput = {
 export type RatingCreateManyProjectInput = {
   id?: string
   score: number
-  userId?: string
+  userId: string
   competitionId: string
   projectCompDetailsID: string
 }
@@ -857,7 +857,7 @@ export type RatingUncheckedUpdateManyWithoutProjectInput = {
 export type RatingCreateManyPortfolioDetailsInput = {
   id?: string
   score: number
-  userId?: string
+  userId: string
   projectId: string
   competitionId: string
 }

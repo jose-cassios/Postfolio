@@ -22,4 +22,9 @@ export class UserAdaper implements UserPort {
     const user = await this.userService.findById(userId);
     return user?.getUserType() === "ADMIN";
   }
+
+  async canManageCompetitions(userId: string): Promise<boolean> {
+    const user = await this.userService.findById(userId);
+    return ["ADMIN", "MODERATOR"].includes(user?.getUserType() ?? "USER");
+  }
 }

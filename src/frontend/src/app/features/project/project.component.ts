@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, PLATFORM_ID, inject, signal } from '@angular/core';
+import { Component, PLATFORM_ID, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -8,7 +8,8 @@ import { AuthService } from '../auth/services/auth.service';
 import { ProjectDetails } from '../../shared/models/project-details';
 import {
   ProjectComment,
-  ProjectFeedback,
+  PostmarkStatus,
+  ProjectPostmark,
   ProjectInteraction,
   ProjectService,
 } from '../../shared/services/project.service';
@@ -29,22 +30,27 @@ export class ProjectComponent {
   readonly project = signal<ProjectDetails | null>(null);
   readonly interaction = signal<ProjectInteraction>({
     liked: false,
-    appreciated: false,
+    postmarked: false,
     saved: false,
     likes: 0,
-    appreciates: 0,
+    postmarks: 0,
   });
   readonly comments = signal<ProjectComment[]>([]);
-  readonly privateFeedback = signal<ProjectFeedback[]>([]);
+  readonly showPostmarkForm = signal(false);
   readonly isLoading = signal(true);
   readonly actionPending = signal(false);
   readonly errorMessage = signal('');
   readonly notice = signal('');
   readonly nextCommentsCursor = signal<string | null>(null);
   readonly hasMoreComments = signal(false);
+  readonly isOwner = computed(() =>
+    this.project()?.author?.username === this.auth.user()?.username,
+  );
   commentText = '';
-  feedbackText = '';
-  feedbackPrivate = false;
+  selectedAspect = '';
+  postmarkStrength = '';
+  postmarkSuggestion = '';
+  postmarkComment = '';
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('slug');
@@ -57,21 +63,17 @@ export class ProjectComponent {
     this.projects.getById(id).pipe(finalize(() => this.isLoading.set(false))).subscribe({
       next: (project) => {
         this.project.set(project);
+        this.selectedAspect = project.feedbackAspects[0] ?? 'UX';
         this.interaction.update((state) => ({
           ...state,
           likes: project.likes,
-          appreciates: project.appreciates,
+        postmarks: project.postmarksCount,
         }));
         this.loadComments();
         if (this.auth.isAuthenticated()) {
           this.projects.getInteraction(id).subscribe({
             next: (interaction) => this.interaction.set(interaction),
           });
-          if (project.author?.username === this.auth.user()?.username) {
-            this.projects.getPrivateFeedback(id).subscribe({
-              next: (feedback) => this.privateFeedback.set(feedback),
-            });
-          }
         }
       },
       error: () => this.errorMessage.set('Este projeto não foi encontrado.'),
@@ -87,28 +89,89 @@ export class ProjectComponent {
       .subscribe({ next: (state) => this.interaction.set(state), error: () => this.showError() });
   }
 
-  toggleAppreciation(withFeedback = false) {
+  openPostmark(): void {
+    if (!this.requireAuthentication() || this.isOwner()) return;
+    this.showPostmarkForm.set(true);
+  }
+
+  submitPostmark() {
     const project = this.project();
     if (!project || !this.requireAuthentication() || this.actionPending()) return;
-    const feedback = withFeedback && this.feedbackText.trim()
-      ? {
-          content: this.feedbackText.trim(),
-          type: this.feedbackPrivate ? 'PRIVATE' as const : 'PUBLIC' as const,
-        }
-      : undefined;
+    if (
+      !this.selectedAspect
+      || this.postmarkStrength.trim().length < 3
+      || this.postmarkSuggestion.trim().length < 3
+    ) return;
     this.actionPending.set(true);
-    const appreciated = withFeedback ? true : !this.interaction().appreciated;
-    this.projects.setAppreciation(project.id, appreciated, feedback)
+    this.projects.createPostmark(project.id, {
+      aspect: this.selectedAspect,
+      strength: this.postmarkStrength.trim(),
+      suggestion: this.postmarkSuggestion.trim(),
+      additionalComment: this.postmarkComment.trim() || null,
+    })
       .pipe(finalize(() => this.actionPending.set(false)))
       .subscribe({
-        next: (state) => {
-          this.interaction.set(state);
-          this.feedbackText = '';
-          this.notice.set(state.appreciated ? 'Projeto apreciado com sucesso.' : 'Apreciação removida.');
-          if (withFeedback) this.ngOnInit();
+        next: (postmark) => {
+          this.project.update((current) => current ? {
+            ...current,
+            postmarks: [
+              postmark,
+              ...current.postmarks.filter((item) => item.id !== postmark.id),
+            ],
+          } : current);
+          this.interaction.update((state) => ({
+            ...state,
+            postmarked: true,
+            postmarks: state.postmarked ? state.postmarks : state.postmarks + 1,
+          }));
+          this.postmarkStrength = '';
+          this.postmarkSuggestion = '';
+          this.postmarkComment = '';
+          this.showPostmarkForm.set(false);
+          this.notice.set('Postmark enviado para o autor.');
         },
         error: () => this.showError(),
       });
+  }
+
+  updatePostmarkStatus(
+    postmark: ProjectPostmark,
+    status: PostmarkStatus,
+  ): void {
+    const project = this.project();
+    if (!project || !this.isOwner() || this.actionPending()) return;
+    this.actionPending.set(true);
+    this.projects.updatePostmarkStatus(project.id, postmark.id, status)
+      .pipe(finalize(() => this.actionPending.set(false)))
+      .subscribe({
+        next: (updated) => this.project.update((current) => current ? {
+          ...current,
+          postmarks: current.postmarks.map((item) =>
+            item.id === updated.id ? updated : item
+          ),
+        } : current),
+        error: () => this.showError(),
+      });
+  }
+
+  aspectLabel(aspect: string): string {
+    return ({
+      UI: 'UI', UX: 'UX', ARCHITECTURE: 'Arquitetura', CODE: 'Código',
+      PERFORMANCE: 'Performance', ACCESSIBILITY: 'Acessibilidade',
+      ORIGINALITY: 'Originalidade', DOCUMENTATION: 'Documentação',
+    } as Record<string, string>)[aspect] ?? aspect;
+  }
+
+  feedbackAspectOptions(project: ProjectDetails): string[] {
+    return project.feedbackAspects.length
+      ? project.feedbackAspects
+      : ['UI', 'UX', 'ARCHITECTURE', 'CODE', 'PERFORMANCE', 'ACCESSIBILITY', 'ORIGINALITY', 'DOCUMENTATION'];
+  }
+
+  postmarkStatusLabel(status: PostmarkStatus): string {
+    return ({
+      PENDING: 'Pendente', USEFUL: 'Útil', APPLIED: 'Aplicado', DENIED: 'Recusado',
+    })[status];
   }
 
   toggleSaved() {
@@ -130,7 +193,7 @@ export class ProjectComponent {
     this.projects.getContact(project.id).subscribe({
       next: (contact) => {
         if (isPlatformBrowser(this.platformId)) {
-          window.location.href = `mailto:${encodeURIComponent(contact.contactEmail)}?subject=${encodeURIComponent(`Contato pelo Postfolio — ${project.title}`)}`;
+          window.location.href = `mailto:${encodeURIComponent(contact.email)}?subject=${encodeURIComponent(`Contato pelo Postfolio — ${project.title}`)}`;
         }
       },
       error: () => this.notice.set('Este autor não está disponível para contratação no momento.'),

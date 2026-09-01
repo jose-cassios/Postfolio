@@ -52,6 +52,10 @@ export class CommentsService implements ICommentsService {
   }
 
   async getComments(dto: GetCommentsDTO): Promise<PaginatedCommentsResponse> {
+    if (!(await this.projectPort.exist(dto.postId))) {
+      throw new NotFound("O projeto não existe!");
+    }
+
     const PAGE_SIZE = 2;
     let comments: Comments[];
     let nextCursor: string | null = null;

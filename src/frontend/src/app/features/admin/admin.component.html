@@ -1,33 +1,153 @@
 <main class="admin-page">
-  <header><span>Painel administrativo</span><h1>Gestão do Postfolio</h1><p>Crie os eventos mensais e acompanhe as fases da comunidade.</p></header>
-  @if (!canModerate()) {
-    <section class="state"><h2>Acesso restrito</h2><p>Esta área exige uma conta de administrador.</p><a routerLink="/">Voltar ao início</a></section>
+  <header>
+    <span>Painel administrativo</span>
+    <h1>Usuários e permissões</h1>
+    <p>Gerencie os acessos da comunidade. A criação de competições fica em Eventos.</p>
+  </header>
+
+  @if (!isAdmin()) {
+    <section class="state">
+      <h2>Acesso restrito</h2>
+      <p>Esta área é exclusiva para administradores.</p>
+      <a routerLink="/">Voltar ao início</a>
+    </section>
   } @else {
     @if (notice()) { <p class="notice" role="status">{{ notice() }}</p> }
-    @if (isAdmin()) {
     <section class="panel">
-      <h2>Nova competição</h2>
-      <form [formGroup]="form" (ngSubmit)="submit()">
-        <label class="wide"><span>Nome</span><input formControlName="name" /></label>
-        <label class="wide"><span>Descrição</span><textarea rows="4" formControlName="description"></textarea></label>
-        <label><span>Categoria</span><select formControlName="category">@for (category of categories; track category) { <option [value]="category">{{ category }}</option> }</select></label>
-        <label><span>Início das inscrições</span><input type="datetime-local" formControlName="registrationStartsAt" /></label>
-        <label><span>Fim das inscrições</span><input type="datetime-local" formControlName="registrationEndsAt" /></label>
-        <label><span>Início da votação</span><input type="datetime-local" formControlName="votingStartsAt" /></label>
-        <label><span>Fim da votação</span><input type="datetime-local" formControlName="votingEndsAt" /></label>
-        <label><span>Divulgação dos resultados</span><input type="datetime-local" formControlName="resultsAt" /></label>
-        <button class="wide" type="submit" [disabled]="saving()">{{ saving() ? 'Criando...' : 'Criar competição' }}</button>
-      </form>
+      <div class="panel-heading">
+        <div><h2>Usuários cadastrados</h2><p>Escolha um dos três papéis disponíveis: User, Moderator ou Admin.</p></div>
+        <div class="panel-actions">
+          <button class="rank-settings-button" type="button" (click)="openRankConfig()">Configuração de Ranks</button>
+          <a routerLink="/competicoes">Ir para Eventos</a>
+        </div>
+      </div>
+
+      @if (loading()) { <p class="state">Carregando usuários...</p> }
+      @else {
+        <div class="user-list">
+          @for (user of users(); track user.id) {
+            <article>
+              <div class="identity">
+                <strong>{{ user.username }}</strong>
+                <span>{{ user.email }}</span>
+                <small [class.inactive]="!user.active">{{ user.active ? 'Conta ativa' : 'Conta suspensa' }}</small>
+              </div>
+              <div class="controls">
+                <label>
+                  <span>Papel atual: {{ roleLabel(user.usertype) }}</span>
+                  <select [(ngModel)]="selectedRoles[user.id]" [disabled]="isCurrentUser(user) || pendingUserId() === user.id">
+                    @for (role of roles; track role.value) { <option [value]="role.value">{{ role.label }}</option> }
+                  </select>
+                </label>
+                <button class="role-button" [disabled]="isCurrentUser(user) || pendingUserId() === user.id || selectedRoles[user.id] === user.usertype" (click)="changeRole(user)">Salvar papel</button>
+                <button class="status-button" [class.reactivate]="!user.active" [disabled]="isCurrentUser(user) || pendingUserId() === user.id" (click)="toggleUser(user)">{{ user.active ? 'Suspender' : 'Reativar' }}</button>
+                <button class="history-button" type="button" (click)="openReputationHistory(user)">Reputação</button>
+              </div>
+            </article>
+          } @empty { <p class="state">Nenhum usuário encontrado.</p> }
+        </div>
+      }
     </section>
-    <section class="panel"><h2>Eventos cadastrados</h2><div class="event-list">
-      @for (competition of competitions(); track competition.id) { <a routerLink="/competicoes"><strong>{{ competition.name }}</strong><span>{{ competition.status }} · {{ competition.submissions.length }} projetos</span></a> }
-      @empty { <p>Nenhum evento cadastrado.</p> }
-    </div></section>
+
+    @if (rankConfigOpen()) {
+      <div class="modal-backdrop" (click)="closeRankConfig()"></div>
+      <section class="rank-modal" role="dialog" aria-modal="true" aria-labelledby="rank-config-title">
+        <header>
+          <span>Administração</span>
+          <h2 id="rank-config-title">Configuração de Ranks</h2>
+          <p>Estes limites valem igualmente para Creator XP e Contributor XP.</p>
+        </header>
+
+        @if (rankConfigLoading()) {
+          <p class="state">Carregando configuração...</p>
+        } @else {
+          <form (ngSubmit)="saveRankConfig()">
+            <div class="rank-grid">
+              @for (rank of ranks; track rank) {
+                <label>
+                  <span>Rank {{ rank }}</span>
+                  <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    [(ngModel)]="rankValues[rank]"
+                    [name]="'rank-' + rank"
+                    [disabled]="rank === 'F' || rankConfigSaving()"
+                    required
+                  />
+                  <small>XP mínimo</small>
+                </label>
+              }
+            </div>
+            @if (rankConfigError()) { <p class="rank-error" role="alert">{{ rankConfigError() }}</p> }
+            <footer>
+              <button class="cancel-button" type="button" [disabled]="rankConfigSaving()" (click)="closeRankConfig()">Cancelar</button>
+              <button type="submit" [disabled]="rankConfigSaving() || rankConfigLoading()">{{ rankConfigSaving() ? 'Salvando...' : 'Salvar configuração' }}</button>
+            </footer>
+          </form>
+        }
+      </section>
     }
-    <section class="panel"><h2>Moderação de usuários</h2><div class="user-list">
-      @for (user of users(); track user.id) {
-        <article><div><strong>{{ user.username }}</strong><span>{{ user.email }} · {{ user.usertype }}</span></div><button [class.reactivate]="!user.active" [disabled]="user.id === auth.user()?.id" (click)="toggleUser(user)">{{ user.active ? 'Suspender' : 'Reativar' }}</button></article>
-      } @empty { <p>Nenhum usuário encontrado.</p> }
-    </div></section>
+
+    @if (reputationHistoryOpen()) {
+      <div class="modal-backdrop" (click)="closeReputationHistory()"></div>
+      <section class="reputation-modal" role="dialog" aria-modal="true" aria-labelledby="reputation-history-title">
+        @if (selectedReputationUser(); as selectedUser) {
+          <header>
+            <span>Reputação</span>
+            <h2 id="reputation-history-title">{{ selectedUser.username }}</h2>
+            <p>Ledger auditável de XP e ajustes administrativos.</p>
+          </header>
+
+          @if (reputationHistoryLoading()) {
+            <p class="state">Carregando histórico...</p>
+          } @else if (reputationHistory(); as history) {
+            <div class="xp-totals" aria-label="XP atual">
+              <div><span>Creator XP</span><strong>{{ history.totals.creatorXp }}</strong></div>
+              <div><span>Contributor XP</span><strong>{{ history.totals.contributorXp }}</strong></div>
+            </div>
+
+            <form class="adjustment-form" (ngSubmit)="applyReputationAdjustment()">
+              <h3>Ajuste manual</h3>
+              <label><span>Eixo</span>
+                <select [(ngModel)]="adjustmentAxis" name="adjustmentAxis" [disabled]="reputationMutationPending()">
+                  <option value="CREATOR">Creator XP</option>
+                  <option value="CONTRIBUTOR">Contributor XP</option>
+                </select>
+              </label>
+              <label><span>Pontos</span><input type="number" step="1" [(ngModel)]="adjustmentPoints" name="adjustmentPoints" [disabled]="reputationMutationPending()" placeholder="Ex.: +10 ou -5" required /></label>
+              <label class="full-width"><span>Motivo obrigatório</span><textarea rows="2" [(ngModel)]="adjustmentReason" name="adjustmentReason" [disabled]="reputationMutationPending()" required></textarea></label>
+              <button type="submit" [disabled]="reputationMutationPending()">Aplicar ajuste</button>
+            </form>
+
+            <section class="history-list" aria-label="Histórico de eventos de reputação">
+              <h3>Histórico</h3>
+              @for (event of history.events; track event.id) {
+                <article [class.negative]="event.points < 0">
+                  <div>
+                    <strong>{{ reputationEventLabel(event.type) }}</strong>
+                    <span>{{ event.axis === 'CREATOR' ? 'Creator' : 'Contributor' }} · {{ event.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+                    <small>{{ event.reason || 'Concessão automática' }}</small>
+                  </div>
+                  <b [class.negative]="event.points < 0">{{ xpLabel(event.points) }}</b>
+                  @if (event.reversal; as reversal) {
+                    <p class="reversed">Revertido: {{ xpLabel(reversal.points) }} · {{ reversal.reason }}</p>
+                  } @else if (event.reversible) {
+                    <div class="reversal-action">
+                      <input [(ngModel)]="reversalReasons[event.id]" [name]="'reversal-' + event.id" [disabled]="reputationMutationPending()" placeholder="Motivo da reversão" />
+                      <button type="button" class="reverse-button" [disabled]="reputationMutationPending() || !reversalReasons[event.id]?.trim()" (click)="reverseReputationEvent(event)">Reverter</button>
+                    </div>
+                  }
+                </article>
+              } @empty { <p class="state">Nenhum evento de reputação registrado.</p> }
+            </section>
+          }
+          @if (reputationError()) { <p class="rank-error" role="alert">{{ reputationError() }}</p> }
+          <footer>
+            <button class="cancel-button" type="button" [disabled]="reputationMutationPending()" (click)="closeReputationHistory()">Fechar</button>
+          </footer>
+        }
+      </section>
+    }
   }
 </main>

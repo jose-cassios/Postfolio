@@ -46,6 +46,12 @@ export class TooManyRequests extends GenericHttpError {
   }
 }
 
+export class PayloadTooLarge extends GenericHttpError {
+  constructor(message: string) {
+    super(413, "Payload Too Large", message);
+  }
+}
+
 export class InternalServerError extends GenericHttpError {
   constructor(message: string) {
     super(500, "Internal Server Error", message);

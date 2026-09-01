@@ -10,7 +10,9 @@ export interface CompetitionProject {
   coverImageUrl: string | null;
   tools: string[];
   author: { id: string; username: string };
-  votes?: number;
+  score?: number;
+  primaryCriterionScore?: number;
+  evaluationCount?: number;
   rank?: number;
 }
 
@@ -25,7 +27,10 @@ export interface Competition {
   votingStartsAt: string | null;
   votingEndsAt: string | null;
   resultsAt: string | null;
+  resultsFinalizedAt: string | null;
   status: CompetitionStatus;
+  minimumEvaluations: number;
+  criteria: Array<{ id: string; name: string; weight: number; position: number }>;
   submissions: CompetitionProject[];
 }
 
@@ -38,6 +43,15 @@ export interface CompetitionPayload {
   votingStartsAt: string;
   votingEndsAt: string;
   resultsAt: string;
+  minimumEvaluations: number;
+  criteria: Array<{ name: string; weight: number }>;
+}
+
+export interface EvaluationProgress {
+  participant: boolean;
+  evaluatedProjects: number;
+  requiredEvaluations: number;
+  completed: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -66,9 +80,29 @@ export class CompetitionService {
     );
   }
 
-  vote(competitionId: string, projectId: string) {
-    return this.api.post(
-      `competition/${competitionId}/votes/${projectId}`,
+  evaluate(
+    competitionId: string,
+    projectId: string,
+    scores: Array<{ criterionId: string; score: number }>,
+  ) {
+    return this.api.put(
+      `competition/${competitionId}/evaluations/${projectId}`,
+      { scores },
+      this.auth.authOptions(),
+    );
+  }
+
+  evaluationProgress(competitionId: string) {
+    return this.api.get<EvaluationProgress>(
+      `competition/${competitionId}/evaluation-progress`,
+      undefined,
+      this.auth.authOptions(),
+    );
+  }
+
+  finalizeResults(competitionId: string) {
+    return this.api.post<Competition>(
+      `competition/${competitionId}/finalize-results`,
       {},
       this.auth.authOptions(),
     );

@@ -6,6 +6,10 @@ import {
   CreateUserRequest,
   userRouteSchema,
   UpdateUserRequest,
+  UpdateUserRoleRequest,
+  UpdateReputationRankConfigRequest,
+  AdminReputationAdjustmentRequest,
+  ReputationReversalRequest,
   PublicProfileRequest,
 } from "@user/api/UserSchema";
 
@@ -19,6 +23,45 @@ function userRoutesPlugin(
     "/admin/users",
     { preValidation: UserMiddle.authenticate },
     (req, reply) => userController.getAll(req, reply)
+  );
+
+  app.get(
+    "/admin/rank-config",
+    { preValidation: UserMiddle.authenticate },
+    (req, reply) => userController.getReputationRankConfig(req, reply)
+  );
+
+  app.put(
+    "/admin/rank-config",
+    { schema: userRouteSchema.reputationRankConfig, preValidation: UserMiddle.authenticate },
+    (req, reply) => userController.updateReputationRankConfig(
+      req as UpdateReputationRankConfigRequest,
+      reply,
+    )
+  );
+
+  app.get(
+    "/admin/users/:id/reputation-events",
+    { schema: userRouteSchema.reputationHistory, preValidation: UserMiddle.authenticate },
+    (req, reply) => userController.getReputationHistory(req, reply),
+  );
+
+  app.post(
+    "/admin/users/:id/reputation-adjustments",
+    { schema: userRouteSchema.reputationAdjustment, preValidation: UserMiddle.authenticate },
+    (req, reply) => userController.applyReputationAdjustment(
+      req as AdminReputationAdjustmentRequest,
+      reply,
+    ),
+  );
+
+  app.post(
+    "/admin/reputation-events/:eventId/reversal",
+    { schema: userRouteSchema.reputationReversal, preValidation: UserMiddle.authenticate },
+    (req, reply) => userController.reverseReputationEvent(
+      req as ReputationReversalRequest,
+      reply,
+    ),
   );
 
   app.put(
@@ -57,6 +100,24 @@ function userRoutesPlugin(
   );
 
   app.post(
+    "/profile",
+    { preValidation: UserMiddle.authenticate },
+    (req, reply) => userController.getProfile(req, reply)
+  );
+
+  app.put(
+    "/admin/users/:id/role",
+    { schema: userRouteSchema.updateRole, preValidation: UserMiddle.authenticate },
+    (req, reply) => userController.setRole(req as UpdateUserRoleRequest, reply)
+  );
+
+  app.get(
+    "/me",
+    { preValidation: UserMiddle.authenticate },
+    (req, reply) => userController.getProfile(req, reply)
+  );
+
+  app.get(
     "/profile",
     { preValidation: UserMiddle.authenticate },
     (req, reply) => userController.getProfile(req, reply)

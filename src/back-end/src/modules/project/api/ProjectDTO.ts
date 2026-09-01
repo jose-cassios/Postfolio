@@ -1,4 +1,5 @@
 import { ProjectCategory } from "@project/domain/enum/ProjectCategory";
+import { ProjectBlock, ProjectStatus } from "@project/domain/valueObject/ProjectContent";
 
 interface CreateProjectDTO {
   name: string;
@@ -10,6 +11,10 @@ interface CreateProjectDTO {
   galleryUrls?: string[];
   tools?: string[];
   tags?: string[];
+  contentBlocks?: ProjectBlock[];
+  status?: ProjectStatus;
+  feedbackAspects?: string[];
+  feedbackQuestion?: string | null;
   portfolioId: string;
 }
 
@@ -24,6 +29,12 @@ interface UpdateProjectDTO {
   galleryUrls?: string[];
   tools?: string[];
   tags?: string[];
+  contentBlocks?: ProjectBlock[];
+  status?: ProjectStatus;
+  feedbackAspects?: string[];
+  feedbackQuestion?: string | null;
+  changelog?: string;
+  postmarkIds?: string[];
 }
 
 export interface ProjectListQuery {
@@ -31,7 +42,7 @@ export interface ProjectListQuery {
   category?: ProjectCategory;
   tool?: string;
   tag?: string;
-  sort: "newest" | "likes" | "appreciates";
+  sort: "newest" | "likes";
   page: number;
   limit: number;
 }

@@ -4,6 +4,8 @@
   "main": "dist/serverless.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "test:xp": "jest src/modules/user/application/ReputationXpService.test.ts --runInBand",
+    "test:ranks": "jest src/modules/user/application/ReputationRankProgressService.test.ts --runInBand",
     "docs": "typedoc --options typedoc.json",
     "start": "node dist/src/app.js",
     "dev": "tsx watch --env-file=.env src/app.ts",
@@ -35,6 +37,7 @@
   },
   "dependencies": {
     "@fastify/cors": "^11.0.0",
+    "@fastify/multipart": "^10.1.1",
     "@fastify/oauth2": "^8.1.2",
     "@fastify/swagger": "^9.5.1",
     "@prisma/adapter-pg": "^7.9.1",
@@ -46,6 +49,7 @@
     "inversify": "^7.0.0-alpha.5",
     "jest": "^29.7.0",
     "jsonwebtoken": "^9.0.2",
+    "minio": "^8.0.7",
     "module-alias": "^2.2.3",
     "nodemailer": "^7.0.5",
     "openapi-types": "12.1.3",

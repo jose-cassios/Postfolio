@@ -64,7 +64,14 @@ export const ModelName = {
   Like: 'Like',
   Feedback: 'Feedback',
   Rating: 'Rating',
-  ProjectCompDetails: 'ProjectCompDetails'
+  ProjectCompDetails: 'ProjectCompDetails',
+  ProjectVersion: 'ProjectVersion',
+  ProjectVersionCredit: 'ProjectVersionCredit',
+  ReputationEvent: 'ReputationEvent',
+  ReputationRankConfig: 'ReputationRankConfig',
+  EventCriterion: 'EventCriterion',
+  EventEvaluation: 'EventEvaluation',
+  EventEvaluationScore: 'EventEvaluationScore'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -92,7 +99,8 @@ export const UserScalarFieldEnum = {
   linkedin: 'linkedin',
   github: 'github',
   website: 'website',
-  contactEmail: 'contactEmail',
+  profilePhoto: 'profilePhoto',
+  coverPhoto: 'coverPhoto',
   availableForHire: 'availableForHire',
   active: 'active',
   userType: 'userType'
@@ -148,7 +156,9 @@ export const CompetitionScalarFieldEnum = {
   registrationEndsAt: 'registrationEndsAt',
   votingStartsAt: 'votingStartsAt',
   votingEndsAt: 'votingEndsAt',
-  resultsAt: 'resultsAt'
+  resultsAt: 'resultsAt',
+  resultsFinalizedAt: 'resultsFinalizedAt',
+  minimumEvaluations: 'minimumEvaluations'
 } as const
 
 export type CompetitionScalarFieldEnum = (typeof CompetitionScalarFieldEnum)[keyof typeof CompetitionScalarFieldEnum]
@@ -165,6 +175,14 @@ export const ProjectScalarFieldEnum = {
   galleryUrls: 'galleryUrls',
   tools: 'tools',
   tags: 'tags',
+  contentBlocks: 'contentBlocks',
+  contentMarkdown: 'contentMarkdown',
+  status: 'status',
+  feedbackAspects: 'feedbackAspects',
+  feedbackQuestion: 'feedbackQuestion',
+  seekingFeedback: 'seekingFeedback',
+  currentVersion: 'currentVersion',
+  publishedAt: 'publishedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   portfolioId: 'portfolioId'
@@ -177,7 +195,15 @@ export const AppreciateScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   projectId: 'projectId',
-  postMetricsId: 'postMetricsId'
+  postMetricsId: 'postMetricsId',
+  aspect: 'aspect',
+  strength: 'strength',
+  improvement: 'improvement',
+  additionalComment: 'additionalComment',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  resolvedAt: 'resolvedAt'
 } as const
 
 export type AppreciateScalarFieldEnum = (typeof AppreciateScalarFieldEnum)[keyof typeof AppreciateScalarFieldEnum]
@@ -257,12 +283,126 @@ export const ProjectCompDetailsScalarFieldEnum = {
 export type ProjectCompDetailsScalarFieldEnum = (typeof ProjectCompDetailsScalarFieldEnum)[keyof typeof ProjectCompDetailsScalarFieldEnum]
 
 
+export const ProjectVersionScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  versionNumber: 'versionNumber',
+  changelog: 'changelog',
+  name: 'name',
+  description: 'description',
+  category: 'category',
+  githubLink: 'githubLink',
+  externalLink: 'externalLink',
+  coverImageUrl: 'coverImageUrl',
+  galleryUrls: 'galleryUrls',
+  tools: 'tools',
+  tags: 'tags',
+  contentBlocks: 'contentBlocks',
+  contentMarkdown: 'contentMarkdown',
+  authorId: 'authorId',
+  createdAt: 'createdAt'
+} as const
+
+export type ProjectVersionScalarFieldEnum = (typeof ProjectVersionScalarFieldEnum)[keyof typeof ProjectVersionScalarFieldEnum]
+
+
+export const ProjectVersionCreditScalarFieldEnum = {
+  id: 'id',
+  projectVersionId: 'projectVersionId',
+  appreciationId: 'appreciationId',
+  contributorId: 'contributorId',
+  createdAt: 'createdAt'
+} as const
+
+export type ProjectVersionCreditScalarFieldEnum = (typeof ProjectVersionCreditScalarFieldEnum)[keyof typeof ProjectVersionCreditScalarFieldEnum]
+
+
+export const ReputationEventScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  axis: 'axis',
+  points: 'points',
+  projectId: 'projectId',
+  postmarkId: 'postmarkId',
+  projectVersionId: 'projectVersionId',
+  eventId: 'eventId',
+  metadata: 'metadata',
+  reason: 'reason',
+  adminId: 'adminId',
+  reversalOfId: 'reversalOfId',
+  idempotencyKey: 'idempotencyKey',
+  createdAt: 'createdAt'
+} as const
+
+export type ReputationEventScalarFieldEnum = (typeof ReputationEventScalarFieldEnum)[keyof typeof ReputationEventScalarFieldEnum]
+
+
+export const ReputationRankConfigScalarFieldEnum = {
+  rank: 'rank',
+  requiredXp: 'requiredXp',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ReputationRankConfigScalarFieldEnum = (typeof ReputationRankConfigScalarFieldEnum)[keyof typeof ReputationRankConfigScalarFieldEnum]
+
+
+export const EventCriterionScalarFieldEnum = {
+  id: 'id',
+  competitionId: 'competitionId',
+  name: 'name',
+  weight: 'weight',
+  position: 'position',
+  createdAt: 'createdAt'
+} as const
+
+export type EventCriterionScalarFieldEnum = (typeof EventCriterionScalarFieldEnum)[keyof typeof EventCriterionScalarFieldEnum]
+
+
+export const EventEvaluationScalarFieldEnum = {
+  id: 'id',
+  competitionId: 'competitionId',
+  projectId: 'projectId',
+  evaluatorId: 'evaluatorId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EventEvaluationScalarFieldEnum = (typeof EventEvaluationScalarFieldEnum)[keyof typeof EventEvaluationScalarFieldEnum]
+
+
+export const EventEvaluationScoreScalarFieldEnum = {
+  id: 'id',
+  evaluationId: 'evaluationId',
+  criterionId: 'criterionId',
+  score: 'score'
+} as const
+
+export type EventEvaluationScoreScalarFieldEnum = (typeof EventEvaluationScoreScalarFieldEnum)[keyof typeof EventEvaluationScoreScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -279,4 +419,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

@@ -7,7 +7,8 @@ import {
   projectRouteSchema,
   ProjectListRequest,
   SetLikeRequest,
-  SetAppreciationRequest,
+  CreatePostmarkRequest,
+  UpdatePostmarkStatusRequest,
 } from "@project/api/ProjectSchema";
 
 function projectRoutesPlugin(app: FastifyInstance, controller: WorkController) {
@@ -39,6 +40,16 @@ function projectRoutesPlugin(app: FastifyInstance, controller: WorkController) {
     controller.list(req as ProjectListRequest, rep)
   );
 
+  app.get("/mine", { preValidation: UserMiddle.authenticate }, (req, rep) =>
+    controller.getMine(req, rep)
+  );
+
+  app.get(
+    "/:projectId/editor",
+    { schema: projectRouteSchema.interaction, preValidation: UserMiddle.authenticate },
+    (req, rep) => controller.getForEditor(req, rep)
+  );
+
   app.get(
     "/:projectId/contact",
     { preValidation: UserMiddle.authenticate },
@@ -51,13 +62,31 @@ function projectRoutesPlugin(app: FastifyInstance, controller: WorkController) {
     (req, rep) => controller.setLike(req as SetLikeRequest, rep)
   );
 
-  app.put(
-    "/:projectId/appreciate",
+  app.post(
+    "/:projectId/postmarks",
     {
-      schema: projectRouteSchema.setAppreciation,
+      schema: projectRouteSchema.createPostmark,
       preValidation: UserMiddle.authenticate,
     },
-    (req, rep) => controller.setAppreciation(req as SetAppreciationRequest, rep)
+    (req, rep) => controller.createPostmark(req as CreatePostmarkRequest, rep)
+  );
+
+  app.get(
+    "/:projectId/postmarks",
+    { schema: projectRouteSchema.interaction },
+    (req, rep) => controller.getPostmarks(req, rep)
+  );
+
+  app.patch(
+    "/:projectId/postmarks/:postmarkId/status",
+    {
+      schema: projectRouteSchema.postmarkStatus,
+      preValidation: UserMiddle.authenticate,
+    },
+    (req, rep) => controller.updatePostmarkStatus(
+      req as UpdatePostmarkStatusRequest,
+      rep,
+    )
   );
 
   app.get(

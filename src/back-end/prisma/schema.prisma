@@ -9,29 +9,34 @@ datasource db {
 }
 
 model User {
-  id            String          @id @default(uuid())
-  username      String
-  email         String          @unique
-  password      String?
-  bio           String
-  linkedin      String?
-  github        String?
-  website       String?
-  contactEmail  String?
-  availableForHire Boolean @default(false)
-  active        Boolean         @default(true)
-  userType      UserType?
-  ProviderOAuth ProviderOAuth[]
-  portfolios    Portfolio?
-  ratings       Rating[]
+  id               String          @id @default(uuid())
+  username         String
+  email            String          @unique
+  password         String?
+  bio              String
+  linkedin         String?
+  github           String?
+  website          String?
+  profilePhoto     String?
+  coverPhoto       String?
+  availableForHire Boolean         @default(false)
+  active           Boolean         @default(true)
+  userType         UserType?
+  ProviderOAuth    ProviderOAuth[]
+  portfolios       Portfolio?
+  ratings          Rating[]
 
-  messageSent      Message[]          @relation("MessageSent")
-  messageReceived  Message[]          @relation("MessageReceived")
+  messageSent      Message[]              @relation("MessageSent")
+  messageReceived  Message[]              @relation("MessageReceived")
   FavorateProjects FavorateProjects[]
   Comments         Comments[]
   Appreciate       Appreciate[]
   Feedback         Feedback[]
   likes            Like[]
+  projectVersions  ProjectVersion[]       @relation("ProjectVersionAuthor")
+  versionCredits   ProjectVersionCredit[] @relation("VersionCreditContributor")
+  reputationEvents ReputationEvent[]
+  eventEvaluations EventEvaluation[]
 
   @@map("tb_user")
 }
@@ -75,20 +80,25 @@ model Portfolio {
 }
 
 model Competition {
-  id           String               @id @default(uuid())
-  name         String
-  description  String
-  createdAt    DateTime             @default(now())
-  startsAt     DateTime?
-  endsAt       DateTime?
-  category     ProjectCategory @default(OTHER)
+  id                   String               @id @default(uuid())
+  name                 String
+  description          String
+  createdAt            DateTime             @default(now())
+  startsAt             DateTime?
+  endsAt               DateTime?
+  category             ProjectCategory      @default(OTHER)
   registrationStartsAt DateTime?
   registrationEndsAt   DateTime?
   votingStartsAt       DateTime?
   votingEndsAt         DateTime?
-  resultsAt             DateTime?
-  worksDetails ProjectCompDetails[]
-  Rating       Rating[]
+  resultsAt            DateTime?
+  resultsFinalizedAt   DateTime?
+  minimumEvaluations   Int                  @default(3)
+  worksDetails         ProjectCompDetails[]
+  Rating               Rating[]
+  criteria             EventCriterion[]
+  evaluations          EventEvaluation[]
+  reputationEvents     ReputationEvent[]    @relation("ReputationEventCompetition")
 
   @@map("tb_competition")
 }
@@ -104,6 +114,14 @@ model Project {
   galleryUrls              String[]             @default([])
   tools                    String[]             @default([])
   tags                     String[]             @default([])
+  contentBlocks            Json                 @default("[]")
+  contentMarkdown          String               @default("")
+  status                   ProjectStatus        @default(DRAFT)
+  feedbackAspects          String[]             @default([])
+  feedbackQuestion         String?
+  seekingFeedback          Boolean              @default(false)
+  currentVersion           Int                  @default(0)
+  publishedAt              DateTime?
   createdAt                DateTime             @default(now())
   updatedAt                DateTime             @updatedAt
   portfolioId              String
@@ -116,20 +134,33 @@ model Project {
   Feedback                 Feedback[]
   likes                    Like[]
   AppreciateProjectDetails PostMetrics?
+  versions                 ProjectVersion[]
+  reputationEvents         ReputationEvent[]
+  eventEvaluations         EventEvaluation[]
 
   @@map("tb_project")
 }
 
 model Appreciate {
-  id            String @id @default(uuid())
-  userId        String
-  projectId     String
-  postMetricsId String
+  id                String           @id @default(uuid())
+  userId            String
+  projectId         String
+  postMetricsId     String
+  aspect            String           @default("GENERAL")
+  strength          String           @default("")
+  improvement       String           @default("")
+  additionalComment String?
+  status            AppreciateStatus @default(PENDING)
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  resolvedAt        DateTime?
 
-  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  project     Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  postMetrics PostMetrics @relation(fields: [postMetricsId], references: [id])
-  Feedback    Feedback[]
+  user             User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project          Project                @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  postMetrics      PostMetrics            @relation(fields: [postMetricsId], references: [id], onDelete: Cascade)
+  Feedback         Feedback[]
+  versionCredits   ProjectVersionCredit[]
+  reputationEvents ReputationEvent[]
 
   @@unique([userId, projectId])
   @@map("tb_appreciate")
@@ -203,11 +234,11 @@ model Feedback {
 model Rating {
   id                   String             @id @default(uuid())
   score                Float
-  userId               String             @default("anonymous_user_id")
+  userId               String
   projectId            String
   competitionId        String
   projectCompDetailsID String
-  user                 User               @relation(fields: [userId], references: [id], onDelete: SetDefault)
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   project              Project            @relation(fields: [projectId], references: [id], onDelete: Cascade)
   competition          Competition        @relation(fields: [competitionId], references: [id], onDelete: Cascade)
   portfolioDetails     ProjectCompDetails @relation(fields: [projectCompDetailsID], references: [id], onDelete: Cascade)
@@ -250,6 +281,190 @@ enum ProjectCategory {
   MOBILE
   DATA_ANALYSIS
   OTHER
+}
+
+model ProjectVersion {
+  id              String          @id @default(uuid())
+  projectId       String
+  versionNumber   Int
+  changelog       String
+  name            String
+  description     String
+  category        ProjectCategory
+  githubLink      String?
+  externalLink    String?
+  coverImageUrl   String?
+  galleryUrls     String[]        @default([])
+  tools           String[]        @default([])
+  tags            String[]        @default([])
+  contentBlocks   Json            @default("[]")
+  contentMarkdown String          @default("")
+  authorId        String
+  createdAt       DateTime        @default(now())
+
+  project          Project                @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  author           User                   @relation("ProjectVersionAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  credits          ProjectVersionCredit[]
+  reputationEvents ReputationEvent[]
+
+  @@unique([projectId, versionNumber])
+  @@index([projectId, createdAt])
+  @@map("tb_project_version")
+}
+
+model ProjectVersionCredit {
+  id               String   @id @default(uuid())
+  projectVersionId String
+  appreciationId   String
+  contributorId    String
+  createdAt        DateTime @default(now())
+
+  projectVersion ProjectVersion @relation(fields: [projectVersionId], references: [id], onDelete: Cascade)
+  appreciation   Appreciate     @relation(fields: [appreciationId], references: [id], onDelete: Cascade)
+  contributor    User           @relation("VersionCreditContributor", fields: [contributorId], references: [id], onDelete: Cascade)
+
+  @@unique([projectVersionId, appreciationId])
+  @@index([contributorId])
+  @@map("tb_project_version_credit")
+}
+
+model ReputationEvent {
+  id               String              @id @default(uuid())
+  userId           String
+  type             ReputationEventType
+  axis             ReputationAxis
+  points           Int
+  projectId        String?
+  postmarkId       String?
+  projectVersionId String?
+  eventId          String?
+  metadata         Json?
+  reason           String?
+  adminId          String?
+  reversalOfId     String?             @unique
+  idempotencyKey   String              @unique
+  createdAt        DateTime            @default(now())
+
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project        Project?        @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  postmark       Appreciate?     @relation(fields: [postmarkId], references: [id], onDelete: SetNull)
+  projectVersion ProjectVersion? @relation(fields: [projectVersionId], references: [id], onDelete: SetNull)
+  event          Competition?    @relation("ReputationEventCompetition", fields: [eventId], references: [id], onDelete: SetNull)
+  reversalOf     ReputationEvent? @relation("ReputationEventReversal", fields: [reversalOfId], references: [id], onDelete: Restrict)
+  reversal       ReputationEvent? @relation("ReputationEventReversal")
+
+  @@index([userId, axis, createdAt])
+  @@index([eventId])
+  @@map("tb_reputation_event")
+}
+
+model ReputationRankConfig {
+  rank       ReputationRank @id
+  requiredXp Int
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  @@map("tb_reputation_rank_config")
+}
+
+model EventCriterion {
+  id            String   @id @default(uuid())
+  competitionId String
+  name          String
+  weight        Float
+  position      Int      @default(0)
+  createdAt     DateTime @default(now())
+
+  competition Competition            @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  scores      EventEvaluationScore[]
+
+  @@unique([competitionId, name])
+  @@index([competitionId, position])
+  @@map("tb_event_criterion")
+}
+
+model EventEvaluation {
+  id            String   @id @default(uuid())
+  competitionId String
+  projectId     String
+  evaluatorId   String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  competition Competition            @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  project     Project                @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  evaluator   User                   @relation(fields: [evaluatorId], references: [id], onDelete: Cascade)
+  scores      EventEvaluationScore[]
+
+  @@unique([competitionId, projectId, evaluatorId])
+  @@index([competitionId, evaluatorId])
+  @@map("tb_event_evaluation")
+}
+
+model EventEvaluationScore {
+  id           String @id @default(uuid())
+  evaluationId String
+  criterionId  String
+  score        Int
+
+  evaluation EventEvaluation @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  criterion  EventCriterion  @relation(fields: [criterionId], references: [id], onDelete: Cascade)
+
+  @@unique([evaluationId, criterionId])
+  @@map("tb_event_evaluation_score")
+}
+
+enum ProjectStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum AppreciateStatus {
+  PENDING
+  USEFUL
+  APPLIED
+  DENIED
+}
+
+enum ReputationAxis {
+  CREATOR
+  CONTRIBUTOR
+}
+
+enum ReputationEventType {
+  PROJECT_PUBLISHED
+  PROJECT_VERSION_PUBLISHED
+  EVENT_PARTICIPATION
+  EVENT_FIRST_PLACE
+  EVENT_SECOND_PLACE
+  EVENT_THIRD_PLACE
+  POSTMARK_SENT
+  POSTMARK_USEFUL
+  POSTMARK_APPLIED
+  POSTMARK_CREDITED_IN_VERSION
+  EVENT_PROJECT_EVALUATED
+  ADMIN_ADJUSTMENT
+
+  // Kept only to preserve ledger entries created before the central XP policy.
+  PROJECT_IMPROVED
+  PROJECT_VERSION_WITH_COMMUNITY_CREDIT
+}
+
+enum ReputationRank {
+  F
+  F_PLUS @map("F+")
+  E
+  E_PLUS @map("E+")
+  D
+  D_PLUS @map("D+")
+  C
+  C_PLUS @map("C+")
+  B
+  B_PLUS @map("B+")
+  A
+  A_PLUS @map("A+")
+  S
+  SS
 }
 
 enum SocialProviderType {
